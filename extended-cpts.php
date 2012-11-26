@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.7.7
+Version:      1.7.8
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -126,6 +126,9 @@ class ExtendedCPT {
 		if ( isset( $this->args['filters'] ) )
 			add_action( 'load-edit.php', array( $this, 'maybe_filter' ) );
 
+		if ( isset( $this->args['right_now'] ) )
+			add_action( 'right_now_content_table_end', array( $this, 'right_now' ) );
+
 		if ( isset( $this->args['show_in_feed'] ) and $this->args['show_in_feed'] )
 			add_filter( 'request', array( $this, 'feed_request' ) );
 
@@ -206,6 +209,25 @@ class ExtendedCPT {
 			}
 
 		}
+
+	}
+
+	function right_now() {
+
+		$pto   = get_post_type_object( $this->post_type );
+		$count = wp_count_posts( $this->post_type );
+		$text  = _n( $pto->labels->singular_name, $pto->labels->name, $count->publish );
+		$num   = number_format_i18n( $count->publish );
+
+		if ( current_user_can( $pto->cap->edit_posts ) ) {
+			$num  = '<a href="edit.php?post_type=' . $this->post_type . '">' . $num . '</a>';
+			$text = '<a href="edit.php?post_type=' . $this->post_type . '">' . $text . '</a>';
+		}
+
+		echo '<tr>';
+		echo '<td class="first b b-' . $this->post_type . '">' . $num . '</td>';
+		echo '<td class="t ' . $this->post_type . '">' . $text . '</td>';
+		echo '</tr>';
 
 	}
 
@@ -298,10 +320,12 @@ class ExtendedCPT {
 
 	function sort_column_by_meta( $vars ) {
 		# @TODO this might need a post_type check
-		$o = $vars['orderby'];
-		if ( isset( $this->args['cols'][$o]['meta_key'] ) ) {
-			$vars['meta_key'] = $this->args['cols'][$o]['meta_key'];
-			$vars['orderby']  = 'meta_value';
+		if ( isset( $vars['orderby'] ) ) {
+			$o = $vars['orderby'];
+			if ( isset( $this->args['cols'][$o]['meta_key'] ) ) {
+				$vars['meta_key'] = $this->args['cols'][$o]['meta_key'];
+				$vars['orderby']  = 'meta_value';
+			}
 		}
 		return $vars;
 	}
