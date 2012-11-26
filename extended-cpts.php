@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.1.5
+Version:      2.1.6
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -32,6 +32,13 @@ Extended CPTs provides extended functionality to custom post types in WordPress,
  * Add CPTs to the site's main feed
  * Add CPTs to the 'Right Now' section on the dashboard
 
+= @TODO =
+
+ * Allow cols that aren't sortable
+ * Allow removal of the title and cb cols
+ * Make title attribute non required everywhere
+ * Checkbox type for meta_exists thingy
+
 = License =
 
 This program is free software; you can redistribute it and/or modify
@@ -51,8 +58,8 @@ GNU General Public License for more details.
  * Wrapper function for instantiating a new ExtendedCPT object. This is the only function you need.
  * See the ExtendedCPT class constructor for parameters.
  */
-function register_extended_post_type( $post_type, $args = array(), $plural = null, $slug = null ) {
-	return new ExtendedCPT( $post_type, $args, $plural, $slug );
+function register_extended_post_type( $post_type, $args = array(), $plural = null, $slug = null, $singular = null ) {
+	return new ExtendedCPT( $post_type, $args, $plural, $slug, $singular );
 }
 
 class ExtendedCPT {
@@ -148,9 +155,15 @@ class ExtendedCPT {
 	 * @param array $args The post type arguments (optional)
 	 * @param string $plural The post type plural name (optional)
 	 * @param string $slug The post type slug (optional)
+	 * @param string $singular The post type singular name (optional)
 	 * @return null
 	 */
-	public function __construct( $post_type, $args = array(), $plural = null, $slug = null ) {
+	public function __construct( $post_type, $args = array(), $plural = null, $slug = null, $singular = null ) {
+
+		if ( $singular )
+			$this->post_singular = $singular;
+		else
+			$this->post_singular = $post_type;
 
 		if ( $slug )
 			$this->post_slug = $slug;
@@ -168,7 +181,7 @@ class ExtendedCPT {
 		$this->post_slug = strtolower( $this->post_slug );
 
 		# Build our base post type names:
-		$this->post_singular     = ucwords( str_replace( array( '-', '_' ), ' ', $post_type ) );
+		$this->post_singular     = ucwords( str_replace( array( '-', '_' ), ' ', $this->post_singular ) );
 		$this->post_plural       = ucwords( str_replace( array( '-', '_' ), ' ', $this->post_plural ) );
 		$this->post_singular_low = strtolower( $this->post_singular );
 		$this->post_plural_low   = strtolower( $this->post_plural );
@@ -245,8 +258,8 @@ class ExtendedCPT {
 
 			# Quick Edit:
 			if ( !$this->args['quick_edit'] ) {
-				$row_type = ( $this->args['hierarchical'] ) ? 'page' : 'post';
-				add_filter( "{$row_type}_row_actions",              array( $this, 'remove_quick_edit_action' ) );
+				add_filter( 'post_row_actions',                     array( $this, 'remove_quick_edit_action' ) );
+				add_filter( 'page_row_actions',                     array( $this, 'remove_quick_edit_action' ) );
 				add_filter( "bulk_actions-edit-{$this->post_type}", array( $this, 'remove_quick_edit_menu' ) );
 			}
 
@@ -256,7 +269,7 @@ class ExtendedCPT {
 
 			# Nav menus screen item:
 			if ( $this->args['archive_in_nav_menus'] and $this->args['show_in_nav_menus'] and $this->args['has_archive'] )
-				add_action( "nav_menu_items_{$this->post_type}", array( $this, 'nav_menu_items' ), 10, 3 );
+				add_filter( "nav_menu_items_{$this->post_type}", array( $this, 'nav_menu_items' ), 10, 3 );
 
 			# Post updated messages:
 			add_filter( 'post_updated_messages',      array( $this, 'post_updated_messages' ), 1 );
@@ -400,6 +413,9 @@ class ExtendedCPT {
 			if ( isset( $filter['taxonomy'] ) ) {
 
 				$tax = get_taxonomy( $filter['taxonomy'] );
+
+				if ( empty( $tax ) )
+					continue;
 
 				# For this, we need the dropdown walker from Extended Taxonomies:
 				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdownSlug' ) )
@@ -575,8 +591,10 @@ class ExtendedCPT {
 
 		global $post;
 
+		$pto = get_post_type_object( $this->post_type );
+
 		$messages[$this->post_type] = array(
-			1 => sprintf( ( $this->args['publicly_queryable'] ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ),
+			1 => sprintf( ( $pto->publicly_queryable ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ),
 				$this->post_singular,
 				esc_url( get_permalink( $post->ID ) ),
 				$this->post_singular_low
@@ -590,7 +608,7 @@ class ExtendedCPT {
 				$this->post_singular,
 				wp_post_revision_title( intval( $_GET['revision'] ), false )
 			) : false,
-			6 => sprintf( ( $this->args['publicly_queryable'] ? '%1$s published. <a href="%2$s">View %3$s</a>' : '%1$s published.' ),
+			6 => sprintf( ( $pto->publicly_queryable ? '%1$s published. <a href="%2$s">View %3$s</a>' : '%1$s published.' ),
 				$this->post_singular,
 				esc_url( get_permalink( $post->ID ) ),
 				$this->post_singular_low
@@ -598,18 +616,18 @@ class ExtendedCPT {
 			7 => sprintf( '%s saved.',
 				$this->post_singular
 			),
-			8 => sprintf( ( $this->args['publicly_queryable'] ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ),
+			8 => sprintf( ( $pto->publicly_queryable ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ),
 				$this->post_singular,
 				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post->ID ) ) ),
 				$this->post_singular_low
 			),
-			9 => sprintf( ( $this->args['publicly_queryable'] ? '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview %4$s</a>' : '%1$s scheduled for: <strong>%2$s</strong>.' ),
+			9 => sprintf( ( $pto->publicly_queryable ? '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview %4$s</a>' : '%1$s scheduled for: <strong>%2$s</strong>.' ),
 				$this->post_singular,
 				date_i18n( 'M j, Y @ G:i', strtotime( $post->post_date ) ),
 				esc_url( get_permalink( $post->ID ) ),
 				$this->post_singular_low
 			),
-			10 => sprintf( ( $this->args['publicly_queryable'] ? '%1$s draft updated. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s draft updated.' ),
+			10 => sprintf( ( $pto->publicly_queryable ? '%1$s draft updated. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s draft updated.' ),
 				$this->post_singular,
 				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post->ID ) ) ),
 				$this->post_singular_low
@@ -851,6 +869,10 @@ class ExtendedCPT {
 		foreach ( $this->args['cols'] as $id => $col ) {
 			if ( is_string( $col ) and isset( $cols[$col] ) ) {
 				$new_cols[$col] = $cols[$col];
+			} else if ( 'author' === $col ) {
+				# Special case for displaying author column when the
+				# post type doesn't have support for 'author'
+				$new_cols[$col] = __( 'Author' );
 			} else if ( is_array( $col ) ) {
 				if ( isset( $col['cap'] ) and !current_user_can( $col['cap'] ) )
 					continue;
@@ -992,6 +1014,10 @@ class ExtendedCPT {
 
 			case 'post_author':
 				echo get_the_author();
+				break;
+
+			case 'post_excerpt':
+				echo get_the_excerpt();
 				break;
 
 			default:
@@ -1151,6 +1177,9 @@ class ExtendedCPT {
 	 */
 	public function remove_quick_edit_action( $actions ) {
 
+		if ( $this->post_type != get_current_screen()->post_type )
+			return $actions;
+
 		unset( $actions['inline'], $actions['inline hide-if-no-js'] );
 		return $actions;
 
@@ -1163,6 +1192,9 @@ class ExtendedCPT {
 	 * @return array Array of updated bulk actions
 	 */
 	public function remove_quick_edit_menu( $actions ) {
+
+		if ( $this->post_type != get_current_screen()->post_type )
+			return $actions;
 
 		unset( $actions['edit'] );
 		return $actions;
@@ -1206,8 +1238,34 @@ class ExtendedCPT {
 	 */
 	public function register_post_type() {
 
-		if ( is_wp_error( $cpt = register_post_type( $this->post_type, $this->args ) ) )
-			trigger_error( $cpt->get_error_message(), E_USER_ERROR );
+		$existing = get_post_type_object( $this->post_type );
+
+		# This allows us to call register_extended_post_type() on an existing post type to add custom functionality to it
+
+		if ( empty( $existing ) ) {
+
+			if ( is_wp_error( $cpt = register_post_type( $this->post_type, $this->args ) ) )
+				trigger_error( $cpt->get_error_message(), E_USER_ERROR );
+
+		} else {
+
+			$this->extend( $existing );
+
+		}
+
+	}
+
+	/**
+	 * @TODO Description
+	 *
+	 * @param type $param 
+	 * @return 
+	 */
+	public function extend( $pto ) {
+
+		global $wp_post_types;
+
+		$wp_post_types[$this->post_type]->labels = (object) $this->args['labels'];
 
 	}
 
