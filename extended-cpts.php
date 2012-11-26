@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.8
+Version:      1.9
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -25,7 +25,6 @@ Extended CPTs started off with several features such as extended localisation, p
 @TODO:
 
  * Improve the selection of fields shown in the Quick Edit boxes
- * Add the meta_key filter dropdown (clashes with the sortables)
  * Inline docs
 
 */
@@ -127,7 +126,7 @@ class ExtendedCPT {
 			$this->args['labels'] = wp_parse_args( $args['labels'], $this->defaults['labels'] );
 
 		if ( isset( $this->args['cols'] ) ) {
-			add_action( "manage_{$this->post_type}_posts_columns",         array( $this, 'cols' ) );
+			add_action( "manage_{$this->post_type}_posts_columns",         array( $this, 'columns' ) );
 			add_filter( "manage_{$this->post_type}_posts_custom_column",   array( $this, 'col' ), 10, 2 );
 			add_filter( "manage_edit-{$this->post_type}_sortable_columns", array( $this, 'sortables' ) );
 			add_action( 'load-edit.php',                                   array( $this, 'default_sort' ) );
@@ -137,7 +136,7 @@ class ExtendedCPT {
 		if ( isset( $this->args['filters'] ) )
 			add_action( 'load-edit.php', array( $this, 'maybe_filter' ) );
 
-		if ( isset( $this->args['right_now'] ) )
+		if ( isset( $this->args['right_now'] ) and $this->args['right_now'] )
 			add_action( 'right_now_content_table_end', array( $this, 'right_now' ) );
 
 		if ( isset( $this->args['show_in_feed'] ) and $this->args['show_in_feed'] )
@@ -152,6 +151,7 @@ class ExtendedCPT {
 		add_filter( 'post_updated_messages',      array( $this, 'post_updated_messages' ), 1 );
 		add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_post_updated_messages' ), 1, 2 );
 		add_filter( 'parse_request',              array( $this, 'parse_request' ), 1 );
+		add_filter( 'query_vars',                 array( $this, 'filter_query_vars' ) );
 
 	}
 
@@ -182,13 +182,14 @@ class ExtendedCPT {
 
 	function maybe_filter() {
 		if ( $this->post_type == get_current_screen()->post_type ) {
+			add_filter( 'request',               array( $this, 'filter_by_meta' ) );
 			add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
 		}
 	}
 
 	function filters() {
 
-		$pto = get_post_type_object( $this->post_type );
+		global $wpdb;
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
 
@@ -201,25 +202,81 @@ class ExtendedCPT {
 				else
 					$walker = null;
 
+				if ( !isset( $filter['title'] ) )
+					$filter['title'] = $tax->labels->all_items;
+
 				wp_dropdown_categories( array(
-					'show_option_all' => $tax->labels->all_items . '&nbsp;',
+					'show_option_all' => $filter['title'] . '&nbsp;',
 					'hide_empty'      => false,
 					'hierarchical'    => true,
 					'show_count'      => false,
 					'orderby'         => 'name',
 					'selected'        => get_query_var( $filter['tax'] ),
 					'name'            => $filter['tax'],
+					'id'              => 'filter_' . $filter_key,
 					'taxonomy'        => $filter['tax'],
 					'walker'          => $walker
 				) );
 
 			} else if ( isset( $filter['meta_key'] ) ) {
 
-				# @TODO meta key filters
+				if ( !isset( $filter['title'] ) ) {
+					$filter['title'] = str_replace( array( '-', '_' ), ' ', $filter['meta_key'] );
+					$filter['title'] = ucwords( $filter['title'] );
+					$filter['title'] = sprintf( 'All %ss', $filter['title'] );
+				}
+
+				$meta_values = $wpdb->get_col( $wpdb->prepare( "
+					SELECT DISTINCT meta_value
+					FROM {$wpdb->postmeta} as m
+					JOIN {$wpdb->posts} as p
+					ON ( p.ID = m.post_id )
+					WHERE m.meta_key = %s
+					AND m.meta_value != ''
+					AND p.post_type = %s
+					ORDER BY m.meta_value ASC
+				", $filter['meta_key'], $this->post_type ) );
+
+				?>
+				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
+					<option value=""><?php echo esc_html( $filter['title'] ); ?>&nbsp;</option>
+					<?php foreach ( $meta_values as $v ) { ?>
+						<option value="<?php echo esc_attr( $v ); ?>" <?php selected( stripslashes( get_query_var( $filter_key ) ), $v ); ?>><?php echo esc_html( $v ); ?></option>
+					<?php } ?>
+				</select>
+				<?php
 
 			}
 
 		}
+
+	}
+
+	function filter_query_vars( $vars ) {
+
+		foreach ( $this->args['filters'] as $filter_key => $filter ) {
+			if ( isset( $filter['meta_key'] ) )
+				$vars[] = $filter_key;
+		}
+
+		return $vars;
+
+	}
+
+	function filter_by_meta( $vars ) {
+
+		foreach ( $this->args['filters'] as $filter_key => $filter ) {
+
+			if ( isset( $filter['meta_key'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
+				$vars['meta_query'][] = array(
+					'key'   => $filter['meta_key'],
+					'value' => stripslashes( $vars[$filter_key] )
+				);
+			}
+
+		}
+
+		return $vars;
 
 	}
 
@@ -330,7 +387,7 @@ class ExtendedCPT {
 	}
 
 	function sort_column_by_meta( $vars ) {
-		# @TODO this might need a post_type check
+
 		if ( isset( $vars['orderby'] ) ) {
 			$o = $vars['orderby'];
 			if ( isset( $this->args['cols'][$o]['meta_key'] ) ) {
@@ -338,11 +395,12 @@ class ExtendedCPT {
 				$vars['orderby']  = 'meta_value';
 			}
 		}
+
 		return $vars;
+
 	}
 
 	function sort_column_by_tax( $clauses, $q ) {
-		# @TODO this might need a post_type check
 
 		global $wpdb;
 
@@ -355,13 +413,13 @@ class ExtendedCPT {
 				# Taxonomy term ordering courtesy of http://scribu.net/wordpress/sortable-taxonomy-columns.html
 
 				$clauses['join'] .= "
-					LEFT OUTER JOIN {$wpdb->term_relationships} as ecpt_tr ON ( {$wpdb->posts}.ID = ecpt_tr.object_id )
-					LEFT OUTER JOIN {$wpdb->term_taxonomy} as ecpt_tt ON ( ecpt_tr.term_taxonomy_id = ecpt_tt.term_taxonomy_id )
-					LEFT OUTER JOIN {$wpdb->terms} as ecpt_t ON ( ecpt_tt.term_id = ecpt_t.term_id )
+					LEFT OUTER JOIN {$wpdb->term_relationships} as extcpts_tr ON ( {$wpdb->posts}.ID = extcpts_tr.object_id )
+					LEFT OUTER JOIN {$wpdb->term_taxonomy} as extcpts_tt ON ( extcpts_tr.term_taxonomy_id = extcpts_tt.term_taxonomy_id )
+					LEFT OUTER JOIN {$wpdb->terms} as extcpts_t ON ( extcpts_tt.term_id = extcpts_t.term_id )
 				";
 				$clauses['where']   .= " AND ( taxonomy = '{$this->args['cols'][$o]['tax']}' OR taxonomy IS NULL )";
-				$clauses['groupby'] = 'ecpt_tr.object_id';
-				$clauses['orderby'] = "GROUP_CONCAT( ecpt_t.name ORDER BY name ASC ) ";
+				$clauses['groupby'] = 'extcpts_tr.object_id';
+				$clauses['orderby'] = "GROUP_CONCAT( extcpts_t.name ORDER BY name ASC ) ";
 				$clauses['orderby'] .= ( 'ASC' == strtoupper( $q->get('order') ) ) ? 'ASC' : 'DESC';
 
 			}
@@ -373,17 +431,19 @@ class ExtendedCPT {
 	}
 
 	function sortables( $cols ) {
+
 		foreach ( $this->args['cols'] as $id => $col ) {
 			if ( is_array( $col ) and ( isset( $col['meta_key'] ) or isset( $col['tax'] ) ) )
 				$cols[$id] = $id;
 		}
+
 		return $cols;
+
 	}
 
-	function cols( $cols ) {
+	function columns( $cols ) {
 
 		# This isn't really the best way to do this. It could override custom cols from other plugins.
-		# @TODO 'Page Manager' might be well suited to have as part of Extended CPTs
 
 		$new_cols = array();
 		$keep = array(
@@ -460,13 +520,16 @@ class ExtendedCPT {
 	}
 
 	function feed_request( $vars ) {
+
 		if ( isset( $vars['feed'] ) ) {
 			if ( !isset( $vars['post_type'] ) )
 				$vars['post_type'] = array( 'post', $this->post_type );
 			else if ( is_array( $vars['post_type'] ) )
 				$vars['post_type'][] = $this->post_type;
 		}
+
 		return $vars;
+
 	}
 
 	function parse_request( $p ) {
@@ -490,13 +553,17 @@ class ExtendedCPT {
 	}
 
 	function n( $singular, $plural, $count ) {
+
 		# This is a non-localised version of _n()
 		return ( 1 == $count ) ? $singular : $plural;
+
 	}
 
 	function register_post_type() {
+
 		if ( is_wp_error( $cpt = register_post_type( $this->post_type, $this->args ) ) )
 			trigger_error( $cpt->get_error_message(), E_USER_ERROR );
+
 	}
 
 }
