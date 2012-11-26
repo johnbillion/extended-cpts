@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.7
+Version:      1.7.1
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -111,7 +111,7 @@ class ExtendedCPT {
 			add_filter( $actions, array( $this, '_remove_view_action' ) );
 		}
 
-		add_action( 'init',                  array( $this, 'register_post_type' ) );
+		add_action( 'init',                  array( $this, 'register_post_type' ), 9 );
 		add_filter( 'post_updated_messages', array( $this, '_post_updated_messages' ), 1 );
 		add_filter( 'parse_request',         array( $this, '_parse_request' ), 1 );
 
