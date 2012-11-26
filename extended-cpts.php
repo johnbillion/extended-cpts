@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.1.7
+Version:      2.1.8
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 License:      GPL v2 or later
@@ -427,6 +427,8 @@ class ExtendedCPT {
 		if ( empty( $post_type ) ) {
 			if ( isset( $_REQUEST['post_type'] ) )
 				$post_type = $_REQUEST['post_type'];
+			else if ( isset( $_REQUEST['post'] ) )
+				$post_type = get_post_type( $_REQUEST['post'] );
 			else if ( isset( $_REQUEST['post_id'] ) )
 				$post_type = get_post_type( $_REQUEST['post_id'] );
 			else if ( isset( $_REQUEST['attachment_id'] ) )
@@ -539,18 +541,22 @@ class ExtendedCPT {
 					$filter['title'] = sprintf( __( 'All %s', 'ext_cpts' ), $filter['title'] );
 				}
 
-				# Fetch all the values for our meta key:
-				$meta_values = $wpdb->get_col( $wpdb->prepare( "
-					SELECT DISTINCT meta_value
-					FROM {$wpdb->postmeta} as m
-					JOIN {$wpdb->posts} as p ON ( p.ID = m.post_id )
-					WHERE m.meta_key = %s
-					AND m.meta_value != ''
-					AND p.post_type = %s
-					ORDER BY m.meta_value ASC
-				", $filter['meta_key'], $this->post_type ) );
+				if ( !isset( $filter['options'] ) ) {
+					# Fetch all the values for our meta key:
+					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
+						SELECT DISTINCT meta_value
+						FROM {$wpdb->postmeta} as m
+						JOIN {$wpdb->posts} as p ON ( p.ID = m.post_id )
+						WHERE m.meta_key = %s
+						AND m.meta_value != ''
+						AND p.post_type = %s
+						ORDER BY m.meta_value ASC
+					", $filter['meta_key'], $this->post_type ) );
+				} else if ( is_callable( $filter['options'] ) ) {
+					$filter['options'] = call_user_func( $filter['options'] );
+				}
 
-				if ( empty( $meta_values ) )
+				if ( empty( $filter['options'] ) )
 					continue;
 
 				$selected = stripslashes( get_query_var( $filter_key ) );
@@ -559,10 +565,25 @@ class ExtendedCPT {
 				?>
 				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
 					<option value=""><?php echo esc_html( $filter['title'] ); ?>&nbsp;</option>
-					<?php foreach ( $meta_values as $v ) { ?>
+					<?php foreach ( $filter['options'] as $v ) { ?>
 						<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $v ); ?></option>
 					<?php } ?>
 				</select>
+				<?php
+
+			} else if ( isset( $filter['meta_search_key'] ) ) {
+
+				# If we haven't specified a title, generate one from the meta key:
+				if ( !isset( $filter['title'] ) ) {
+					$filter['title'] = str_replace( array( '-', '_' ), ' ', $filter['meta_search_key'] );
+					$filter['title'] = ucwords( $filter['title'] );
+				}
+
+				$value = stripslashes( get_query_var( $filter_key ) );
+
+				# Output the search box:
+				?>
+				<label><?php printf( '%s:', esc_html( $filter['title'] ) ); ?>&nbsp;<input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $value ); ?>" /></label>
 				<?php
 
 			} else if ( isset( $filter['meta_exists'] ) ) {
@@ -611,7 +632,7 @@ class ExtendedCPT {
 	public function add_filter_query_vars( $vars ) {
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
-			if ( isset( $filter['meta_key'] ) or isset( $filter['meta_exists'] ) )
+			if ( isset( $filter['meta_key'] ) or isset( $filter['meta_search_key'] ) or isset( $filter['meta_exists'] ) )
 				$vars[] = $filter_key;
 		}
 
@@ -633,16 +654,33 @@ class ExtendedCPT {
 				continue;
 
 			if ( isset( $filter['meta_key'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
-				$vars['meta_query'][] = array(
+				$args = array(
 					'key'   => $filter['meta_key'],
 					'value' => stripslashes( $vars[$filter_key] )
 				);
-			} else if ( isset( $filter['meta_exists'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
+				if ( isset( $filter['meta_compare'] ) )
+					$args['compare'] = $filter['meta_compare'];
+				$vars['meta_query'][] = $args;
+			} else if ( isset( $filter['meta_search_key'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
+				# @TODO kill the meta_search_key parameter and user meta_key with some complimentary parameters
 				$vars['meta_query'][] = array(
-					'key'     => stripslashes( $vars[$filter_key] ),
-					'compare' => 'NOT IN',
-					'value'   => array( '', '0', 'false', 'null' )
+					'key'     => $filter['meta_search_key'],
+					'value'   => stripslashes( $vars[$filter_key] ),
+					'compare' => 'LIKE'
 				);
+			} else if ( isset( $filter['meta_exists'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
+				$args = array(
+					'key'     => stripslashes( $vars[$filter_key] ),
+				);
+				if ( isset( $filter['meta_value'] ) ) {
+					$args['value'] = $filter['meta_value'];
+					if ( isset( $filter['meta_compare'] ) )
+						$args['compare'] = $filter['meta_compare'];
+				} else {
+					$args['compare'] = 'NOT IN';
+					$args['value']   = array( '', '0', 'false', 'null' );
+				}
+				$vars['meta_query'][] = $args;
 			}
 
 		}
