@@ -2,11 +2,12 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.1.6
+Version:      2.1.7
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
+License:      GPL v2 or later
 
-© 2012 John Blackbourn
+Copyright © 2012 John Blackbourn
 
 Extended CPTs provides extended functionality to custom post types in WordPress, allowing you to quickly build custom post types without having to write the same code again and again.
 
@@ -17,12 +18,12 @@ Extended CPTs provides extended functionality to custom post types in WordPress,
  * Hierarchical with page capability type
  * Drop with_front from rewrite rules
  * Support post thumbnails
- * Optimal menu placement
+ * Optimal admin menu placement
 
 = Extended features =
 
  * Ridiculously easy custom admin columns:
-   - Add columns for post meta, taxonomy terms, post fields, featured image, and callback functions
+   - Add columns for post meta, taxonomy terms, post fields, featured image, Posts 2 Posts connections, and callback functions
    - Add columns depending on user capabilities
    - Out of the box sorting by post meta, taxonomy terms, and post fields
    - Specify a default sort column and sort order
@@ -31,12 +32,11 @@ Extended CPTs provides extended functionality to custom post types in WordPress,
  * Add post type archives to the nav menu screen
  * Add CPTs to the site's main feed
  * Add CPTs to the 'Right Now' section on the dashboard
+ * Easily set the 'Enter title here' text
+ * Easily set the 'Featured Image' title
 
 = @TODO =
 
- * Allow cols that aren't sortable
- * Allow removal of the title and cb cols
- * Make title attribute non required everywhere
  * Checkbox type for meta_exists thingy
 
 = License =
@@ -87,11 +87,13 @@ class ExtendedCPT {
 		'show_in_nav_menus'    => true,
 		'archive_in_nav_menus' => true,  # Custom arg
 		'quick_edit'           => true,  # Custom arg
-		'right_now'            => false, # Custom arg
+		'right_now'            => null,  # Custom arg
 		'show_in_feed'         => false, # Custom arg
 		'archive'              => null,  # Custom arg
 		'cols'                 => null,  # Custom arg
 		'filters'              => null,  # Custom arg
+		'enter_title_here'     => null,  # Custom arg
+		'featured_image'       => null,  # Custom arg
 	);
 
 	/**
@@ -137,7 +139,7 @@ class ExtendedCPT {
 	 * - quick_edit - boolean - Whether to show Quick Edit links for this post type. Defaults to true.
 	 *
 	 * - right_now - boolean - Whether to show this post type on the 'Right Now' section of WordPress'
-	 * dashboard. Defaults to false.
+	 * dashboard. Defaults to true if the post type is public, false if not.
 	 *
 	 * - show_in_feed - boolean - Whether to include this post type in the site's main feed. Defaults to
 	 * false.
@@ -150,6 +152,10 @@ class ExtendedCPT {
 	 *
 	 * - filters - array - Associative array of admin filters to show for this post type. See the
 	 * filters() method of this class for more information. Defaults to null (no custom filters).
+	 *
+	 * - enter_title_here - string - Placeholder text which appears in the title field for this post type.
+	 *
+	 * - featured_image - string - Text which replaces 'Featured Image' for this post type.
 	 *
 	 * @param string $post_type The post type name
 	 * @param array $args The post type arguments (optional)
@@ -205,6 +211,7 @@ class ExtendedCPT {
 		);
 
 		# 'public' is a meta argument, so set some defaults if it's present:
+		# @TODO this is not strictly true: http://core.trac.wordpress.org/ticket/20098#comment:4
 		if ( isset( $args['public'] ) ) {
 			$this->defaults['publicly_queryable']  =  $args['public'];
 			$this->defaults['show_ui']             =  $args['public'];
@@ -234,6 +241,10 @@ class ExtendedCPT {
 		if ( !isset( $args['exclude_from_search'] ) )
 			$this->args['exclude_from_search'] = !$this->args['publicly_queryable'];
 
+		# Set Right Now visibility:
+		if ( null === $this->args['right_now'] )
+			$this->args['right_now'] = $this->args['public'];
+
 		# This allows the 'labels' arg to contain some, none or all labels:
 		if ( isset( $args['labels'] ) )
 			$this->args['labels'] = wp_parse_args( $args['labels'], $this->defaults['labels'] );
@@ -255,6 +266,14 @@ class ExtendedCPT {
 				add_action( 'load-edit.php', array( $this, 'maybe_filter' ) );
 				add_filter( 'query_vars',    array( $this, 'add_filter_query_vars' ) );
 			}
+
+			# 'Enter title here' filter:
+			if ( $this->args['enter_title_here'] )
+				add_filter( 'enter_title_here', array( $this, 'enter_title_here' ), 10, 2 );
+
+			# Featured Image title:
+			if ( $this->args['featured_image'] )
+				add_filter( 'gettext', array( $this, 'featured_image_text' ) );
 
 			# Quick Edit:
 			if ( !$this->args['quick_edit'] ) {
@@ -352,6 +371,73 @@ class ExtendedCPT {
 	}
 
 	/**
+	 * Set the placeholder text for the title field for this post type.
+	 *
+	 * @param $title string The placeholder text
+	 * @param $post object The current post
+	 * @return string The updated placeholder text
+	 */
+	public function enter_title_here( $title, $post ) {
+
+		if ( $this->post_type != $post->post_type )
+			return $title;
+
+		return $this->args['enter_title_here'];
+
+	}
+
+	/**
+	 * @TODO Description
+	 *
+	 * See http://core.trac.wordpress.org/ticket/19257
+	 *
+	 * @param string $text 
+	 * @return string 
+	 */
+	function featured_image_text( $text ) {
+
+		if ( false === stripos( $text, 'featured image' ) )
+			return $text;
+
+		if ( $this->post_type != $this->get_current_post_type() )
+			return $text;
+
+		$text = str_replace( 'featured image', strtolower( $this->args['featured_image'] ), $text );
+		$text = str_replace( 'Featured Image', $this->args['featured_image'], $text );
+
+		return $text;
+
+	}
+
+	/**
+	 * @TODO Description
+	 *
+	 * @return string 
+	 */
+	function get_current_post_type() {
+
+		if ( isset( $this->current_post_type ) )
+			return $this->current_post_type;
+
+		if ( function_exists( 'get_current_screen' ) and is_object( get_current_screen() ) )
+			$post_type = get_current_screen()->post_type;
+		else
+			$post_type = '';
+
+		if ( empty( $post_type ) ) {
+			if ( isset( $_REQUEST['post_type'] ) )
+				$post_type = $_REQUEST['post_type'];
+			else if ( isset( $_REQUEST['post_id'] ) )
+				$post_type = get_post_type( $_REQUEST['post_id'] );
+			else if ( isset( $_REQUEST['attachment_id'] ) )
+				$post_type = get_post_type( get_post( $_REQUEST['attachment_id'] )->post_parent );
+		}
+
+		return $this->current_post_type = $post_type;
+
+	}
+
+	/**
 	 * Output custom filter dropdown menus on the admin screen for this post type.
 	 *
 	 * Each item in the 'filters' array is an associative array of information for a filter. Defining a
@@ -418,10 +504,12 @@ class ExtendedCPT {
 					continue;
 
 				# For this, we need the dropdown walker from Extended Taxonomies:
-				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdownSlug' ) )
-					return trigger_error( sprintf( __( 'The %s class is required in order to display taxonomy filters', 'ext_cpts' ), $class ), E_USER_WARNING );
-				else
+				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdownSlug' ) ) {
+					trigger_error( sprintf( __( 'The %s class is required in order to display taxonomy filters', 'ext_cpts' ), $class ), E_USER_WARNING );
+					continue;
+				} else {
 					$walker = new $class;
+				}
 
 				# If we haven't specified a title, use the all_items label from the taxonomy:
 				if ( !isset( $filter['title'] ) )
@@ -431,6 +519,7 @@ class ExtendedCPT {
 				wp_dropdown_categories( array(
 					'show_option_all' => $filter['title'] . '&nbsp;',
 					'hide_empty'      => false,
+					'hide_if_empty'   => true,
 					'hierarchical'    => true,
 					'show_count'      => false,
 					'orderby'         => 'name',
@@ -461,6 +550,9 @@ class ExtendedCPT {
 					ORDER BY m.meta_value ASC
 				", $filter['meta_key'], $this->post_type ) );
 
+				if ( empty( $meta_values ) )
+					continue;
+
 				$selected = stripslashes( get_query_var( $filter_key ) );
 
 				# Output the dropdown:
@@ -481,15 +573,28 @@ class ExtendedCPT {
 
 				$selected = stripslashes( get_query_var( $filter_key ) );
 
-				# Output the dropdown:
-				?>
-				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
-					<option value=""><?php echo esc_html( $filter['title'] ); ?>&nbsp;</option>
-					<?php foreach ( $filter['meta_exists'] as $v => $t ) { ?>
-						<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $t ); ?></option>
-					<?php } ?>
-				</select>
-				<?php
+				if ( 1 == count( $filter['meta_exists'] ) ) {
+				
+					# Output a checkbox:
+					foreach ( $filter['meta_exists'] as $v => $t ) {
+						?>
+						<label><input type="checkbox" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $v ); ?>" <?php checked( $selected, $v ); ?>>&nbsp;<?php echo esc_html( $t ); ?></label>
+						<?php
+					}
+
+				} else {
+
+					# Output a dropdown:
+					?>
+					<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
+						<option value=""><?php echo esc_html( $filter['title'] ); ?>&nbsp;</option>
+						<?php foreach ( $filter['meta_exists'] as $v => $t ) { ?>
+							<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $t ); ?></option>
+						<?php } ?>
+					</select>
+					<?php
+
+				}
 
 			}
 
@@ -523,6 +628,10 @@ class ExtendedCPT {
 	public function filter_posts_by_post_meta( $vars ) {
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
+
+			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) )
+				continue;
+
 			if ( isset( $filter['meta_key'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
 				$vars['meta_query'][] = array(
 					'key'   => $filter['meta_key'],
@@ -535,6 +644,7 @@ class ExtendedCPT {
 					'value'   => array( '', '0', 'false', 'null' )
 				);
 			}
+
 		}
 
 		return $vars;
@@ -699,6 +809,10 @@ class ExtendedCPT {
 
 		if ( !isset( $vars['orderby'] ) )
 			return $vars;
+		if ( !isset( $this->args['cols'][$vars['orderby']] ) )
+			return $vars;
+		if ( !is_array( $this->args['cols'][$vars['orderby']] ) )
+			return $vars;
 		if ( !isset( $this->args['cols'][$vars['orderby']]['meta_key'] ) )
 			return $vars;
 
@@ -718,6 +832,10 @@ class ExtendedCPT {
 	public function sort_posts_by_post_field( $vars ) {
 
 		if ( !isset( $vars['orderby'] ) )
+			return $vars;
+		if ( !isset( $this->args['cols'][$vars['orderby']] ) )
+			return $vars;
+		if ( !is_array( $this->args['cols'][$vars['orderby']] ) )
 			return $vars;
 		if ( !isset( $this->args['cols'][$vars['orderby']]['post_field'] ) )
 			return $vars;
@@ -741,6 +859,10 @@ class ExtendedCPT {
 		global $wpdb;
 
 		if ( !isset( $q->query['orderby'] ) )
+			return $clauses;
+		if ( !isset( $this->args['cols'][$q->query['orderby']] ) )
+			return $clauses;
+		if ( !is_array( $this->args['cols'][$q->query['orderby']] ) )
 			return $clauses;
 		if ( !isset( $this->args['cols'][$q->query['orderby']]['taxonomy'] ) )
 			return $clauses;
@@ -770,8 +892,12 @@ class ExtendedCPT {
 	public function sortables( $cols ) {
 
 		foreach ( $this->args['cols'] as $id => $col ) {
-			if ( is_array( $col ) and ( isset( $col['meta_key'] ) or isset( $col['taxonomy'] ) or isset( $col['post_field'] ) ) )
-				$cols[$id] = $id;
+			if ( is_array( $col ) ) {
+				if ( isset( $col['sortable'] ) and !$col['sortable'] )
+					continue;
+				if ( isset( $col['meta_key'] ) or isset( $col['taxonomy'] ) or isset( $col['post_field'] ) )
+					$cols[$id] = $id;
+			}
 		}
 
 		return $cols;
@@ -846,8 +972,12 @@ class ExtendedCPT {
 	 * - cap - A capability required in order for this column to be displayed to the current user. Defaults
 	 * to null, meaning the column is shown to all users.
 	 *
-	 * Remember, in addition to custom columns there are also three columns built in to WordPress which you
-	 * can use: 'comments', 'date' and 'author'.
+	 * - sortable - A boolean value which specifies whether the column should be sortable. Defaults to true.
+	 *
+	 * Remember, in addition to custom columns there are also columns built in to WordPress which you can
+	 * use: 'comments', 'date', 'title' and 'author'. You can use these columns as the array value or as the
+	 * array key with a string value to change the column title. You can also pass boolean false to remove
+	 * the 'cb' or 'title' columns, which are otherwise kept regardless.
 	 *
 	 * @param array $cols Associative array of columns
 	 * @return array Updated array of columns
@@ -866,20 +996,36 @@ class ExtendedCPT {
 		}
 
 		# Add our custom columns:
-		foreach ( $this->args['cols'] as $id => $col ) {
+		foreach ( array_filter( $this->args['cols'] ) as $id => $col ) {
 			if ( is_string( $col ) and isset( $cols[$col] ) ) {
 				$new_cols[$col] = $cols[$col];
+			} else if ( is_string( $col ) and isset( $cols[$id] ) ) {
+				$new_cols[$id] = $col;
 			} else if ( 'author' === $col ) {
-				# Special case for displaying author column when the
-				# post type doesn't have support for 'author'
-				$new_cols[$col] = __( 'Author' );
+				# Automatic support for Co-Authors Plus plugin and special case for
+				# displaying author column when the post type doesn't support 'author'
+				if ( class_exists( 'coauthors_plus' ) )
+					$k = 'coauthors';
+				else
+					$k = 'author';
+				$new_cols[$k] = __( 'Author' );
 			} else if ( is_array( $col ) ) {
 				if ( isset( $col['cap'] ) and !current_user_can( $col['cap'] ) )
 					continue;
 				if ( isset( $col['connection'] ) and !function_exists( 'p2p_type' ) )
 					continue;
-				if ( !isset( $col['title'] ) )
-					$col['title'] = '';
+				if ( !isset( $col['title'] ) ) {
+					if ( isset( $col['taxonomy'] ) )
+						$col['title'] = get_taxonomy( $col['taxonomy'] )->labels->name;
+					else if ( isset( $col['post_field'] ) )
+						$col['title'] = ucwords( trim( str_replace( array( 'post_', '_', ), ' ', $col['post_field'] ) ) );
+					else if ( isset( $col['meta_key'] ) )
+						$col['title'] = ucwords( trim( str_replace( array( '_', '-' ), ' ', $col['meta_key'] ) ) );
+					else if ( isset( $col['connection'] ) )
+						$col['title'] = ucwords( trim( str_replace( array( '_', '-' ), ' ', $col['connection'] ) ) );
+					else
+						$col['title'] = '';
+				}
 				$new_cols[$id] = $col['title'];
 			}
 		}
@@ -1008,12 +1154,16 @@ class ExtendedCPT {
 				break;
 
 			case 'post_status':
-				$status = get_post_status_object( get_post_status( $post ) );
-				echo $status->label;
+				if ( $status = get_post_status_object( get_post_status( $post ) ) )
+					echo $status->label;
 				break;
 
 			case 'post_author':
 				echo get_the_author();
+				break;
+
+			case 'post_title':
+				echo get_the_title();
 				break;
 
 			case 'post_excerpt':
@@ -1021,7 +1171,8 @@ class ExtendedCPT {
 				break;
 
 			default:
-				echo esc_html( $post->$field );
+				if ( isset( $post->$field ) )
+					echo esc_html( $post->$field );
 				break;
 
 		}
