@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.1.1
+Version:      2.1.3
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -154,8 +154,6 @@ class ExtendedCPT {
 	 */
 	public function __construct( $post_type, $args = array(), $plural = null, $slug = null ) {
 
-		$this->post_type = $post_type;
-
 		if ( $slug )
 			$this->post_slug = $slug;
 		else if ( $plural )
@@ -168,8 +166,11 @@ class ExtendedCPT {
 		else
 			$this->post_plural = $this->post_slug;
 
+		$this->post_type = strtolower( $post_type );
+		$this->post_slug = strtolower( $this->post_slug );
+
 		# Build our base post type names:
-		$this->post_singular     = ucwords( str_replace( array( '-', '_' ), ' ', $this->post_type ) );
+		$this->post_singular     = ucwords( str_replace( array( '-', '_' ), ' ', $post_type ) );
 		$this->post_plural       = ucwords( str_replace( array( '-', '_' ), ' ', $this->post_plural ) );
 		$this->post_singular_low = strtolower( $this->post_singular );
 		$this->post_plural_low   = strtolower( $this->post_plural );
@@ -230,10 +231,10 @@ class ExtendedCPT {
 
 			# Admin columns:
 			if ( $this->args['cols'] ) {
-				add_action( 'manage_posts_columns',                            array( $this, '_log_default_cols' ), 0 );
-				add_action( "manage_{$this->post_type}_posts_columns",         array( $this, 'cols' ) );
-				add_filter( "manage_{$this->post_type}_posts_custom_column",   array( $this, 'col' ), 10, 2 );
+				add_filter( 'manage_posts_columns',                            array( $this, '_log_default_cols' ), 0 );
 				add_filter( "manage_edit-{$this->post_type}_sortable_columns", array( $this, 'sortables' ) );
+				add_filter( "manage_{$this->post_type}_posts_columns",         array( $this, 'cols' ) );
+				add_action( "manage_{$this->post_type}_posts_custom_column",   array( $this, 'col' ), 10, 2 );
 				add_action( 'load-edit.php',                                   array( $this, 'default_sort' ) );
 				add_action( 'load-edit.php',                                   array( $this, 'maybe_sort' ) );
 			}
@@ -327,7 +328,7 @@ class ExtendedCPT {
 		if ( $this->post_type != get_current_screen()->post_type )
 			return;
 
-		add_filter( 'request',               array( $this, 'filter_posts_by_meta' ) );
+		add_filter( 'request',               array( $this, 'filter_posts_by_post_meta' ) );
 		add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
 
 	}
@@ -490,7 +491,7 @@ class ExtendedCPT {
 	 * @param array $vars Request parameters
 	 * @return array Updated request parameters
 	 */
-	public function filter_posts_by_meta( $vars ) {
+	public function filter_posts_by_post_meta( $vars ) {
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
 			if ( isset( $filter['meta_key'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
@@ -835,6 +836,8 @@ class ExtendedCPT {
 					continue;
 				if ( isset( $col['connection'] ) and !function_exists( 'p2p_type' ) )
 					continue;
+				if ( !isset( $col['title'] ) )
+					$col['title'] = '';
 				$new_cols[$id] = $col['title'];
 			}
 		}
@@ -842,10 +845,6 @@ class ExtendedCPT {
 		# Re-add any custom plugin columns:
 		$custom   = array_diff_key( $cols, $this->_cols );
 		$new_cols = array_merge( $new_cols, $custom );
-
-		# Special support for the updated 'Page Manager' plugin:
-		if ( post_type_supports( $this->post_type, 'reordering' ) and isset( $cols['verplaats'] ) )
-			$new_cols['verplaats'] = $cols['verplaats'];
 
 		return $new_cols;
 
@@ -966,7 +965,8 @@ class ExtendedCPT {
 	 */
 	public function col_featured_image( $image_size, $atts = null ) {
 
-		global $post;
+		if ( !function_exists( 'has_post_thumbnail' ) )
+			return;
 
 		$width  = isset( $atts['width'] )  ? $atts['width']  . 'px' : 'auto';
 		$height = isset( $atts['height'] ) ? $atts['height'] . 'px' : 'auto';
@@ -976,8 +976,8 @@ class ExtendedCPT {
 			'title' => ''
 		);
 
-		if ( has_post_thumbnail( $post->ID ) )
-			echo get_the_post_thumbnail( $post->ID, $image_size, $image_atts );
+		if ( has_post_thumbnail() )
+			the_post_thumbnail( $image_size, $image_atts );
 
 	}
 
@@ -991,8 +991,11 @@ class ExtendedCPT {
 	public function col_connection( $connection, $args = null ) {
 
 		global $post;
-		$_post = $post;
 
+		if ( !function_exists( 'p2p_type' ) )
+			return;
+
+		$_post = $post;
 		$meta = $connections = array();
 
 		if ( isset( $args['field'] ) and isset( $args['value'] ) ) {
