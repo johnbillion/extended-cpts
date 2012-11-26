@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.9.3
+Version:      1.9.4
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -20,7 +20,7 @@ Extended CPTs provides extended functionality to custom post types in WordPress,
 = Extended features =
 
  * Ridiculously easy custom admin columns:
-   - Add columns for post meta, taxonomy terms, post fields, and callback functions
+   - Add columns for post meta, taxonomy terms, post fields, featured image, and callback functions
    - Out of the box sorting by post meta, taxonomy terms, and post fields
    - Specify a default sort column and sort order
  * Custom admin screen filters for post meta and taxonomy terms
@@ -134,13 +134,13 @@ class ExtendedCPT {
 	 * - show_in_feed - boolean - Whether to include this post type in the site's main feed. Defaults to
 	 * false.
 	 *
-	 * - archive - array - An associative array of query vars to override on this post type's archive.
+	 * - archive - array - Associative array of query vars to override on this post type's archive.
 	 * Handy for setting 'no_paging' to true, for example. Defaults to null (no overridden query vars).
 	 *
-	 * - cols - array - An associative array of custom admin columns to show for this post type. See the
-	 * cols() method of this class for more information. Defaults to null (no custom columns).
+	 * - cols - array - Associative array of admin columns to show for this post type. See the cols()
+	 * method of this class for more information. Defaults to null (no custom columns).
 	 *
-	 * - filters - array - An associative array of the admin filters to show for this post type. See the
+	 * - filters - array - Associative array of admin filters to show for this post type. See the
 	 * filters() method of this class for more information. Defaults to null (no custom filters).
 	 *
 	 * @param string $post_type The post type name
@@ -279,7 +279,6 @@ class ExtendedCPT {
 	 */
 	public function default_sort() {
 
-		#  If it's not our post type screen, bail out:
 		if ( $this->post_type != get_current_screen()->post_type )
 			return;
 
@@ -305,11 +304,9 @@ class ExtendedCPT {
 	 */
 	public function maybe_sort() {
 
-		#  If it's not our post type screen, bail out:
 		if ( $this->post_type != get_current_screen()->post_type )
 			return;
 
-		#  Add the necessary filters:
 		add_filter( 'request',       array( $this, 'sort_posts_by_meta' ) );
 		add_filter( 'request',       array( $this, 'sort_posts_by_field' ) );
 		add_filter( 'posts_clauses', array( $this, 'sort_posts_by_tax' ), 10, 2 );
@@ -323,20 +320,44 @@ class ExtendedCPT {
 	 */
 	public function maybe_filter() {
 
-		#  If it's not our post type screen, bail out:
 		if ( $this->post_type != get_current_screen()->post_type )
 			return;
 
-		#  Add the necessary filters:
 		add_filter( 'request',               array( $this, 'filter_posts_by_meta' ) );
 		add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
 
 	}
 
 	/**
-	 * Output our custom filter dropdown menus on the admin screen.
+	 * Output custom filter dropdown menus on the admin screen for this post type.
 	 *
-	 * @TODO full filter docs
+	 * Each item in the 'filters' array is an associative array of information for a filter. Defining a
+	 * filter is easy. Just define an array which includes the filter title and filter type. You can
+	 * display filters for post meta fields and taxonomy terms.
+	 * 
+	 * The example below adds filters for the 'event_type' meta key and the 'location' taxonomy:
+	 * 
+	 * register_extended_post_type( 'event', array(
+	 *     'filters' => array(
+	 *         'event_type' => array(
+	 *             'title'    => 'Event Type',
+	 *             'meta_key' => 'event_type'
+	 *         ),
+	 *         'event_location' => array(
+	 *             'title' => 'Location',
+	 *             'tax'   => 'location'
+	 *         )
+	 *     )
+	 * ) );
+	 * 
+	 * That's all you need to do. WordPress handles taxonomy term filtering itself (the plugin just
+	 * outputs the dropdown), and the plugin handles the dropdown menu and filtering for post meta.
+	 * 
+	 * Each item in the 'filters' array needs either a 'tax' or 'meta_key' element containing the
+	 * corresponding taxonomy name or post meta key. The 'title' element is optional and if omitted it'll
+	 * use the all_items taxonomy label or a formatted version of the post meta key.
+	 *
+	 * @TODO Docs for the meta_exists filter
 	 *
 	 * @return null
 	 */
@@ -344,23 +365,25 @@ class ExtendedCPT {
 
 		global $wpdb;
 
+		$pto = get_post_type_object( $this->post_type );
+
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
 
 			if ( isset( $filter['tax'] ) ) {
 
 				$tax = get_taxonomy( $filter['tax'] );
 
-				# We need the dropdown walker from Extended Taxonomies
+				# For this, we need the dropdown walker from Extended Taxonomies:
 				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdownSlug' ) )
-					return trigger_error( sprintf( __( 'The %s class was not found', 'extended_taxonomies' ), $class ), E_USER_WARNING );
+					return trigger_error( sprintf( __( 'The %s class was not found', 'ext_cpts' ), $class ), E_USER_WARNING );
 				else
 					$walker = new Walker_ExtendedTaxonomyDropdownSlug;
 
-				# If we haven't specified a title, use the all_items label:
+				# If we haven't specified a title, use the all_items label from the taxonomy:
 				if ( !isset( $filter['title'] ) )
 					$filter['title'] = $tax->labels->all_items;
 
-				# Output the term dropdown menu:
+				# Output the dropdown:
 				wp_dropdown_categories( array(
 					'show_option_all' => $filter['title'] . '&nbsp;',
 					'hide_empty'      => false,
@@ -379,8 +402,8 @@ class ExtendedCPT {
 				# If we haven't specified a title, generate one from the meta key:
 				if ( !isset( $filter['title'] ) ) {
 					$filter['title'] = str_replace( array( '-', '_' ), ' ', $filter['meta_key'] );
-					$filter['title'] = ucwords( $filter['title'] );
-					$filter['title'] = sprintf( 'All %ss', $filter['title'] );
+					$filter['title'] = ucwords( $filter['title'] ) . 's';
+					$filter['title'] = sprintf( __( 'All %s', 'ext_cpts' ), $filter['title'] );
 				}
 
 				# Fetch all the values for our meta key:
@@ -396,12 +419,30 @@ class ExtendedCPT {
 
 				$selected = stripslashes( get_query_var( $filter_key ) );
 
-				# Output the post meta dropdown:
+				# Output the dropdown:
 				?>
 				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
 					<option value=""><?php echo esc_html( $filter['title'] ); ?>&nbsp;</option>
 					<?php foreach ( $meta_values as $v ) { ?>
 						<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $v ); ?></option>
+					<?php } ?>
+				</select>
+				<?php
+
+			} else if ( isset( $filter['meta_exists'] ) ) {
+
+				# If we haven't specified a title, use the all_items label from the post type:
+				if ( !isset( $filter['title'] ) )
+					$filter['title'] = $pto->labels->all_items;
+
+				$selected = stripslashes( get_query_var( $filter_key ) );
+
+				# Output the dropdown:
+				?>
+				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
+					<option value=""><?php echo esc_html( $filter['title'] ); ?>&nbsp;</option>
+					<?php foreach ( $filter['meta_exists'] as $v => $t ) { ?>
+						<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $t ); ?></option>
 					<?php } ?>
 				</select>
 				<?php
@@ -421,7 +462,7 @@ class ExtendedCPT {
 	public function add_filter_query_vars( $vars ) {
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
-			if ( isset( $filter['meta_key'] ) )
+			if ( isset( $filter['meta_key'] ) or isset( $filter['meta_exists'] ) )
 				$vars[] = $filter_key;
 		}
 
@@ -442,6 +483,12 @@ class ExtendedCPT {
 				$vars['meta_query'][] = array(
 					'key'   => $filter['meta_key'],
 					'value' => stripslashes( $vars[$filter_key] )
+				);
+			} else if ( isset( $filter['meta_exists'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
+				$vars['meta_query'][] = array(
+					'key'     => stripslashes( $vars[$filter_key] ),
+					'compare' => 'NOT IN',
+					'value'   => array( '', '0', 'false', 'null' )
 				);
 			}
 		}
@@ -655,13 +702,13 @@ class ExtendedCPT {
 		# Taxonomy term ordering courtesy of http://scribu.net/wordpress/sortable-taxonomy-columns.html
 
 		$clauses['join'] .= "
-			LEFT OUTER JOIN {$wpdb->term_relationships} as extcpts_tr ON ( {$wpdb->posts}.ID = extcpts_tr.object_id )
-			LEFT OUTER JOIN {$wpdb->term_taxonomy} as extcpts_tt ON ( extcpts_tr.term_taxonomy_id = extcpts_tt.term_taxonomy_id )
-			LEFT OUTER JOIN {$wpdb->terms} as extcpts_t ON ( extcpts_tt.term_id = extcpts_t.term_id )
+			LEFT OUTER JOIN {$wpdb->term_relationships} as ext_cpts_tr ON ( {$wpdb->posts}.ID = ext_cpts_tr.object_id )
+			LEFT OUTER JOIN {$wpdb->term_taxonomy} as ext_cpts_tt ON ( ext_cpts_tr.term_taxonomy_id = ext_cpts_tt.term_taxonomy_id )
+			LEFT OUTER JOIN {$wpdb->terms} as ext_cpts_t ON ( ext_cpts_tt.term_id = ext_cpts_t.term_id )
 		";
 		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $this->args['cols'][$q->query['orderby']]['tax'] );
-		$clauses['groupby'] = 'extcpts_tr.object_id';
-		$clauses['orderby'] = "GROUP_CONCAT( extcpts_t.name ORDER BY name ASC ) ";
+		$clauses['groupby'] = 'ext_cpts_tr.object_id';
+		$clauses['orderby'] = "GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ";
 		$clauses['orderby'] .= ( 'ASC' == strtoupper( $q->get('order') ) ) ? 'ASC' : 'DESC';
 
 		return $clauses;
@@ -686,9 +733,63 @@ class ExtendedCPT {
 	}
 
 	/**
-	 * Add our custom columns to the list of columns.
+	 * Add columns to the admin screen for this post type.
 	 *
-	 * @TODO full column docs
+	 * Each item in the 'cols' array is either a string name of an existing column, or an associative
+	 * array of information for a custom column.
+	 *
+	 * Defining a custom column is easy. Just define an array which includes the column title, column
+	 * type, and optional callback function. You can display columns for post meta, taxonomy terms,
+	 * post fields, the featured image, and custom functions.
+	 * 
+	 * The example below adds two columns; one which displays the value of the post's 'event_type' meta
+	 * key and one which lists the post's terms from the 'location' taxonomy:
+	 * 
+	 * register_extended_post_type( 'event', array(
+	 *     'cols' => array(
+	 *         'event_type' => array(
+	 *             'title'    => 'Event Type',
+	 *             'meta_key' => 'event_type'
+	 *         ),
+	 *         'event_location' => array(
+	 *             'title' => 'Location',
+	 *             'tax'   => 'location'
+	 *         )
+	 *     )
+	 * ) );
+	 * 
+	 * That's all you need to do. The columns will handle all the sorting and safely outputting the data
+	 * (escaping text, and comma-separating taxonomy terms). No more messing about with all of those
+	 * annoyingly named column filters and actions.
+	 * 
+	 * Each item in the 'cols' array should contain:
+	 * 
+ 	 * - A 'title' element containing the column title.
+ 	 * - One of the following elements which defines which type of column it is:
+   	 *     - tax - The name of a taxonomy
+   	 *     - meta_key - A post meta key
+   	 *     - field - The name of a post field (eg. post_excerpt)
+	 *     - featured_image - A featured image size (eg. thumbnail)
+	 * 
+	 * The value for the corresponding taxonomy terms, post meta or post field are safely escaped and output
+	 * into the column, and the values are used to provide the sortable functionality for the column. For
+	 * featured images, the post's featured image of that size will be displayed if there is one.
+	 * 
+	 * There are a few optional elements:
+	 * 
+ 	 * - function - The name of a callback function for the column (eg. 'my_function') which gets called
+	 * instead of the built-in function for handling that column. Note that it's not passed any parameters,
+	 * so it must use the global $post object.
+	 *
+ 	 * - default - Specifies that the admin screen should be sorted by this column by default (instead of
+	 * sorting by post date). Can be boolean true (which will be treated as 'asc'), or 'asc' or 'desc' to
+	 * control the default order.
+	 *
+	 * - width & height - These are only used for the 'featured_image' column type and allow you to set an
+	 * explicit width and/or height on the <img> tag. Handy for downsizing the image.
+	 * 
+	 * Remember, in addition to custom columns there are also columns built in to WordPress which you can
+	 * use: 'comments', 'date', and 'author'.
 	 *
 	 * @param array $cols Associative array of columns
 	 * @return array Updated array of columns
@@ -700,7 +801,7 @@ class ExtendedCPT {
 			'cb', 'title'
 		);
 
-		# Add the default columns we want to keep:
+		# Add existing columns we want to keep:
 		foreach ( $cols as $id => $title ) {
 			if ( in_array( $id, $keep ) )
 				$new_cols[$id] = $title;
@@ -748,6 +849,8 @@ class ExtendedCPT {
 			$this->col_tax( $c[$col]['tax'] );
 		else if ( isset( $c[$col]['field'] ) )
 			$this->col_field( $c[$col]['field'] );
+		else if ( isset( $c[$col]['featured_image'] ) )
+			$this->col_featured_image( $c[$col]['featured_image'], $c[$col] );
 
 	}
 
@@ -755,12 +858,11 @@ class ExtendedCPT {
 	 * Output column data for a post meta field.
 	 *
 	 * @param string $meta_key The post meta key
-	 * @param int $post_id The post ID
 	 * @return null
 	 */
-	public function col_meta( $meta_key, $post_id = 0 ) {
+	public function col_meta( $meta_key ) {
 
-		$post = get_post( $post_id );
+		global $post;
 		echo esc_html( get_post_meta( $post->ID, $meta_key, true ) );
 
 	}
@@ -769,12 +871,11 @@ class ExtendedCPT {
 	 * Output column data for a taxonomy's term names.
 	 *
 	 * @param string $taxonomy The taxonomy name
-	 * @param int $post_id The post ID
 	 * @return null
 	 */
-	public function col_tax( $taxonomy, $post_id = 0 ) {
+	public function col_tax( $taxonomy ) {
 
-		$post  = get_post( $post_id );
+		global $post;
 		$terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'names' ) );
 
 		if ( is_wp_error( $terms ) or empty( $terms ) )
@@ -788,12 +889,11 @@ class ExtendedCPT {
 	 * Output column data for a post field.
 	 *
 	 * @param string $field The post field
-	 * @param int $post_id The post ID
 	 * @return null
 	 */
-	public function col_field( $field, $post_id = 0 ) {
+	public function col_field( $field ) {
 
-		$post       = get_post( $post_id );
+		global $post;
 		$full_field = 'post_' . $field;
 
 		# This allows a field to be specified as 'post_{field}' or just '{field}':
@@ -801,6 +901,29 @@ class ExtendedCPT {
 			echo esc_html( $post->$field );
 		else if ( isset( $post->$full_field ) )
 			echo esc_html( $post->$full_field );
+
+	}
+
+	/**
+	 * Output column data for a post's featured image.
+	 *
+	 * @param string $image_size The image size
+	 * @param array $atts Optional array of 'width' and 'height' attributes for the image
+	 * @return null
+	 */
+	public function col_featured_image( $image_size, $atts = null ) {
+
+		global $post;
+
+		$width  = isset( $atts['width'] )  ? $atts['width']  . 'px' : 'auto';
+		$height = isset( $atts['height'] ) ? $atts['height'] . 'px' : 'auto';
+
+		$image_atts = array(
+			'style' => "width:{$width};height:{$height}"
+		);
+
+		if ( has_post_thumbnail( $post->ID ) )
+			echo get_the_post_thumbnail( $post->ID, $image_size, $image_atts );
 
 	}
 
