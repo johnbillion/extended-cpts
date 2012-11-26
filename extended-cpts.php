@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.9.1
+Version:      1.9.2
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -14,13 +14,14 @@ Extended CPTs provides extended functionality to custom post types in WordPress,
    - Drop with_front from rewrite rules
    - Support post thumbnails
    - Optimal menu placement
- * Insanely easy custom admin columns:
+ * Ridiculously easy custom admin columns:
    - Add columns for post fields, post meta, taxonomies, or callback functions
    - Out of the box sorting by post field, post meta, or taxonomy terms
    - Specify a default sort column (great for CPTs with custom date fields)
  * Filter controls for post meta and taxonomy terms on CPT management screens
  * Override default query variables such as posts_per_page, orderby, order and nopaging
- * Easily add CPTs to feeds
+ * Add post type archives to navigation menus
+ * Add CPTs to the main feed
 
 @TODO:
 
@@ -38,20 +39,26 @@ class ExtendedCPT {
 	protected $post_plural_low;
 	protected $args;
 	protected $defaults = array(
-		'public'              => true,
-		'publicly_queryable'  => true,
-		'exclude_from_search' => false,
-		'show_ui'             => true,
-		'show_in_menu'        => true,
-		'menu_position'       => 6,
-		'menu_icon'           => null,
-		'capability_type'     => 'page',
-		'hierarchical'        => true,
-		'supports'            => array( 'title', 'editor', 'thumbnail' ),
-		'has_archive'         => true,
-		'query_var'           => true,
-		'can_export'          => true,
-		'show_in_nav_menus'   => false
+		'public'               => true,
+		'publicly_queryable'   => true,
+		'exclude_from_search'  => false,
+		'show_ui'              => true,
+		'show_in_menu'         => true,
+		'menu_position'        => 6,
+		'menu_icon'            => null,
+		'capability_type'      => 'page',
+		'hierarchical'         => true,
+		'supports'             => array( 'title', 'editor', 'thumbnail' ),
+		'has_archive'          => true,
+		'query_var'            => true,
+		'can_export'           => true,
+		'show_in_nav_menus'    => true,
+		'archive_in_nav_menus' => true,  # Custom arg
+		'right_now'            => false, # Custom arg
+		'show_in_feed'         => false, # Custom arg
+		'cols'                 => null,  # Custom arg
+		'filters'              => null,  # Custom arg
+		'archive'              => null,  # Custom arg
 	);
 
 	public function __construct( $post_type, $args = array(), $plural = null, $slug = null ) {
@@ -124,41 +131,42 @@ class ExtendedCPT {
 		if ( isset( $args['labels'] ) )
 			$this->args['labels'] = wp_parse_args( $args['labels'], $this->defaults['labels'] );
 
-		if ( isset( $this->args['cols'] ) ) {
-			add_action( "manage_{$this->post_type}_posts_columns",         array( $this, 'columns' ) );
-			add_filter( "manage_{$this->post_type}_posts_custom_column",   array( $this, 'col' ), 10, 2 );
-			add_filter( "manage_edit-{$this->post_type}_sortable_columns", array( $this, 'sortables' ) );
-			add_action( 'load-edit.php',                                   array( $this, 'default_sort' ) );
-			add_action( 'load-edit.php',                                   array( $this, 'maybe_sort' ) );
+		if ( is_admin() ) {
+
+			if ( $this->args['cols'] ) {
+				add_action( "manage_{$this->post_type}_posts_columns",         array( $this, 'columns' ) );
+				add_filter( "manage_{$this->post_type}_posts_custom_column",   array( $this, 'col' ), 10, 2 );
+				add_filter( "manage_edit-{$this->post_type}_sortable_columns", array( $this, 'sortables' ) );
+				add_action( 'load-edit.php',                                   array( $this, 'default_sort' ) );
+				add_action( 'load-edit.php',                                   array( $this, 'maybe_sort' ) );
+			}
+
+			if ( $this->args['filters'] ) {
+				add_action( 'load-edit.php', array( $this, 'maybe_filter' ) );
+				add_filter( 'query_vars',    array( $this, 'filter_query_vars' ) );
+			}
+
+			if ( $this->args['right_now'] )
+				add_action( 'right_now_content_table_end', array( $this, 'right_now' ) );
+
+			if ( $this->args['archive_in_nav_menus'] and $this->args['show_in_nav_menus'] and $this->args['has_archive'] )
+				add_action( "nav_menu_items_{$this->post_type}", array( $this, 'nav_menu_items' ), 10, 3 );
+
+			add_filter( 'post_updated_messages',      array( $this, 'post_updated_messages' ), 1 );
+			add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_post_updated_messages' ), 1, 2 );
+
+		} else {
+
+			if ( $this->args['show_in_feed'] )
+				add_filter( 'request', array( $this, 'feed_request' ) );
+
+			if ( $this->args['archive'] )
+				add_filter( 'parse_request', array( $this, 'parse_request' ), 1 );
+
 		}
 
-		if ( isset( $this->args['filters'] ) ) {
-			add_action( 'load-edit.php', array( $this, 'maybe_filter' ) );
-			add_filter( 'query_vars',    array( $this, 'filter_query_vars' ) );
-		}
+		add_action( 'init', array( $this, 'register_post_type' ), 9 );
 
-		if ( isset( $this->args['right_now'] ) and $this->args['right_now'] )
-			add_action( 'right_now_content_table_end', array( $this, 'right_now' ) );
-
-		if ( isset( $this->args['show_in_feed'] ) and $this->args['show_in_feed'] )
-			add_filter( 'request', array( $this, 'feed_request' ) );
-
-		if ( !$this->args['publicly_queryable'] ) {
-			$actions = ( $this->args['hierarchical'] ) ? 'page_row_actions' : 'post_row_actions';
-			add_filter( $actions, array( $this, 'remove_view_action' ) );
-		}
-
-		add_action( 'init',                       array( $this, 'register_post_type' ), 9 );
-		add_filter( 'post_updated_messages',      array( $this, 'post_updated_messages' ), 1 );
-		add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_post_updated_messages' ), 1, 2 );
-		add_filter( 'parse_request',              array( $this, 'parse_request' ), 1 );
-
-	}
-
-	public function remove_view_action( $actions ) {
-		if ( get_query_var('post_type') == $this->post_type )
-			unset( $actions['view'] ); # This bug is fixed in 3.2
-		return $actions;
 	}
 
 	public function default_sort() {
@@ -174,18 +182,18 @@ class ExtendedCPT {
 	}
 
 	public function maybe_sort() {
-		if ( $this->post_type == get_current_screen()->post_type ) {
-			add_filter( 'request',       array( $this, 'sort_column_by_meta' ) );
-			add_filter( 'request',       array( $this, 'sort_column_by_field' ) );
-			add_filter( 'posts_clauses', array( $this, 'sort_column_by_tax' ), 10, 2 );
-		}
+		if ( $this->post_type != get_current_screen()->post_type )
+			return;
+		add_filter( 'request',       array( $this, 'sort_column_by_meta' ) );
+		add_filter( 'request',       array( $this, 'sort_column_by_field' ) );
+		add_filter( 'posts_clauses', array( $this, 'sort_column_by_tax' ), 10, 2 );
 	}
 
 	public function maybe_filter() {
-		if ( $this->post_type == get_current_screen()->post_type ) {
-			add_filter( 'request',               array( $this, 'filter_by_meta' ) );
-			add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
-		}
+		if ( $this->post_type != get_current_screen()->post_type )
+			return;
+		add_filter( 'request',               array( $this, 'filter_by_meta' ) );
+		add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
 	}
 
 	public function filters() {
@@ -255,11 +263,9 @@ class ExtendedCPT {
 
 	public function filter_query_vars( $vars ) {
 
-		if ( isset( $this->args['filters'] ) ) {
-			foreach ( $this->args['filters'] as $filter_key => $filter ) {
-				if ( isset( $filter['meta_key'] ) )
-					$vars[] = $filter_key;
-			}
+		foreach ( $this->args['filters'] as $filter_key => $filter ) {
+			if ( isset( $filter['meta_key'] ) )
+				$vars[] = $filter_key;
 		}
 
 		return $vars;
@@ -287,7 +293,7 @@ class ExtendedCPT {
 
 		$pto   = get_post_type_object( $this->post_type );
 		$count = wp_count_posts( $this->post_type );
-		$text  = _n( $pto->labels->singular_name, $pto->labels->name, $count->publish );
+		$text  = $this->n( $pto->labels->singular_name, $pto->labels->name, $count->publish );
 		$num   = number_format_i18n( $count->publish );
 
 		if ( current_user_can( $pto->cap->edit_posts ) ) {
@@ -421,27 +427,22 @@ class ExtendedCPT {
 
 		global $wpdb;
 
-		if ( isset( $q->query['orderby'] ) ) {
+		if ( !isset( $q->query['orderby'] ) )
+			return $clauses;
+		if ( !isset( $this->args['cols'][$q->query['orderby']]['tax'] ) )
+			return $clauses;
 
-			$o = $q->query['orderby'];
+		# Taxonomy term ordering courtesy of http://scribu.net/wordpress/sortable-taxonomy-columns.html
 
-			if ( isset( $this->args['cols'][$o]['tax'] ) ) {
-
-				# Taxonomy term ordering courtesy of http://scribu.net/wordpress/sortable-taxonomy-columns.html
-
-				$clauses['join'] .= "
-					LEFT OUTER JOIN {$wpdb->term_relationships} as extcpts_tr ON ( {$wpdb->posts}.ID = extcpts_tr.object_id )
-					LEFT OUTER JOIN {$wpdb->term_taxonomy} as extcpts_tt ON ( extcpts_tr.term_taxonomy_id = extcpts_tt.term_taxonomy_id )
-					LEFT OUTER JOIN {$wpdb->terms} as extcpts_t ON ( extcpts_tt.term_id = extcpts_t.term_id )
-				";
-				$clauses['where']   .= " AND ( taxonomy = '{$this->args['cols'][$o]['tax']}' OR taxonomy IS NULL )";
-				$clauses['groupby'] = 'extcpts_tr.object_id';
-				$clauses['orderby'] = "GROUP_CONCAT( extcpts_t.name ORDER BY name ASC ) ";
-				$clauses['orderby'] .= ( 'ASC' == strtoupper( $q->get('order') ) ) ? 'ASC' : 'DESC';
-
-			}
-
-		}
+		$clauses['join'] .= "
+			LEFT OUTER JOIN {$wpdb->term_relationships} as extcpts_tr ON ( {$wpdb->posts}.ID = extcpts_tr.object_id )
+			LEFT OUTER JOIN {$wpdb->term_taxonomy} as extcpts_tt ON ( extcpts_tr.term_taxonomy_id = extcpts_tt.term_taxonomy_id )
+			LEFT OUTER JOIN {$wpdb->terms} as extcpts_t ON ( extcpts_tt.term_id = extcpts_t.term_id )
+		";
+		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $this->args['cols'][$q->query['orderby']]['tax'] );
+		$clauses['groupby'] = 'extcpts_tr.object_id';
+		$clauses['orderby'] = "GROUP_CONCAT( extcpts_t.name ORDER BY name ASC ) ";
+		$clauses['orderby'] .= ( 'ASC' == strtoupper( $q->get('order') ) ) ? 'ASC' : 'DESC';
 
 		return $clauses;
 
@@ -479,7 +480,7 @@ class ExtendedCPT {
 				$new_cols[$id] = $col['title'];
 		}
 
-		if ( post_type_supports( $this->post_type, 'reordering' ) )
+		if ( post_type_supports( $this->post_type, 'reordering' ) and isset( $cols['verplaats'] ) )
 			$new_cols['verplaats'] = $cols['verplaats'];
 
 		return $new_cols;
@@ -526,17 +527,19 @@ class ExtendedCPT {
 
 	public function col_field( $field, $post_id = 0 ) {
 
-		$post = get_post( $post_id );
-		$field_short = str_replace( 'post_', '', $field );
+		$post       = get_post( $post_id );
+		$post_field = 'post_' . $field;
 
 		if ( isset( $post->$field ) )
 			echo esc_html( $post->$field );
-		else if ( isset( $post->$field_short ) )
-			echo esc_html( $post->$field_short );
+		else if ( isset( $post->$post_field ) )
+			echo esc_html( $post->$post_field );
 
 	}
 
 	public function feed_request( $vars ) {
+
+		# This will fuck up per-post-type feeds. @TODO fix
 
 		if ( isset( $vars['feed'] ) ) {
 			if ( !isset( $vars['post_type'] ) )
@@ -551,8 +554,6 @@ class ExtendedCPT {
 
 	public function parse_request( $p ) {
 
-		if ( is_admin() )
-			return $p;
 		if ( !isset( $p->query_vars['post_type'] ) )
 			return $p;
 		if ( $this->post_type != $p->query_vars['post_type'] )
@@ -560,12 +561,33 @@ class ExtendedCPT {
 		if ( isset( $p->query_vars['name'] ) )
 			return $p;
 
-		if ( isset( $this->args['archive'] ) and is_array( $this->args['archive'] ) ) {
-			foreach ( $this->args['archive'] as $var => $value )
-				$p->query_vars[$var] = $value;
-		}
+		foreach ( $this->args['archive'] as $var => $value )
+			$p->query_vars[$var] = $value;
 
 		return $p;
+
+	}
+
+	public function nav_menu_items( $posts, $args, $post_type ) {
+
+		global $_nav_menu_placeholder;
+
+		$_nav_menu_placeholder = ( 0 > $_nav_menu_placeholder ) ? intval( $_nav_menu_placeholder ) - 1 : -1;
+
+		array_unshift( $posts, (object) array(
+			'ID'           => 0,
+			'object_id'    => $_nav_menu_placeholder,
+			'post_content' => '',
+			'post_excerpt' => '',
+			'post_parent'  => 0,
+			'post_type'    => 'nav_menu_item',
+			'post_title'   => $post_type['args']->labels->name,
+			'label'        => $post_type['args']->labels->all_items,
+			'type'         => 'custom',
+			'url'          => get_post_type_archive_link( $this->post_type ),
+		) );
+
+		return $posts;
 
 	}
 
