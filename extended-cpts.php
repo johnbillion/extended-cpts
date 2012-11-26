@@ -2,28 +2,30 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.7.4
+Version:      1.7.7
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
 Extended CPTs started off with several features such as extended localisation, post type listings and post type listing pages. The extended localisation has since been removed, and the post type listings (aka post type archives) functionality has since been rolled into WordPress.
 
  * Better defaults for everything:
-   - Intelligent defaults for all labels
-   - Automatic support for post updated messages
+   - Intelligent defaults for all labels and post updated messages
    - Hierarchical by default, with page capability type
    - Drop with_front from rewrite rules
    - Support post thumbnails
- * Insanely easy custom, sortable admin columns:
-   - Out of the box sorting by meta key or taxonomy
+   - Optimal menu placement
+ * Insanely easy custom admin columns:
+   - Add columns for post fields, meta fields, taxonomies, or custom functions
+   - Out of the box sorting by post field, meta field, or taxonomy
    - Specify a default sort column (great for CPTs with custom date fields)
  * Custom filter dropdowns on CPT management screens
- * Override default posts_per_page value
+ * Override default posts_per_page value or set no_paging
+ * Easily add CPTs to feeds
 
 @TODO:
 
  * Look at improving the selection of fields shown in the Quick Edit boxes
- * Add the meta_key filter dropdown 
+ * Add the meta_key filter dropdown (clashes with the sortables)
 
 */
 
@@ -69,16 +71,16 @@ class ExtendedCPT {
 			'singular_name'      => $this->post_singular,
 			'menu_name'          => $this->post_plural,
 			'name_admin_bar'     => $this->post_singular,
-			'add_new'            => __( 'Add New', 'theme_admin' ),
-			'add_new_item'       => sprintf( __( 'Add New %s', 'theme_admin' ), $this->post_singular ),
-			'edit_item'          => sprintf( __( 'Edit %s', 'theme_admin' ), $this->post_singular ),
-			'new_item'           => sprintf( __( 'New %s', 'theme_admin' ), $this->post_singular ),
-			'view_item'          => sprintf( __( 'View %s', 'theme_admin' ), $this->post_singular ),
-			'search_items'       => sprintf( __( 'Search %s', 'theme_admin' ), $this->post_plural ),
-			'not_found'          => sprintf( __( 'No %s found', 'theme_admin' ), $this->post_plural_low ),
-			'not_found_in_trash' => sprintf( __( 'No %s found in trash', 'theme_admin' ), $this->post_plural_low ),
-			'parent_item_colon'  => sprintf( __( 'Parent %s', 'theme_admin' ), $this->post_singular ),
-			'all_items'          => sprintf( __( 'All %s', 'theme_admin' ), $this->post_plural )
+			'add_new'            => 'Add New',
+			'add_new_item'       => sprintf( 'Add New %s', $this->post_singular ),
+			'edit_item'          => sprintf( 'Edit %s', $this->post_singular ),
+			'new_item'           => sprintf( 'New %s', $this->post_singular ),
+			'view_item'          => sprintf( 'View %s', $this->post_singular ),
+			'search_items'       => sprintf( 'Search %s', $this->post_plural ),
+			'not_found'          => sprintf( 'No %s found', $this->post_plural_low ),
+			'not_found_in_trash' => sprintf( 'No %s found in trash', $this->post_plural_low ),
+			'parent_item_colon'  => sprintf( 'Parent %s', $this->post_singular ),
+			'all_items'          => sprintf( 'All %s', $this->post_plural )
 		);
 
 		# 'public' is a meta argument, set some defaults
@@ -132,22 +134,23 @@ class ExtendedCPT {
 			add_filter( $actions, array( $this, 'remove_view_action' ) );
 		}
 
-		add_action( 'init',                  array( $this, 'register_post_type' ), 9 );
-		add_filter( 'post_updated_messages', array( $this, 'post_updated_messages' ), 1 );
-		add_filter( 'parse_request',         array( $this, 'parse_request' ), 1 );
+		add_action( 'init',                       array( $this, 'register_post_type' ), 9 );
+		add_filter( 'post_updated_messages',      array( $this, 'post_updated_messages' ), 1 );
+		add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_post_updated_messages' ), 1, 2 );
+		add_filter( 'parse_request',              array( $this, 'parse_request' ), 1 );
 
 	}
 
 	function remove_view_action( $actions ) {
 		if ( get_query_var('post_type') == $this->post_type )
-			unset( $actions['view'] ); # This bug is actually fixed in 3.2
+			unset( $actions['view'] ); # This bug is fixed in 3.2
 		return $actions;
 	}
 
 	function default_sort() {
 		if ( isset( $this->args['cols'] ) and isset( $_GET['post_type'] ) and ( $_GET['post_type'] == $this->post_type ) and !isset( $_GET['orderby'] ) ) {
 			foreach ( $this->args['cols'] as $id => $col ) {
-				if ( isset( $col['default'] ) ) {
+				if ( is_array( $col ) and isset( $col['default'] ) ) {
 					$_GET['orderby'] = $id;
 					$_GET['order'] = ( 'desc' == strtolower( $col['default'] ) ? 'desc' : 'asc' );
 					break;
@@ -171,8 +174,6 @@ class ExtendedCPT {
 
 	function filters() {
 
-		global $wpdb, $wp_locale;
-
 		$pto = get_post_type_object( $this->post_type );
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
@@ -181,13 +182,13 @@ class ExtendedCPT {
 
 				$tax = get_taxonomy( $filter['tax'] );
 
-				if ( class_exists( 'Walker_ExtendedTaxonomyDropdown' ) )
-					$walker = new Walker_ExtendedTaxonomyDropdown;
+				if ( class_exists( 'Walker_ExtendedTaxonomyDropdownSlug' ) )
+					$walker = new Walker_ExtendedTaxonomyDropdownSlug;
 				else
 					$walker = null;
 
 				wp_dropdown_categories( array(
-					'show_option_all' => $tax->labels->all_items,
+					'show_option_all' => $tax->labels->all_items . '&nbsp;',
 					'hide_empty'      => false,
 					'hierarchical'    => true,
 					'show_count'      => false,
@@ -210,49 +211,84 @@ class ExtendedCPT {
 
 	function post_updated_messages( $messages ) {
 
-		# @see http://core.trac.wordpress.org/ticket/17609
-
 		global $post;
 
 		$messages[$this->post_type] = array(
 			0 => '',
-			1 => sprintf( __( ( $this->args['publicly_queryable'] ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ), 'theme_admin' ),
+			1 => sprintf( ( $this->args['publicly_queryable'] ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ),
 				$this->post_singular,
 				esc_url( get_permalink( $post->ID ) ),
 				$this->post_singular_low
 			),
-			2 => __( 'Custom field updated.', 'theme_admin' ),
-			3 => __( 'Custom field deleted.', 'theme_admin' ),
-			4 => sprintf( __( '%s updated.', 'theme_admin' ),
+			2 => 'Custom field updated.',
+			3 => 'Custom field deleted.',
+			4 => sprintf( '%s updated.',
 				$this->post_singular
 			),
-			5 => isset( $_GET['revision'] ) ? sprintf( __( '%1$s restored to revision from %2$s', 'theme_admin' ),
+			5 => isset( $_GET['revision'] ) ? sprintf( '%1$s restored to revision from %2$s',
 				$this->post_singular,
 				wp_post_revision_title( intval( $_GET['revision'] ), false )
 			) : false,
-			6 => sprintf( __( ( $this->args['publicly_queryable'] ? '%1$s published. <a href="%2$s">View %3$s</a>' : '%1$s published.' ), 'theme_admin' ),
+			6 => sprintf( ( $this->args['publicly_queryable'] ? '%1$s published. <a href="%2$s">View %3$s</a>' : '%1$s published.' ),
 				$this->post_singular,
 				esc_url( get_permalink( $post->ID ) ),
 				$this->post_singular_low
 			),
-			7 => sprintf( __( '%s saved.', 'theme_admin' ),
+			7 => sprintf( '%s saved.',
 				$this->post_singular
 			),
-			8 => sprintf( __( ( $this->args['publicly_queryable'] ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ), 'theme_admin' ),
+			8 => sprintf( ( $this->args['publicly_queryable'] ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ),
 				$this->post_singular,
 				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post->ID ) ) ),
 				$this->post_singular_low
 			),
-			9 => sprintf( __( ( $this->args['publicly_queryable'] ? '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview %4$s</a>' : '%1$s scheduled for: <strong>%2$s</strong>.' ), 'theme_admin' ),
+			9 => sprintf( ( $this->args['publicly_queryable'] ? '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview %4$s</a>' : '%1$s scheduled for: <strong>%2$s</strong>.' ),
 				$this->post_singular,
 				date_i18n( 'M j, Y @ G:i', strtotime( $post->post_date ) ),
 				esc_url( get_permalink( $post->ID ) ),
 				$this->post_singular_low
 			),
-			10 => sprintf( __( ( $this->args['publicly_queryable'] ? '%1$s draft updated. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s draft updated.' ), 'theme_admin' ),
+			10 => sprintf( ( $this->args['publicly_queryable'] ? '%1$s draft updated. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s draft updated.' ),
 				$this->post_singular,
 				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post->ID ) ) ),
 				$this->post_singular_low
+			)
+		);
+
+		return $messages;
+
+	}
+
+	function bulk_post_updated_messages( $messages, $counts ) {
+
+		# http://core.trac.wordpress.org/ticket/18710
+
+		$messages[$this->post_type] = array(
+			0 => '',
+			1 => sprintf( $this->n( '%2$s updated.', '%1$s %3$s updated.', $counts[1] ),
+				$counts[1],
+				$this->post_singular,
+				$this->post_plural_low
+			),
+			2 => sprintf( $this->n( '%2$s not updated, somebody is editing it.', '%1$s %3$s not updated, somebody is editing them.', $counts[2] ),
+				$counts[2],
+				$this->post_singular,
+				$this->post_plural_low
+			),
+			3 => sprintf( $this->n( '%2$s permanently deleted.', '%1$s %3$s permanently deleted.', $counts[3] ),
+				$counts[3],
+				$this->post_singular,
+				$this->post_plural_low
+			),
+			4 => sprintf( $this->n( '%2$s moved to the trash.', '%1$s %3$s moved to the trash.', $counts[4] ),
+				$counts[4],
+				$this->post_singular,
+				$this->post_plural_low
+			),
+			5 => sprintf( $this->n( '%2$s restored from the trash.', '%1$s %3$s restored from the trash.', $counts[5] ),
+				$counts[5],
+				$this->post_singular,
+				$this->post_plural_low
 			)
 		);
 
@@ -339,9 +375,53 @@ class ExtendedCPT {
 	}
 
 	function col( $col, $post_id ) {
+
 		$custom_cols = array_filter( array_keys( $this->args['cols'] ) );
-		if ( in_array( $col, $custom_cols ) )
-			call_user_func( $this->args['cols'][$col]['function'] );
+
+		if ( in_array( $col, $custom_cols ) ) {
+
+			if ( isset( $this->args['cols'][$col]['function'] ) )
+				call_user_func( $this->args['cols'][$col]['function'] );
+			else if ( isset( $this->args['cols'][$col]['meta_key'] ) )
+				$this->col_meta( $this->args['cols'][$col]['meta_key'] );
+			else if ( isset( $this->args['cols'][$col]['tax'] ) )
+				$this->col_tax( $this->args['cols'][$col]['tax'] );
+			else if ( isset( $this->args['cols'][$col]['field'] ) )
+				$this->col_field( $this->args['cols'][$col]['field'] );
+
+		}
+
+	}
+
+	function col_meta( $meta_key, $post_id = 0 ) {
+
+		$post = get_post( $post_id );
+		echo esc_html( get_post_meta( $post->ID, $meta_key, true ) );
+
+	}
+
+	function col_tax( $taxonomy, $post_id = 0 ) {
+
+		$post  = get_post( $post_id );
+		$terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'names' ) );
+
+		if ( is_wp_error( $terms ) or empty( $terms ) )
+			return;
+
+		echo implode( ', ', array_map( 'esc_html', $terms ) );
+
+	}
+
+	function col_field( $field, $post_id = 0 ) {
+
+		$post = get_post( $post_id );
+		$field_short = str_replace( 'post_', '', $field );
+
+		if ( isset( $post->$field ) )
+			echo esc_html( $post->$field );
+		else if ( isset( $post->$field_short ) )
+			echo esc_html( $post->$field_short );
+
 	}
 
 	function feed_request( $vars ) {
@@ -367,11 +447,17 @@ class ExtendedCPT {
 
 		if ( isset( $this->args['posts_per_page'] ) )
 			$p->query_vars['posts_per_page'] = $this->args['posts_per_page'];
+		if ( isset( $this->args['no_paging'] ) and $this->args['no_paging'] )
+			$p->query_vars['posts_per_page'] = -1;
 
 		return $p;
 
 	}
 
+	function n( $singular, $plural, $count ) {
+		# This is a non-localised version of _n()
+		return ( 1 == $count ) ? $singular : $plural;
+	}
 
 	function register_post_type() {
 		if ( is_wp_error( $cpt = register_post_type( $this->post_type, $this->args ) ) )
