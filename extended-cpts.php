@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.9.4
+Version:      2.0
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -34,6 +34,7 @@ Extended CPTs provides extended functionality to custom post types in WordPress,
  * Improve the selection of fields in the Quick Edit boxes
  * Allow checkbox, radio and text input admin screen filters
  * Allow overriding of post updated messages via the $args parameter
+ * Make column titles optional and generate them
 
 = License =
 
@@ -307,9 +308,9 @@ class ExtendedCPT {
 		if ( $this->post_type != get_current_screen()->post_type )
 			return;
 
-		add_filter( 'request',       array( $this, 'sort_posts_by_meta' ) );
-		add_filter( 'request',       array( $this, 'sort_posts_by_field' ) );
-		add_filter( 'posts_clauses', array( $this, 'sort_posts_by_tax' ), 10, 2 );
+		add_filter( 'request',       array( $this, 'sort_posts_by_post_meta' ) );
+		add_filter( 'request',       array( $this, 'sort_posts_by_post_field' ) );
+		add_filter( 'posts_clauses', array( $this, 'sort_posts_by_taxonomy' ), 10, 2 );
 
 	}
 
@@ -344,8 +345,8 @@ class ExtendedCPT {
 	 *             'meta_key' => 'event_type'
 	 *         ),
 	 *         'event_location' => array(
-	 *             'title' => 'Location',
-	 *             'tax'   => 'location'
+	 *             'title'    => 'Location',
+	 *             'taxonomy' => 'location'
 	 *         )
 	 *     )
 	 * ) );
@@ -353,7 +354,7 @@ class ExtendedCPT {
 	 * That's all you need to do. WordPress handles taxonomy term filtering itself (the plugin just
 	 * outputs the dropdown), and the plugin handles the dropdown menu and filtering for post meta.
 	 * 
-	 * Each item in the 'filters' array needs either a 'tax' or 'meta_key' element containing the
+	 * Each item in the 'filters' array needs either a 'taxonomy' or 'meta_key' element containing the
 	 * corresponding taxonomy name or post meta key. The 'title' element is optional and if omitted it'll
 	 * use the all_items taxonomy label or a formatted version of the post meta key.
 	 *
@@ -369,9 +370,9 @@ class ExtendedCPT {
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
 
-			if ( isset( $filter['tax'] ) ) {
+			if ( isset( $filter['taxonomy'] ) ) {
 
-				$tax = get_taxonomy( $filter['tax'] );
+				$tax = get_taxonomy( $filter['taxonomy'] );
 
 				# For this, we need the dropdown walker from Extended Taxonomies:
 				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdownSlug' ) )
@@ -390,10 +391,10 @@ class ExtendedCPT {
 					'hierarchical'    => true,
 					'show_count'      => false,
 					'orderby'         => 'name',
-					'selected'        => get_query_var( $filter['tax'] ),
+					'selected'        => get_query_var( $filter['taxonomy'] ),
 					'id'              => 'filter_' . $filter_key,
-					'name'            => $filter['tax'],
-					'taxonomy'        => $filter['tax'],
+					'name'            => $filter['taxonomy'],
+					'taxonomy'        => $filter['taxonomy'],
 					'walker'          => $walker
 				) );
 
@@ -649,7 +650,7 @@ class ExtendedCPT {
 	 * @param array $vars Request parameters
 	 * @return array Updated request parameters
 	 */
-	public function sort_posts_by_meta( $vars ) {
+	public function sort_posts_by_post_meta( $vars ) {
 
 		if ( !isset( $vars['orderby'] ) )
 			return $vars;
@@ -669,14 +670,14 @@ class ExtendedCPT {
 	 * @param array $vars Request parameters
 	 * @return array Updated request parameters
 	 */
-	public function sort_posts_by_field( $vars ) {
+	public function sort_posts_by_post_field( $vars ) {
 
 		if ( !isset( $vars['orderby'] ) )
 			return $vars;
-		if ( !isset( $this->args['cols'][$vars['orderby']]['field'] ) )
+		if ( !isset( $this->args['cols'][$vars['orderby']]['post_field'] ) )
 			return $vars;
 
-		$field = str_replace( 'post_', '', $this->args['cols'][$vars['orderby']]['field'] );
+		$field = str_replace( 'post_', '', $this->args['cols'][$vars['orderby']]['post_field'] );
 		$vars['orderby'] = $field;
 
 		return $vars;
@@ -690,13 +691,13 @@ class ExtendedCPT {
 	 * @param object $q The WP_Query object
 	 * @return array Updated request SQL clauses
 	 */
-	public function sort_posts_by_tax( $clauses, $q ) {
+	public function sort_posts_by_taxonomy( $clauses, $q ) {
 
 		global $wpdb;
 
 		if ( !isset( $q->query['orderby'] ) )
 			return $clauses;
-		if ( !isset( $this->args['cols'][$q->query['orderby']]['tax'] ) )
+		if ( !isset( $this->args['cols'][$q->query['orderby']]['taxonomy'] ) )
 			return $clauses;
 
 		# Taxonomy term ordering courtesy of http://scribu.net/wordpress/sortable-taxonomy-columns.html
@@ -706,7 +707,7 @@ class ExtendedCPT {
 			LEFT OUTER JOIN {$wpdb->term_taxonomy} as ext_cpts_tt ON ( ext_cpts_tr.term_taxonomy_id = ext_cpts_tt.term_taxonomy_id )
 			LEFT OUTER JOIN {$wpdb->terms} as ext_cpts_t ON ( ext_cpts_tt.term_id = ext_cpts_t.term_id )
 		";
-		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $this->args['cols'][$q->query['orderby']]['tax'] );
+		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $this->args['cols'][$q->query['orderby']]['taxonomy'] );
 		$clauses['groupby'] = 'ext_cpts_tr.object_id';
 		$clauses['orderby'] = "GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ";
 		$clauses['orderby'] .= ( 'ASC' == strtoupper( $q->get('order') ) ) ? 'ASC' : 'DESC';
@@ -724,7 +725,7 @@ class ExtendedCPT {
 	public function sortables( $cols ) {
 
 		foreach ( $this->args['cols'] as $id => $col ) {
-			if ( is_array( $col ) and ( isset( $col['meta_key'] ) or isset( $col['tax'] ) or isset( $col['field'] ) ) )
+			if ( is_array( $col ) and ( isset( $col['meta_key'] ) or isset( $col['taxonomy'] ) or isset( $col['post_field'] ) ) )
 				$cols[$id] = $id;
 		}
 
@@ -752,8 +753,8 @@ class ExtendedCPT {
 	 *             'meta_key' => 'event_type'
 	 *         ),
 	 *         'event_location' => array(
-	 *             'title' => 'Location',
-	 *             'tax'   => 'location'
+	 *             'title'    => 'Location',
+	 *             'taxonomy' => 'location'
 	 *         )
 	 *     )
 	 * ) );
@@ -766,9 +767,9 @@ class ExtendedCPT {
 	 * 
  	 * - A 'title' element containing the column title.
  	 * - One of the following elements which defines which type of column it is:
-   	 *     - tax - The name of a taxonomy
+   	 *     - taxonomy - The name of a taxonomy
    	 *     - meta_key - A post meta key
-   	 *     - field - The name of a post field (eg. post_excerpt)
+   	 *     - post_field - The name of a post field (eg. post_excerpt)
 	 *     - featured_image - A featured image size (eg. thumbnail)
 	 * 
 	 * The value for the corresponding taxonomy terms, post meta or post field are safely escaped and output
@@ -803,7 +804,7 @@ class ExtendedCPT {
 
 		# Add existing columns we want to keep:
 		foreach ( $cols as $id => $title ) {
-			if ( in_array( $id, $keep ) )
+			if ( in_array( $id, $keep ) and !isset( $this->args['cols'][$id] ) )
 				$new_cols[$id] = $title;
 		}
 
@@ -844,13 +845,15 @@ class ExtendedCPT {
 		if ( isset( $c[$col]['function'] ) )
 			call_user_func( $c[$col]['function'] );
 		else if ( isset( $c[$col]['meta_key'] ) )
-			$this->col_meta( $c[$col]['meta_key'] );
-		else if ( isset( $c[$col]['tax'] ) )
-			$this->col_tax( $c[$col]['tax'] );
-		else if ( isset( $c[$col]['field'] ) )
-			$this->col_field( $c[$col]['field'] );
+			$this->col_post_meta( $c[$col]['meta_key'] );
+		else if ( isset( $c[$col]['taxonomy'] ) )
+			$this->col_taxonomy( $c[$col]['taxonomy'] );
+		else if ( isset( $c[$col]['post_field'] ) )
+			$this->col_post_field( $c[$col]['post_field'] );
 		else if ( isset( $c[$col]['featured_image'] ) )
 			$this->col_featured_image( $c[$col]['featured_image'], $c[$col] );
+		else if ( isset( $c[$col]['connection'] ) )
+			$this->col_connection( $c[$col]['connection'], $c[$col] );
 
 	}
 
@@ -860,7 +863,7 @@ class ExtendedCPT {
 	 * @param string $meta_key The post meta key
 	 * @return null
 	 */
-	public function col_meta( $meta_key ) {
+	public function col_post_meta( $meta_key ) {
 
 		global $post;
 		echo esc_html( get_post_meta( $post->ID, $meta_key, true ) );
@@ -873,7 +876,7 @@ class ExtendedCPT {
 	 * @param string $taxonomy The taxonomy name
 	 * @return null
 	 */
-	public function col_tax( $taxonomy ) {
+	public function col_taxonomy( $taxonomy ) {
 
 		global $post;
 		$terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'names' ) );
@@ -891,7 +894,7 @@ class ExtendedCPT {
 	 * @param string $field The post field
 	 * @return null
 	 */
-	public function col_field( $field ) {
+	public function col_post_field( $field ) {
 
 		global $post;
 		$full_field = 'post_' . $field;
@@ -919,11 +922,48 @@ class ExtendedCPT {
 		$height = isset( $atts['height'] ) ? $atts['height'] . 'px' : 'auto';
 
 		$image_atts = array(
-			'style' => "width:{$width};height:{$height}"
+			'style' => "width:{$width};height:{$height}",
+			'title' => ''
 		);
 
 		if ( has_post_thumbnail( $post->ID ) )
 			echo get_the_post_thumbnail( $post->ID, $image_size, $image_atts );
+
+	}
+
+	/**
+	 * Output column data for a Posts 2 Posts connection.
+	 *
+	 * @param string $p2p_connection The connection ID
+	 * @param array $args Optional array of arguments for a given connection
+	 * @return null
+	 */
+	public function col_connection( $connection, $args ) {
+
+		global $post;
+		$_post = $post;
+
+		$meta = $connections = array();
+
+		if ( isset( $args['field'] ) and isset( $args['value'] ) ) {
+			$meta = array(
+				'connected_meta' => array(
+					$args['field'] => $args['value']
+				)
+			);
+		}
+
+		$connected = p2p_type( $connection )->get_connected( $post->ID, $meta );
+
+		while ( $connected->have_posts() ) {
+			$connected->the_post();
+			$connections[] = get_the_title();
+		}
+
+		#wp_reset_postdata();
+		$post = $_post;
+
+		echo implode( ', ', array_map( 'esc_html', $connections ) );
 
 	}
 
