@@ -2,11 +2,11 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.9
+Version:      1.9.1
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
-Extended CPTs started off with several features such as extended localisation, post type listings and post type listing pages. The extended localisation has since been removed, and the post type listings (aka post type archives) functionality has since been rolled into WordPress.
+Extended CPTs provides extended functionality to custom post types in WordPress, allowing you to quickly build custom post types without having to write the same code over and over.
 
  * Better defaults for everything:
    - Intelligent defaults for all labels and post updated messages
@@ -18,27 +18,26 @@ Extended CPTs started off with several features such as extended localisation, p
    - Add columns for post fields, post meta, taxonomies, or callback functions
    - Out of the box sorting by post field, post meta, or taxonomy terms
    - Specify a default sort column (great for CPTs with custom date fields)
- * Custom filter dropdowns on CPT management screens
+ * Filter controls for post meta and taxonomy terms on CPT management screens
  * Override default query variables such as posts_per_page, orderby, order and nopaging
  * Easily add CPTs to feeds
 
 @TODO:
 
- * Improve the selection of fields shown in the Quick Edit boxes
- * Inline docs
+ * Improve the selection of fields in the Quick Edit boxes
 
 */
 
 class ExtendedCPT {
 
-	private $post_type;
-	private $post_slug;
-	private $post_singular;
-	private $post_plural;
-	private $post_singular_low;
-	private $post_plural_low;
-	private $args;
-	private $defaults = array(
+	protected $post_type;
+	protected $post_slug;
+	protected $post_singular;
+	protected $post_plural;
+	protected $post_singular_low;
+	protected $post_plural_low;
+	protected $args;
+	protected $defaults = array(
 		'public'              => true,
 		'publicly_queryable'  => true,
 		'exclude_from_search' => false,
@@ -55,7 +54,7 @@ class ExtendedCPT {
 		'show_in_nav_menus'   => false
 	);
 
-	function __construct( $post_type, $args = array(), $plural = null, $slug = null ) {
+	public function __construct( $post_type, $args = array(), $plural = null, $slug = null ) {
 
 		$this->post_type = $post_type;
 
@@ -133,8 +132,10 @@ class ExtendedCPT {
 			add_action( 'load-edit.php',                                   array( $this, 'maybe_sort' ) );
 		}
 
-		if ( isset( $this->args['filters'] ) )
+		if ( isset( $this->args['filters'] ) ) {
 			add_action( 'load-edit.php', array( $this, 'maybe_filter' ) );
+			add_filter( 'query_vars',    array( $this, 'filter_query_vars' ) );
+		}
 
 		if ( isset( $this->args['right_now'] ) and $this->args['right_now'] )
 			add_action( 'right_now_content_table_end', array( $this, 'right_now' ) );
@@ -151,17 +152,16 @@ class ExtendedCPT {
 		add_filter( 'post_updated_messages',      array( $this, 'post_updated_messages' ), 1 );
 		add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_post_updated_messages' ), 1, 2 );
 		add_filter( 'parse_request',              array( $this, 'parse_request' ), 1 );
-		add_filter( 'query_vars',                 array( $this, 'filter_query_vars' ) );
 
 	}
 
-	function remove_view_action( $actions ) {
+	public function remove_view_action( $actions ) {
 		if ( get_query_var('post_type') == $this->post_type )
 			unset( $actions['view'] ); # This bug is fixed in 3.2
 		return $actions;
 	}
 
-	function default_sort() {
+	public function default_sort() {
 		if ( isset( $this->args['cols'] ) and isset( $_GET['post_type'] ) and ( $_GET['post_type'] == $this->post_type ) and !isset( $_GET['orderby'] ) ) {
 			foreach ( $this->args['cols'] as $id => $col ) {
 				if ( is_array( $col ) and isset( $col['default'] ) ) {
@@ -173,21 +173,22 @@ class ExtendedCPT {
 		}
 	}
 
-	function maybe_sort() {
+	public function maybe_sort() {
 		if ( $this->post_type == get_current_screen()->post_type ) {
 			add_filter( 'request',       array( $this, 'sort_column_by_meta' ) );
+			add_filter( 'request',       array( $this, 'sort_column_by_field' ) );
 			add_filter( 'posts_clauses', array( $this, 'sort_column_by_tax' ), 10, 2 );
 		}
 	}
 
-	function maybe_filter() {
+	public function maybe_filter() {
 		if ( $this->post_type == get_current_screen()->post_type ) {
 			add_filter( 'request',               array( $this, 'filter_by_meta' ) );
 			add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
 		}
 	}
 
-	function filters() {
+	public function filters() {
 
 		global $wpdb;
 
@@ -252,18 +253,20 @@ class ExtendedCPT {
 
 	}
 
-	function filter_query_vars( $vars ) {
+	public function filter_query_vars( $vars ) {
 
-		foreach ( $this->args['filters'] as $filter_key => $filter ) {
-			if ( isset( $filter['meta_key'] ) )
-				$vars[] = $filter_key;
+		if ( isset( $this->args['filters'] ) ) {
+			foreach ( $this->args['filters'] as $filter_key => $filter ) {
+				if ( isset( $filter['meta_key'] ) )
+					$vars[] = $filter_key;
+			}
 		}
 
 		return $vars;
 
 	}
 
-	function filter_by_meta( $vars ) {
+	public function filter_by_meta( $vars ) {
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
 
@@ -280,7 +283,7 @@ class ExtendedCPT {
 
 	}
 
-	function right_now() {
+	public function right_now() {
 
 		$pto   = get_post_type_object( $this->post_type );
 		$count = wp_count_posts( $this->post_type );
@@ -299,7 +302,7 @@ class ExtendedCPT {
 
 	}
 
-	function post_updated_messages( $messages ) {
+	public function post_updated_messages( $messages ) {
 
 		global $post;
 
@@ -349,7 +352,7 @@ class ExtendedCPT {
 
 	}
 
-	function bulk_post_updated_messages( $messages, $counts ) {
+	public function bulk_post_updated_messages( $messages, $counts ) {
 
 		# http://core.trac.wordpress.org/ticket/18710
 
@@ -386,7 +389,7 @@ class ExtendedCPT {
 
 	}
 
-	function sort_column_by_meta( $vars ) {
+	public function sort_column_by_meta( $vars ) {
 
 		if ( isset( $vars['orderby'] ) ) {
 			$o = $vars['orderby'];
@@ -400,7 +403,21 @@ class ExtendedCPT {
 
 	}
 
-	function sort_column_by_tax( $clauses, $q ) {
+	public function sort_column_by_field( $vars ) {
+
+		if ( isset( $vars['orderby'] ) ) {
+			$o = $vars['orderby'];
+			if ( isset( $this->args['cols'][$o]['field'] ) ) {
+				$field = str_replace( 'post_', '', $this->args['cols'][$o]['field'] );
+				$vars['orderby'] = $field;
+			}
+		}
+
+		return $vars;
+
+	}
+
+	public function sort_column_by_tax( $clauses, $q ) {
 
 		global $wpdb;
 
@@ -430,10 +447,10 @@ class ExtendedCPT {
 
 	}
 
-	function sortables( $cols ) {
+	public function sortables( $cols ) {
 
 		foreach ( $this->args['cols'] as $id => $col ) {
-			if ( is_array( $col ) and ( isset( $col['meta_key'] ) or isset( $col['tax'] ) ) )
+			if ( is_array( $col ) and ( isset( $col['meta_key'] ) or isset( $col['tax'] ) or isset( $col['field'] ) ) )
 				$cols[$id] = $id;
 		}
 
@@ -441,7 +458,7 @@ class ExtendedCPT {
 
 	}
 
-	function columns( $cols ) {
+	public function columns( $cols ) {
 
 		# This isn't really the best way to do this. It could override custom cols from other plugins.
 
@@ -469,7 +486,7 @@ class ExtendedCPT {
 
 	}
 
-	function col( $col, $post_id ) {
+	public function col( $col, $post_id ) {
 
 		$custom_cols = array_filter( array_keys( $this->args['cols'] ) );
 
@@ -488,14 +505,14 @@ class ExtendedCPT {
 
 	}
 
-	function col_meta( $meta_key, $post_id = 0 ) {
+	public function col_meta( $meta_key, $post_id = 0 ) {
 
 		$post = get_post( $post_id );
 		echo esc_html( get_post_meta( $post->ID, $meta_key, true ) );
 
 	}
 
-	function col_tax( $taxonomy, $post_id = 0 ) {
+	public function col_tax( $taxonomy, $post_id = 0 ) {
 
 		$post  = get_post( $post_id );
 		$terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'names' ) );
@@ -507,7 +524,7 @@ class ExtendedCPT {
 
 	}
 
-	function col_field( $field, $post_id = 0 ) {
+	public function col_field( $field, $post_id = 0 ) {
 
 		$post = get_post( $post_id );
 		$field_short = str_replace( 'post_', '', $field );
@@ -519,7 +536,7 @@ class ExtendedCPT {
 
 	}
 
-	function feed_request( $vars ) {
+	public function feed_request( $vars ) {
 
 		if ( isset( $vars['feed'] ) ) {
 			if ( !isset( $vars['post_type'] ) )
@@ -532,7 +549,7 @@ class ExtendedCPT {
 
 	}
 
-	function parse_request( $p ) {
+	public function parse_request( $p ) {
 
 		if ( is_admin() )
 			return $p;
@@ -552,14 +569,14 @@ class ExtendedCPT {
 
 	}
 
-	function n( $singular, $plural, $count ) {
+	public function n( $singular, $plural, $count ) {
 
 		# This is a non-localised version of _n()
 		return ( 1 == $count ) ? $singular : $plural;
 
 	}
 
-	function register_post_type() {
+	public function register_post_type() {
 
 		if ( is_wp_error( $cpt = register_post_type( $this->post_type, $this->args ) ) )
 			trigger_error( $cpt->get_error_message(), E_USER_ERROR );
