@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.1.3
+Version:      2.1.4
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -798,16 +798,21 @@ class ExtendedCPT {
 	 *
  	 * - default - Specifies that the admin screen should be sorted by this column by default (instead of
 	 * sorting by post date). Can be boolean true (which will be treated as 'asc'), or 'asc' or 'desc' to
-	 * control the default order.
+	 * explicitly control the default order.
 	 *
 	 * - width & height - These are only used for the 'featured_image' column type and allow you to set an
 	 * explicit width and/or height on the <img> tag. Handy for downsizing the image.
 	 * 
+	 * - date_format - This is used with the 'meta_key' column type. The value of the meta field will be
+	 * treated as a timestamp if this is present (Unix and MySQL timestamp formats are supported in the meta
+	 * value). Pass in boolean true to format the date according to the 'Date Format' setting or pass in a
+	 * valid date formatting string (eg. 'd/m/Y H:i:s').
+	 * 
 	 * - cap - A capability required in order for this column to be displayed to the current user. Defaults
 	 * to null, meaning the column is shown to all users.
 	 *
-	 * Remember, in addition to custom columns there are also columns built in to WordPress which you can
-	 * use: 'comments', 'date', and 'author'.
+	 * Remember, in addition to custom columns there are also three columns built in to WordPress which you
+	 * can use: 'comments', 'date' and 'author'.
 	 *
 	 * @TODO Docs for the 'connection' column type.
 	 *
@@ -871,7 +876,7 @@ class ExtendedCPT {
 		if ( isset( $c[$col]['function'] ) )
 			call_user_func( $c[$col]['function'] );
 		else if ( isset( $c[$col]['meta_key'] ) )
-			$this->col_post_meta( $c[$col]['meta_key'] );
+			$this->col_post_meta( $c[$col]['meta_key'], $c[$col] );
 		else if ( isset( $c[$col]['taxonomy'] ) )
 			$this->col_taxonomy( $c[$col]['taxonomy'] );
 		else if ( isset( $c[$col]['post_field'] ) )
@@ -887,12 +892,38 @@ class ExtendedCPT {
 	 * Output column data for a post meta field.
 	 *
 	 * @param string $meta_key The post meta key
+	 * @param array $atts Optional array of 'width' and 'height' attributes for the image
 	 * @return null
 	 */
-	public function col_post_meta( $meta_key ) {
+	public function col_post_meta( $meta_key, $atts = null ) {
 
 		global $post;
-		echo esc_html( get_post_meta( $post->ID, $meta_key, true ) );
+
+		$val = get_post_meta( $post->ID, $meta_key, true );
+
+		switch ( true ) {
+
+			case isset( $atts['date_format'] ):
+
+				if ( true === $atts['date_format'] )
+					$atts['date_format'] = get_option( 'date_format' );
+
+				if ( empty( $val ) )
+					_e( 'none', 'ext_cpts' );
+				else if ( is_numeric( $val ) )
+					echo date( $atts['date_format'], $val );
+				else
+					echo mysql2date( $atts['date_format'], $val );
+
+				break;
+
+			default:
+
+				echo esc_html( $val );
+
+				break;
+
+		}
 
 	}
 
