@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.2
+Version:      2.2.1
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 License:      GPL v2 or later
@@ -254,6 +254,7 @@ class ExtendedCPT {
 			# Admin columns:
 			if ( $this->args['cols'] ) {
 				add_filter( 'manage_posts_columns',                            array( $this, '_log_default_cols' ), 0 );
+				add_filter( 'manage_pages_columns',                            array( $this, '_log_default_cols' ), 0 );
 				add_filter( "manage_edit-{$this->post_type}_sortable_columns", array( $this, 'sortables' ) );
 				add_filter( "manage_{$this->post_type}_posts_columns",         array( $this, 'cols' ) );
 				add_action( "manage_{$this->post_type}_posts_custom_column",   array( $this, 'col' ), 10, 2 );
@@ -1040,8 +1041,8 @@ class ExtendedCPT {
 			} else if ( is_string( $col ) and isset( $cols[$id] ) ) {
 				$new_cols[$id] = $col;
 			} else if ( 'author' === $col ) {
-				# Special case for displaying author column when the post type doesn't support 'author'.
-				# Includes automatic support for Co-Authors Plus plugin .
+				# Automatic support for Co-Authors Plus plugin and special case for
+				# displaying author column when the post type doesn't support 'author'
 				if ( class_exists( 'coauthors_plus' ) )
 					$k = 'coauthors';
 				else
@@ -1063,8 +1064,6 @@ class ExtendedCPT {
 						$col['title'] = ucwords( trim( str_replace( array( '_', '-' ), ' ', $col['value'] ) ) );
 					else if ( isset( $col['connection'] ) )
 						$col['title'] = ucwords( trim( str_replace( array( '_', '-' ), ' ', $col['connection'] ) ) );
-					else if ( isset( $col['featured_image'] ) )
-						$col['title'] = __( 'Featured Image' );
 					else
 						$col['title'] = '';
 				}
@@ -1203,7 +1202,6 @@ class ExtendedCPT {
 
 		}
 
-		#echo wp_sprintf( '%l', $out );
 		echo implode( ', ', $out );
 
 	}
@@ -1252,8 +1250,7 @@ class ExtendedCPT {
 				break;
 
 			default:
-				if ( isset( $post->$field ) )
-					echo esc_html( $post->$field );
+				echo esc_html( $post->$field );
 				break;
 
 		}
