@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.7.2
+Version:      1.7.3
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -103,9 +103,11 @@ class ExtendedCPT {
 			add_action( 'load-edit.php',                                   array( $this, '_maybe_sort' ) );
 		}
 
-		if ( isset( $this->args['filters'] ) ) {
+		if ( isset( $this->args['filters'] ) )
 			add_action( 'load-edit.php', array( $this, '_maybe_filter' ) );
-		}
+
+		if ( isset( $this->args['show_in_feed'] ) and $this->args['show_in_feed'] )
+			add_filter( 'request', array( $this, '_feed_request' ) );
 
 		if ( !$this->args['publicly_queryable'] ) {
 			$actions = ( $this->args['hierarchical'] ) ? 'page_row_actions' : 'post_row_actions';
@@ -120,12 +122,12 @@ class ExtendedCPT {
 
 	function _remove_view_action( $actions ) {
 		if ( get_query_var('post_type') == $this->post_type )
-			unset( $actions['view'] ); # This bug is fixed in 3.2
+			unset( $actions['view'] ); # This bug is actually fixed in 3.2
 		return $actions;
 	}
 
 	function _default_sort() {
-		if ( isset( $this->args['cols'] ) and ( @$_GET['post_type'] == $this->post_type ) and !isset( $_GET['orderby'] ) ) {
+		if ( isset( $this->args['cols'] ) and isset( $_GET['post_type'] ) and ( $_GET['post_type'] == $this->post_type ) and !isset( $_GET['orderby'] ) ) {
 			foreach ( $this->args['cols'] as $id => $col ) {
 				if ( isset( $col['default'] ) ) {
 					$_GET['orderby'] = $id;
@@ -155,13 +157,15 @@ class ExtendedCPT {
 
 	function _post_updated_messages( $messages ) {
 
-		global $post, $post_ID;
+		# @see http://core.trac.wordpress.org/ticket/17609
+
+		global $post;
 
 		$messages[$this->post_type] = array(
 			0 => '',
 			1 => sprintf( __( ( $this->args['publicly_queryable'] ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ), 'theme_admin' ),
 				$this->post_singular,
-				esc_url( get_permalink( $post_ID ) ),
+				esc_url( get_permalink( $post->ID ) ),
 				$this->post_singular_low
 			),
 			2 => __( 'Custom field updated.', 'theme_admin' ),
@@ -175,7 +179,7 @@ class ExtendedCPT {
 			) : false,
 			6 => sprintf( __( ( $this->args['publicly_queryable'] ? '%1$s published. <a href="%2$s">View %3$s</a>' : '%1$s published.' ), 'theme_admin' ),
 				$this->post_singular,
-				esc_url( get_permalink( $post_ID ) ),
+				esc_url( get_permalink( $post->ID ) ),
 				$this->post_singular_low
 			),
 			7 => sprintf( __( '%s saved.', 'theme_admin' ),
@@ -183,18 +187,18 @@ class ExtendedCPT {
 			),
 			8 => sprintf( __( ( $this->args['publicly_queryable'] ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ), 'theme_admin' ),
 				$this->post_singular,
-				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ),
+				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post->ID ) ) ),
 				$this->post_singular_low
 			),
 			9 => sprintf( __( ( $this->args['publicly_queryable'] ? '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview %4$s</a>' : '%1$s scheduled for: <strong>%2$s</strong>.' ), 'theme_admin' ),
 				$this->post_singular,
 				date_i18n( 'M j, Y @ G:i', strtotime( $post->post_date ) ),
-				esc_url( get_permalink( $post_ID ) ),
+				esc_url( get_permalink( $post->ID ) ),
 				$this->post_singular_low
 			),
 			10 => sprintf( __( ( $this->args['publicly_queryable'] ? '%1$s draft updated. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s draft updated.' ), 'theme_admin' ),
 				$this->post_singular,
-				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ),
+				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post->ID ) ) ),
 				$this->post_singular_low
 			)
 		);
@@ -252,8 +256,8 @@ class ExtendedCPT {
 
 	function _cols( $cols ) {
 
-		# This isn't the best way to do this. It overrides custom cols from other plugins.
-		# @TODO 'Page Manager' would be well suited to have as part of ExtCPTs
+		# This isn't the best way to do this. It can potentially override custom cols from other plugins.
+		# @TODO 'Page Manager' might be well suited to have as part of ExtCPTs
 
 		$new_cols = array();
 		$keep = array(
@@ -283,6 +287,16 @@ class ExtendedCPT {
 		$custom_cols = array_filter( array_keys( $this->args['cols'] ) );
 		if ( in_array( $col, $custom_cols ) )
 			call_user_func( $this->args['cols'][$col]['function'] );
+	}
+
+	function _feed_request( $vars ) {
+		if ( isset( $vars['feed'] ) ) {
+			if ( !isset( $vars['post_type'] ) )
+				$vars['post_type'] = array( 'post', $this->post_type );
+			else if ( is_array( $vars['post_type'] ) )
+				$vars['post_type'][] = $this->post_type;
+		}
+		return $vars;
 	}
 
 	function _parse_request( $p ) {
