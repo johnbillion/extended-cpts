@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.7.8
+Version:      1.7.9
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -15,8 +15,8 @@ Extended CPTs started off with several features such as extended localisation, p
    - Support post thumbnails
    - Optimal menu placement
  * Insanely easy custom admin columns:
-   - Add columns for post fields, meta fields, taxonomies, or custom functions
-   - Out of the box sorting by post field, meta field, or taxonomy
+   - Add columns for post fields, post meta, taxonomies, or callback functions
+   - Out of the box sorting by post field, post meta, or taxonomy terms
    - Specify a default sort column (great for CPTs with custom date fields)
  * Custom filter dropdowns on CPT management screens
  * Override default posts_per_page value or set no_paging
@@ -24,8 +24,9 @@ Extended CPTs started off with several features such as extended localisation, p
 
 @TODO:
 
- * Look at improving the selection of fields shown in the Quick Edit boxes
+ * Improve the selection of fields shown in the Quick Edit boxes
  * Add the meta_key filter dropdown (clashes with the sortables)
+ * Inline docs
 
 */
 
@@ -55,14 +56,24 @@ class ExtendedCPT {
 		'show_in_nav_menus'   => false
 	);
 
-	function __construct( $post_type, $args = array(), $plural = null ) {
+	function __construct( $post_type, $args = array(), $plural = null, $slug = null ) {
 
-		$this->post_type         = $post_type;
-		$this->post_slug         = ( $plural ) ? $plural : $post_type . 's';
+		$this->post_type = $post_type;
+
+		if ( $slug )
+			$this->post_slug = $slug;
+		else if ( $plural )
+			$this->post_slug = $plural;
+		else
+			$this->post_slug = $post_type . 's';
+
+		if ( $plural )
+			$this->post_plural = $plural;
+		else
+			$this->post_plural = $this->post_slug;
+
 		$this->post_singular     = ucwords( str_replace( array( '-', '_' ), ' ', $this->post_type ) );
-		$this->post_plural       = ucwords( str_replace( array( '-', '_' ), ' ', $this->post_slug ) );
-		$this->post_type         = strtolower( $this->post_type );
-		$this->post_slug         = strtolower( $this->post_slug );
+		$this->post_plural       = ucwords( str_replace( array( '-', '_' ), ' ', $this->post_plural ) );
 		$this->post_singular_low = strtolower( $this->post_singular );
 		$this->post_plural_low   = strtolower( $this->post_plural );
 
@@ -488,12 +499,10 @@ class ExtendedCPT {
 			trigger_error( $cpt->get_error_message(), E_USER_ERROR );
 	}
 
-
 }
 
-function register_extended_post_type( $post_type, $args = array(), $plural = null ) {
-	return new ExtendedCPT( $post_type, $args, $plural );
+function register_extended_post_type( $post_type, $args = array(), $plural = null, $slug = null ) {
+	return new ExtendedCPT( $post_type, $args, $plural, $slug );
 }
-
 
 ?>
