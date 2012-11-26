@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.1.8
+Version:      2.2
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 License:      GPL v2 or later
@@ -1040,8 +1040,8 @@ class ExtendedCPT {
 			} else if ( is_string( $col ) and isset( $cols[$id] ) ) {
 				$new_cols[$id] = $col;
 			} else if ( 'author' === $col ) {
-				# Automatic support for Co-Authors Plus plugin and special case for
-				# displaying author column when the post type doesn't support 'author'
+				# Special case for displaying author column when the post type doesn't support 'author'.
+				# Includes automatic support for Co-Authors Plus plugin .
 				if ( class_exists( 'coauthors_plus' ) )
 					$k = 'coauthors';
 				else
@@ -1059,8 +1059,12 @@ class ExtendedCPT {
 						$col['title'] = ucwords( trim( str_replace( array( 'post_', '_', ), ' ', $col['post_field'] ) ) );
 					else if ( isset( $col['meta_key'] ) )
 						$col['title'] = ucwords( trim( str_replace( array( '_', '-' ), ' ', $col['meta_key'] ) ) );
+					else if ( isset( $col['connection'] ) and isset( $col['value'] ) )
+						$col['title'] = ucwords( trim( str_replace( array( '_', '-' ), ' ', $col['value'] ) ) );
 					else if ( isset( $col['connection'] ) )
 						$col['title'] = ucwords( trim( str_replace( array( '_', '-' ), ' ', $col['connection'] ) ) );
+					else if ( isset( $col['featured_image'] ) )
+						$col['title'] = __( 'Featured Image' );
 					else
 						$col['title'] = '';
 				}
@@ -1068,7 +1072,7 @@ class ExtendedCPT {
 			}
 		}
 
-		# Re-add any custom plugin columns:
+		# Re-add any custom columns:
 		$custom   = array_diff_key( $cols, $this->_cols );
 		$new_cols = array_merge( $new_cols, $custom );
 
@@ -1099,9 +1103,9 @@ class ExtendedCPT {
 		else if ( isset( $c[$col]['meta_key'] ) )
 			$this->col_post_meta( $c[$col]['meta_key'], $c[$col] );
 		else if ( isset( $c[$col]['taxonomy'] ) )
-			$this->col_taxonomy( $c[$col]['taxonomy'] );
+			$this->col_taxonomy( $c[$col]['taxonomy'], $c[$col] );
 		else if ( isset( $c[$col]['post_field'] ) )
-			$this->col_post_field( $c[$col]['post_field'] );
+			$this->col_post_field( $c[$col]['post_field'], $c[$col] );
 		else if ( isset( $c[$col]['featured_image'] ) )
 			$this->col_featured_image( $c[$col]['featured_image'], $c[$col] );
 		else if ( isset( $c[$col]['connection'] ) )
@@ -1113,10 +1117,10 @@ class ExtendedCPT {
 	 * Output column data for a post meta field.
 	 *
 	 * @param string $meta_key The post meta key
-	 * @param array $atts Optional array of arguments for this field
+	 * @param array $args Optional array of arguments for this field
 	 * @return null
 	 */
-	public function col_post_meta( $meta_key, $atts = null ) {
+	public function col_post_meta( $meta_key, $args = null ) {
 
 		global $post;
 
@@ -1124,17 +1128,17 @@ class ExtendedCPT {
 
 		switch ( true ) {
 
-			case isset( $atts['date_format'] ):
+			case isset( $args['date_format'] ):
 
-				if ( true === $atts['date_format'] )
-					$atts['date_format'] = get_option( 'date_format' );
+				if ( true === $args['date_format'] )
+					$args['date_format'] = get_option( 'date_format' );
 
 				if ( empty( $val ) )
-					_e( 'none', 'ext_cpts' );
+					_e( 'None', 'ext_cpts' );
 				else if ( is_numeric( $val ) )
-					echo date( $atts['date_format'], $val );
+					echo date( $args['date_format'], $val );
 				else
-					echo mysql2date( $atts['date_format'], $val );
+					echo mysql2date( $args['date_format'], $val );
 
 				break;
 
@@ -1152,17 +1156,55 @@ class ExtendedCPT {
 	 * Output column data for a taxonomy's term names.
 	 *
 	 * @param string $taxonomy The taxonomy name
+	 * @param array $args Optional array of arguments for this field
 	 * @return null
 	 */
-	public function col_taxonomy( $taxonomy ) {
+	public function col_taxonomy( $taxonomy, $args = null ) {
 
 		global $post;
-		$terms = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'names' ) );
+
+		$terms = wp_get_object_terms( $post->ID, $taxonomy );
+		$tax   = get_taxonomy( $taxonomy );
 
 		if ( is_wp_error( $terms ) or empty( $terms ) )
 			return;
 
-		echo implode( ', ', array_map( 'esc_html', $terms ) );
+		$out = array();
+
+		foreach ( $terms as $term ) {
+
+			if ( isset( $args['link'] ) ) {
+
+				switch ( $args['link'] ) {
+					case 'view':
+						$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_term_link( $term, $tax ), $term->name );
+						break;
+					case 'edit' :
+						if ( current_user_can( $tax->cap->edit_terms ) )
+							$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_edit_term_link( $term, $tax, $post->post_type ), $term->name );
+						else
+							$out[] = $term->name;
+						break;
+					case 'list':
+						$link = add_query_arg( array(
+							'post_type' => $post->post_type,
+							$taxonomy   => $term->slug
+						), admin_url( 'edit.php' ) );
+						$out[] = sprintf( '<a href="%1$s">%2$s</a>', $link, $term->name );
+						break;
+				}
+
+
+			} else {
+
+				$out[] = $term->name;
+
+			}
+
+		}
+
+		#echo wp_sprintf( '%l', $out );
+		echo implode( ', ', $out );
 
 	}
 
@@ -1170,9 +1212,10 @@ class ExtendedCPT {
 	 * Output column data for a post field.
 	 *
 	 * @param string $field The post field
+	 * @param array $args Optional array of arguments for this field
 	 * @return null
 	 */
-	public function col_post_field( $field ) {
+	public function col_post_field( $field, $args = null ) {
 
 		global $post;
 
@@ -1221,19 +1264,26 @@ class ExtendedCPT {
 	 * Output column data for a post's featured image.
 	 *
 	 * @param string $image_size The image size
-	 * @param array $atts Optional array of 'width' and 'height' attributes for the image
+	 * @param array $args Optional array of 'width' and 'height' attributes for the image
 	 * @return null
 	 */
-	public function col_featured_image( $image_size, $atts = null ) {
+	public function col_featured_image( $image_size, $args = null ) {
 
 		if ( !function_exists( 'has_post_thumbnail' ) )
 			return;
 
-		$width  = isset( $atts['width'] )  ? $atts['width']  . 'px' : 'auto';
-		$height = isset( $atts['height'] ) ? $atts['height'] . 'px' : 'auto';
+		if ( isset( $args['width'] ) )
+			$width = is_numeric( $args['width'] ) ? sprintf( '%dpx', $args['width']  ) : $args['width'];
+		else
+			$width = 'auto';
+
+		if ( isset( $args['height'] ) )
+			$height = is_numeric( $args['height'] ) ? sprintf( '%dpx', $args['height']  ) : $args['height'];
+		else
+			$height = 'auto';
 
 		$image_atts = array(
-			'style' => "width:{$width};height:{$height}",
+			'style' => sprintf( 'width:%1$s;height:%2$s', $width, $height ),
 			'title' => ''
 		);
 
@@ -1251,13 +1301,14 @@ class ExtendedCPT {
 	 */
 	public function col_connection( $connection, $args = null ) {
 
-		global $post;
+		global $post, $wp_query;
 
 		if ( !function_exists( 'p2p_type' ) )
 			return;
 
 		$_post = $post;
-		$meta = $connections = array();
+		$meta  = $out = array();
+		$field = 'connected_' . $connection;
 
 		if ( isset( $args['field'] ) and isset( $args['value'] ) ) {
 			$meta = array(
@@ -1265,19 +1316,50 @@ class ExtendedCPT {
 					$args['field'] => $args['value']
 				)
 			);
+			$field .= sanitize_title( '_' . $args['field'] . '_' . $args['value'] );
 		}
 
-		$connected = p2p_type( $connection )->get_connected( $post->ID, $meta );
+		if ( !isset( $_post->$field ) )
+			p2p_type( $connection )->each_connected( $wp_query, $meta, $field );
 
-		while ( $connected->have_posts() ) {
-			$connected->the_post();
-			$connections[] = get_the_title();
+		foreach ( $_post->$field as $post ) {
+
+			setup_postdata( $post );
+
+			if ( isset( $args['link'] ) ) {
+
+				switch ( $args['link'] ) {
+					case 'view':
+						$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_permalink(), get_the_title() );
+						break;
+					case 'edit':
+						if ( current_user_can( 'edit_post', $post->ID ) )
+							$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_edit_post_link(), get_the_title() );
+						else
+							$out[] = get_the_title();
+						break;
+					case 'list':
+						$link = add_query_arg( array_merge( array(
+							'post_type'       => $_post->post_type,
+							'connected_type'  => $connection,
+							'connected_items' => $post->ID
+						), $meta ), admin_url( 'edit.php' ) );
+						$out[] = sprintf( '<a href="%1$s">%2$s</a>', $link, get_the_title() );
+						break;
+				}
+
+			} else {
+
+				$out[] = get_the_title();
+
+			}
+
 		}
 
 		#wp_reset_postdata();
 		$post = $_post;
 
-		echo implode( ', ', array_map( 'esc_html', $connections ) );
+		echo implode( ', ', $out );
 
 	}
 
@@ -1465,17 +1547,17 @@ class ExtendedCPT {
 	 *
 	 * Example usage:
 	 *
-	 * $events = register_extended_post_type( 'events' );
+	 * $events   = register_extended_post_type( 'event' );
 	 * $location = $events->add_taxonomy( 'location' );
 	 *
 	 * @return Taxonomy object
 	 */
-	public function add_taxonomy( $taxonomy, $args = array(), $plural = null, $slug = null ) {
+	public function add_taxonomy( $taxonomy, $args = array(), $plural = null, $slug = null, $singular = null ) {
 
 		if ( taxonomy_exists( $taxonomy ) )
 			register_taxonomy_for_object_type( $taxonomy, $this->post_type );
 		else if ( function_exists( 'register_extended_taxonomy' ) )
-			register_extended_taxonomy( $taxonomy, $this->post_type, $args, $plural, $slug );
+			register_extended_taxonomy( $taxonomy, $this->post_type, $args, $plural, $slug, $singular );
 		else
 			register_taxonomy( $taxonomy, $this->post_type, $args );
 
