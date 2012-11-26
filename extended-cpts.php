@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.0
+Version:      2.1
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -21,6 +21,7 @@ Extended CPTs provides extended functionality to custom post types in WordPress,
 
  * Ridiculously easy custom admin columns:
    - Add columns for post meta, taxonomy terms, post fields, featured image, and callback functions
+   - Add columns depending on user capabilities
    - Out of the box sorting by post meta, taxonomy terms, and post fields
    - Specify a default sort column and sort order
  * Custom admin screen filters for post meta and taxonomy terms
@@ -355,8 +356,15 @@ class ExtendedCPT {
 	 * outputs the dropdown), and the plugin handles the dropdown menu and filtering for post meta.
 	 * 
 	 * Each item in the 'filters' array needs either a 'taxonomy' or 'meta_key' element containing the
-	 * corresponding taxonomy name or post meta key. The 'title' element is optional and if omitted it'll
-	 * use the all_items taxonomy label or a formatted version of the post meta key.
+	 * corresponding taxonomy name or post meta key.
+	 *
+	 * There are a couple of optional elements:
+	 * 
+	 * - title - The filter title. If omitted, the title will use the all_items taxonomy label or a
+	 * formatted version of the post meta key.
+	 *
+	 * - cap - A capability required in order for this filter to be displayed to the current user. Defaults
+	 * to null, meaning the filter is shown to all users.
 	 *
 	 * @TODO Docs for the meta_exists filter
 	 *
@@ -369,6 +377,9 @@ class ExtendedCPT {
 		$pto = get_post_type_object( $this->post_type );
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
+
+			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) )
+				continue;
 
 			if ( isset( $filter['taxonomy'] ) ) {
 
@@ -789,8 +800,13 @@ class ExtendedCPT {
 	 * - width & height - These are only used for the 'featured_image' column type and allow you to set an
 	 * explicit width and/or height on the <img> tag. Handy for downsizing the image.
 	 * 
+	 * - cap - A capability required in order for this column to be displayed to the current user. Defaults
+	 * to null, meaning the column is shown to all users.
+	 *
 	 * Remember, in addition to custom columns there are also columns built in to WordPress which you can
 	 * use: 'comments', 'date', and 'author'.
+	 *
+	 * @TODO Docs for the 'connection' column type.
 	 *
 	 * @param array $cols Associative array of columns
 	 * @return array Updated array of columns
@@ -810,10 +826,15 @@ class ExtendedCPT {
 
 		# Add our custom columns:
 		foreach ( $this->args['cols'] as $id => $col ) {
-			if ( is_string( $col ) and isset( $cols[$col] ) )
+			if ( is_string( $col ) and isset( $cols[$col] ) ) {
 				$new_cols[$col] = $cols[$col];
-			else if ( is_array( $col ) )
+			} else if ( is_array( $col ) ) {
+				if ( isset( $col['cap'] ) and !current_user_can( $col['cap'] ) )
+					continue;
+				if ( isset( $col['connection'] ) and !function_exists( 'p2p_type' ) )
+					continue;
 				$new_cols[$id] = $col['title'];
+			}
 		}
 
 		# Special support for the updated 'Page Manager' plugin:
@@ -897,13 +918,36 @@ class ExtendedCPT {
 	public function col_post_field( $field ) {
 
 		global $post;
-		$full_field = 'post_' . $field;
 
-		# This allows a field to be specified as 'post_{field}' or just '{field}':
-		if ( isset( $post->$field ) )
-			echo esc_html( $post->$field );
-		else if ( isset( $post->$full_field ) )
-			echo esc_html( $post->$full_field );
+		switch ( $field ) {
+
+			case 'post_date':
+			case 'post_date_gmt':
+				if ( '0000-00-00 00:00:00' == $post->$field )
+					_e( 'Unpublished', 'ext_cpts' );
+				else
+					echo mysql2date( get_option( 'date_format' ), $post->$field );
+				break;
+
+			case 'post_modified':
+			case 'post_modified_gmt':
+				echo mysql2date( get_option( 'date_format' ), $post->$field );
+				break;
+
+			case 'post_status':
+				$status = get_post_status_object( get_post_status( $post ) );
+				echo $status->label;
+				break;
+
+			case 'post_author':
+				echo get_the_author();
+				break;
+
+			default:
+				echo esc_html( $post->$field );
+				break;
+
+		}
 
 	}
 
@@ -934,11 +978,11 @@ class ExtendedCPT {
 	/**
 	 * Output column data for a Posts 2 Posts connection.
 	 *
-	 * @param string $p2p_connection The connection ID
-	 * @param array $args Optional array of arguments for a given connection
+	 * @param string $connection The ID of the connection type
+	 * @param array $args Optional array of arguments for a given connection type
 	 * @return null
 	 */
-	public function col_connection( $connection, $args ) {
+	public function col_connection( $connection, $args = null ) {
 
 		global $post;
 		$_post = $post;
