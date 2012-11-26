@@ -2,9 +2,11 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.1.4
+Version:      2.1.5
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
+
+© 2012 John Blackbourn
 
 Extended CPTs provides extended functionality to custom post types in WordPress, allowing you to quickly build custom post types without having to write the same code again and again.
 
@@ -29,13 +31,6 @@ Extended CPTs provides extended functionality to custom post types in WordPress,
  * Add post type archives to the nav menu screen
  * Add CPTs to the site's main feed
  * Add CPTs to the 'Right Now' section on the dashboard
-
-= @TODO =
-
- * Improve the selection of fields in the Quick Edit boxes
- * Allow checkbox, radio and text input admin screen filters
- * Allow overriding of post updated messages via the $args parameter
- * Make column titles optional and generate them
 
 = License =
 
@@ -84,6 +79,7 @@ class ExtendedCPT {
 		'can_export'           => true,
 		'show_in_nav_menus'    => true,
 		'archive_in_nav_menus' => true,  # Custom arg
+		'quick_edit'           => true,  # Custom arg
 		'right_now'            => false, # Custom arg
 		'show_in_feed'         => false, # Custom arg
 		'archive'              => null,  # Custom arg
@@ -130,6 +126,8 @@ class ExtendedCPT {
 	 * adding a custom link. Uses the 'all_items' label for the nav menus screen checkbox and the 'name'
 	 * label for the actual menu item. Defaults to true. Only used if show_in_nav_menus and has_archive
 	 * are both also true.
+	 *
+	 * - quick_edit - boolean - Whether to show Quick Edit links for this post type. Defaults to true.
 	 *
 	 * - right_now - boolean - Whether to show this post type on the 'Right Now' section of WordPress'
 	 * dashboard. Defaults to false.
@@ -245,6 +243,13 @@ class ExtendedCPT {
 				add_filter( 'query_vars',    array( $this, 'add_filter_query_vars' ) );
 			}
 
+			# Quick Edit:
+			if ( !$this->args['quick_edit'] ) {
+				$row_type = ( $this->args['hierarchical'] ) ? 'page' : 'post';
+				add_filter( "{$row_type}_row_actions",              array( $this, 'remove_quick_edit_action' ) );
+				add_filter( "bulk_actions-edit-{$this->post_type}", array( $this, 'remove_quick_edit_menu' ) );
+			}
+
 			# 'Right Now' dashboard widget:
 			if ( $this->args['right_now'] )
 				add_action( 'right_now_content_table_end', array( $this, 'right_now' ) );
@@ -351,15 +356,25 @@ class ExtendedCPT {
 	 *         'event_location' => array(
 	 *             'title'    => 'Location',
 	 *             'taxonomy' => 'location'
-	 *         )
+	 *         ),
+	 *         'event_is' => array(
+	 *             'title'       => 'All Events',
+	 *             'meta_exists' => array(
+	 *                 'event_featured'  => 'Featured Events',
+	 *                 'event_cancelled' => 'Cancelled Events'
+	 *             )
+	 *         ),
 	 *     )
 	 * ) );
 	 * 
 	 * That's all you need to do. WordPress handles taxonomy term filtering itself (the plugin just
 	 * outputs the dropdown), and the plugin handles the dropdown menu and filtering for post meta.
 	 * 
-	 * Each item in the 'filters' array needs either a 'taxonomy' or 'meta_key' element containing the
-	 * corresponding taxonomy name or post meta key.
+	 * Each item in the 'filters' array needs either a 'taxonomy', 'meta_key' or 'meta_exists' element
+	 * containing the corresponding taxonomy name or post meta key.
+	 *
+	 * The 'meta_exists' filter outputs a dropdown menu listing each of the meta_exists fields,
+	 * allowing users to filter the screen by posts which have the corresponding meta field.
 	 *
 	 * There are a couple of optional elements:
 	 * 
@@ -368,8 +383,6 @@ class ExtendedCPT {
 	 *
 	 * - cap - A capability required in order for this filter to be displayed to the current user. Defaults
 	 * to null, meaning the filter is shown to all users.
-	 *
-	 * @TODO Docs for the meta_exists filter
 	 *
 	 * @return null
 	 */
@@ -390,9 +403,9 @@ class ExtendedCPT {
 
 				# For this, we need the dropdown walker from Extended Taxonomies:
 				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdownSlug' ) )
-					return trigger_error( sprintf( __( 'The %s class was not found', 'ext_cpts' ), $class ), E_USER_WARNING );
+					return trigger_error( sprintf( __( 'The %s class is required in order to display taxonomy filters', 'ext_cpts' ), $class ), E_USER_WARNING );
 				else
-					$walker = new Walker_ExtendedTaxonomyDropdownSlug;
+					$walker = new $class;
 
 				# If we haven't specified a title, use the all_items label from the taxonomy:
 				if ( !isset( $filter['title'] ) )
@@ -785,6 +798,7 @@ class ExtendedCPT {
    	 *     - meta_key - A post meta key
    	 *     - post_field - The name of a post field (eg. post_excerpt)
 	 *     - featured_image - A featured image size (eg. thumbnail)
+	 *     - connection - A connection ID registered with the Posts 2 Posts plugin
 	 * 
 	 * The value for the corresponding taxonomy terms, post meta or post field are safely escaped and output
 	 * into the column, and the values are used to provide the sortable functionality for the column. For
@@ -803,18 +817,19 @@ class ExtendedCPT {
 	 * - width & height - These are only used for the 'featured_image' column type and allow you to set an
 	 * explicit width and/or height on the <img> tag. Handy for downsizing the image.
 	 * 
+	 * - field & value - These are only used for the 'connection' column type and allow you to specify a
+	 * connection meta field and value from the fields argument of the connection type.
+	 *
 	 * - date_format - This is used with the 'meta_key' column type. The value of the meta field will be
-	 * treated as a timestamp if this is present (Unix and MySQL timestamp formats are supported in the meta
-	 * value). Pass in boolean true to format the date according to the 'Date Format' setting or pass in a
-	 * valid date formatting string (eg. 'd/m/Y H:i:s').
+	 * treated as a timestamp if this is present (Unix and MySQL timestamp formats are both supported in the
+	 * meta value). Pass in boolean true to format the date according to the 'Date Format' setting or pass
+	 * in a valid date formatting string (eg. 'd/m/Y H:i:s').
 	 * 
 	 * - cap - A capability required in order for this column to be displayed to the current user. Defaults
 	 * to null, meaning the column is shown to all users.
 	 *
 	 * Remember, in addition to custom columns there are also three columns built in to WordPress which you
 	 * can use: 'comments', 'date' and 'author'.
-	 *
-	 * @TODO Docs for the 'connection' column type.
 	 *
 	 * @param array $cols Associative array of columns
 	 * @return array Updated array of columns
@@ -892,7 +907,7 @@ class ExtendedCPT {
 	 * Output column data for a post meta field.
 	 *
 	 * @param string $meta_key The post meta key
-	 * @param array $atts Optional array of 'width' and 'height' attributes for the image
+	 * @param array $atts Optional array of arguments for this field
 	 * @return null
 	 */
 	public function col_post_meta( $meta_key, $atts = null ) {
@@ -1054,8 +1069,6 @@ class ExtendedCPT {
 	/**
 	 * Add our post type to the feed.
 	 *
-	 * This will fuck up individual post-type feeds. @TODO fix
-	 *
 	 * @param array $vars Request parameters
 	 * @return array Updated request parameters
 	 */
@@ -1067,7 +1080,7 @@ class ExtendedCPT {
 
 		if ( !isset( $vars['post_type'] ) )
 			$vars['post_type'] = array( 'post', $this->post_type );
-		else if ( is_array( $vars['post_type'] ) )
+		else if ( is_array( $vars['post_type'] ) and ( count( $vars['post_type'] ) > 1 ) )
 			$vars['post_type'][] = $this->post_type;
 
 		return $vars;
@@ -1131,12 +1144,38 @@ class ExtendedCPT {
 	}
 
 	/**
+	 * Removes the Quick Edit link from the post row actions.
+	 *
+	 * @param $actions array Array of post actions
+	 * @return array Array of updated post actions
+	 */
+	public function remove_quick_edit_action( $actions ) {
+
+		unset( $actions['inline'], $actions['inline hide-if-no-js'] );
+		return $actions;
+
+	}
+
+	/**
+	 * Removes the Quick Edit link from the bulk actions menu.
+	 *
+	 * @param $actions array Array of bulk actions
+	 * @return array Array of updated bulk actions
+	 */
+	public function remove_quick_edit_menu( $actions ) {
+
+		unset( $actions['edit'] );
+		return $actions;
+
+	}
+
+	/**
 	 * Logs the default columns so we don't remove any custom columns added by other plugins.
 	 *
 	 * @param array $cols The default columns for this post type screen
 	 * @return array The default columns for this post type screen
 	 */
-	function _log_default_cols( $cols ) {
+	public function _log_default_cols( $cols ) {
 
 		return $this->_cols = $cols;
 
@@ -1169,6 +1208,31 @@ class ExtendedCPT {
 
 		if ( is_wp_error( $cpt = register_post_type( $this->post_type, $this->args ) ) )
 			trigger_error( $cpt->get_error_message(), E_USER_ERROR );
+
+	}
+
+	/**
+	 * Helper function for registering a taxonomy and adding it to this post type. Accepts the same
+	 * parameters as register_extended_taxonomy(), minus the $object_types parameter. Will fall back
+	 * to register_taxonomy() if ExtendedTaxos doesn't exist.
+	 *
+	 * Example usage:
+	 *
+	 * $events = register_extended_post_type( 'events' );
+	 * $location = $events->add_taxonomy( 'location' );
+	 *
+	 * @return Taxonomy object
+	 */
+	public function add_taxonomy( $taxonomy, $args = array(), $plural = null, $slug = null ) {
+
+		if ( taxonomy_exists( $taxonomy ) )
+			register_taxonomy_for_object_type( $taxonomy, $this->post_type );
+		else if ( function_exists( 'register_extended_taxonomy' ) )
+			register_extended_taxonomy( $taxonomy, $this->post_type, $args, $plural, $slug );
+		else
+			register_taxonomy( $taxonomy, $this->post_type, $args );
+
+		return get_taxonomy( $taxonomy );
 
 	}
 
