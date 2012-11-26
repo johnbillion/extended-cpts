@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.1
+Version:      2.1.1
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -101,6 +101,7 @@ class ExtendedCPT {
 	protected $post_singular_low;
 	protected $post_plural_low;
 	protected $args;
+	protected $_cols;
 
 	/**
 	 * Class constructor.
@@ -229,6 +230,7 @@ class ExtendedCPT {
 
 			# Admin columns:
 			if ( $this->args['cols'] ) {
+				add_action( 'manage_posts_columns',                            array( $this, '_log_default_cols' ), 0 );
 				add_action( "manage_{$this->post_type}_posts_columns",         array( $this, 'cols' ) );
 				add_filter( "manage_{$this->post_type}_posts_custom_column",   array( $this, 'col' ), 10, 2 );
 				add_filter( "manage_edit-{$this->post_type}_sortable_columns", array( $this, 'sortables' ) );
@@ -837,6 +839,10 @@ class ExtendedCPT {
 			}
 		}
 
+		# Re-add any custom plugin columns:
+		$custom   = array_diff_key( $cols, $this->_cols );
+		$new_cols = array_merge( $new_cols, $custom );
+
 		# Special support for the updated 'Page Manager' plugin:
 		if ( post_type_supports( $this->post_type, 'reordering' ) and isset( $cols['verplaats'] ) )
 			$new_cols['verplaats'] = $cols['verplaats'];
@@ -1087,6 +1093,18 @@ class ExtendedCPT {
 		) );
 
 		return $posts;
+
+	}
+
+	/**
+	 * Logs the default columns so we don't remove any custom columns added by other plugins.
+	 *
+	 * @param array $cols The default columns for this post type screen
+	 * @return array The default columns for this post type screen
+	 */
+	function _log_default_cols( $cols ) {
+
+		return $this->_cols = $cols;
 
 	}
 
