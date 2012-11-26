@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.7.9
+Version:      1.8
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -19,7 +19,7 @@ Extended CPTs started off with several features such as extended localisation, p
    - Out of the box sorting by post field, post meta, or taxonomy terms
    - Specify a default sort column (great for CPTs with custom date fields)
  * Custom filter dropdowns on CPT management screens
- * Override default posts_per_page value or set no_paging
+ * Override default query variables such as posts_per_page, orderby, order and nopaging
  * Easily add CPTs to feeds
 
 @TODO:
@@ -480,10 +480,10 @@ class ExtendedCPT {
 		if ( isset( $p->query_vars['name'] ) )
 			return $p;
 
-		if ( isset( $this->args['posts_per_page'] ) )
-			$p->query_vars['posts_per_page'] = $this->args['posts_per_page'];
-		if ( isset( $this->args['no_paging'] ) and $this->args['no_paging'] )
-			$p->query_vars['posts_per_page'] = -1;
+		if ( isset( $this->args['archive'] ) and is_array( $this->args['archive'] ) ) {
+			foreach ( $this->args['archive'] as $var => $value )
+				$p->query_vars[$var] = $value;
+		}
 
 		return $p;
 
