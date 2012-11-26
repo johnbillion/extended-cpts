@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      1.7.1
+Version:      1.7.2
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 
@@ -62,6 +62,7 @@ class ExtendedCPT {
 			'name'               => $this->post_plural,
 			'singular_name'      => $this->post_singular,
 			'menu_name'          => $this->post_plural,
+			'name_admin_bar'     => $this->post_singular,
 			'add_new'            => __( 'Add New', 'theme_admin' ),
 			'add_new_item'       => sprintf( __( 'Add New %s', 'theme_admin' ), $this->post_singular ),
 			'edit_item'          => sprintf( __( 'Edit %s', 'theme_admin' ), $this->post_singular ),
