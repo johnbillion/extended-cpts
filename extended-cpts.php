@@ -2,12 +2,12 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.2.1
+Version:      2.2.2
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 License:      GPL v2 or later
 
-Copyright © 2012 John Blackbourn
+Copyright Â© 2012 John Blackbourn
 
 Extended CPTs provides extended functionality to custom post types in WordPress, allowing you to quickly build custom post types without having to write the same code again and again.
 
@@ -38,6 +38,8 @@ Extended CPTs provides extended functionality to custom post types in WordPress,
 = @TODO =
 
  * Checkbox type for meta_exists thingy
+ * Allow checkbox, radio and text input admin screen filters
+ * Allow overriding of post updated messages via the $args parameter
 
 = License =
 
@@ -507,11 +509,13 @@ class ExtendedCPT {
 					continue;
 
 				# For this, we need the dropdown walker from Extended Taxonomies:
-				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdownSlug' ) ) {
+				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdown' ) ) {
 					trigger_error( sprintf( __( 'The %s class is required in order to display taxonomy filters', 'ext_cpts' ), $class ), E_USER_WARNING );
 					continue;
 				} else {
-					$walker = new $class;
+					$walker = new Walker_ExtendedTaxonomyDropdown( array(
+						'field' => 'slug'
+					) );
 				}
 
 				# If we haven't specified a title, use the all_items label from the taxonomy:
@@ -526,9 +530,9 @@ class ExtendedCPT {
 					'hierarchical'    => true,
 					'show_count'      => false,
 					'orderby'         => 'name',
-					'selected'        => get_query_var( $filter['taxonomy'] ),
+					'selected_cats'   => get_query_var( $tax->query_var ),
 					'id'              => 'filter_' . $filter_key,
-					'name'            => $filter['taxonomy'],
+					'name'            => $tax->query_var,
 					'taxonomy'        => $filter['taxonomy'],
 					'walker'          => $walker
 				) );
@@ -1097,6 +1101,9 @@ class ExtendedCPT {
 		if ( !in_array( $col, $custom_cols ) )
 			return;
 
+		if ( isset( $c[$col]['post_cap'] ) and !current_user_can( $c[$col]['post_cap'], get_the_ID() ) )
+			return;
+
 		if ( isset( $c[$col]['function'] ) )
 			call_user_func( $c[$col]['function'] );
 		else if ( isset( $c[$col]['meta_key'] ) )
@@ -1121,9 +1128,7 @@ class ExtendedCPT {
 	 */
 	public function col_post_meta( $meta_key, $args = null ) {
 
-		global $post;
-
-		$val = get_post_meta( $post->ID, $meta_key, true );
+		$val = get_post_meta( get_the_ID(), $meta_key, true );
 
 		switch ( true ) {
 
@@ -1162,7 +1167,7 @@ class ExtendedCPT {
 
 		global $post;
 
-		$terms = wp_get_object_terms( $post->ID, $taxonomy );
+		$terms = wp_get_object_terms( get_the_ID(), $taxonomy );
 		$tax   = get_taxonomy( $taxonomy );
 
 		if ( is_wp_error( $terms ) or empty( $terms ) )
@@ -1176,7 +1181,10 @@ class ExtendedCPT {
 
 				switch ( $args['link'] ) {
 					case 'view':
-						$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_term_link( $term, $tax ), $term->name );
+						if ( $tax->public )
+							$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_term_link( $term, $tax ), $term->name );
+						else
+							$out[] = $term->name;
 						break;
 					case 'edit' :
 						if ( current_user_can( $tax->cap->edit_terms ) )
@@ -1323,11 +1331,28 @@ class ExtendedCPT {
 
 			setup_postdata( $post );
 
+			$pto = get_post_type_object( $post->post_type );
+			$pso = get_post_status_object( $post->post_status );
+
+			if ( $pso->protected and !current_user_can( 'edit_post', $post->ID ) )
+				continue;
+			if ( 'trash' == $post->post_status )
+				continue;
+
 			if ( isset( $args['link'] ) ) {
 
 				switch ( $args['link'] ) {
 					case 'view':
-						$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_permalink(), get_the_title() );
+
+						if ( $pto->public ) {
+							if ( $pso->protected )
+								$out[] = sprintf( '<a href="%1$s">%2$s</a>', add_query_arg( 'preview', 'true', get_permalink() ), get_the_title() );
+							else
+								$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_permalink(), get_the_title() );
+						} else {
+							$out[] = get_the_title();
+						}
+
 						break;
 					case 'edit':
 						if ( current_user_can( 'edit_post', $post->ID ) )
@@ -1506,16 +1531,25 @@ class ExtendedCPT {
 	 */
 	public function register_post_type() {
 
+		if ( true === $this->args['query_var'] )
+			$query_var = $this->post_type;
+		else
+			$query_var = $this->args['query_var'];
+
 		$existing = get_post_type_object( $this->post_type );
 
-		# This allows us to call register_extended_post_type() on an existing post type to add custom functionality to it
+		if ( $query_var and count( get_taxonomies( array( 'query_var' => $query_var ) ) ) ) {
 
-		if ( empty( $existing ) ) {
+			trigger_error( sprintf( __( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'ext_cpts' ), $query_var ), E_USER_ERROR );
+
+		} else if ( empty( $existing ) ) {
 
 			if ( is_wp_error( $cpt = register_post_type( $this->post_type, $this->args ) ) )
 				trigger_error( $cpt->get_error_message(), E_USER_ERROR );
 
 		} else {
+
+			# This allows us to call register_extended_post_type() on an existing post type to add custom functionality to it
 
 			$this->extend( $existing );
 
@@ -1533,14 +1567,14 @@ class ExtendedCPT {
 
 		global $wp_post_types;
 
-		$wp_post_types[$this->post_type]->labels = (object) $this->args['labels'];
+		$wp_post_types[$pto->name]->labels = (object) $this->args['labels'];
 
 	}
 
 	/**
 	 * Helper function for registering a taxonomy and adding it to this post type. Accepts the same
 	 * parameters as register_extended_taxonomy(), minus the $object_types parameter. Will fall back
-	 * to register_taxonomy() if ExtendedTaxos doesn't exist.
+	 * to register_taxonomy() if Extended Taxonomies isn't present.
 	 *
 	 * Example usage:
 	 *
