@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.2.2
+Version:      2.2.3
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 License:      GPL v2 or later
@@ -324,7 +324,7 @@ class ExtendedCPT {
 	 */
 	public function default_sort() {
 
-		if ( $this->post_type != get_current_screen()->post_type )
+		if ( !get_current_screen() or ( $this->post_type != get_current_screen()->post_type ) )
 			return;
 
 		# If we've already ordered the screen, bail out:
@@ -349,7 +349,7 @@ class ExtendedCPT {
 	 */
 	public function maybe_sort() {
 
-		if ( $this->post_type != get_current_screen()->post_type )
+		if ( !get_current_screen() or ( $this->post_type != get_current_screen()->post_type ) )
 			return;
 
 		add_filter( 'request',       array( $this, 'sort_posts_by_post_meta' ) );
@@ -365,7 +365,7 @@ class ExtendedCPT {
 	 */
 	public function maybe_filter() {
 
-		if ( $this->post_type != get_current_screen()->post_type )
+		if ( !get_current_screen() or ( $this->post_type != get_current_screen()->post_type ) )
 			return;
 
 		add_filter( 'request',               array( $this, 'filter_posts_by_post_meta' ) );
@@ -394,8 +394,8 @@ class ExtendedCPT {
 	 *
 	 * See http://core.trac.wordpress.org/ticket/19257
 	 *
-	 * @param string $text 
-	 * @return string 
+	 * @param string $text
+	 * @return string
 	 */
 	function featured_image_text( $text ) {
 
@@ -415,7 +415,7 @@ class ExtendedCPT {
 	/**
 	 * @TODO Description
 	 *
-	 * @return string 
+	 * @return string
 	 */
 	function get_current_post_type() {
 
@@ -448,9 +448,9 @@ class ExtendedCPT {
 	 * Each item in the 'filters' array is an associative array of information for a filter. Defining a
 	 * filter is easy. Just define an array which includes the filter title and filter type. You can
 	 * display filters for post meta fields and taxonomy terms.
-	 * 
+	 *
 	 * The example below adds filters for the 'event_type' meta key and the 'location' taxonomy:
-	 * 
+	 *
 	 * register_extended_post_type( 'event', array(
 	 *     'filters' => array(
 	 *         'event_type' => array(
@@ -470,10 +470,10 @@ class ExtendedCPT {
 	 *         ),
 	 *     )
 	 * ) );
-	 * 
+	 *
 	 * That's all you need to do. WordPress handles taxonomy term filtering itself (the plugin just
 	 * outputs the dropdown), and the plugin handles the dropdown menu and filtering for post meta.
-	 * 
+	 *
 	 * Each item in the 'filters' array needs either a 'taxonomy', 'meta_key' or 'meta_exists' element
 	 * containing the corresponding taxonomy name or post meta key.
 	 *
@@ -481,7 +481,7 @@ class ExtendedCPT {
 	 * allowing users to filter the screen by posts which have the corresponding meta field.
 	 *
 	 * There are a couple of optional elements:
-	 * 
+	 *
 	 * - title - The filter title. If omitted, the title will use the all_items taxonomy label or a
 	 * formatted version of the post meta key.
 	 *
@@ -600,7 +600,7 @@ class ExtendedCPT {
 				$selected = stripslashes( get_query_var( $filter_key ) );
 
 				if ( 1 == count( $filter['meta_exists'] ) ) {
-				
+
 					# Output a checkbox:
 					foreach ( $filter['meta_exists'] as $v => $t ) {
 						?>
@@ -956,10 +956,10 @@ class ExtendedCPT {
 	 * Defining a custom column is easy. Just define an array which includes the column title, column
 	 * type, and optional callback function. You can display columns for post meta, taxonomy terms,
 	 * post fields, the featured image, and custom functions.
-	 * 
+	 *
 	 * The example below adds two columns; one which displays the value of the post's 'event_type' meta
 	 * key and one which lists the post's terms from the 'location' taxonomy:
-	 * 
+	 *
 	 * register_extended_post_type( 'event', array(
 	 *     'cols' => array(
 	 *         'event_type' => array(
@@ -972,13 +972,13 @@ class ExtendedCPT {
 	 *         )
 	 *     )
 	 * ) );
-	 * 
+	 *
 	 * That's all you need to do. The columns will handle all the sorting and safely outputting the data
 	 * (escaping text, and comma-separating taxonomy terms). No more messing about with all of those
 	 * annoyingly named column filters and actions.
-	 * 
+	 *
 	 * Each item in the 'cols' array should contain:
-	 * 
+	 *
  	 * - A 'title' element containing the column title.
  	 * - One of the following elements which defines which type of column it is:
    	 *     - taxonomy - The name of a taxonomy
@@ -986,13 +986,13 @@ class ExtendedCPT {
    	 *     - post_field - The name of a post field (eg. post_excerpt)
 	 *     - featured_image - A featured image size (eg. thumbnail)
 	 *     - connection - A connection ID registered with the Posts 2 Posts plugin
-	 * 
+	 *
 	 * The value for the corresponding taxonomy terms, post meta or post field are safely escaped and output
 	 * into the column, and the values are used to provide the sortable functionality for the column. For
 	 * featured images, the post's featured image of that size will be displayed if there is one.
-	 * 
+	 *
 	 * There are a few optional elements:
-	 * 
+	 *
  	 * - function - The name of a callback function for the column (eg. 'my_function') which gets called
 	 * instead of the built-in function for handling that column. Note that it's not passed any parameters,
 	 * so it must use the global $post object.
@@ -1003,7 +1003,7 @@ class ExtendedCPT {
 	 *
 	 * - width & height - These are only used for the 'featured_image' column type and allow you to set an
 	 * explicit width and/or height on the <img> tag. Handy for downsizing the image.
-	 * 
+	 *
 	 * - field & value - These are only used for the 'connection' column type and allow you to specify a
 	 * connection meta field and value from the fields argument of the connection type.
 	 *
@@ -1011,7 +1011,7 @@ class ExtendedCPT {
 	 * treated as a timestamp if this is present (Unix and MySQL timestamp formats are both supported in the
 	 * meta value). Pass in boolean true to format the date according to the 'Date Format' setting or pass
 	 * in a valid date formatting string (eg. 'd/m/Y H:i:s').
-	 * 
+	 *
 	 * - cap - A capability required in order for this column to be displayed to the current user. Defaults
 	 * to null, meaning the column is shown to all users.
 	 *
@@ -1470,7 +1470,7 @@ class ExtendedCPT {
 	 */
 	public function remove_quick_edit_action( $actions ) {
 
-		if ( $this->post_type != get_current_screen()->post_type )
+		if ( !get_current_screen() or ( $this->post_type != get_current_screen()->post_type ) )
 			return $actions;
 
 		unset( $actions['inline'], $actions['inline hide-if-no-js'] );
@@ -1486,7 +1486,7 @@ class ExtendedCPT {
 	 */
 	public function remove_quick_edit_menu( $actions ) {
 
-		if ( $this->post_type != get_current_screen()->post_type )
+		if ( !get_current_screen() or ( $this->post_type != get_current_screen()->post_type ) )
 			return $actions;
 
 		unset( $actions['edit'] );
@@ -1560,8 +1560,8 @@ class ExtendedCPT {
 	/**
 	 * @TODO Description
 	 *
-	 * @param type $param 
-	 * @return 
+	 * @param type $param
+	 * @return
 	 */
 	public function extend( $pto ) {
 
