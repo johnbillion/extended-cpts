@@ -1,0 +1,15 @@
+{
+	"name"       : "johnbillion/extended-cpts",
+	"description": "Description and readme to come at some point when I have the time",
+	"homepage"   : "https://github.com/johnbillion/ExtendedCPTs/",
+	"license"    : "GPL-2.0+",
+	"authors"    : [
+		{
+			"name"    : "John Blackbourn",
+			"homepage": "https://johnblackbourn.com/"
+		}
+	],
+	"autoload"   : {
+		"files" : [ "extended-cpts.php" ]
+	}
+}
