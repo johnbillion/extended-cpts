@@ -1,12 +1,5 @@
 # Extended CPTs #
 
-**Contributors:** johnbillion  
-**Tags:** developer  
-**Requires at least:** 3.5  
-**Tested up to:** 3.7  
-**Stable tag:** 2.3  
-**License:** GPL v2 or later 
-
 Extended CPTs is library which provides extended functionality to WordPress custom post types, allowing developers to quickly build custom post types without having to write the same code again and again.
 
 ## Improved defaults ##
@@ -16,7 +9,7 @@ Extended CPTs is library which provides extended functionality to WordPress cust
  * Hierarchical with page capability type
  * Support post thumbnails
  * Optimal admin menu placement
- * Drop with_front from rewrite rules
+ * Drop `with_front` from rewrite rules
 
 ## Extended admin features ##
 
@@ -28,7 +21,7 @@ Extended CPTs is library which provides extended functionality to WordPress cust
  * Custom admin screen filters for post meta and taxonomy terms
  * Add post type archives to the nav menu screen
  * Add CPTs to the 'Right Now' section on the dashboard
- * Easily override the 'Enter title here' text and 'Featured Image' title
+ * Easily override the 'Enter title here' and 'Featured Image' text
 
 ## Extended front-end features ##
 
@@ -39,7 +32,7 @@ Extended CPTs is library which provides extended functionality to WordPress cust
 
  * Allow checkbox, radio and text input admin screen filters
  * Allow overriding of post updated messages via the `$args` parameter
- * Checkbox type for `meta_exists` thingy
+ * Checkbox input type for `meta_exists` admin screen filter
 
 ## License ##
 
