@@ -4,47 +4,10 @@ Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
 Version:      2.3
 Author:       John Blackbourn
-Author URI:   http://johnblackbourn.com
+Author URI:   https://johnblackbourn.com
 License:      GPL v2 or later
 
 Copyright © 2013 John Blackbourn
-
-Extended CPTs provides extended functionality to custom post types in WordPress, allowing you to quickly build custom post types without having to write the same code again and again.
-
-= Improved defaults =
-
- * Public post type with admin UI enabled
- * Intelligent values for labels and post updated messages
- * Hierarchical with page capability type
- * Drop with_front from rewrite rules
- * Support post thumbnails
- * Optimal admin menu placement
-
-= Extended admin features =
-
- * Ridiculously easy custom admin columns:
-   - Add columns for post meta, taxonomy terms, post fields, featured image, Posts 2 Posts connections, and callback functions
-   - Add columns depending on user capabilities
-   - Out of the box sorting by post meta, taxonomy terms, and post fields
-   - Specify a default sort column and sort order
- * Custom admin screen filters for post meta and taxonomy terms
- * Add post type archives to the nav menu screen
- * Add CPTs to the 'Right Now' section on the dashboard
- * Easily set the 'Enter title here' text
- * Easily set the 'Featured Image' title
-
-= Extended front-end features =
-
- * Easily override any query variables such as posts_per_page, orderby, order and nopaging
- * Add CPTs to the site's main feed
-
-= @TODO =
-
- * Checkbox type for meta_exists thingy
- * Allow checkbox, radio and text input admin screen filters
- * Allow overriding of post updated messages via the $args parameter
-
-= License =
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
