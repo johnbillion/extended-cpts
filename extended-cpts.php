@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.3-beta1
+Version:      2.3
 Author:       John Blackbourn
 Author URI:   http://johnblackbourn.com
 License:      GPL v2 or later
@@ -470,7 +470,7 @@ class Extended_CPT_Admin {
 
 		# 'Right Now' dashboard widget:
 		if ( $this->args['right_now'] )
-			add_action( 'right_now_content_table_end', array( $this, 'right_now' ), $this->args['menu_position'] );
+			add_action( 'right_now_content_table_end', array( $this, 'right_now' ), $this->cpt->args['menu_position'] );
 
 		# Nav menus screen item:
 		if ( $this->args['archive_in_nav_menus'] and $this->cpt->args['show_in_nav_menus'] and $this->cpt->args['has_archive'] )
@@ -862,7 +862,7 @@ class Extended_CPT_Admin {
 				);
 			} else if ( isset( $filter['meta_exists'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
 				$args = array(
-					'key' => stripslashes( $vars[$filter_key] ),
+					'key'     => stripslashes( $vars[$filter_key] ),
 				);
 				if ( isset( $filter['meta_value'] ) ) {
 					$args['value'] = $filter['meta_value'];
