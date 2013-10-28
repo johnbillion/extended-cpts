@@ -1,32 +1,92 @@
 # Extended CPTs #
 
-Extended CPTs is library which provides extended functionality to WordPress custom post types, allowing developers to quickly build custom post types without having to write the same code again and again.
+Extended CPTs is library which provides extended functionality to WordPress custom post types, allowing developers to quickly build post types without having to write the same code again and again.
 
 ## Improved defaults ##
 
+ * Automatically generated labels and post updated messages
  * Public post type with admin UI enabled
- * Intelligent values for labels and post updated messages
- * Hierarchical with page capability type
+ * Hierarchical with `page` capability type
  * Support post thumbnails
  * Optimal admin menu placement
- * Drop `with_front` from rewrite rules
+ * Remove `with_front` from rewrite rules
 
 ## Extended admin features ##
 
  * Ridiculously easy custom columns on the post type listing screen:
-   - Add columns for post meta, taxonomy terms, post fields, featured image, Posts 2 Posts connections, and callback functions
-   - Add user capability restrictions to columns
-   - Out of the box sorting by post meta, taxonomy terms, and post fields
-   - Specify a default sort column and sort order
- * Custom admin screen filters for post meta and taxonomy terms
- * Add post type archives to the nav menu screen
- * Add CPTs to the 'Right Now' section on the dashboard
- * Easily override the 'Enter title here' and 'Featured Image' text
+    * Add columns for post meta, taxonomy terms, post fields, featured images, Posts 2 Posts connections, and callbacks
+    * Out of the box column sorting for post meta, taxonomy terms (yes, really), and post fields
+    * Add user capability restrictions to columns
+    * Specify a default sort column and default sort order
+ * Custom admin screen filters for post meta fields and taxonomy terms
+ * Override the 'Featured Image' and 'Enter title here' text
+ * Add the post type archive to the nav menus screen
+ * Add the post type to the 'Right Now' section on the dashboard
 
 ## Extended front-end features ##
 
- * Easily override any query variables such as `posts_per_page`, `orderby`, `order` and `nopaging`
- * Add CPTs to the site's main feed
+ * Override public or private query variables such as `posts_per_page`, `orderby`, `order` and `nopaging`
+ * Add post types to the site's main RSS feed
+
+## Usage ##
+
+Need a simple post type with no frills? You can register a post type with a single parameter:
+
+```php
+register_extended_post_type( 'article' );
+```
+
+Try it. All the labels and post updated messages will be automatically generated, and you'll have a hierarchical public post type with an admin UI. Or for a bit more functionality:
+
+```php
+register_extended_post_type( 'story', array(
+
+	# Add the post type to the site's main RSS feed:
+	'show_in_feed' => true,
+
+	# Show all posts on the post type archive:
+	'archive' => array(
+		'no_paging' => true
+	),
+
+	# Add some custom columns to the admin screen:
+	'cols' => array(
+		'featured_image' => array(
+			'title'          => 'Illustration',
+			'featured_image' => 'thumbnail'
+		),
+		'published' => array(
+			'title'       => 'Published',
+			'meta_key'    => 'published_date',
+			'date_format' => 'd/m/Y'
+		),
+		'genre' => array(
+			'title'    => 'Genre',
+			'taxonomy' => 'genre'
+		)
+	),
+
+	# Add a dropdown filter to the admin screen:
+	'filters' => array(
+		'genre' => array(
+			'title'    => 'Genre',
+			'taxonomy' => 'genre'
+		)
+	)
+
+), array(
+
+	# Specify the base label names:
+	'singular' => 'Story',
+	'plural'   => 'Stories',
+	'slug'     => 'stories'
+
+) );
+```
+
+Bam, we have a 'Stories' post type, with correctly generated labels and post updated messages, two custom columns in the admin area (the taxonomy one is sortable), and a parameter that overrides a private query var on the post type archive.
+
+There's quite a bit more you can do. See the wiki for more examples.
 
 ## @TODO ##
 
