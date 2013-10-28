@@ -14,19 +14,19 @@ Extended CPTs is library which provides extended functionality to WordPress cust
 ## Extended admin features ##
 
  * Ridiculously easy custom columns on the post type listing screen:
-    * Add columns for post meta, taxonomy terms, post fields, featured images, Posts 2 Posts connections, and callbacks
+    * Add columns for post meta, taxonomy terms, post fields, featured images, callback functions, and [Posts 2 Posts](http://wordpress.org/plugins/posts-to-posts/) connections
     * Out of the box column sorting for post meta, taxonomy terms (yes, really), and post fields
     * Add user capability restrictions to columns
     * Specify a default sort column and default sort order
  * Custom admin screen filters for post meta fields and taxonomy terms
  * Override the 'Featured Image' and 'Enter title here' text
- * Add the post type archive to the nav menus screen
  * Add the post type to the 'Right Now' section on the dashboard
+ * Add the post type archive to the nav menus screen
 
 ## Extended front-end features ##
 
  * Override public or private query variables such as `posts_per_page`, `orderby`, `order` and `nopaging`
- * Add post types to the site's main RSS feed
+ * Add the post type to the site's main RSS feed
 
 ## Usage ##
 
@@ -76,7 +76,7 @@ register_extended_post_type( 'story', array(
 
 ), array(
 
-	# Specify the base label names:
+	# Override the base names used for labels:
 	'singular' => 'Story',
 	'plural'   => 'Stories',
 	'slug'     => 'stories'
@@ -84,17 +84,17 @@ register_extended_post_type( 'story', array(
 ) );
 ```
 
-Bam, we have a 'Stories' post type, with correctly generated labels and post updated messages, three custom columns in the admin area (two of which are sortable), and a parameter that overrides a private query var on the post type archive.
+Bam, we have a 'Stories' post type, with correctly generated labels and post updated messages, three custom columns in the admin area (two of which are sortable), posts in the main RSS feed, and a parameter that overrides a private query var on the post type archive.
 
 There's quite a bit more you can do. See the wiki for more examples.
 
-## @TODO ##
+## Todo ##
 
  * Allow checkbox, radio and text input admin screen filters
  * Allow overriding of post updated messages via the `$args` parameter
  * Checkbox input type for `meta_exists` admin screen filter
 
-## License ##
+## License: GPLv2 ##
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
