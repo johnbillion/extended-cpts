@@ -84,7 +84,7 @@ register_extended_post_type( 'story', array(
 ) );
 ```
 
-Bam, we have a 'Stories' post type, with correctly generated labels and post updated messages, two custom columns in the admin area (the taxonomy one is sortable), and a parameter that overrides a private query var on the post type archive.
+Bam, we have a 'Stories' post type, with correctly generated labels and post updated messages, three custom columns in the admin area (two of which are sortable), and a parameter that overrides a private query var on the post type archive.
 
 There's quite a bit more you can do. See the wiki for more examples.
 
