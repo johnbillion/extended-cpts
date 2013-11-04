@@ -959,28 +959,28 @@ class Extended_CPT_Admin {
 	public function bulk_post_updated_messages( array $messages, array $counts ) {
 
 		$messages[$this->cpt->post_type] = array(
-			'updated' => sprintf( self::n( '%2$s updated.', '%1$s %3$s updated.', $counts[1] ),
-				$counts[1],
+			'updated' => sprintf( self::n( '%2$s updated.', '%1$s %3$s updated.', $counts['updated'] ),
+				number_format_i18n( $counts['updated'] ),
 				$this->cpt->post_singular,
 				$this->cpt->post_plural_low
 			),
-			'locked' => sprintf( self::n( '%2$s not updated, somebody is editing it.', '%1$s %3$s not updated, somebody is editing them.', $counts[2] ),
-				$counts[2],
+			'locked' => sprintf( self::n( '%2$s not updated, somebody is editing it.', '%1$s %3$s not updated, somebody is editing them.', $counts['locked'] ),
+				number_format_i18n( $counts['locked'] ),
 				$this->cpt->post_singular,
 				$this->cpt->post_plural_low
 			),
-			'deleted' => sprintf( self::n( '%2$s permanently deleted.', '%1$s %3$s permanently deleted.', $counts[3] ),
-				$counts[3],
+			'deleted' => sprintf( self::n( '%2$s permanently deleted.', '%1$s %3$s permanently deleted.', $counts['deleted'] ),
+				number_format_i18n( $counts['deleted'] ),
 				$this->cpt->post_singular,
 				$this->cpt->post_plural_low
 			),
-			'trashed' => sprintf( self::n( '%2$s moved to the trash.', '%1$s %3$s moved to the trash.', $counts[4] ),
-				$counts[4],
+			'trashed' => sprintf( self::n( '%2$s moved to the trash.', '%1$s %3$s moved to the trash.', $counts['trashed'] ),
+				number_format_i18n( $counts['trashed'] ),
 				$this->cpt->post_singular,
 				$this->cpt->post_plural_low
 			),
-			'untrashed' => sprintf( self::n( '%2$s restored from the trash.', '%1$s %3$s restored from the trash.', $counts[5] ),
-				$counts[5],
+			'untrashed' => sprintf( self::n( '%2$s restored from the trash.', '%1$s %3$s restored from the trash.', $counts['untrashed'] ),
+				number_format_i18n( $counts['untrashed'] ),
 				$this->cpt->post_singular,
 				$this->cpt->post_plural_low
 			),
