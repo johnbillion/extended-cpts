@@ -15,7 +15,7 @@ Extended CPTs is library which provides extended functionality to WordPress cust
 
  * Ridiculously easy custom columns on the post type listing screen:
     * Add columns for post meta, taxonomy terms, post fields, featured images, callback functions, and [Posts 2 Posts](http://wordpress.org/plugins/posts-to-posts/) connections
-    * Out of the box column sorting for post meta, taxonomy terms (yes, really), and post fields
+    * Out of the box column sorting for post meta, taxonomy terms, and post fields
     * Add user capability restrictions to columns
     * Specify a default sort column and default sort order
  * Custom admin screen filters for post meta fields and taxonomy terms
