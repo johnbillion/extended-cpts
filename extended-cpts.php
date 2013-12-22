@@ -431,9 +431,11 @@ class Extended_CPT_Admin {
 			add_filter( "bulk_actions-edit-{$this->cpt->post_type}", array( $this, 'remove_quick_edit_menu' ) );
 		}
 
-		# 'Right Now' dashboard widget:
-		if ( $this->args['right_now'] )
+		# 'Right Now' / 'At a Glance' dashboard panels:
+		if ( $this->args['right_now'] ) {
 			add_action( 'right_now_content_table_end', array( $this, 'right_now' ), $this->cpt->args['menu_position'] );
+			add_filter( 'dashboard_glance_items',      array( $this, 'glance_items' ), $this->cpt->args['menu_position'] );
+		}
 
 		# Nav menus screen item:
 		if ( $this->args['archive_in_nav_menus'] and $this->cpt->args['show_in_nav_menus'] and $this->cpt->args['has_archive'] )
@@ -845,29 +847,59 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * Add our post type to the 'Right Now' widget on the WordPress dashboard.
+	 * Add our post type to the 'Right Now' widget on the WordPress (<3.8) dashboard.
 	 *
 	 * @return null
 	 */
 	public function right_now() {
 
+		$pto = get_post_type_object( $this->cpt->post_type );
+
+		if ( !current_user_can( $pto->cap->edit_posts ) )
+			return;
+
 		# Get the labels and format the counts:
-		$pto   = get_post_type_object( $this->cpt->post_type );
 		$count = wp_count_posts( $this->cpt->post_type );
 		$text  = self::n( $pto->labels->singular_name, $pto->labels->name, $count->publish );
 		$num   = number_format_i18n( $count->publish );
 
-		# Add edit links if the user has permissions:
-		if ( current_user_can( $pto->cap->edit_posts ) ) {
-			$num  = '<a href="edit.php?post_type=' . $this->cpt->post_type . '">' . $num . '</a>';
-			$text = '<a href="edit.php?post_type=' . $this->cpt->post_type . '">' . $text . '</a>';
-		}
+		# Add edit links:
+		$num  = '<a href="edit.php?post_type=' . $this->cpt->post_type . '">' . $num . '</a>';
+		$text = '<a href="edit.php?post_type=' . $this->cpt->post_type . '">' . $text . '</a>';
 
 		# Output it:
 		echo '<tr>';
 		echo '<td class="first b b-' . $this->cpt->post_type . '">' . $num . '</td>';
 		echo '<td class="t ' . $this->cpt->post_type . '">' . $text . '</td>';
 		echo '</tr>';
+
+	}
+
+	/**
+	 * Add our post type to the 'At a Glance' widget on the WordPress 3.8+ dashboard.
+	 *
+	 * @param array $items Array of items to display on the widget
+	 * @return array Updated array of items
+	 */
+	public function glance_items( array $items ) {
+
+		$pto = get_post_type_object( $this->cpt->post_type );
+
+		if ( !current_user_can( $pto->cap->edit_posts ) )
+			return $items;
+
+		# Get the labels and format the counts:
+		$count = wp_count_posts( $this->cpt->post_type );
+		$text  = self::n( $pto->labels->singular_name, $pto->labels->name, $count->publish );
+		$num   = number_format_i18n( $count->publish );
+
+		# This is absolutely not localisable. WordPress 3.8 didn't add a new post type label.
+		$text = '<span class="page-count"><a href="edit.php?post_type=' . $this->cpt->post_type . '">' . $num . ' ' . $text . '</a></span>';
+
+		# Go!
+		$items[] = $text;
+
+		return $items;
 
 	}
 
