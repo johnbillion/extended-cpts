@@ -1237,20 +1237,8 @@ class Extended_CPT_Admin {
 					continue;
 				if ( isset( $col['connection'] ) and !function_exists( 'p2p_type' ) )
 					continue;
-				if ( !isset( $col['title'] ) ) {
-					if ( isset( $col['taxonomy'] ) )
-						$col['title'] = get_taxonomy( $col['taxonomy'] )->labels->name;
-					else if ( isset( $col['post_field'] ) )
-						$col['title'] = ucwords( trim( str_replace( array( 'post_', '_' ), ' ', $col['post_field'] ) ) );
-					else if ( isset( $col['meta_key'] ) )
-						$col['title'] = ucwords( trim( str_replace( array( '_', '-' ), ' ', $col['meta_key'] ) ) );
-					else if ( isset( $col['connection'] ) and isset( $col['value'] ) )
-						$col['title'] = ucwords( trim( str_replace( array( '_', '-' ), ' ', $col['value'] ) ) );
-					else if ( isset( $col['connection'] ) )
-						$col['title'] = ucwords( trim( str_replace( array( '_', '-' ), ' ', $col['connection'] ) ) );
-					else
-						$col['title'] = '';
-				}
+				if ( !isset( $col['title'] ) )
+					$col['title'] = self::get_item_title( $col );
 				$new_cols[$id] = $col['title'];
 			}
 		}
@@ -1658,6 +1646,31 @@ class Extended_CPT_Admin {
 	public static function n( $single, $plural, $number ) {
 
 		return ( 1 == $number ) ? $single : $plural;
+
+	}
+
+	/**
+	 * Get a sensible title for the current item (usually the arguments array for a column)
+	 * 
+	 * @param  array  $item An array of arguments
+	 * @return string       The item title
+	 */
+	protected static function get_item_title( array $item ) {
+
+		if ( isset( $item['taxonomy'] ) )
+			$title = get_taxonomy( $item['taxonomy'] )->labels->name;
+		else if ( isset( $item['post_field'] ) )
+			$title = ucwords( trim( str_replace( array( 'post_', '_' ), ' ', $item['post_field'] ) ) );
+		else if ( isset( $item['meta_key'] ) )
+			$title = ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['meta_key'] ) ) );
+		else if ( isset( $item['connection'] ) and isset( $item['value'] ) )
+			$title = ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['value'] ) ) );
+		else if ( isset( $item['connection'] ) )
+			$title = ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['connection'] ) ) );
+		else
+			$title = '';
+
+		return $title;
 
 	}
 
