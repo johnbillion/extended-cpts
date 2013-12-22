@@ -359,6 +359,7 @@ class Extended_CPT_Admin {
 	);
 	public $cpt;
 	public $args;
+	protected static $current_post_type;
 
 	/**
 	 * Class constructor.
@@ -454,7 +455,7 @@ class Extended_CPT_Admin {
 	 */
 	public function admin_head() {
 
-		if ( $this->cpt->post_type != get_current_screen()->post_type )
+		if ( $this->cpt->post_type != self::get_current_post_type() )
 			return;
 
 		?>
@@ -476,7 +477,7 @@ class Extended_CPT_Admin {
 	 */
 	public function default_sort() {
 
-		if ( !get_current_screen() or ( $this->cpt->post_type != get_current_screen()->post_type ) )
+		if ( $this->cpt->post_type != self::get_current_post_type() )
 			return;
 
 		# If we've already ordered the screen, bail out:
@@ -501,7 +502,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_sort() {
 
-		if ( !get_current_screen() or ( $this->cpt->post_type != get_current_screen()->post_type ) )
+		if ( $this->cpt->post_type != self::get_current_post_type() )
 			return;
 
 		add_filter( 'request',       array( $this, 'sort_posts_by_post_meta' ) );
@@ -517,7 +518,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_filter() {
 
-		if ( !get_current_screen() or ( $this->cpt->post_type != get_current_screen()->post_type ) )
+		if ( $this->cpt->post_type != self::get_current_post_type() )
 			return;
 
 		add_filter( 'request',               array( $this, 'filter_posts_by_post_meta' ) );
@@ -554,7 +555,7 @@ class Extended_CPT_Admin {
 		if ( false === stripos( $text, 'featured image' ) )
 			return $text;
 
-		if ( $this->cpt->post_type != $this->get_current_post_type() )
+		if ( $this->cpt->post_type != self::get_current_post_type() )
 			return $text;
 
 		$text = str_replace( 'featured image', strtolower( $this->args['featured_image'] ), $text );
@@ -565,14 +566,14 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * @TODO Description
+	 * Returns the name of the post type for the current request.
 	 *
-	 * @return string
+	 * @return string The post type name
 	 */
-	private function get_current_post_type() {
+	protected static function get_current_post_type() {
 
-		if ( isset( $this->current_post_type ) )
-			return $this->current_post_type;
+		if ( isset( self::$current_post_type ) )
+			return self::$current_post_type;
 
 		if ( function_exists( 'get_current_screen' ) and is_object( get_current_screen() ) )
 			$post_type = get_current_screen()->post_type;
@@ -590,7 +591,7 @@ class Extended_CPT_Admin {
 				$post_type = get_post_type( get_post( $_REQUEST['attachment_id'] )->post_parent );
 		}
 
-		return $this->current_post_type = $post_type;
+		return self::$current_post_type = $post_type;
 
 	}
 
@@ -1599,7 +1600,7 @@ class Extended_CPT_Admin {
 	 */
 	public function remove_quick_edit_action( array $actions ) {
 
-		if ( !get_current_screen() or ( $this->cpt->post_type != get_current_screen()->post_type ) )
+		if ( $this->cpt->post_type != self::get_current_post_type() )
 			return $actions;
 
 		unset( $actions['inline'], $actions['inline hide-if-no-js'] );
@@ -1615,7 +1616,7 @@ class Extended_CPT_Admin {
 	 */
 	public function remove_quick_edit_menu( array $actions ) {
 
-		if ( !get_current_screen() or ( $this->cpt->post_type != get_current_screen()->post_type ) )
+		if ( $this->cpt->post_type != self::get_current_post_type() )
 			return $actions;
 
 		unset( $actions['edit'] );
