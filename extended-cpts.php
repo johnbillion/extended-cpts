@@ -146,22 +146,25 @@ class Extended_CPT {
 		$this->post_singular_low = strtolower( $this->post_singular );
 		$this->post_plural_low   = strtolower( $this->post_plural );
 
+		# Get text domain
+		$this->textdomain = isset( $args['textdomain'] ) ? $args['textdomain'] : '';
+
 		# Build our labels:
 		$this->defaults['labels'] = array(
 			'name'               => $this->post_plural,
 			'singular_name'      => $this->post_singular,
 			'menu_name'          => $this->post_plural,
 			'name_admin_bar'     => $this->post_singular,
-			'add_new'            => 'Add New',
-			'add_new_item'       => sprintf( 'Add New %s', $this->post_singular ),
-			'edit_item'          => sprintf( 'Edit %s', $this->post_singular ),
-			'new_item'           => sprintf( 'New %s', $this->post_singular ),
-			'view_item'          => sprintf( 'View %s', $this->post_singular ),
-			'search_items'       => sprintf( 'Search %s', $this->post_plural ),
-			'not_found'          => sprintf( 'No %s found', $this->post_plural_low ),
-			'not_found_in_trash' => sprintf( 'No %s found in trash', $this->post_plural_low ),
-			'parent_item_colon'  => sprintf( 'Parent %s', $this->post_singular ),
-			'all_items'          => sprintf( 'All %s', $this->post_plural ),
+			'add_new'            => __( 'Add New', $this->textdomain ),
+			'add_new_item'       => sprintf( __( 'Add New %s', $this->textdomain ), $this->post_singular ),
+			'edit_item'          => sprintf( __( 'Edit %s', $this->textdomain ), $this->post_singular ),
+			'new_item'           => sprintf( __( 'New %s', $this->textdomain ), $this->post_singular ),
+			'view_item'          => sprintf( __( 'View %s', $this->textdomain ), $this->post_singular ),
+			'search_items'       => sprintf( __( 'Search %s', $this->textdomain ), $this->post_plural ),
+			'not_found'          => sprintf( __( 'No %s found', $this->textdomain ), $this->post_plural_low ),
+			'not_found_in_trash' => sprintf( __( 'No %s found in trash', $this->textdomain ), $this->post_plural_low ),
+			'parent_item_colon'  => sprintf( __( 'Parent %s', $this->textdomain ), $this->post_singular ),
+			'all_items'          => sprintf( __( 'All %s', $this->textdomain ), $this->post_plural ),
 		);
 
 		# 'public' is a meta argument, so set some defaults if it's present:
@@ -282,7 +285,7 @@ class Extended_CPT {
 
 		if ( $query_var and count( get_taxonomies( array( 'query_var' => $query_var ) ) ) ) {
 
-			trigger_error( sprintf( __( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'ext_cpts' ), $query_var ), E_USER_ERROR );
+			trigger_error( sprintf( __( 'Post type query var "%s" clashes with a taxonomy query var of the same name', $this->textdomain ), $query_var ), E_USER_ERROR );
 
 		} else if ( empty( $existing ) ) {
 
