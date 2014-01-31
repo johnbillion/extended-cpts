@@ -21,11 +21,22 @@ GNU General Public License for more details.
 
 */
 
+if ( !function_exists( 'register_extended_post_type' ) ) {
 /**
  * Wrapper function for registering a new Extended Post Type.
- * See the Extended_CPT_Structure and Extended_CPT_Admin classes for parameters.
+ *
+ * @see Extended_CPT::__construct()
+ * @param string $post_type The post type name
+ * @param array  $args      The post type arguments (optional)
+ * @param array  $names     {
+ *     An associative array of the plural, singular and slug names (optional)
+ *
+ *     @type string $plural   The plural form of the post type name
+ *     @type string $slug     The slug used in the permalink for the post type
+ *     @type string $singular The singular form of the post type name
+ * }
+ * @return Extended_CPT 
  */
-if ( !function_exists( 'register_extended_post_type ') ) {
 function register_extended_post_type( $post_type, array $args = null, $names = null ) {
 
 	$fga = func_get_args();
@@ -543,12 +554,12 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * @TODO Description
+	 * Set the "featured image" text for this post type.
 	 *
 	 * See http://core.trac.wordpress.org/ticket/19257
 	 *
-	 * @param string $text
-	 * @return string
+	 * @param string $text The "featured image" text
+	 * @return string The updated "featured image" text
 	 */
 	function featured_image_text( $text ) {
 
