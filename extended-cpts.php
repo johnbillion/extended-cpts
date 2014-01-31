@@ -413,7 +413,7 @@ class Extended_CPT_Admin {
 			add_filter( 'manage_pages_columns',                                 array( $this, '_log_default_cols' ), 0 );
 			add_filter( "manage_edit-{$this->cpt->post_type}_sortable_columns", array( $this, 'sortables' ) );
 			add_filter( "manage_{$this->cpt->post_type}_posts_columns",         array( $this, 'cols' ) );
-			add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   array( $this, 'col' ), 10 );
+			add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   array( $this, 'col' ) );
 			add_action( 'load-edit.php',                                        array( $this, 'default_sort' ) );
 			add_action( 'load-edit.php',                                        array( $this, 'maybe_sort' ) );
 		}
@@ -1414,9 +1414,7 @@ class Extended_CPT_Admin {
 
 			case 'post_date':
 			case 'post_date_gmt':
-				if ( '0000-00-00 00:00:00' == $post->$field )
-					_e( 'Unpublished', 'ext_cpts' );
-				else
+				if ( '0000-00-00 00:00:00' != $post->$field )
 					echo mysql2date( get_option( 'date_format' ), $post->$field );
 				break;
 
@@ -1443,7 +1441,7 @@ class Extended_CPT_Admin {
 				break;
 
 			default:
-				echo esc_html( $post->$field );
+				echo esc_html( get_post_field( $field, $post ) );
 				break;
 
 		}
@@ -1655,7 +1653,7 @@ class Extended_CPT_Admin {
 	 * @param int $number The number to compare against to use either $single or $plural
 	 * @return string Either $single or $plural text
 	 */
-	public static function n( $single, $plural, $number ) {
+	protected static function n( $single, $plural, $number ) {
 
 		return ( 1 == $number ) ? $single : $plural;
 
