@@ -1494,6 +1494,11 @@ class Extended_CPT_Admin {
 		if ( !function_exists( 'p2p_type' ) )
 			return;
 
+		if ( !p2p_connection_exists( $connection ) ) {
+			_e( 'Invalid connection type', 'ext_cpts' );
+			return;
+		}
+
 		$_post = $post;
 		$meta  = $out = array();
 		$field = 'connected_' . $connection;
