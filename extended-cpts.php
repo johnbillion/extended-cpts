@@ -56,8 +56,9 @@ function register_extended_post_type( $post_type, array $args = null, $names = n
 
 	$cpt = new Extended_CPT( $post_type, $args, $names );
 
-	if ( is_admin() )
+	if ( is_admin() ) {
 		new Extended_CPT_Admin( $cpt, $args );
+	}
 
 	return $cpt;
 
@@ -127,22 +128,25 @@ class Extended_CPT {
 	 */
 	public function __construct( $post_type, array $args = null, array $names = null ) {
 
-		if ( isset( $names['singular'] ) )
+		if ( isset( $names['singular'] ) ) {
 			$this->post_singular = $names['singular'];
-		else
+		} else {
 			$this->post_singular = ucwords( str_replace( array( '-', '_' ), ' ', $post_type ) );
+		}
 
-		if ( isset( $names['slug'] ) )
+		if ( isset( $names['slug'] ) ) {
 			$this->post_slug = $names['slug'];
-		else if ( isset( $names['plural'] ) )
+		} else if ( isset( $names['plural'] ) ) {
 			$this->post_slug = $names['plural'];
-		else
+		} else {
 			$this->post_slug = $post_type . 's';
+		}
 
-		if ( isset( $names['plural'] ) )
+		if ( isset( $names['plural'] ) ) {
 			$this->post_plural = $names['plural'];
-		else
+		} else {
 			$this->post_plural = $this->post_singular . 's';
+		}
 
 		$this->post_type = strtolower( $post_type );
 		$this->post_slug = strtolower( $this->post_slug );
@@ -185,22 +189,26 @@ class Extended_CPT {
 		$this->args = array_merge( $this->defaults, $args );
 
 		# This allows the 'labels' arg to contain some, none or all labels:
-		if ( isset( $args['labels'] ) )
+		if ( isset( $args['labels'] ) ) {
 			$this->args['labels'] = array_merge( $this->defaults['labels'], $args['labels'] );
+		}
 
 		# Post type in the site's main feed:
-		if ( $this->args['show_in_feed'] )
+		if ( $this->args['show_in_feed'] ) {
 			add_filter( 'request', array( $this, 'add_to_feed' ) );
+		}
 
 		# Post type archive query vars:
-		if ( $this->args['archive'] and !is_admin() )
+		if ( $this->args['archive'] and !is_admin() ) {
 			add_filter( 'parse_request', array( $this, 'override_private_query_vars' ), 1 );
+		}
 
 		# Register post type when WordPress initialises:
-		if ( 'init' === current_filter() )
+		if ( 'init' === current_filter() ) {
 			call_user_func( array( $this, 'register_post_type' ) );
-		else
+		} else {
 			add_action( 'init', array( $this, 'register_post_type' ), 9 );
+		}
 
 	}
 
@@ -213,13 +221,15 @@ class Extended_CPT {
 	public function add_to_feed( array $vars ) {
 
 		# If it's not a feed, we're not interested:
-		if ( !isset( $vars['feed'] ) )
+		if ( !isset( $vars['feed'] ) ) {
 			return $vars;
+		}
 
-		if ( !isset( $vars['post_type'] ) )
+		if ( !isset( $vars['post_type'] ) ) {
 			$vars['post_type'] = array( 'post', $this->post_type );
-		else if ( is_array( $vars['post_type'] ) and ( count( $vars['post_type'] ) > 1 ) )
+		} else if ( is_array( $vars['post_type'] ) and ( count( $vars['post_type'] ) > 1 ) ) {
 			$vars['post_type'][] = $this->post_type;
+		}
 
 		return $vars;
 
@@ -234,15 +244,19 @@ class Extended_CPT {
 	public function override_private_query_vars( WP $wp ) {
 
 		# If it's not our post type, bail out:
-		if ( !isset( $wp->query_vars['post_type'] ) or ( $this->post_type != $wp->query_vars['post_type'] ) )
+		if ( !isset( $wp->query_vars['post_type'] ) or ( $this->post_type != $wp->query_vars['post_type'] ) ) {
 			return $wp;
+		}
+
 		# If it's a single post, bail out:
-		if ( isset( $wp->query_vars['name'] ) )
+		if ( isset( $wp->query_vars['name'] ) ) {
 			return $wp;
+		}
 
 		# Set the vars:
-		foreach ( $this->args['archive'] as $var => $value )
+		foreach ( $this->args['archive'] as $var => $value ) {
 			$wp->query_vars[$var] = $value;
+		}
 
 		return $wp;
 
@@ -259,10 +273,11 @@ class Extended_CPT {
 	 */
 	public function register_post_type() {
 
-		if ( ! isset( $this->args['query_var'] ) or ( true === $this->args['query_var'] ) )
+		if ( ! isset( $this->args['query_var'] ) or ( true === $this->args['query_var'] ) ) {
 			$query_var = $this->post_type;
-		else
+		} else {
 			$query_var = $this->args['query_var'];
+		}
 
 		$existing = get_post_type_object( $this->post_type );
 
@@ -272,8 +287,9 @@ class Extended_CPT {
 
 		} else if ( empty( $existing ) ) {
 
-			if ( is_wp_error( $cpt = register_post_type( $this->post_type, $this->args ) ) )
+			if ( is_wp_error( $cpt = register_post_type( $this->post_type, $this->args ) ) ) {
 				trigger_error( $cpt->get_error_message(), E_USER_ERROR );
+			}
 
 		} else {
 
@@ -312,12 +328,13 @@ class Extended_CPT {
 	 */
 	public function add_taxonomy( $taxonomy, array $args = null, array $names = null ) {
 
-		if ( taxonomy_exists( $taxonomy ) )
+		if ( taxonomy_exists( $taxonomy ) ) {
 			register_taxonomy_for_object_type( $taxonomy, $this->post_type );
-		else if ( function_exists( 'register_extended_taxonomy' ) )
+		} else if ( function_exists( 'register_extended_taxonomy' ) ) {
 			register_extended_taxonomy( $taxonomy, $this->post_type, $args, $names );
-		else
+		} else {
 			register_taxonomy( $taxonomy, $this->post_type, $args );
+		}
 
 		return get_taxonomy( $taxonomy );
 
@@ -399,16 +416,19 @@ class Extended_CPT_Admin {
 		}
 
 		# 'Enter title here' filter:
-		if ( $this->args['enter_title_here'] )
+		if ( $this->args['enter_title_here'] ) {
 			add_filter( 'enter_title_here', array( $this, 'enter_title_here' ), 10, 2 );
+		}
 
 		# Featured Image title:
-		if ( $this->args['featured_image'] )
+		if ( $this->args['featured_image'] ) {
 			add_filter( 'gettext', array( $this, 'featured_image_text' ) );
+		}
 
 		# Hide month filter:
-		if ( isset( $this->args['filters']['m'] ) and !$this->args['filters']['m'] )
+		if ( isset( $this->args['filters']['m'] ) and !$this->args['filters']['m'] ) {
 			add_action( 'admin_head-edit.php', array( $this, 'admin_head' ) );
+		}
 
 		# Quick Edit:
 		if ( !$this->args['quick_edit'] ) {
@@ -424,8 +444,9 @@ class Extended_CPT_Admin {
 		}
 
 		# Nav menus screen item:
-		if ( $this->args['archive_in_nav_menus'] and $this->cpt->args['has_archive'] )
+		if ( $this->args['archive_in_nav_menus'] and $this->cpt->args['has_archive'] ) {
 			add_filter( "nav_menu_items_{$this->cpt->post_type}", array( $this, 'nav_menu_items' ), 10, 3 );
+		}
 
 		# Post updated messages:
 		add_filter( 'post_updated_messages',      array( $this, 'post_updated_messages' ), 1 );
@@ -440,8 +461,9 @@ class Extended_CPT_Admin {
 	 */
 	public function admin_head() {
 
-		if ( $this->cpt->post_type != self::get_current_post_type() )
+		if ( $this->cpt->post_type != self::get_current_post_type() ) {
 			return;
+		}
 
 		?>
 		<style type="text/css">
@@ -462,12 +484,14 @@ class Extended_CPT_Admin {
 	 */
 	public function default_sort() {
 
-		if ( $this->cpt->post_type != self::get_current_post_type() )
+		if ( $this->cpt->post_type != self::get_current_post_type() ) {
 			return;
+		}
 
 		# If we've already ordered the screen, bail out:
-		if ( isset( $_GET['orderby'] ) )
+		if ( isset( $_GET['orderby'] ) ) {
 			return;
+		}
 
 		# Loop over our columns to find the default sort column (if there is one):
 		foreach ( $this->args['cols'] as $id => $col ) {
@@ -487,8 +511,9 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_sort() {
 
-		if ( $this->cpt->post_type != self::get_current_post_type() )
+		if ( $this->cpt->post_type != self::get_current_post_type() ) {
 			return;
+		}
 
 		add_filter( 'request',       array( $this, 'sort_posts_by_post_meta' ) );
 		add_filter( 'request',       array( $this, 'sort_posts_by_post_field' ) );
@@ -503,8 +528,9 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_filter() {
 
-		if ( $this->cpt->post_type != self::get_current_post_type() )
+		if ( $this->cpt->post_type != self::get_current_post_type() ) {
 			return;
+		}
 
 		add_filter( 'request',               array( $this, 'filter_posts_by_post_meta' ) );
 		add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
@@ -520,8 +546,9 @@ class Extended_CPT_Admin {
 	 */
 	public function enter_title_here( $title, WP_Post $post ) {
 
-		if ( $this->cpt->post_type != $post->post_type )
+		if ( $this->cpt->post_type != $post->post_type ) {
 			return $title;
+		}
 
 		return $this->args['enter_title_here'];
 
@@ -537,11 +564,13 @@ class Extended_CPT_Admin {
 	 */
 	function featured_image_text( $text ) {
 
-		if ( false === stripos( $text, 'featured image' ) )
+		if ( false === stripos( $text, 'featured image' ) ) {
 			return $text;
+		}
 
-		if ( $this->cpt->post_type != self::get_current_post_type() )
+		if ( $this->cpt->post_type != self::get_current_post_type() ) {
 			return $text;
+		}
 
 		$text = str_replace( 'featured image', strtolower( $this->args['featured_image'] ), $text );
 		$text = str_replace( 'Featured Image', $this->args['featured_image'], $text );
@@ -557,23 +586,26 @@ class Extended_CPT_Admin {
 	 */
 	protected static function get_current_post_type() {
 
-		if ( isset( self::$current_post_type ) )
+		if ( isset( self::$current_post_type ) ) {
 			return self::$current_post_type;
+		}
 
-		if ( function_exists( 'get_current_screen' ) and is_object( get_current_screen() ) )
+		if ( function_exists( 'get_current_screen' ) and is_object( get_current_screen() ) ) {
 			$post_type = get_current_screen()->post_type;
-		else
+		} else {
 			$post_type = '';
+		}
 
 		if ( empty( $post_type ) ) {
-			if ( isset( $_REQUEST['post_type'] ) )
+			if ( isset( $_REQUEST['post_type'] ) ) {
 				$post_type = $_REQUEST['post_type'];
-			else if ( isset( $_REQUEST['post'] ) )
+			} else if ( isset( $_REQUEST['post'] ) ) {
 				$post_type = get_post_type( $_REQUEST['post'] );
-			else if ( isset( $_REQUEST['post_id'] ) )
+			} else if ( isset( $_REQUEST['post_id'] ) ) {
 				$post_type = get_post_type( $_REQUEST['post_id'] );
-			else if ( isset( $_REQUEST['attachment_id'] ) )
+			} else if ( isset( $_REQUEST['attachment_id'] ) ) {
 				$post_type = get_post_type( get_post( $_REQUEST['attachment_id'] )->post_parent );
+			}
 		}
 
 		return self::$current_post_type = $post_type;
@@ -636,15 +668,17 @@ class Extended_CPT_Admin {
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
 
-			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) )
+			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) ) {
 				continue;
+			}
 
 			if ( isset( $filter['taxonomy'] ) ) {
 
 				$tax = get_taxonomy( $filter['taxonomy'] );
 
-				if ( empty( $tax ) )
+				if ( empty( $tax ) ) {
 					continue;
+				}
 
 				# For this, we need the dropdown walker from Extended Taxonomies:
 				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdown' ) ) {
@@ -657,8 +691,9 @@ class Extended_CPT_Admin {
 				}
 
 				# If we haven't specified a title, use the all_items label from the taxonomy:
-				if ( !isset( $filter['title'] ) )
+				if ( !isset( $filter['title'] ) ) {
 					$filter['title'] = $tax->labels->all_items;
+				}
 
 				# Output the dropdown:
 				wp_dropdown_categories( array(
@@ -699,8 +734,9 @@ class Extended_CPT_Admin {
 					$filter['options'] = call_user_func( $filter['options'] );
 				}
 
-				if ( empty( $filter['options'] ) )
+				if ( empty( $filter['options'] ) ) {
 					continue;
+				}
 
 				$selected = stripslashes( get_query_var( $filter_key ) );
 
@@ -732,8 +768,9 @@ class Extended_CPT_Admin {
 			} else if ( isset( $filter['meta_exists'] ) ) {
 
 				# If we haven't specified a title, use the all_items label from the post type:
-				if ( !isset( $filter['title'] ) )
+				if ( !isset( $filter['title'] ) ) {
 					$filter['title'] = $pto->labels->all_items;
+				}
 
 				$selected = stripslashes( get_query_var( $filter_key ) );
 
@@ -775,8 +812,9 @@ class Extended_CPT_Admin {
 	public function add_filter_query_vars( array $vars ) {
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
-			if ( isset( $filter['meta_key'] ) or isset( $filter['meta_search_key'] ) or isset( $filter['meta_exists'] ) )
+			if ( isset( $filter['meta_key'] ) or isset( $filter['meta_search_key'] ) or isset( $filter['meta_exists'] ) ) {
 				$vars[] = $filter_key;
+			}
 		}
 
 		return $vars;
@@ -793,16 +831,18 @@ class Extended_CPT_Admin {
 
 		foreach ( $this->args['filters'] as $filter_key => $filter ) {
 
-			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) )
+			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) ) {
 				continue;
+			}
 
 			if ( isset( $filter['meta_key'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
 				$args = array(
 					'key'   => $filter['meta_key'],
 					'value' => stripslashes( $vars[$filter_key] )
 				);
-				if ( isset( $filter['meta_compare'] ) )
+				if ( isset( $filter['meta_compare'] ) ) {
 					$args['compare'] = $filter['meta_compare'];
+				}
 				$vars['meta_query'][] = $args;
 			} else if ( isset( $filter['meta_search_key'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
 				# @TODO kill the meta_search_key parameter and user meta_key with some complimentary parameters
@@ -841,8 +881,9 @@ class Extended_CPT_Admin {
 
 		$pto = get_post_type_object( $this->cpt->post_type );
 
-		if ( !current_user_can( $pto->cap->edit_posts ) )
+		if ( !current_user_can( $pto->cap->edit_posts ) ) {
 			return;
+		}
 
 		# Get the labels and format the counts:
 		$count = wp_count_posts( $this->cpt->post_type );
@@ -871,8 +912,9 @@ class Extended_CPT_Admin {
 
 		$pto = get_post_type_object( $this->cpt->post_type );
 
-		if ( !current_user_can( $pto->cap->edit_posts ) )
+		if ( !current_user_can( $pto->cap->edit_posts ) ) {
 			return $items;
+		}
 
 		# Get the labels and format the counts:
 		$count = wp_count_posts( $this->cpt->post_type );
@@ -1016,14 +1058,18 @@ class Extended_CPT_Admin {
 	 */
 	public function sort_posts_by_post_meta( array $vars ) {
 
-		if ( !isset( $vars['orderby'] ) )
+		if ( !isset( $vars['orderby'] ) ) {
 			return $vars;
-		if ( !isset( $this->args['cols'][$vars['orderby']] ) )
+		}
+		if ( !isset( $this->args['cols'][$vars['orderby']] ) ) {
 			return $vars;
-		if ( !is_array( $this->args['cols'][$vars['orderby']] ) )
+		}
+		if ( !is_array( $this->args['cols'][$vars['orderby']] ) ) {
 			return $vars;
-		if ( !isset( $this->args['cols'][$vars['orderby']]['meta_key'] ) )
+		}
+		if ( !isset( $this->args['cols'][$vars['orderby']]['meta_key'] ) ) {
 			return $vars;
+		}
 
 		$vars['meta_key'] = $this->args['cols'][$vars['orderby']]['meta_key'];
 		$vars['orderby']  = 'meta_value';
@@ -1040,14 +1086,18 @@ class Extended_CPT_Admin {
 	 */
 	public function sort_posts_by_post_field( array $vars ) {
 
-		if ( !isset( $vars['orderby'] ) )
+		if ( !isset( $vars['orderby'] ) ) {
 			return $vars;
-		if ( !isset( $this->args['cols'][$vars['orderby']] ) )
+		}
+		if ( !isset( $this->args['cols'][$vars['orderby']] ) ) {
 			return $vars;
-		if ( !is_array( $this->args['cols'][$vars['orderby']] ) )
+		}
+		if ( !is_array( $this->args['cols'][$vars['orderby']] ) ) {
 			return $vars;
-		if ( !isset( $this->args['cols'][$vars['orderby']]['post_field'] ) )
+		}
+		if ( !isset( $this->args['cols'][$vars['orderby']]['post_field'] ) ) {
 			return $vars;
+		}
 
 		$field = str_replace( 'post_', '', $this->args['cols'][$vars['orderby']]['post_field'] );
 		$vars['orderby'] = $field;
@@ -1067,14 +1117,18 @@ class Extended_CPT_Admin {
 
 		global $wpdb;
 
-		if ( !isset( $q->query['orderby'] ) )
+		if ( !isset( $q->query['orderby'] ) ) {
 			return $clauses;
-		if ( !isset( $this->args['cols'][$q->query['orderby']] ) )
+		}
+		if ( !isset( $this->args['cols'][$q->query['orderby']] ) ) {
 			return $clauses;
-		if ( !is_array( $this->args['cols'][$q->query['orderby']] ) )
+		}
+		if ( !is_array( $this->args['cols'][$q->query['orderby']] ) ) {
 			return $clauses;
-		if ( !isset( $this->args['cols'][$q->query['orderby']]['taxonomy'] ) )
+		}
+		if ( !isset( $this->args['cols'][$q->query['orderby']]['taxonomy'] ) ) {
 			return $clauses;
+		}
 
 		# Taxonomy term ordering courtesy of http://scribu.net/wordpress/sortable-taxonomy-columns.html
 
@@ -1101,12 +1155,15 @@ class Extended_CPT_Admin {
 	public function sortables( array $cols ) {
 
 		foreach ( $this->args['cols'] as $id => $col ) {
-			if ( !is_array( $col ) )
+			if ( !is_array( $col ) ) {
 				continue;
-			if ( isset( $col['sortable'] ) and !$col['sortable'] )
+			}
+			if ( isset( $col['sortable'] ) and !$col['sortable'] ) {
 				continue;
-			if ( isset( $col['meta_key'] ) or isset( $col['taxonomy'] ) or isset( $col['post_field'] ) )
+			}
+			if ( isset( $col['meta_key'] ) or isset( $col['taxonomy'] ) or isset( $col['post_field'] ) ) {
 				$cols[$id] = $id;
+			}
 		}
 
 		return $cols;
@@ -1200,8 +1257,9 @@ class Extended_CPT_Admin {
 
 		# Add existing columns we want to keep:
 		foreach ( $cols as $id => $title ) {
-			if ( in_array( $id, $keep ) and !isset( $this->args['cols'][$id] ) )
+			if ( in_array( $id, $keep ) and !isset( $this->args['cols'][$id] ) ) {
 				$new_cols[$id] = $title;
+			}
 		}
 
 		# Add our custom columns:
@@ -1213,18 +1271,22 @@ class Extended_CPT_Admin {
 			} else if ( 'author' === $col ) {
 				# Automatic support for Co-Authors Plus plugin and special case for
 				# displaying author column when the post type doesn't support 'author'
-				if ( class_exists( 'coauthors_plus' ) )
+				if ( class_exists( 'coauthors_plus' ) ) {
 					$k = 'coauthors';
-				else
+				} else {
 					$k = 'author';
+				}
 				$new_cols[$k] = __( 'Author' );
 			} else if ( is_array( $col ) ) {
-				if ( isset( $col['cap'] ) and !current_user_can( $col['cap'] ) )
+				if ( isset( $col['cap'] ) and !current_user_can( $col['cap'] ) ) {
 					continue;
-				if ( isset( $col['connection'] ) and !function_exists( 'p2p_type' ) )
+				}
+				if ( isset( $col['connection'] ) and !function_exists( 'p2p_type' ) ) {
 					continue;
-				if ( !isset( $col['title'] ) )
+				}
+				if ( !isset( $col['title'] ) ) {
 					$col['title'] = self::get_item_title( $col );
+				}
 				$new_cols[$id] = $col['title'];
 			}
 		}
@@ -1251,24 +1313,27 @@ class Extended_CPT_Admin {
 		# We're only interested in our custom columns:
 		$custom_cols = array_filter( array_keys( $c ) );
 
-		if ( !in_array( $col, $custom_cols ) )
+		if ( !in_array( $col, $custom_cols ) ) {
 			return;
+		}
 
-		if ( isset( $c[$col]['post_cap'] ) and !current_user_can( $c[$col]['post_cap'], get_the_ID() ) )
+		if ( isset( $c[$col]['post_cap'] ) and !current_user_can( $c[$col]['post_cap'], get_the_ID() ) ) {
 			return;
+		}
 
-		if ( isset( $c[$col]['function'] ) )
+		if ( isset( $c[$col]['function'] ) ) {
 			call_user_func( $c[$col]['function'] );
-		else if ( isset( $c[$col]['meta_key'] ) )
+		} else if ( isset( $c[$col]['meta_key'] ) ) {
 			$this->col_post_meta( $c[$col]['meta_key'], $c[$col] );
-		else if ( isset( $c[$col]['taxonomy'] ) )
+		} else if ( isset( $c[$col]['taxonomy'] ) ) {
 			$this->col_taxonomy( $c[$col]['taxonomy'], $c[$col] );
-		else if ( isset( $c[$col]['post_field'] ) )
+		} else if ( isset( $c[$col]['post_field'] ) ) {
 			$this->col_post_field( $c[$col]['post_field'], $c[$col] );
-		else if ( isset( $c[$col]['featured_image'] ) )
+		} else if ( isset( $c[$col]['featured_image'] ) ) {
 			$this->col_featured_image( $c[$col]['featured_image'], $c[$col] );
-		else if ( isset( $c[$col]['connection'] ) )
+		} else if ( isset( $c[$col]['connection'] ) ) {
 			$this->col_connection( $c[$col]['connection'], $c[$col] );
+		}
 
 	}
 
@@ -1287,15 +1352,17 @@ class Extended_CPT_Admin {
 
 			case isset( $args['date_format'] ):
 
-				if ( true === $args['date_format'] )
+				if ( true === $args['date_format'] ) {
 					$args['date_format'] = get_option( 'date_format' );
+				}
 
-				if ( empty( $val ) )
+				if ( empty( $val ) ) {
 					_e( 'None', 'ext_cpts' );
-				else if ( is_numeric( $val ) )
+				} else if ( is_numeric( $val ) ) {
 					echo date( $args['date_format'], $val );
-				else
+				} else {
 					echo mysql2date( $args['date_format'], $val );
+				}
 
 				break;
 
@@ -1341,16 +1408,18 @@ class Extended_CPT_Admin {
 
 				switch ( $args['link'] ) {
 					case 'view':
-						if ( $tax->public )
+						if ( $tax->public ) {
 							$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_term_link( $term ), $term->name );
-						else
+						} else {
 							$out[] = $term->name;
+						}
 						break;
 					case 'edit' :
-						if ( current_user_can( $tax->cap->edit_terms ) )
+						if ( current_user_can( $tax->cap->edit_terms ) ) {
 							$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_edit_term_link( $term, $taxonomy, $post->post_type ), $term->name );
-						else
+						} else {
 							$out[] = $term->name;
+						}
 						break;
 					case 'list':
 						$link = add_query_arg( array(
@@ -1388,8 +1457,9 @@ class Extended_CPT_Admin {
 
 			case 'post_date':
 			case 'post_date_gmt':
-				if ( '0000-00-00 00:00:00' != $post->$field )
+				if ( '0000-00-00 00:00:00' != $post->$field ) {
 					echo mysql2date( get_option( 'date_format' ), $post->$field );
+				}
 				break;
 
 			case 'post_modified':
@@ -1398,8 +1468,9 @@ class Extended_CPT_Admin {
 				break;
 
 			case 'post_status':
-				if ( $status = get_post_status_object( get_post_status( $post ) ) )
+				if ( $status = get_post_status_object( get_post_status( $post ) ) ) {
 					echo $status->label;
+				}
 				break;
 
 			case 'post_author':
@@ -1431,26 +1502,30 @@ class Extended_CPT_Admin {
 	 */
 	public function col_featured_image( $image_size, array $args = null ) {
 
-		if ( !function_exists( 'has_post_thumbnail' ) )
+		if ( !function_exists( 'has_post_thumbnail' ) ) {
 			return;
+		}
 
-		if ( isset( $args['width'] ) )
+		if ( isset( $args['width'] ) ) {
 			$width = is_numeric( $args['width'] ) ? sprintf( '%dpx', $args['width']  ) : $args['width'];
-		else
+		} else {
 			$width = 'auto';
+		}
 
-		if ( isset( $args['height'] ) )
+		if ( isset( $args['height'] ) ) {
 			$height = is_numeric( $args['height'] ) ? sprintf( '%dpx', $args['height']  ) : $args['height'];
-		else
+		} else {
 			$height = 'auto';
+		}
 
 		$image_atts = array(
 			'style' => sprintf( 'width:%1$s;height:%2$s', $width, $height ),
 			'title' => ''
 		);
 
-		if ( has_post_thumbnail() )
+		if ( has_post_thumbnail() ) {
 			the_post_thumbnail( $image_size, $image_atts );
+		}
 
 	}
 
@@ -1465,8 +1540,9 @@ class Extended_CPT_Admin {
 
 		global $post, $wp_query;
 
-		if ( !function_exists( 'p2p_type' ) )
+		if ( !function_exists( 'p2p_type' ) ) {
 			return;
+		}
 
 		if ( !p2p_connection_exists( $connection ) ) {
 			_e( 'Invalid connection type', 'ext_cpts' );
@@ -1486,8 +1562,9 @@ class Extended_CPT_Admin {
 			$field .= sanitize_title( '_' . $args['field'] . '_' . $args['value'] );
 		}
 
-		if ( !isset( $_post->$field ) )
+		if ( !isset( $_post->$field ) ) {
 			p2p_type( $connection )->each_connected( $wp_query, $meta, $field );
+		}
 
 		foreach ( $_post->$field as $post ) {
 
@@ -1496,10 +1573,12 @@ class Extended_CPT_Admin {
 			$pto = get_post_type_object( $post->post_type );
 			$pso = get_post_status_object( $post->post_status );
 
-			if ( $pso->protected and !current_user_can( 'edit_post', $post->ID ) )
+			if ( $pso->protected and !current_user_can( 'edit_post', $post->ID ) ) {
 				continue;
-			if ( 'trash' == $post->post_status )
+			}
+			if ( 'trash' == $post->post_status ) {
 				continue;
+			}
 
 			if ( isset( $args['link'] ) ) {
 
@@ -1507,20 +1586,22 @@ class Extended_CPT_Admin {
 					case 'view':
 
 						if ( $pto->public ) {
-							if ( $pso->protected )
+							if ( $pso->protected ) {
 								$out[] = sprintf( '<a href="%1$s">%2$s</a>', add_query_arg( 'preview', 'true', get_permalink() ), get_the_title() );
-							else
+							} else {
 								$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_permalink(), get_the_title() );
+							}
 						} else {
 							$out[] = get_the_title();
 						}
 
 						break;
 					case 'edit':
-						if ( current_user_can( 'edit_post', $post->ID ) )
+						if ( current_user_can( 'edit_post', $post->ID ) ) {
 							$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_edit_post_link(), get_the_title() );
-						else
+						} else {
 							$out[] = get_the_title();
+						}
 						break;
 					case 'list':
 						$link = add_query_arg( array_merge( array(
@@ -1588,8 +1669,9 @@ class Extended_CPT_Admin {
 	 */
 	public function remove_quick_edit_action( array $actions ) {
 
-		if ( $this->cpt->post_type != self::get_current_post_type() )
+		if ( $this->cpt->post_type != self::get_current_post_type() ) {
 			return $actions;
+		}
 
 		unset( $actions['inline'], $actions['inline hide-if-no-js'] );
 		return $actions;
@@ -1604,8 +1686,9 @@ class Extended_CPT_Admin {
 	 */
 	public function remove_quick_edit_menu( array $actions ) {
 
-		if ( $this->cpt->post_type != self::get_current_post_type() )
+		if ( $this->cpt->post_type != self::get_current_post_type() ) {
 			return $actions;
+		}
 
 		unset( $actions['edit'] );
 		return $actions;
@@ -1646,18 +1729,19 @@ class Extended_CPT_Admin {
 	 */
 	protected static function get_item_title( array $item ) {
 
-		if ( isset( $item['taxonomy'] ) )
+		if ( isset( $item['taxonomy'] ) ) {
 			$title = get_taxonomy( $item['taxonomy'] )->labels->name;
-		else if ( isset( $item['post_field'] ) )
+		} else if ( isset( $item['post_field'] ) ) {
 			$title = ucwords( trim( str_replace( array( 'post_', '_' ), ' ', $item['post_field'] ) ) );
-		else if ( isset( $item['meta_key'] ) )
+		} else if ( isset( $item['meta_key'] ) ) {
 			$title = ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['meta_key'] ) ) );
-		else if ( isset( $item['connection'] ) and isset( $item['value'] ) )
+		} else if ( isset( $item['connection'] ) and isset( $item['value'] ) ) {
 			$title = ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['value'] ) ) );
-		else if ( isset( $item['connection'] ) )
+		} else if ( isset( $item['connection'] ) ) {
 			$title = ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['connection'] ) ) );
-		else
+		} else {
 			$title = '';
+		}
 
 		return $title;
 
