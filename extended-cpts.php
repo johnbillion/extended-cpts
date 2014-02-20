@@ -1357,7 +1357,7 @@ class Extended_CPT_Admin {
 				}
 
 				if ( empty( $val ) ) {
-					_e( 'None', 'ext_cpts' );
+					echo '&#8212;';
 				} else if ( is_numeric( $val ) ) {
 					echo date( $args['date_format'], $val );
 				} else {
