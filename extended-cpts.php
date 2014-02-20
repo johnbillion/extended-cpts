@@ -148,7 +148,7 @@ class Extended_CPT {
 		if ( isset( $names['plural'] ) )
 			$this->post_plural = $names['plural'];
 		else
-			$this->post_plural = ucwords( str_replace( array( '-', '_' ), ' ', $this->post_slug ) );
+			$this->post_plural = $this->post_singular . 's';
 
 		$this->post_type = strtolower( $post_type );
 		$this->post_slug = strtolower( $this->post_slug );
@@ -158,6 +158,8 @@ class Extended_CPT {
 		$this->post_plural_low   = strtolower( $this->post_plural );
 
 		# Build our labels:
+		# Why aren't these translatable?
+		# Answer: https://github.com/johnbillion/ExtendedCPTs/pull/5#issuecomment-33756474
 		$this->defaults['labels'] = array(
 			'name'               => $this->post_plural,
 			'singular_name'      => $this->post_singular,
@@ -215,7 +217,7 @@ class Extended_CPT {
 			add_filter( 'request', array( $this, 'add_to_feed' ) );
 
 		# Post type archive query vars:
-		if ( $this->args['archive'] )
+		if ( $this->args['archive'] and !is_admin() )
 			add_filter( 'parse_request', array( $this, 'override_private_query_vars' ), 1 );
 
 		# Register post type when WordPress initialises:
@@ -254,9 +256,6 @@ class Extended_CPT {
 	 * @return WP Updated WP request object
 	 */
 	public function override_private_query_vars( WP $wp ) {
-
-		if ( is_admin() )
-			return $wp;
 
 		# If it's not our post type, bail out:
 		if ( !isset( $wp->query_vars['post_type'] ) or ( $this->post_type != $wp->query_vars['post_type'] ) )
