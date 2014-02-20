@@ -1730,7 +1730,12 @@ class Extended_CPT_Admin {
 	protected static function get_item_title( array $item ) {
 
 		if ( isset( $item['taxonomy'] ) ) {
-			$title = get_taxonomy( $item['taxonomy'] )->labels->name;
+			$tax = get_taxonomy( $item['taxonomy'] );
+			if ( !empty( $tax->exclusive ) ) {
+				$title = $tax->labels->singular_name;
+			} else {
+				$title = $tax->labels->name;
+			}
 		} else if ( isset( $item['post_field'] ) ) {
 			$title = ucwords( trim( str_replace( array( 'post_', '_' ), ' ', $item['post_field'] ) ) );
 		} else if ( isset( $item['meta_key'] ) ) {
