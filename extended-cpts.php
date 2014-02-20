@@ -75,19 +75,12 @@ class Extended_CPT {
 	 */
 	protected $defaults = array(
 		'public'               => true,
-		'publicly_queryable'   => true,
-		'exclude_from_search'  => false,
-		'show_ui'              => true,
-		'show_in_menu'         => true,
 		'menu_position'        => 6,
 		'menu_icon'            => null,
 		'capability_type'      => 'page',
 		'hierarchical'         => true,
 		'supports'             => array( 'title', 'editor', 'thumbnail' ),
 		'has_archive'          => true,
-		'query_var'            => true,
-		'can_export'           => true,
-		'show_in_nav_menus'    => true,
 		'show_in_feed'         => false, # Custom arg
 		'archive'              => null,  # Custom arg
 	);
@@ -178,22 +171,8 @@ class Extended_CPT {
 			'all_items'          => sprintf( 'All %s', $this->post_plural ),
 		);
 
-		# 'public' is a meta argument, so set some defaults if it's present:
-		# @TODO this is not strictly true: http://core.trac.wordpress.org/ticket/20098#comment:4
-		if ( isset( $args['public'] ) ) {
-			$this->defaults['publicly_queryable']  =  $args['public'];
-			$this->defaults['show_ui']             =  $args['public'];
-			$this->defaults['show_in_menu']        =  $args['public'];
-			$this->defaults['show_in_nav_menus']   =  $args['public'];
-			$this->defaults['exclude_from_search'] = !$args['public'];
-		}
-
-		# 'show_ui' is a meta argument, so set some defaults if it's present:
-		if ( isset( $args['show_ui'] ) )
-			$this->defaults['show_in_menu'] = $args['show_ui'];
-
 		# Only set rewrites if we need them
-		if ( ( isset( $args['publicly_queryable'] ) and !$args['publicly_queryable'] ) or ( !$this->defaults['publicly_queryable'] ) ) {
+		if ( isset( $args['public'] ) and !$args['public'] ) {
 			$this->defaults['rewrite'] = false;
 		} else {
 			$this->defaults['rewrite'] = array(
@@ -203,15 +182,11 @@ class Extended_CPT {
 		}
 
 		# Merge our args with the defaults:
-		$this->args = wp_parse_args( $args, $this->defaults );
-
-		# I can't remember why this is here, but it needs to be here:
-		if ( !isset( $args['exclude_from_search'] ) )
-			$this->args['exclude_from_search'] = !$this->args['publicly_queryable'];
+		$this->args = array_merge( $this->defaults, $args );
 
 		# This allows the 'labels' arg to contain some, none or all labels:
 		if ( isset( $args['labels'] ) )
-			$this->args['labels'] = wp_parse_args( $args['labels'], $this->defaults['labels'] );
+			$this->args['labels'] = array_merge( $this->defaults['labels'], $args['labels'] );
 
 		# Post type in the site's main feed:
 		if ( $this->args['show_in_feed'] )
@@ -284,7 +259,7 @@ class Extended_CPT {
 	 */
 	public function register_post_type() {
 
-		if ( true === $this->args['query_var'] )
+		if ( ! isset( $this->args['query_var'] ) or ( true === $this->args['query_var'] ) )
 			$query_var = $this->post_type;
 		else
 			$query_var = $this->args['query_var'];
@@ -380,8 +355,7 @@ class Extended_CPT_Admin {
 	 * - archive_in_nav_menus - boolean - Whether to show an 'All Items' checkbox for this post type on
 	 * the nav menus screen so the post type archive can easily be added to a nav menu without manually
 	 * adding a custom link. Uses the 'all_items' label for the nav menus screen checkbox and the 'name'
-	 * label for the actual menu item. Defaults to true. Only used if show_in_nav_menus and has_archive
-	 * are both also true.
+	 * label for the actual menu item. Defaults to true.
 	 *
 	 * - quick_edit - boolean - Whether to show Quick Edit links for this post type. Defaults to true.
 	 *
@@ -450,7 +424,7 @@ class Extended_CPT_Admin {
 		}
 
 		# Nav menus screen item:
-		if ( $this->args['archive_in_nav_menus'] and $this->cpt->args['show_in_nav_menus'] and $this->cpt->args['has_archive'] )
+		if ( $this->args['archive_in_nav_menus'] and $this->cpt->args['has_archive'] )
 			add_filter( "nav_menu_items_{$this->cpt->post_type}", array( $this, 'nav_menu_items' ), 10, 3 );
 
 		# Post updated messages:
