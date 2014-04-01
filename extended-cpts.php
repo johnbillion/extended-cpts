@@ -2,12 +2,12 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.3.1
+Version:      2.3.2
 Author:       John Blackbourn
 Author URI:   https://johnblackbourn.com
 License:      GPL v2 or later
 
-Copyright © 2013 John Blackbourn
+Copyright © 2014 John Blackbourn
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
