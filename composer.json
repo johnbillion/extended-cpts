@@ -8,8 +8,5 @@
 			"name"    : "John Blackbourn",
 			"homepage": "https://johnblackbourn.com/"
 		}
-	],
-	"autoload"   : {
-		"files" : [ "extended-cpts.php" ]
-	}
+	]
 }
