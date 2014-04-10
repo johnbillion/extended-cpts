@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.3.3
+Version:      2.3.4
 Author:       John Blackbourn
 Author URI:   https://johnblackbourn.com
 License:      GPL v2 or later
@@ -25,7 +25,7 @@ GNU General Public License for more details.
  * Wrapper function for registering a new Extended Post Type.
  * See the Extended_CPT_Structure and Extended_CPT_Admin classes for parameters.
  */
-if ( !function_exists( 'register_extended_post_type ') ) {
+if ( !function_exists( 'register_extended_post_type' ) ) {
 function register_extended_post_type( $post_type, array $args = null, $names = null ) {
 
 	$fga = func_get_args();
