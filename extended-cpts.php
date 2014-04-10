@@ -38,6 +38,7 @@ if ( !function_exists( 'register_extended_post_type' ) ) {
  * }
  * @return Extended_CPT 
  */
+if ( !function_exists( 'register_extended_post_type ') ) {
 function register_extended_post_type( $post_type, array $args = null, $names = null ) {
 
 	$fga = func_get_args();
