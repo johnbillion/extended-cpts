@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.3.3
+Version:      2.3.4
 Author:       John Blackbourn
 Author URI:   https://johnblackbourn.com
 License:      GPL v2 or later
@@ -25,7 +25,7 @@ GNU General Public License for more details.
  * Wrapper function for registering a new Extended Post Type.
  * See the Extended_CPT_Structure and Extended_CPT_Admin classes for parameters.
  */
-if ( !function_exists( 'register_extended_post_type ') ) {
+if ( !function_exists( 'register_extended_post_type' ) ) {
 function register_extended_post_type( $post_type, array $args = null, $names = null ) {
 
 	$fga = func_get_args();
@@ -324,7 +324,19 @@ class Extended_CPT {
 	 * @param array  $names    An associative array of the plural, singular and slug names (optional)
 	 * @return object Taxonomy object
 	 */
-	public function add_taxonomy( $taxonomy, array $args = null, array $names = null ) {
+	public function add_taxonomy( $taxonomy, array $args = null, $names = null ) {
+		
+		# Back-compat for pre-2.3 argument list:
+		if ( is_string( $names ) or count( $fga ) > 3 ) {
+			_doing_it_wrong( __FUNCTION__, __( 'Name parameters should be passed as an associative array.', 'ext_cpts' ), '2.3' );
+			$names = array();
+			if ( isset( $fga[2] ) )
+				$names['plural'] = $fga[2];
+			if ( isset( $fga[3] ) )
+				$names['slug'] = $fga[3];
+			if ( isset( $fga[4] ) )
+				$names['singular'] = $fga[4];
+		}
 
 		if ( taxonomy_exists( $taxonomy ) )
 			register_taxonomy_for_object_type( $taxonomy, $this->post_type );
