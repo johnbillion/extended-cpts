@@ -328,7 +328,9 @@ class Extended_CPT {
 	 * @return object Taxonomy object
 	 */
 	public function add_taxonomy( $taxonomy, array $args = null, $names = null ) {
-		
+
+		$fga = func_get_args();
+
 		# Back-compat for pre-2.3 argument list:
 		if ( is_string( $names ) or count( $fga ) > 3 ) {
 			_doing_it_wrong( __FUNCTION__, __( 'Name parameters should be passed as an associative array.', 'ext_cpts' ), '2.3' );
