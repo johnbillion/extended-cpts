@@ -6,6 +6,8 @@ Version:      2.3.3
 Plugin URI:   https://github.com/johnbillion/ExtendedCPTs
 Author:       John Blackbourn
 Author URI:   https://johnblackbourn.com
+Text Domain:  extended-cpts
+Domain Path:  /languages/
 License:      GPL v2 or later
 
 Copyright © 2014 John Blackbourn
@@ -45,7 +47,7 @@ function register_extended_post_type( $post_type, array $args = null, $names = n
 
 	# Back-compat for pre-2.3 argument list:
 	if ( is_string( $names ) or count( $fga ) > 3 ) {
-		_doing_it_wrong( __FUNCTION__, __( 'Name parameters should be passed as an associative array.', 'ext_cpts' ), '2.3' );
+		_doing_it_wrong( __FUNCTION__, __( 'Name parameters should be passed as an associative array.', 'extended-cpts' ), '2.3' );
 		$names = array();
 		if ( isset( $fga[2] ) )
 			$names['plural'] = $fga[2];
@@ -284,7 +286,7 @@ class Extended_CPT {
 
 		if ( $query_var and count( get_taxonomies( array( 'query_var' => $query_var ) ) ) ) {
 
-			trigger_error( sprintf( __( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'ext_cpts' ), $query_var ), E_USER_ERROR );
+			trigger_error( sprintf( __( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'extended-cpts' ), $query_var ), E_USER_ERROR );
 
 		} else if ( empty( $existing ) ) {
 
@@ -333,7 +335,7 @@ class Extended_CPT {
 
 		# Back-compat for pre-2.3 argument list:
 		if ( is_string( $names ) or count( $fga ) > 3 ) {
-			_doing_it_wrong( __FUNCTION__, __( 'Name parameters should be passed as an associative array.', 'ext_cpts' ), '2.3' );
+			_doing_it_wrong( __FUNCTION__, __( 'Name parameters should be passed as an associative array.', 'extended-cpts' ), '2.3' );
 			$names = array();
 			if ( isset( $fga[2] ) )
 				$names['plural'] = $fga[2];
@@ -697,7 +699,7 @@ class Extended_CPT_Admin {
 
 				# For this, we need the dropdown walker from Extended Taxonomies:
 				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdown' ) ) {
-					trigger_error( sprintf( __( 'The %s class is required in order to display taxonomy filters', 'ext_cpts' ), $class ), E_USER_WARNING );
+					trigger_error( sprintf( __( 'The %s class is required in order to display taxonomy filters', 'extended-cpts' ), $class ), E_USER_WARNING );
 					continue;
 				} else {
 					$walker = new Walker_ExtendedTaxonomyDropdown( array(
@@ -731,7 +733,7 @@ class Extended_CPT_Admin {
 				if ( !isset( $filter['title'] ) ) {
 					$filter['title'] = str_replace( array( '-', '_' ), ' ', $filter['meta_key'] );
 					$filter['title'] = ucwords( $filter['title'] ) . 's';
-					$filter['title'] = sprintf( __( 'All %s', 'ext_cpts' ), $filter['title'] );
+					$filter['title'] = sprintf( __( 'All %s', 'extended-cpts' ), $filter['title'] );
 				}
 
 				if ( !isset( $filter['options'] ) ) {
@@ -1560,7 +1562,7 @@ class Extended_CPT_Admin {
 		}
 
 		if ( !p2p_connection_exists( $connection ) ) {
-			_e( 'Invalid connection type', 'ext_cpts' );
+			_e( 'Invalid connection type', 'extended-cpts' );
 			return;
 		}
 
