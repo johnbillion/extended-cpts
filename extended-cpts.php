@@ -272,7 +272,6 @@ class Extended_CPT {
 	 * an error of E_USER_ERROR level if a WP_Error is returned. Currently the only time you'll get
 	 * an error from register_post_type() is if the post type name is too long.
 	 *
-	 * @return null
 	 */
 	public function register_post_type() {
 
@@ -308,7 +307,6 @@ class Extended_CPT {
 	 * Extends an existing post type object. Currently only handles labels.
 	 *
 	 * @param object $pto A post type object
-	 * @return null
 	 */
 	public function extend( $pto ) {
 		$GLOBALS['wp_post_types'][$pto->name]->labels = (object) $this->args['labels'];
@@ -474,7 +472,6 @@ class Extended_CPT_Admin {
 	/**
 	 * Add some CSS to the post edit screen. Used to hide various screen elements.
 	 *
-	 * @return null
 	 */
 	public function admin_head() {
 
@@ -497,7 +494,6 @@ class Extended_CPT_Admin {
 	/**
 	 * Set the default sort field and sort order on our post type admin screen.
 	 *
-	 * @return null
 	 */
 	public function default_sort() {
 
@@ -524,7 +520,6 @@ class Extended_CPT_Admin {
 	/**
 	 * Add the relevant filters for sorting posts by our sortable fields.
 	 *
-	 * @return null
 	 */
 	public function maybe_sort() {
 
@@ -541,7 +536,6 @@ class Extended_CPT_Admin {
 	/**
 	 * Add the relevant filters for filtering posts by our custom filters.
 	 *
-	 * @return null
 	 */
 	public function maybe_filter() {
 
@@ -675,7 +669,6 @@ class Extended_CPT_Admin {
 	 * - cap - A capability required in order for this filter to be displayed to the current user. Defaults
 	 * to null, meaning the filter is shown to all users.
 	 *
-	 * @return null
 	 */
 	public function filters() {
 
@@ -892,7 +885,6 @@ class Extended_CPT_Admin {
 	/**
 	 * Add our post type to the 'Right Now' widget on the WordPress (<3.8) dashboard.
 	 *
-	 * @return null
 	 */
 	public function right_now() {
 
@@ -1320,7 +1312,6 @@ class Extended_CPT_Admin {
 	 * Output the column data for our custom columns.
 	 *
 	 * @param string $col The column name
-	 * @return null
 	 */
 	public function col( $col ) {
 
@@ -1359,7 +1350,6 @@ class Extended_CPT_Admin {
 	 *
 	 * @param string $meta_key The post meta key
 	 * @param array  $args     Optional array of arguments for this field
-	 * @return null
 	 */
 	public function col_post_meta( $meta_key, array $args = null ) {
 
@@ -1398,7 +1388,6 @@ class Extended_CPT_Admin {
 	 *
 	 * @param string $taxonomy The taxonomy name
 	 * @param array  $args     Optional array of arguments for this field
-	 * @return null
 	 */
 	public function col_taxonomy( $taxonomy, array $args = null ) {
 
@@ -1464,7 +1453,6 @@ class Extended_CPT_Admin {
 	 *
 	 * @param string $field The post field
 	 * @param array  $args  Optional array of arguments for this field
-	 * @return null
 	 */
 	public function col_post_field( $field, array $args = null ) {
 
@@ -1515,7 +1503,6 @@ class Extended_CPT_Admin {
 	 *
 	 * @param string $image_size The image size
 	 * @param array  $args       Optional array of 'width' and 'height' attributes for the image
-	 * @return null
 	 */
 	public function col_featured_image( $image_size, array $args = null ) {
 
@@ -1551,7 +1538,6 @@ class Extended_CPT_Admin {
 	 *
 	 * @param string $connection The ID of the connection type
 	 * @param array  $args       Optional array of arguments for a given connection type
-	 * @return null
 	 */
 	public function col_connection( $connection, array $args = null ) {
 
