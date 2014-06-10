@@ -40,8 +40,7 @@ if ( !function_exists( 'register_extended_post_type' ) ) {
  * }
  * @return Extended_CPT 
  */
-if ( !function_exists( 'register_extended_post_type ') ) {
-function register_extended_post_type( $post_type, array $args = null, $names = null ) {
+function register_extended_post_type( $post_type, array $args = array(), $names = array() ) {
 
 	$fga = func_get_args();
 
@@ -129,7 +128,7 @@ class Extended_CPT {
 	 * @param array  $args      The post type arguments (optional)
 	 * @param array  $names     An associative array of the plural, singular and slug names (optional)
 	 */
-	public function __construct( $post_type, array $args = null, array $names = null ) {
+	public function __construct( $post_type, array $args = array(), array $names = array() ) {
 
 		if ( isset( $names['singular'] ) ) {
 			$this->post_singular = $names['singular'];
@@ -327,7 +326,7 @@ class Extended_CPT {
 	 * @param array  $names    An associative array of the plural, singular and slug names (optional)
 	 * @return object Taxonomy object
 	 */
-	public function add_taxonomy( $taxonomy, array $args = null, $names = null ) {
+	public function add_taxonomy( $taxonomy, array $args = array(), $names = array() ) {
 
 		$fga = func_get_args();
 
@@ -407,7 +406,7 @@ class Extended_CPT_Admin {
 	 * @param Extended_CPT $cpt  An extended post type object
 	 * @param array        $args The admin arguments (optional)
 	 */
-	public function __construct( Extended_CPT $cpt, array $args = null ) {
+	public function __construct( Extended_CPT $cpt, array $args = array() ) {
 
 		$this->cpt = $cpt;
 		# Merge our args with the defaults:
@@ -1351,7 +1350,7 @@ class Extended_CPT_Admin {
 	 * @param string $meta_key The post meta key
 	 * @param array  $args     Optional array of arguments for this field
 	 */
-	public function col_post_meta( $meta_key, array $args = null ) {
+	public function col_post_meta( $meta_key, array $args = array() ) {
 
 		$val = get_post_meta( get_the_ID(), $meta_key, true );
 
@@ -1389,7 +1388,7 @@ class Extended_CPT_Admin {
 	 * @param string $taxonomy The taxonomy name
 	 * @param array  $args     Optional array of arguments for this field
 	 */
-	public function col_taxonomy( $taxonomy, array $args = null ) {
+	public function col_taxonomy( $taxonomy, array $args = array() ) {
 
 		global $post;
 
@@ -1454,7 +1453,7 @@ class Extended_CPT_Admin {
 	 * @param string $field The post field
 	 * @param array  $args  Optional array of arguments for this field
 	 */
-	public function col_post_field( $field, array $args = null ) {
+	public function col_post_field( $field, array $args = array() ) {
 
 		global $post;
 
@@ -1504,7 +1503,7 @@ class Extended_CPT_Admin {
 	 * @param string $image_size The image size
 	 * @param array  $args       Optional array of 'width' and 'height' attributes for the image
 	 */
-	public function col_featured_image( $image_size, array $args = null ) {
+	public function col_featured_image( $image_size, array $args = array() ) {
 
 		if ( !function_exists( 'has_post_thumbnail' ) ) {
 			return;
@@ -1539,7 +1538,7 @@ class Extended_CPT_Admin {
 	 * @param string $connection The ID of the connection type
 	 * @param array  $args       Optional array of arguments for a given connection type
 	 */
-	public function col_connection( $connection, array $args = null ) {
+	public function col_connection( $connection, array $args = array() ) {
 
 		global $post, $wp_query;
 
