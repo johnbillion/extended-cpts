@@ -157,9 +157,9 @@ class Extended_CPT {
 			'new_item'           => sprintf( 'New %s', $this->post_singular ),
 			'view_item'          => sprintf( 'View %s', $this->post_singular ),
 			'search_items'       => sprintf( 'Search %s', $this->post_plural ),
-			'not_found'          => sprintf( 'No %s found', $this->post_plural_low ),
-			'not_found_in_trash' => sprintf( 'No %s found in trash', $this->post_plural_low ),
-			'parent_item_colon'  => sprintf( 'Parent %s', $this->post_singular ),
+			'not_found'          => sprintf( 'No %s found.', $this->post_plural_low ),
+			'not_found_in_trash' => sprintf( 'No %s found in trash.', $this->post_plural_low ),
+			'parent_item_colon'  => sprintf( 'Parent %s:', $this->post_singular ),
 			'all_items'          => sprintf( 'All %s', $this->post_plural ),
 		);
 
