@@ -1638,10 +1638,6 @@ class Extended_CPT_Admin {
 	 */
 	public function remove_quick_edit_menu( array $actions ) {
 
-		if ( $this->cpt->post_type != self::get_current_post_type() ) {
-			return $actions;
-		}
-
 		unset( $actions['edit'] );
 		return $actions;
 
