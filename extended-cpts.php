@@ -196,6 +196,12 @@ class Extended_CPT {
 			add_filter( 'parse_request', array( $this, 'override_private_query_vars' ), 1 );
 		}
 
+		# Custom post type permastruct:
+		if ( $this->args['rewrite'] and !empty( $this->args['rewrite']['permastruct'] ) ) {
+			add_action( 'registered_post_type', array( $this, 'registered_post_type' ), 1, 2 );
+			add_filter( 'post_type_link',       array( $this, 'post_type_link' ), 1, 4 );
+		}
+
 		# Register post type when WordPress initialises:
 		if ( 'init' === current_filter() ) {
 			$this->register_post_type();
@@ -252,6 +258,86 @@ class Extended_CPT {
 		}
 
 		return $wp;
+
+	}
+
+	public function registered_post_type( $post_type, stdClass $args ) {
+		if ( $post_type != $this->post_type ) {
+			return;
+		}
+		add_permastruct( $this->post_type, $args->rewrite['permastruct'], $args->rewrite );
+	}
+
+	/**
+	 * @param string  $post_link The post's permalink.
+	 * @param WP_Post $post      The post in question.
+	 * @param bool    $leavename Whether to keep the post name.
+	 * @param bool    $sample    Is it a sample permalink.
+	 */
+	public function post_type_link( $post_link, WP_Post $post, $leavename, $sample ) {
+
+		# If it's not our post type, bail out:
+		if ( $this->post_type != $post->post_type ) {
+			return $post_link;
+		}
+
+		$date = explode( ' ', mysql2date( 'Y m d H i s', $post->post_date ) );
+		$replacements = array(
+			'%year%'     => $date[0],
+			'%monthnum%' => $date[1],
+			'%day%'      => $date[2],
+			'%hour%'     => $date[3],
+			'%minute%'   => $date[4],
+			'%second%'   => $date[5],
+			'%post_id%'  => $post->ID,
+		);
+
+		if ( strpos( $post_link, '%author%' ) !== false ) {
+			$replacements['%author%'] = get_userdata( $post->post_author )->user_nicename;
+		}
+
+		foreach ( get_object_taxonomies( $post ) as $tax ) {
+			if ( strpos( $post_link, "%{$tax}%" ) === false ) {
+				continue;
+			}
+
+			if ( $terms = get_the_terms( $post, $tax ) ) {
+
+				/**
+				 * Filter the term that gets used in the $tax permalink token.
+				 *
+				 * @param stdClass $term  The $tax term to use in the permalink.
+				 * @param array    $terms Array of all $tax terms associated with the post.
+				 * @param WP_Post  $post  The post in question.
+				 */
+				$term_object = apply_filters( "post_link_{$tax}", reset( $terms ), $terms, $post );
+
+				$term = get_term( $term_object, $tax )->slug;
+
+			} else {
+				$term = $post->post_type;
+
+				/**
+				 * Filter the default term name that gets used in the $tax permalink token.
+				 *
+				 * @param string  $term The $tax term name to use in the permalink.
+				 * @param WP_Post $post The post in question.
+				 */
+				$default_term_name = apply_filters( "default_{$tax}", get_option( "default_{$tax}" ), $post );
+				if ( $default_term_name ) {
+					if ( ! is_wp_error( $default_term = get_term( $default_term_name, $tax ) ) ) {
+						$term = $default_term->slug;
+					}
+				}
+			}
+
+			$replacements["%{$tax}%"] = $term;
+
+		}
+
+		$post_link = str_replace( array_keys( $replacements ), $replacements, $post_link );
+
+		return $post_link;
 
 	}
 
