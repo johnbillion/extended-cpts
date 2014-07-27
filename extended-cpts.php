@@ -198,7 +198,7 @@ class Extended_CPT {
 
 		# Register post type when WordPress initialises:
 		if ( 'init' === current_filter() ) {
-			call_user_func( array( $this, 'register_post_type' ) );
+			$this->register_post_type();
 		} else {
 			add_action( 'init', array( $this, 'register_post_type' ), 9 );
 		}
@@ -279,14 +279,15 @@ class Extended_CPT {
 
 		} else if ( empty( $existing ) ) {
 
-			if ( is_wp_error( $cpt = register_post_type( $this->post_type, $this->args ) ) ) {
+			$cpt = register_post_type( $this->post_type, $this->args );
+
+			if ( is_wp_error( $cpt ) ) {
 				trigger_error( $cpt->get_error_message(), E_USER_ERROR );
 			}
 
 		} else {
 
 			# This allows us to call register_extended_post_type() on an existing post type to add custom functionality to it
-
 			$this->extend( $existing );
 
 		}
@@ -298,7 +299,7 @@ class Extended_CPT {
 	 *
 	 * @param object $pto A post type object
 	 */
-	public function extend( $pto ) {
+	public function extend( stdClass $pto ) {
 		$GLOBALS['wp_post_types'][$pto->name]->labels = (object) $this->args['labels'];
 	}
 
