@@ -60,15 +60,14 @@ class Extended_CPT {
 	 * @var array
 	 */
 	protected $defaults = array(
-		'public'               => true,
-		'menu_position'        => 6,
-		'menu_icon'            => null,
-		'capability_type'      => 'page',
-		'hierarchical'         => true,
-		'supports'             => array( 'title', 'editor', 'thumbnail' ),
-		'has_archive'          => true,
-		'show_in_feed'         => false, # Custom arg
-		'archive'              => null,  # Custom arg
+		'public'          => true,
+		'menu_position'   => 6,
+		'capability_type' => 'page',
+		'hierarchical'    => true,
+		'supports'        => array( 'title', 'editor', 'thumbnail' ),
+		'has_archive'     => true,
+		'show_in_feed'    => false, # Custom arg
+		'archive'         => null,  # Custom arg
 	);
 
 	/**
