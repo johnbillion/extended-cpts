@@ -340,7 +340,7 @@ class Extended_CPT_Admin {
 	protected $defaults = array(
 		'archive_in_nav_menus' => true,  # Custom arg
 		'quick_edit'           => true,  # Custom arg
-		'right_now'            => true,  # Custom arg
+		'dashboard_glance'     => true,  # Custom arg
 		'cols'                 => null,  # Custom arg
 		'filters'              => null,  # Custom arg
 		'enter_title_here'     => null,  # Custom arg
@@ -362,7 +362,7 @@ class Extended_CPT_Admin {
 	 *
 	 * - quick_edit - boolean - Whether to show Quick Edit links for this post type. Defaults to true.
 	 *
-	 * - right_now - boolean - Whether to show this post type on the 'Right Now' section of WordPress'
+	 * - dashboard_glance - boolean - Whether to show this post type on the 'At a Glance' section of the
 	 * dashboard. Defaults to true.
 	 *
 	 * - cols - array - Associative array of admin columns to show for this post type. See the cols()
@@ -423,10 +423,9 @@ class Extended_CPT_Admin {
 			add_filter( "bulk_actions-edit-{$this->cpt->post_type}", array( $this, 'remove_quick_edit_menu' ) );
 		}
 
-		# 'Right Now' / 'At a Glance' dashboard panels:
-		if ( $this->args['right_now'] ) {
-			add_action( 'right_now_content_table_end', array( $this, 'right_now' ), $this->cpt->args['menu_position'] );
-			add_filter( 'dashboard_glance_items',      array( $this, 'glance_items' ), $this->cpt->args['menu_position'] );
+		# 'At a Glance' dashboard panels:
+		if ( $this->args['dashboard_glance'] ) {
+			add_filter( 'dashboard_glance_items', array( $this, 'glance_items' ), $this->cpt->args['menu_position'] );
 		}
 
 		# Nav menus screen item:
@@ -850,35 +849,6 @@ class Extended_CPT_Admin {
 		}
 
 		return $vars;
-
-	}
-
-	/**
-	 * Add our post type to the 'Right Now' widget on the WordPress (<3.8) dashboard.
-	 *
-	 */
-	public function right_now() {
-
-		$pto = get_post_type_object( $this->cpt->post_type );
-
-		if ( !current_user_can( $pto->cap->edit_posts ) ) {
-			return;
-		}
-
-		# Get the labels and format the counts:
-		$count = wp_count_posts( $this->cpt->post_type );
-		$text  = self::n( $pto->labels->singular_name, $pto->labels->name, $count->publish );
-		$num   = number_format_i18n( $count->publish );
-
-		# Add edit links:
-		$num  = '<a href="edit.php?post_type=' . $this->cpt->post_type . '">' . $num . '</a>';
-		$text = '<a href="edit.php?post_type=' . $this->cpt->post_type . '">' . $text . '</a>';
-
-		# Output it:
-		echo '<tr>';
-		echo '<td class="first b b-' . $this->cpt->post_type . '">' . $num . '</td>';
-		echo '<td class="t ' . $this->cpt->post_type . '">' . $text . '</td>';
-		echo '</tr>';
 
 	}
 
