@@ -424,8 +424,8 @@ class Extended_CPT_Admin {
 
 		# Quick Edit:
 		if ( !$this->args['quick_edit'] ) {
-			add_filter( 'post_row_actions',                          array( $this, 'remove_quick_edit_action' ) );
-			add_filter( 'page_row_actions',                          array( $this, 'remove_quick_edit_action' ) );
+			add_filter( 'post_row_actions',                          array( $this, 'remove_quick_edit_action' ), 10, 2 );
+			add_filter( 'page_row_actions',                          array( $this, 'remove_quick_edit_action' ), 10, 2 );
 			add_filter( "bulk_actions-edit-{$this->cpt->post_type}", array( $this, 'remove_quick_edit_menu' ) );
 		}
 
@@ -1617,11 +1617,12 @@ class Extended_CPT_Admin {
 	 * Removes the Quick Edit link from the post row actions.
 	 *
 	 * @param $actions array Array of post actions
+	 * @param $post WP_Post the current post object
 	 * @return array Array of updated post actions
 	 */
-	public function remove_quick_edit_action( array $actions ) {
+	public function remove_quick_edit_action( array $actions, WP_Post $post ) {
 
-		if ( $this->cpt->post_type != self::get_current_post_type() ) {
+		if ( $this->cpt->post_type != $post->post_type ) {
 			return $actions;
 		}
 
