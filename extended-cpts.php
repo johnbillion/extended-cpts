@@ -957,6 +957,9 @@ class Extended_CPT_Admin {
 		if ( !current_user_can( $pto->cap->edit_posts ) ) {
 			return $items;
 		}
+		if ( $pto->_builtin ) {
+			return $items;
+		}
 
 		# Get the labels and format the counts:
 		$count = wp_count_posts( $this->cpt->post_type );
