@@ -186,6 +186,11 @@ class Extended_CPT {
 			$this->args['labels'] = array_merge( $this->defaults['labels'], $args['labels'] );
 		}
 
+		# This allows the 'rewrite' arg to contain some or all options:
+		if ( isset( $args['rewrite'] ) and is_array( $args['rewrite'] ) ) {
+			$this->args['rewrite'] = array_merge( $this->defaults['rewrite'], $args['rewrite'] );
+		}
+
 		# Post type in the site's main feed:
 		if ( $this->args['show_in_feed'] ) {
 			add_filter( 'request', array( $this, 'add_to_feed' ) );
