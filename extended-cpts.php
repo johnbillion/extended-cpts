@@ -202,6 +202,11 @@ class Extended_CPT {
 			add_filter( 'post_type_link',       array( $this, 'post_type_link' ), 1, 4 );
 		}
 
+		# Rewrite testing:
+		if ( $this->args['rewrite'] ) {
+			add_filter( 'rewrite_testing_tests', array( $this, 'rewrite_testing_tests' ) );
+		}
+
 		# Register post type when WordPress initialises:
 		if ( 'init' === current_filter() ) {
 			$this->register_post_type();
@@ -338,6 +343,55 @@ class Extended_CPT {
 		$post_link = str_replace( array_keys( $replacements ), $replacements, $post_link );
 
 		return $post_link;
+
+	}
+
+	public function rewrite_testing_tests( array $tests ) {
+
+		global $wp_rewrite;
+
+		$struct = $wp_rewrite->extra_permastructs[$this->post_type];
+		$rules  = $wp_rewrite->generate_rewrite_rules(
+			$struct['struct'],
+			$struct['ep_mask'],
+			$struct['paged'],
+			$struct['feed'],
+			$struct['forcomments'],
+			$struct['walk_dirs'],
+			$struct['endpoints']
+		);
+		$feedregex = implode( '|', $wp_rewrite->feeds );
+		$replace   = array(
+			'([^/]+)'        => 'one',
+			'[^/]+'          => 'two',
+			'(.+?)'          => 'three',
+			'.+?'            => 'four',
+			// '(/[0-9]+)?'  => '/789',
+			'(/[0-9]+)?'     => '',
+			'([0-9]{4})'     => '1984',
+			'[0-9]{4}'       => '1984',
+			'([0-9]{1,2})'   => '02',
+			'[0-9]{1,2}'     => '02',
+			'([0-9]{1,})'    => '123',
+			'[0-9]{1,}'      => '456',
+			'([0-9]+)'       => '10',
+			'[0-9]+'         => '10',
+			"({$feedregex})" => end( $wp_rewrite->feeds ),
+			'/?'             => '/',
+			'$'              => '',
+		);
+
+		foreach ( $rules as $regex => $result ) {
+			$regex  = str_replace( array_keys( $replace ), $replace, $regex );
+			$result = preg_replace( '/\$([0-9]+)/', '\$matches[$1]', $result );
+			$new["/{$regex}"] = $result;
+		}
+
+		$name = get_post_type_object( $this->post_type )->labels->name;
+
+		$tests[$name] = $new;
+
+		return $tests;
 
 	}
 
