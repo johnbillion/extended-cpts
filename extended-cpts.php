@@ -282,7 +282,8 @@ class Extended_CPT {
 		if ( $post_type != $this->post_type ) {
 			return;
 		}
-		add_permastruct( $this->post_type, $args->rewrite['permastruct'], $args->rewrite );
+		$struct = str_replace( "%{$this->post_type}_slug%", $this->post_slug, $args->rewrite['permastruct'] );
+		add_permastruct( $this->post_type, $struct, $args->rewrite );
 	}
 
 	/**
