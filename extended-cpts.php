@@ -503,8 +503,8 @@ class Extended_CPT_Admin {
 		'archive_in_nav_menus' => true,  # Custom arg
 		'quick_edit'           => true,  # Custom arg
 		'dashboard_glance'     => true,  # Custom arg
-		'cols'                 => null,  # Custom arg
-		'filters'              => null,  # Custom arg
+		'admin_cols'           => null,  # Custom arg
+		'admin_filters'        => null,  # Custom arg
 		'enter_title_here'     => null,  # Custom arg
 		'featured_image'       => null,  # Custom arg
 	);
@@ -524,9 +524,9 @@ class Extended_CPT_Admin {
 	 *     @type bool   $quick_edit           Whether to show Quick Edit links for this post type. Default true.
 	 *     @type bool   $dashboard_glance     Whether to show this post type on the 'At a Glance' section of the
 	 *                                        dashboard. Default true.
-	 *     @type array  $cols                 Associative array of admin columns to show for this post type. See the
+	 *     @type array  $admin_cols           Associative array of admin columns to show for this post type. See the
 	 *                                        `cols()` method for more information. Default null (no custom columns).
-	 *     @type array  $filters              Associative array of admin filters to show for this post type. See the
+	 *     @type array  $admin_filters        Associative array of admin filters to show for this post type. See the
 	 *                                        `filters()` method for more information. Default null (no custom filters).
 	 *     @type string $enter_title_here     Placeholder text which appears in the title field for this post type.
 	 *     @type string $featured_image       Text which replaces 'Featured Image' for this post type.
@@ -539,7 +539,7 @@ class Extended_CPT_Admin {
 		$this->args = wp_parse_args( $args, $this->defaults );
 
 		# Admin columns:
-		if ( $this->args['cols'] ) {
+		if ( $this->args['admin_cols'] ) {
 			add_filter( 'manage_posts_columns',                                 array( $this, '_log_default_cols' ), 0 );
 			add_filter( 'manage_pages_columns',                                 array( $this, '_log_default_cols' ), 0 );
 			add_filter( "manage_edit-{$this->cpt->post_type}_sortable_columns", array( $this, 'sortables' ) );
@@ -550,7 +550,7 @@ class Extended_CPT_Admin {
 		}
 
 		# Admin filters:
-		if ( $this->args['filters'] ) {
+		if ( $this->args['admin_filters'] ) {
 			add_action( 'load-edit.php', array( $this, 'maybe_filter' ) );
 			add_filter( 'query_vars',    array( $this, 'add_filter_query_vars' ) );
 		}
@@ -566,7 +566,7 @@ class Extended_CPT_Admin {
 		}
 
 		# Hide month filter:
-		if ( isset( $this->args['filters']['m'] ) and !$this->args['filters']['m'] ) {
+		if ( isset( $this->args['admin_filters']['m'] ) and !$this->args['admin_filters']['m'] ) {
 			add_action( 'admin_head-edit.php', array( $this, 'admin_head' ) );
 		}
 
@@ -605,7 +605,7 @@ class Extended_CPT_Admin {
 
 		?>
 		<style type="text/css">
-		<?php if ( isset( $this->args['filters']['m'] ) and !$this->args['filters']['m'] ) { ?>
+		<?php if ( isset( $this->args['admin_filters']['m'] ) and !$this->args['admin_filters']['m'] ) { ?>
 			#posts-filter select[name="m"] {
 				display: none;
 			}
@@ -631,7 +631,7 @@ class Extended_CPT_Admin {
 		}
 
 		# Loop over our columns to find the default sort column (if there is one):
-		foreach ( $this->args['cols'] as $id => $col ) {
+		foreach ( $this->args['admin_cols'] as $id => $col ) {
 			if ( is_array( $col ) and isset( $col['default'] ) ) {
 				$_GET['orderby'] = $id;
 				$_GET['order']   = ( 'desc' == strtolower( $col['default'] ) ? 'desc' : 'asc' );
@@ -658,7 +658,7 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * Add the relevant filters for filtering posts by our custom filters.
+	 * Add the relevant filters for filtering posts by our custom admin filters.
 	 *
 	 */
 	public function maybe_filter() {
@@ -750,14 +750,14 @@ class Extended_CPT_Admin {
 	/**
 	 * Output custom filter dropdown menus on the admin screen for this post type.
 	 *
-	 * Each item in the 'filters' array is an associative array of information for a filter. Defining a filter is easy.
-	 * Just define an array which includes the filter title and filter type. You can display filters for post meta
+	 * Each item in the 'admin_filters' array is an associative array of information for a filter. Defining a filter is
+	 * easy. Just define an array which includes the filter title and filter type. You can display filters for post meta
 	 * fields and taxonomy terms.
 	 *
 	 * The example below adds filters for the 'event_type' meta key and the 'location' taxonomy:
 	 *
 	 *     register_extended_post_type( 'event', array(
-	 *         'filters' => array(
+	 *         'admin_filters' => array(
 	 *             'event_type' => array(
 	 *                 'title'    => 'Event Type',
 	 *                 'meta_key' => 'event_type'
@@ -779,8 +779,8 @@ class Extended_CPT_Admin {
 	 * That's all you need to do. WordPress handles taxonomy term filtering itself, and the plugin handles the dropdown
 	 * menu and filtering for post meta.
 	 *
-	 * Each item in the 'filters' array needs either a 'taxonomy', 'meta_key' or 'meta_exists' element containing the
-	 * corresponding taxonomy name or post meta key.
+	 * Each item in the 'admin_filters' array needs either a 'taxonomy', 'meta_key' or 'meta_exists' element containing
+	 * the corresponding taxonomy name or post meta key.
 	 *
 	 * The 'meta_exists' filter outputs a dropdown menu listing each of the meta_exists fields, allowing users to
 	 * filter the screen by posts which have the corresponding meta field.
@@ -800,7 +800,7 @@ class Extended_CPT_Admin {
 
 		$pto = get_post_type_object( $this->cpt->post_type );
 
-		foreach ( $this->args['filters'] as $filter_key => $filter ) {
+		foreach ( $this->args['admin_filters'] as $filter_key => $filter ) {
 
 			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) ) {
 				continue;
@@ -945,7 +945,7 @@ class Extended_CPT_Admin {
 	 */
 	public function add_filter_query_vars( array $vars ) {
 
-		foreach ( $this->args['filters'] as $filter_key => $filter ) {
+		foreach ( $this->args['admin_filters'] as $filter_key => $filter ) {
 			if ( isset( $filter['meta_key'] ) or isset( $filter['meta_search_key'] ) or isset( $filter['meta_exists'] ) ) {
 				$vars[] = $filter_key;
 			}
@@ -963,7 +963,7 @@ class Extended_CPT_Admin {
 	 */
 	public function filter_posts_by_post_meta( array $vars ) {
 
-		foreach ( $this->args['filters'] as $filter_key => $filter ) {
+		foreach ( $this->args['admin_filters'] as $filter_key => $filter ) {
 
 			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) ) {
 				continue;
@@ -1168,17 +1168,17 @@ class Extended_CPT_Admin {
 		if ( !isset( $vars['orderby'] ) ) {
 			return $vars;
 		}
-		if ( !isset( $this->args['cols'][$vars['orderby']] ) ) {
+		if ( !isset( $this->args['admin_cols'][$vars['orderby']] ) ) {
 			return $vars;
 		}
-		if ( !is_array( $this->args['cols'][$vars['orderby']] ) ) {
+		if ( !is_array( $this->args['admin_cols'][$vars['orderby']] ) ) {
 			return $vars;
 		}
-		if ( !isset( $this->args['cols'][$vars['orderby']]['meta_key'] ) ) {
+		if ( !isset( $this->args['admin_cols'][$vars['orderby']]['meta_key'] ) ) {
 			return $vars;
 		}
 
-		$vars['meta_key'] = $this->args['cols'][$vars['orderby']]['meta_key'];
+		$vars['meta_key'] = $this->args['admin_cols'][$vars['orderby']]['meta_key'];
 		$vars['orderby']  = 'meta_value';
 
 		return $vars;
@@ -1196,17 +1196,17 @@ class Extended_CPT_Admin {
 		if ( !isset( $vars['orderby'] ) ) {
 			return $vars;
 		}
-		if ( !isset( $this->args['cols'][$vars['orderby']] ) ) {
+		if ( !isset( $this->args['admin_cols'][$vars['orderby']] ) ) {
 			return $vars;
 		}
-		if ( !is_array( $this->args['cols'][$vars['orderby']] ) ) {
+		if ( !is_array( $this->args['admin_cols'][$vars['orderby']] ) ) {
 			return $vars;
 		}
-		if ( !isset( $this->args['cols'][$vars['orderby']]['post_field'] ) ) {
+		if ( !isset( $this->args['admin_cols'][$vars['orderby']]['post_field'] ) ) {
 			return $vars;
 		}
 
-		$field = str_replace( 'post_', '', $this->args['cols'][$vars['orderby']]['post_field'] );
+		$field = str_replace( 'post_', '', $this->args['admin_cols'][$vars['orderby']]['post_field'] );
 		$vars['orderby'] = $field;
 
 		return $vars;
@@ -1227,13 +1227,13 @@ class Extended_CPT_Admin {
 		if ( !isset( $q->query['orderby'] ) ) {
 			return $clauses;
 		}
-		if ( !isset( $this->args['cols'][$q->query['orderby']] ) ) {
+		if ( !isset( $this->args['admin_cols'][$q->query['orderby']] ) ) {
 			return $clauses;
 		}
-		if ( !is_array( $this->args['cols'][$q->query['orderby']] ) ) {
+		if ( !is_array( $this->args['admin_cols'][$q->query['orderby']] ) ) {
 			return $clauses;
 		}
-		if ( !isset( $this->args['cols'][$q->query['orderby']]['taxonomy'] ) ) {
+		if ( !isset( $this->args['admin_cols'][$q->query['orderby']]['taxonomy'] ) ) {
 			return $clauses;
 		}
 
@@ -1244,7 +1244,7 @@ class Extended_CPT_Admin {
 			LEFT OUTER JOIN {$wpdb->term_taxonomy} as ext_cpts_tt ON ( ext_cpts_tr.term_taxonomy_id = ext_cpts_tt.term_taxonomy_id )
 			LEFT OUTER JOIN {$wpdb->terms} as ext_cpts_t ON ( ext_cpts_tt.term_id = ext_cpts_t.term_id )
 		";
-		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $this->args['cols'][$q->query['orderby']]['taxonomy'] );
+		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $this->args['admin_cols'][$q->query['orderby']]['taxonomy'] );
 		$clauses['groupby'] = 'ext_cpts_tr.object_id';
 		$clauses['orderby'] = "GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ";
 		$clauses['orderby'] .= ( 'ASC' == strtoupper( $q->get('order') ) ) ? 'ASC' : 'DESC';
@@ -1261,7 +1261,7 @@ class Extended_CPT_Admin {
 	 */
 	public function sortables( array $cols ) {
 
-		foreach ( $this->args['cols'] as $id => $col ) {
+		foreach ( $this->args['admin_cols'] as $id => $col ) {
 			if ( !is_array( $col ) ) {
 				continue;
 			}
@@ -1280,7 +1280,7 @@ class Extended_CPT_Admin {
 	/**
 	 * Add columns to the admin screen for this post type.
 	 *
-	 * Each item in the 'cols' array is either a string name of an existing column, or an associative
+	 * Each item in the 'admin_cols' array is either a string name of an existing column, or an associative
 	 * array of information for a custom column.
 	 *
 	 * Defining a custom column is easy. Just define an array which includes the column title, column
@@ -1291,7 +1291,7 @@ class Extended_CPT_Admin {
 	 * key and one which lists the post's terms from the 'location' taxonomy:
 	 *
 	 *     register_extended_post_type( 'event', array(
-	 *         'cols' => array(
+	 *         'admin_cols' => array(
 	 *             'event_type' => array(
 	 *                 'title'    => 'Event Type',
 	 *                 'meta_key' => 'event_type'
@@ -1307,15 +1307,12 @@ class Extended_CPT_Admin {
 	 * (escaping text, and comma-separating taxonomy terms). No more messing about with all of those
 	 * annoyingly named column filters and actions.
 	 *
-	 * Each item in the 'cols' array should contain:
-	 *
- 	 * - A 'title' element containing the column title.
- 	 * - One of the following elements which defines which type of column it is:
-   	 *     - taxonomy - The name of a taxonomy
-   	 *     - meta_key - A post meta key
-   	 *     - post_field - The name of a post field (eg. post_excerpt)
+	 * Each item in the 'admin_cols' array must contain one of the following elements which defines the column type:
+	 *     - taxonomy       - The name of a taxonomy
+	 *     - meta_key       - A post meta key
+	 *     - post_field     - The name of a post field (eg. post_excerpt)
 	 *     - featured_image - A featured image size (eg. thumbnail)
-	 *     - connection - A connection ID registered with the Posts 2 Posts plugin
+	 *     - connection     - A connection ID registered with the Posts 2 Posts plugin
 	 *
 	 * The value for the corresponding taxonomy terms, post meta or post field are safely escaped and output
 	 * into the column, and the values are used to provide the sortable functionality for the column. For
@@ -1364,13 +1361,13 @@ class Extended_CPT_Admin {
 
 		# Add existing columns we want to keep:
 		foreach ( $cols as $id => $title ) {
-			if ( in_array( $id, $keep ) and !isset( $this->args['cols'][$id] ) ) {
+			if ( in_array( $id, $keep ) and !isset( $this->args['admin_cols'][$id] ) ) {
 				$new_cols[$id] = $title;
 			}
 		}
 
 		# Add our custom columns:
-		foreach ( array_filter( $this->args['cols'] ) as $id => $col ) {
+		foreach ( array_filter( $this->args['admin_cols'] ) as $id => $col ) {
 			if ( is_string( $col ) and isset( $cols[$col] ) ) {
 				# Existing (ie. built-in) column with id as the value
 				$new_cols[$col] = $cols[$col];
@@ -1416,7 +1413,7 @@ class Extended_CPT_Admin {
 	public function col( $col ) {
 
 		# Shorthand:
-		$c = $this->args['cols'];
+		$c = $this->args['admin_cols'];
 
 		# We're only interested in our custom columns:
 		$custom_cols = array_filter( array_keys( $c ) );
