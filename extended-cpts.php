@@ -379,8 +379,7 @@ class Extended_CPT {
 			'[^/]+'          => 'two',
 			'(.+?)'          => 'three',
 			'.+?'            => 'four',
-			// '(/[0-9]+)?'  => '/789',
-			'(/[0-9]+)?'     => '',
+			'(/[0-9]+)?'     => '/789',
 			'([0-9]{4})'     => '1984',
 			'[0-9]{4}'       => '1984',
 			'([0-9]{1,2})'   => '02',
@@ -398,6 +397,10 @@ class Extended_CPT {
 			$regex  = str_replace( array_keys( $replace ), $replace, $regex );
 			$result = preg_replace( '/\$([0-9]+)/', '\$matches[$1]', $result );
 			$new["/{$regex}"] = $result;
+			if ( false !== strpos( $regex, $replace['(/[0-9]+)?'] ) ) {
+				$regex = str_replace( $replace['(/[0-9]+)?'], '', $regex );
+				$new["/{$regex}"] = $result;
+			}
 		}
 
 		$name = get_post_type_object( $this->post_type )->labels->name;
