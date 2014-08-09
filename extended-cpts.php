@@ -1453,32 +1453,42 @@ class Extended_CPT_Admin {
 	 */
 	public function col_post_meta( $meta_key, array $args = array() ) {
 
-		$val = get_post_meta( get_the_ID(), $meta_key, true );
+		$vals = get_post_meta( get_the_ID(), $meta_key, false );
+		$echo = array();
+		sort( $vals );
 
-		switch ( true ) {
+		if ( isset( $args['date_format'] ) ) {
 
-			case isset( $args['date_format'] ):
+			if ( true === $args['date_format'] ) {
+				$args['date_format'] = get_option( 'date_format' );
+			}
 
-				if ( true === $args['date_format'] ) {
-					$args['date_format'] = get_option( 'date_format' );
+			foreach ( $vals as $val ) {
+
+				if ( is_numeric( $val ) ) {
+					$echo[] = date( $args['date_format'], $val );
+				} else if ( !empty( $val ) ) {
+					$echo[] = mysql2date( $args['date_format'], $val );
 				}
 
-				if ( empty( $val ) ) {
-					echo '&#8212;';
-				} else if ( is_numeric( $val ) ) {
-					echo date( $args['date_format'], $val );
-				} else {
-					echo mysql2date( $args['date_format'], $val );
+			}
+
+		} else {
+
+			foreach ( $vals as $val ) {
+
+				if ( !empty( $val ) or ( '0' === $val ) ) {
+					$echo[] = esc_html( $val );
 				}
 
-				break;
+			}
 
-			default:
+		}
 
-				echo esc_html( $val );
-
-				break;
-
+		if ( empty( $echo ) ) {
+			echo '&#8212;';
+		} else {
+			echo implode( ', ', $echo );
 		}
 
 	}
