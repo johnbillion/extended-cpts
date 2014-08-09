@@ -212,7 +212,7 @@ class Extended_CPT {
 
 		# Rewrite testing:
 		if ( $this->args['rewrite'] ) {
-			add_filter( 'rewrite_testing_tests', array( $this, 'rewrite_testing_tests' ) );
+			add_filter( 'rewrite_testing_tests', array( $this, 'rewrite_testing_tests' ), 1 );
 		}
 
 		# Register post type when WordPress initialises:
