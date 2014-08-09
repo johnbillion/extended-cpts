@@ -1503,7 +1503,7 @@ class Extended_CPT_Admin {
 
 		global $post;
 
-		$terms = wp_get_object_terms( get_the_ID(), $taxonomy );
+		$terms = get_the_terms( $post, $taxonomy );
 		$tax   = get_taxonomy( $taxonomy );
 
 		if ( is_wp_error( $terms ) ) {
