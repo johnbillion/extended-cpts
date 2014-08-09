@@ -121,6 +121,9 @@ class Extended_CPT {
 	 */
 	public function __construct( $post_type, array $args = array(), array $names = array() ) {
 
+		$args  = apply_filters( "extended_{$post_type}_args", $args );
+		$names = apply_filters( "extended_{$post_type}_names", $names );
+
 		if ( isset( $names['singular'] ) ) {
 			$this->post_singular = $names['singular'];
 		} else {
