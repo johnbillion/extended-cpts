@@ -277,13 +277,8 @@ class Extended_CPT {
 					'key'   => $filter['meta_key'],
 					'value' => stripslashes( $query[$filter_key] )
 				);
-				if ( isset( $filter['meta_compare'] ) ) {
-					$args['compare'] = $filter['meta_compare'];
-				}
-				$return['meta_query'][] = $args;
 			} else if ( isset( $filter['meta_search_key'] ) ) {
-				# @TODO remove the meta_search_key parameter and use meta_key with some complimentary parameters
-				$return['meta_query'][] = array(
+				$args = array(
 					'key'     => $filter['meta_search_key'],
 					'value'   => stripslashes( $query[$filter_key] ),
 					'compare' => 'LIKE'
@@ -291,15 +286,27 @@ class Extended_CPT {
 			} else if ( isset( $filter['meta_exists'] ) ) {
 				$args = array(
 					'key'     => stripslashes( $query[$filter_key] ),
+					'compare' => 'NOT IN',
+					'value'   => array( '', '0', 'false', 'null' ),
 				);
-				if ( isset( $filter['meta_value'] ) ) {
-					$args['value'] = $filter['meta_value'];
-					if ( isset( $filter['meta_compare'] ) )
-						$args['compare'] = $filter['meta_compare'];
-				} else {
-					$args['compare'] = 'NOT IN';
-					$args['value']   = array( '', '0', 'false', 'null' );
+			}
+
+			foreach ( array( 'compare', 'value', 'type' ) as $arg ) {
+				if ( isset( $filter["meta_{$arg}"] ) ) {
+					_doing_it_wrong( 'register_extended_post_type', sprintf(
+						__( 'The %1$s parameter for filters is deprecated. Use %2$s instead.', 'extended-cpts' ),
+						"<code>meta_{$arg}</code>",
+						"<code>query['{$arg}']</code>"
+					), '2.4' );
+					$args['query'][$arg] = $filter["meta_{$arg}"];
 				}
+			}
+
+			if ( isset( $filter['query'] ) ) {
+				$args = array_merge( $args, $filter['query'] );
+			}
+
+			if ( !empty( $args ) ) {
 				$return['meta_query'][] = $args;
 			}
 
