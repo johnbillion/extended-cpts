@@ -66,6 +66,7 @@ class Extended_CPT {
 		'hierarchical'    => true,
 		'supports'        => array( 'title', 'editor', 'thumbnail' ),
 		'has_archive'     => true,
+		'filters'         => null,  # Custom arg
 		'show_in_feed'    => false, # Custom arg
 		'archive'         => null,  # Custom arg
 	);
@@ -194,6 +195,12 @@ class Extended_CPT {
 			$this->args['rewrite'] = array_merge( $this->defaults['rewrite'], $args['rewrite'] );
 		}
 
+		# Front-end filters:
+		if ( $this->args['filters'] and !is_admin() ) {
+			add_action( 'pre_get_posts', array( $this, 'maybe_filter' ) );
+			add_filter( 'query_vars',    array( $this, 'add_filter_query_vars' ) );
+		}
+
 		# Post type in the site's main feed:
 		if ( $this->args['show_in_feed'] ) {
 			add_filter( 'request', array( $this, 'add_to_feed' ) );
@@ -221,6 +228,102 @@ class Extended_CPT {
 		} else {
 			add_action( 'init', array( $this, 'register_post_type' ), 9 );
 		}
+
+	}
+
+	/**
+	 * Add the relevant filters for filtering posts by our custom front-end filters.
+	 *
+	 * @param WP_Query $wp_query Looks a bit like a WP_Query object
+	 */
+	public function maybe_filter( WP_Query $wp_query ) {
+
+		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+			return;
+		}
+
+		$vars = self::get_filter_query_vars( $wp_query->query, $this->args['filters'] );
+
+		if ( empty( $vars ) ) {
+			return;
+		}
+
+		foreach ( $vars as $key => $value ) {
+			$query = $wp_query->get( $key );
+			if ( empty( $query ) ) {
+				$query = array();
+			}
+			$query = array_merge( $query, $value );
+			$wp_query->set( $key, $query );
+		}
+
+	}
+
+	public static function get_filter_query_vars( array $query, array $filters ) {
+
+		$return = array();
+
+		foreach ( $filters as $filter_key => $filter ) {
+
+			if ( ! isset( $query[$filter_key] ) or ( '' === $query[$filter_key] ) ) {
+				continue;
+			}
+			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) ) {
+				continue;
+			}
+
+			if ( isset( $filter['meta_key'] ) ) {
+				$args = array(
+					'key'   => $filter['meta_key'],
+					'value' => stripslashes( $query[$filter_key] )
+				);
+				if ( isset( $filter['meta_compare'] ) ) {
+					$args['compare'] = $filter['meta_compare'];
+				}
+				$return['meta_query'][] = $args;
+			} else if ( isset( $filter['meta_search_key'] ) ) {
+				# @TODO remove the meta_search_key parameter and use meta_key with some complimentary parameters
+				$return['meta_query'][] = array(
+					'key'     => $filter['meta_search_key'],
+					'value'   => stripslashes( $query[$filter_key] ),
+					'compare' => 'LIKE'
+				);
+			} else if ( isset( $filter['meta_exists'] ) ) {
+				$args = array(
+					'key'     => stripslashes( $query[$filter_key] ),
+				);
+				if ( isset( $filter['meta_value'] ) ) {
+					$args['value'] = $filter['meta_value'];
+					if ( isset( $filter['meta_compare'] ) )
+						$args['compare'] = $filter['meta_compare'];
+				} else {
+					$args['compare'] = 'NOT IN';
+					$args['value']   = array( '', '0', 'false', 'null' );
+				}
+				$return['meta_query'][] = $args;
+			}
+
+		}
+
+		return $return;
+
+	}
+
+	/**
+	 * Add our post meta filter names to the public query vars.
+	 *
+	 * @param array $vars Public query variables
+	 * @return array Updated public query variables
+	 */
+	public function add_filter_query_vars( array $vars ) {
+
+		foreach ( $this->args['filters'] as $filter_key => $filter ) {
+			if ( isset( $filter['meta_key'] ) or isset( $filter['meta_search_key'] ) or isset( $filter['meta_exists'] ) ) {
+				$vars[] = $filter_key;
+			}
+		}
+
+		return $vars;
 
 	}
 
@@ -667,7 +770,7 @@ class Extended_CPT_Admin {
 			return;
 		}
 
-		add_filter( 'request',               array( $this, 'filter_posts_by_post_meta' ) );
+		add_filter( 'request',               array( $this, 'filter_request' ) );
 		add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
 
 	}
@@ -955,54 +1058,11 @@ class Extended_CPT_Admin {
 
 	}
 
-	/**
-	 * Add our post meta filters to the request parameters.
-	 *
-	 * @param array $vars Request parameters
-	 * @return array Updated request parameters
-	 */
-	public function filter_posts_by_post_meta( array $vars ) {
+	public function filter_request( array $request ) {
 
-		foreach ( $this->args['admin_filters'] as $filter_key => $filter ) {
+		$vars = Extended_CPT::get_filter_query_vars( $request, $this->args['admin_filters'] );
 
-			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) ) {
-				continue;
-			}
-
-			if ( isset( $filter['meta_key'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
-				$args = array(
-					'key'   => $filter['meta_key'],
-					'value' => stripslashes( $vars[$filter_key] )
-				);
-				if ( isset( $filter['meta_compare'] ) ) {
-					$args['compare'] = $filter['meta_compare'];
-				}
-				$vars['meta_query'][] = $args;
-			} else if ( isset( $filter['meta_search_key'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
-				# @TODO remove the meta_search_key parameter and use meta_key with some complimentary parameters
-				$vars['meta_query'][] = array(
-					'key'     => $filter['meta_search_key'],
-					'value'   => stripslashes( $vars[$filter_key] ),
-					'compare' => 'LIKE'
-				);
-			} else if ( isset( $filter['meta_exists'] ) and isset( $vars[$filter_key] ) and !empty( $vars[$filter_key] ) ) {
-				$args = array(
-					'key'     => stripslashes( $vars[$filter_key] ),
-				);
-				if ( isset( $filter['meta_value'] ) ) {
-					$args['value'] = $filter['meta_value'];
-					if ( isset( $filter['meta_compare'] ) )
-						$args['compare'] = $filter['meta_compare'];
-				} else {
-					$args['compare'] = 'NOT IN';
-					$args['value']   = array( '', '0', 'false', 'null' );
-				}
-				$vars['meta_query'][] = $args;
-			}
-
-		}
-
-		return $vars;
+		return array_merge( $request, $vars );
 
 	}
 
