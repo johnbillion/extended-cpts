@@ -540,7 +540,7 @@ class Extended_CPT {
 
 		if ( $query_var and count( get_taxonomies( array( 'query_var' => $query_var ) ) ) ) {
 
-			trigger_error( sprintf( __( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'extended-cpts' ), $query_var ), E_USER_ERROR );
+			trigger_error( sprintf( __( 'Post type query var %s clashes with a taxonomy query var of the same name', 'extended-cpts' ), "<code>{$query_var}</code>" ), E_USER_ERROR );
 
 		} else if ( empty( $existing ) ) {
 
@@ -646,7 +646,7 @@ class Extended_CPT_Admin {
 
 		$this->cpt = $cpt;
 		# Merge our args with the defaults:
-		$this->args = wp_parse_args( $args, $this->defaults );
+		$this->args = array_merge( $this->defaults, $args );
 
 		# Admin columns:
 		if ( $this->args['admin_cols'] ) {
@@ -889,19 +889,25 @@ class Extended_CPT_Admin {
 	 * That's all you need to do. WordPress handles taxonomy term filtering itself, and the plugin handles the dropdown
 	 * menu and filtering for post meta.
 	 *
-	 * Each item in the 'admin_filters' array needs either a 'taxonomy', 'meta_key' or 'meta_exists' element containing
-	 * the corresponding taxonomy name or post meta key.
+	 * Each item in the 'admin_filters' array needs either a 'taxonomy', 'meta_key', 'meta_search', or 'meta_exists'
+	 * element containing the corresponding taxonomy name or post meta key.
 	 *
 	 * The 'meta_exists' filter outputs a dropdown menu listing each of the meta_exists fields, allowing users to
 	 * filter the screen by posts which have the corresponding meta field.
 	 *
-	 * There are a couple of optional elements:
+	 * The 'meta_search' filter outputs a search input, allowing users to filter the screen by an arbitrary search value.
 	 *
-	 * - title - The filter title. If omitted, the title will use the all_items taxonomy label or a
-	 * formatted version of the post meta key.
+	 * There are a few optional elements:
 	 *
-	 * - cap - A capability required in order for this filter to be displayed to the current user. Defaults
-	 * to null, meaning the filter is shown to all users.
+	 * - title - The filter title. If omitted, the title will use the all_items taxonomy label or a formatted version of
+	 * the post meta key.
+	 *
+	 * - cap - A capability required in order for this filter to be displayed to the current user. Defaults to null,
+	 * meaning the filter is shown to all users.
+	 *
+	 * @TODO - query - array
+	 *
+	 * @TODO - options - array or callable
 	 *
 	 */
 	public function filters() {
@@ -965,6 +971,7 @@ class Extended_CPT_Admin {
 
 				if ( !isset( $filter['options'] ) ) {
 					# Fetch all the values for our meta key:
+					# @TODO AND m.meta_value != null ?
 					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
 						SELECT DISTINCT meta_value
 						FROM {$wpdb->postmeta} as m
@@ -1387,6 +1394,8 @@ class Extended_CPT_Admin {
 	 *
 	 * There are a few optional elements:
 	 *
+	 * - title - Generated from the field if not specified.
+	 *
  	 * - function - The name of a callback function for the column (eg. 'my_function') which gets called
 	 * instead of the built-in function for handling that column. Note that it's not passed any parameters,
 	 * so it must use the global $post object.
@@ -1408,6 +1417,8 @@ class Extended_CPT_Admin {
 	 *
 	 * - cap - A capability required in order for this column to be displayed to the current user. Defaults
 	 * to null, meaning the column is shown to all users.
+	 *
+	 * @TODO - post_cap
 	 *
 	 * - sortable - A boolean value which specifies whether the column should be sortable. Defaults to true.
 	 *
