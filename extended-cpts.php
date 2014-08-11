@@ -66,7 +66,7 @@ class Extended_CPT {
 		'hierarchical'    => true,
 		'supports'        => array( 'title', 'editor', 'thumbnail' ),
 		'has_archive'     => true,
-		'filters'         => null,  # Custom arg
+		'site_filters'    => null,  # Custom arg
 		'show_in_feed'    => false, # Custom arg
 		'archive'         => null,  # Custom arg
 	);
@@ -196,7 +196,7 @@ class Extended_CPT {
 		}
 
 		# Front-end filters:
-		if ( $this->args['filters'] and !is_admin() ) {
+		if ( $this->args['site_filters'] and !is_admin() ) {
 			add_action( 'pre_get_posts', array( $this, 'maybe_filter' ) );
 			add_filter( 'query_vars',    array( $this, 'add_filter_query_vars' ) );
 		}
@@ -242,7 +242,7 @@ class Extended_CPT {
 			return;
 		}
 
-		$vars = self::get_filter_query_vars( $wp_query->query, $this->args['filters'] );
+		$vars = self::get_filter_query_vars( $wp_query->query, $this->args['site_filters'] );
 
 		if ( empty( $vars ) ) {
 			return;
@@ -324,7 +324,7 @@ class Extended_CPT {
 	 */
 	public function add_filter_query_vars( array $vars ) {
 
-		foreach ( $this->args['filters'] as $filter_key => $filter ) {
+		foreach ( $this->args['site_filters'] as $filter_key => $filter ) {
 			if ( isset( $filter['meta_key'] ) or isset( $filter['meta_search_key'] ) or isset( $filter['meta_exists'] ) ) {
 				$vars[] = $filter_key;
 			}
@@ -649,6 +649,14 @@ class Extended_CPT_Admin {
 		$this->args = array_merge( $this->defaults, $args );
 
 		# Admin columns:
+		if ( isset( $this->args['cols'] ) ) {
+			_doing_it_wrong( 'register_extended_post_type', sprintf(
+				__( 'The %1$s argument is deprecated. Use %2$s instead.', 'extended-cpts' ),
+				'<code>cols</code>',
+				'<code>admin_cols</code>'
+			), '2.4' );
+			$this->args['admin_cols'] = $this->args['cols'];
+		}
 		if ( $this->args['admin_cols'] ) {
 			add_filter( 'manage_posts_columns',                                 array( $this, '_log_default_cols' ), 0 );
 			add_filter( 'manage_pages_columns',                                 array( $this, '_log_default_cols' ), 0 );
@@ -660,6 +668,14 @@ class Extended_CPT_Admin {
 		}
 
 		# Admin filters:
+		if ( isset( $this->args['filters'] ) ) {
+			_doing_it_wrong( 'register_extended_post_type', sprintf(
+				__( 'The %1$s argument is deprecated. Use %2$s instead.', 'extended-cpts' ),
+				'<code>filters</code>',
+				'<code>admin_filters</code>'
+			), '2.4' );
+			$this->args['admin_filters'] = $this->args['filters'];
+		}
 		if ( $this->args['admin_filters'] ) {
 			add_action( 'load-edit.php', array( $this, 'maybe_filter' ) );
 			add_filter( 'query_vars',    array( $this, 'add_filter_query_vars' ) );
