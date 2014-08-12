@@ -1935,19 +1935,19 @@ abstract class Extended_Rewrite_Testing {
 		);
 		$feedregex = implode( '|', $wp_rewrite->feeds );
 		$replace   = array(
-			'([^/]+)'        => 'one',
-			'[^/]+'          => 'two',
-			'(.+?)'          => 'three',
-			'.+?'            => 'four',
-			'(/[0-9]+)?'     => '/789',
-			'([0-9]{4})'     => '1984',
-			'[0-9]{4}'       => '1984',
-			'([0-9]{1,2})'   => '02',
-			'[0-9]{1,2}'     => '02',
+			'(.+?)'          => 'hello',
+			'.+?'            => 'hello',
+			'([^/]+)'        => 'world',
+			'[^/]+'          => 'world',
+			'(/[0-9]+)?'     => '/456',
+			'([0-9]{4})'     => date( 'Y' ),
+			'[0-9]{4}'       => date( 'Y' ),
+			'([0-9]{1,2})'   => date( 'm' ),
+			'[0-9]{1,2}'     => date( 'm' ),
 			'([0-9]{1,})'    => '123',
-			'[0-9]{1,}'      => '456',
-			'([0-9]+)'       => '10',
-			'[0-9]+'         => '10',
+			'[0-9]{1,}'      => '789',
+			'([0-9]+)'       => date( 'd' ),
+			'[0-9]+'         => date( 'd' ),
 			"({$feedregex})" => end( $wp_rewrite->feeds ),
 			'/?'             => '/',
 			'$'              => '',
@@ -1955,9 +1955,11 @@ abstract class Extended_Rewrite_Testing {
 
 		foreach ( $rules as $regex => $result ) {
 			$regex  = str_replace( array_keys( $replace ), $replace, $regex );
+			// Change '$2' to '$matches[2]'
 			$result = preg_replace( '/\$([0-9]+)/', '\$matches[$1]', $result );
 			$new["/{$regex}"] = $result;
 			if ( false !== strpos( $regex, $replace['(/[0-9]+)?'] ) ) {
+				// Add an extra rule for this optional block
 				$regex = str_replace( $replace['(/[0-9]+)?'], '', $regex );
 				$new["/{$regex}"] = $result;
 			}
