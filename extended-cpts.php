@@ -471,53 +471,9 @@ class Extended_CPT {
 
 	public function rewrite_testing_tests( array $tests ) {
 
-		global $wp_rewrite;
+		$extended = new Extended_CPT_Rewrite_Testing( $this );
 
-		$struct = $wp_rewrite->extra_permastructs[$this->post_type];
-		$rules  = $wp_rewrite->generate_rewrite_rules(
-			$struct['struct'],
-			$struct['ep_mask'],
-			$struct['paged'],
-			$struct['feed'],
-			$struct['forcomments'],
-			$struct['walk_dirs'],
-			$struct['endpoints']
-		);
-		$feedregex = implode( '|', $wp_rewrite->feeds );
-		$replace   = array(
-			'([^/]+)'        => 'one',
-			'[^/]+'          => 'two',
-			'(.+?)'          => 'three',
-			'.+?'            => 'four',
-			'(/[0-9]+)?'     => '/789',
-			'([0-9]{4})'     => '1984',
-			'[0-9]{4}'       => '1984',
-			'([0-9]{1,2})'   => '02',
-			'[0-9]{1,2}'     => '02',
-			'([0-9]{1,})'    => '123',
-			'[0-9]{1,}'      => '456',
-			'([0-9]+)'       => '10',
-			'[0-9]+'         => '10',
-			"({$feedregex})" => end( $wp_rewrite->feeds ),
-			'/?'             => '/',
-			'$'              => '',
-		);
-
-		foreach ( $rules as $regex => $result ) {
-			$regex  = str_replace( array_keys( $replace ), $replace, $regex );
-			$result = preg_replace( '/\$([0-9]+)/', '\$matches[$1]', $result );
-			$new["/{$regex}"] = $result;
-			if ( false !== strpos( $regex, $replace['(/[0-9]+)?'] ) ) {
-				$regex = str_replace( $replace['(/[0-9]+)?'], '', $regex );
-				$new["/{$regex}"] = $result;
-			}
-		}
-
-		$name = get_post_type_object( $this->post_type )->labels->name;
-
-		$tests[$name] = $new;
-
-		return $tests;
+		return array_merge( $tests, $extended->get_tests() );
 
 	}
 
@@ -1950,6 +1906,87 @@ class Extended_CPT_Admin {
 		}
 
 		return $title;
+
+	}
+
+}
+}
+
+if ( !class_exists( 'Extended_Rewrite_Testing' ) ) {
+abstract class Extended_Rewrite_Testing {
+
+	abstract public function __construct();
+
+	abstract public function get_tests();
+
+	public function get_rewrites( array $struct ) {
+
+		global $wp_rewrite;
+
+		$new   = array();
+		$rules = $wp_rewrite->generate_rewrite_rules(
+			$struct['struct'],
+			$struct['ep_mask'],
+			$struct['paged'],
+			$struct['feed'],
+			$struct['forcomments'],
+			$struct['walk_dirs'],
+			$struct['endpoints']
+		);
+		$feedregex = implode( '|', $wp_rewrite->feeds );
+		$replace   = array(
+			'([^/]+)'        => 'one',
+			'[^/]+'          => 'two',
+			'(.+?)'          => 'three',
+			'.+?'            => 'four',
+			'(/[0-9]+)?'     => '/789',
+			'([0-9]{4})'     => '1984',
+			'[0-9]{4}'       => '1984',
+			'([0-9]{1,2})'   => '02',
+			'[0-9]{1,2}'     => '02',
+			'([0-9]{1,})'    => '123',
+			'[0-9]{1,}'      => '456',
+			'([0-9]+)'       => '10',
+			'[0-9]+'         => '10',
+			"({$feedregex})" => end( $wp_rewrite->feeds ),
+			'/?'             => '/',
+			'$'              => '',
+		);
+
+		foreach ( $rules as $regex => $result ) {
+			$regex  = str_replace( array_keys( $replace ), $replace, $regex );
+			$result = preg_replace( '/\$([0-9]+)/', '\$matches[$1]', $result );
+			$new["/{$regex}"] = $result;
+			if ( false !== strpos( $regex, $replace['(/[0-9]+)?'] ) ) {
+				$regex = str_replace( $replace['(/[0-9]+)?'], '', $regex );
+				$new["/{$regex}"] = $result;
+			}
+		}
+
+		return $new;
+
+	}
+
+}
+}
+
+if ( !class_exists( 'Extended_CPT_Rewrite_Testing' ) ) {
+class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
+
+	public function __construct( Extended_CPT $cpt ) {
+		$this->cpt = $cpt;
+	}
+
+	public function get_tests() {
+
+		global $wp_rewrite;
+
+		$struct = $wp_rewrite->extra_permastructs[$this->cpt->post_type];
+		$name   = get_post_type_object( $this->cpt->post_type )->labels->name;
+
+		return array(
+			$name => $this->get_rewrites( $struct ),
+		);
 
 	}
 
