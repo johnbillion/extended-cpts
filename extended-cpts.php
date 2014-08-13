@@ -187,6 +187,10 @@ class Extended_CPT {
 				'with_front' => false
 			);
 		}
+		
+		# 'menu_icon' to choose menu icon for post type from wordpress dash-icon
+		if ( isset( $args['menu_icon'] ) )
+			$this->defaults['menu_icon'] = $args['menu_icon'];
 
 		# Merge our args with the defaults:
 		$this->args = wp_parse_args( $args, $this->defaults );
