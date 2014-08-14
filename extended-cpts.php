@@ -1919,7 +1919,7 @@ abstract class Extended_Rewrite_Testing {
 
 	abstract public function get_tests();
 
-	public function get_rewrites( array $struct ) {
+	public function get_rewrites( array $struct, array $additional = array() ) {
 
 		global $wp_rewrite;
 
@@ -1933,6 +1933,7 @@ abstract class Extended_Rewrite_Testing {
 			$struct['walk_dirs'],
 			$struct['endpoints']
 		);
+		$rules = array_merge( $rules, $additional );
 		$feedregex = implode( '|', $wp_rewrite->feeds );
 		$replace   = array(
 			'(.+?)'          => 'hello',
