@@ -934,7 +934,7 @@ class Extended_CPT_Admin {
 				if ( !isset( $filter['title'] ) ) {
 					$filter['title'] = str_replace( array( '-', '_' ), ' ', $filter['meta_key'] );
 					$filter['title'] = ucwords( $filter['title'] ) . 's';
-					$filter['title'] = sprintf( __( 'All %s', 'extended-cpts' ), $filter['title'] );
+					$filter['title'] = sprintf( 'All %s', $filter['title'] );
 				}
 
 				if ( !isset( $filter['options'] ) ) {
