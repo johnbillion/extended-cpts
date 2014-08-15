@@ -915,7 +915,7 @@ class Extended_CPT_Admin {
 
 				# Output the dropdown:
 				wp_dropdown_categories( array(
-					'show_option_all' => $filter['title'] . '&nbsp;',
+					'show_option_all' => $filter['title'],
 					'hide_empty'      => false,
 					'hide_if_empty'   => true,
 					'hierarchical'    => true,
@@ -962,7 +962,7 @@ class Extended_CPT_Admin {
 				# Output the dropdown:
 				?>
 				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
-					<option value=""><?php echo esc_html( $filter['title'] ); ?>&nbsp;</option>
+					<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
 					<?php foreach ( $filter['options'] as $v ) { ?>
 						<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $v ); ?></option>
 					<?php } ?>
@@ -1007,7 +1007,7 @@ class Extended_CPT_Admin {
 					# Output a dropdown:
 					?>
 					<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
-						<option value=""><?php echo esc_html( $filter['title'] ); ?>&nbsp;</option>
+						<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
 						<?php foreach ( $filter['meta_exists'] as $v => $t ) { ?>
 							<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $t ); ?></option>
 						<?php } ?>
