@@ -26,14 +26,38 @@ GNU General Public License for more details.
 
 if ( !function_exists( 'register_extended_post_type' ) ) {
 /**
- * Wrapper function for registering a new Extended Post Type.
+ * Register an Extended Post Type.
  *
- * @see Extended_CPT::__construct()
- * @see Extended_CPT_Admin::__construct()
- * 
+ * The $args parameter accepts all the standard arguments for `register_post_type()` in addition to several custom
+ * arguments that provide extended functionality. Some of the default arguments differ from the defaults in
+ * `register_post_type()`. See the docblock for `Extended_CPT::__construct()` for details.
+ *
  * @param string $post_type The post type name.
- * @param array  $args      The post type arguments. Optional.
- * @param array  $names     The plural, singular and slug names. Optional.
+ * @param array  $args {
+ *     The post type arguments. Optional. @see register_post_type() for default arguments.
+ *
+ *     @type bool   $show_in_feed         Whether to include this post type in the site's main feed. Default false.
+ *     @type array  $archive              Associative array of query vars to override on this post type's archive. Handy
+ *                                        for setting `no_paging` to true, for example. Default null.
+ *     @type bool   $archive_in_nav_menus Whether to show an 'All Items' checkbox for this post type on the nav menus
+ *                                        admin screen. Default true.
+ *     @type bool   $quick_edit           Whether to show Quick Edit links for this post type. Default true.
+ *     @type bool   $dashboard_glance     Whether to show this post type on the 'At a Glance' section of the admin
+ *                                        dashboard. Default true.
+ *     @type array  $admin_cols           Associative array of admin screen columns to show for this post type. See the
+ *                                        `cols()` method for more information. Default null (no custom columns).
+ *     @type array  $admin_filters        Associative array of admin screen filters to show for this post type. See the
+ *                                        `filters()` method for more information. Default null (no custom filters).
+ *     @type string $enter_title_here     Placeholder text which appears in the title field for this post type.
+ *     @type string $featured_image       Text which replaces the 'Featured Image' phrase for this post type.
+ * }
+ * @param array  $names {
+ *     The plural, singular and slug names. Optional.
+ *
+ *     @type string $plural   The plural form of the post type name.
+ *     @type string $singular The singular form of the post type name.
+ *     @type string $slug     The slug used in the permalinks for this post type.
+ * }
  * @return Extended_CPT 
  */
 function register_extended_post_type( $post_type, array $args = array(), array $names = array() ) {
@@ -101,24 +125,9 @@ class Extended_CPT {
 	 *         'slug'   => 'meet-the-team'
 	 *     ) );
 	 *
-	 * The $args parameter accepts all the standard arguments for `register_post_type()` in addition to several custom
-	 * arguments that provide extended functionality.
-	 *
 	 * @param string $post_type The post type name.
-	 * @param array  $args {
-	 *     The post type arguments. Optional. @see register_post_type() for default arguments.
-	 *
-	 *     @type bool  $show_in_feed Whether to include this post type in the site's main feed. Default false.
-	 *     @type array $archive      Associative array of query vars to override on this post type's archive. Handy for
-	 *                               setting `no_paging` to true, for example. Default null.
-	 * }
-	 * @param array  $names {
-	 *     The plural, singular and slug names. Optional.
-	 *
-	 *     @type string $plural   The plural form of the post type name.
-	 *     @type string $slug     The slug used in the permalinks for the post type.
-	 *     @type string $singular The singular form of the post type name.
-	 * }
+	 * @param array  $args      The post type arguments. @see register_extended_post_type(). Optional.
+	 * @param array  $names     The plural, singular and slug names. @see register_extended_post_type(). Optional.
 	 */
 	public function __construct( $post_type, array $args = array(), array $names = array() ) {
 
@@ -319,8 +328,8 @@ class Extended_CPT {
 	/**
 	 * Add our post meta filter names to the public query vars.
 	 *
-	 * @param array $vars Public query variables
-	 * @return array Updated public query variables
+	 * @param  array $vars Public query variables
+	 * @return array       Updated public query variables
 	 */
 	public function add_filter_query_vars( array $vars ) {
 
@@ -337,8 +346,8 @@ class Extended_CPT {
 	/**
 	 * Add our post type to the feed.
 	 *
-	 * @param array $vars Request parameters
-	 * @return array Updated request parameters
+	 * @param  array $vars Request parameters
+	 * @return array       Updated request parameters
 	 */
 	public function add_to_feed( array $vars ) {
 
@@ -360,8 +369,8 @@ class Extended_CPT {
 	/**
 	 * Add to or override our post type archive's private query vars.
 	 *
-	 * @param WP $wp The WP request object
-	 * @return WP Updated WP request object
+	 * @param  WP $wp The WP request object
+	 * @return WP     Updated WP request object
 	 */
 	public function override_private_query_vars( WP $wp ) {
 
@@ -397,10 +406,11 @@ class Extended_CPT {
 	}
 
 	/**
-	 * @param string  $post_link The post's permalink.
-	 * @param WP_Post $post      The post in question.
-	 * @param bool    $leavename Whether to keep the post name.
-	 * @param bool    $sample    Is it a sample permalink.
+	 * @param  string  $post_link The post's permalink.
+	 * @param  WP_Post $post      The post in question.
+	 * @param  bool    $leavename Whether to keep the post name.
+	 * @param  bool    $sample    Is it a sample permalink.
+	 * @return string             The post's permalink.
 	 */
 	public function post_type_link( $post_link, WP_Post $post, $leavename, $sample ) {
 
@@ -535,10 +545,10 @@ class Extended_CPT {
 	 *     $events   = register_extended_post_type( 'event' );
 	 *     $location = $events->add_taxonomy( 'location' );
 	 *
-	 * @param string $taxonomy The taxonomy name
-	 * @param array  $args     The taxonomy arguments (optional)
-	 * @param array  $names    An associative array of the plural, singular and slug names (optional)
-	 * @return object|false    Taxonomy object, or boolean false if there's a problem
+	 * @param  string $taxonomy The taxonomy name.
+	 * @param  array  $args     The taxonomy arguments. Optional.
+	 * @param  array  $names    An associative array of the plural, singular and slug names. Optional.
+	 * @return object|false     Taxonomy object, or boolean false if there's a problem.
 	 */
 	public function add_taxonomy( $taxonomy, array $args = array(), array $names = array() ) {
 
@@ -581,22 +591,8 @@ class Extended_CPT_Admin {
 	/**
 	 * Class constructor.
 	 * 
-	 * @param Extended_CPT $cpt  An extended post type object
-	 * @param array        $args {
-	 *     The post type arguments. Optional. @see register_post_type() for default arguments.
-	 *
-	 *     @type bool   $archive_in_nav_menus Whether to show an 'All Items' checkbox for this post type on the nav
-	 *                                        menus screen. Default true.
-	 *     @type bool   $quick_edit           Whether to show Quick Edit links for this post type. Default true.
-	 *     @type bool   $dashboard_glance     Whether to show this post type on the 'At a Glance' section of the
-	 *                                        dashboard. Default true.
-	 *     @type array  $admin_cols           Associative array of admin columns to show for this post type. See the
-	 *                                        `cols()` method for more information. Default null (no custom columns).
-	 *     @type array  $admin_filters        Associative array of admin filters to show for this post type. See the
-	 *                                        `filters()` method for more information. Default null (no custom filters).
-	 *     @type string $enter_title_here     Placeholder text which appears in the title field for this post type.
-	 *     @type string $featured_image       Text which replaces 'Featured Image' for this post type.
-	 * }
+	 * @param Extended_CPT $cpt  An extended post type object.
+	 * @param array        $args The post type arguments. @see register_extended_post_type(). Optional.
 	 */
 	public function __construct( Extended_CPT $cpt, array $args = array() ) {
 
@@ -757,9 +753,9 @@ class Extended_CPT_Admin {
 	/**
 	 * Set the placeholder text for the title field for this post type.
 	 *
-	 * @param string  $title The placeholder text
-	 * @param WP_Post $post  The current post
-	 * @return string The updated placeholder text
+	 * @param  string  $title The placeholder text
+	 * @param  WP_Post $post  The current post
+	 * @return string         The updated placeholder text
 	 */
 	public function enter_title_here( $title, WP_Post $post ) {
 
@@ -777,7 +773,7 @@ class Extended_CPT_Admin {
 	 * See http://core.trac.wordpress.org/ticket/19257
 	 *
 	 * @param  string $text The "featured image" text
-	 * @return string The updated "featured image" text
+	 * @return string       The updated "featured image" text
 	 */
 	function featured_image_text( $text ) {
 
@@ -1029,8 +1025,8 @@ class Extended_CPT_Admin {
 	/**
 	 * Add our post meta filter names to the public query vars.
 	 *
-	 * @param array $vars Public query variables
-	 * @return array Updated public query variables
+	 * @param  array $vars Public query variables
+	 * @return array      Updated public query variables
 	 */
 	public function add_filter_query_vars( array $vars ) {
 
@@ -1055,8 +1051,8 @@ class Extended_CPT_Admin {
 	/**
 	 * Add our post type to the 'At a Glance' widget on the WordPress 3.8+ dashboard.
 	 *
-	 * @param array $items Array of items to display on the widget
-	 * @return array Updated array of items
+	 * @param  array $items Array of items to display on the widget
+	 * @return array       Updated array of items
 	 */
 	public function glance_items( array $items ) {
 
@@ -1391,6 +1387,8 @@ class Extended_CPT_Admin {
 	 * to null, meaning the column is shown to all users.
 	 *
 	 * @TODO - post_cap
+	 *
+	 * @TODO - link
 	 *
 	 * - sortable - A boolean value which specifies whether the column should be sortable. Defaults to true.
 	 *
@@ -1793,10 +1791,10 @@ class Extended_CPT_Admin {
 	 *
 	 * @param array  $posts     Array of post objects and pseudo-post objects to show on the screen
 	 * @param array  $meta_box  The meta box arguments
-	 * @param string $post_type The current post type in the context of the nav menus screen
+	 * @param array  $post_type The current post type in the context of the nav menus screen
 	 * @return array Updated array of posts and pseudo-posts
 	 */
-	public function nav_menu_items( array $posts, array $meta_box, $post_type ) {
+	public function nav_menu_items( array $posts, array $meta_box, array $post_type ) {
 
 		global $_nav_menu_placeholder;
 
