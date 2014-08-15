@@ -1986,6 +1986,7 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 
 		$struct     = $wp_rewrite->extra_permastructs[$this->cpt->post_type];
 		$pto        = get_post_type_object( $this->cpt->post_type );
+		$name       = sprintf( '%s (%s)', $pto->labels->name, $this->cpt->post_type );
 		$additional = array();
 
 		// Post type archive rewrites are generated separately. See the `has_archive` handling in `register_post_type()`.
@@ -2011,7 +2012,7 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 		}
 
 		return array(
-			$pto->labels->name => $this->get_rewrites( $struct, $additional ),
+			$name => $this->get_rewrites( $struct, $additional ),
 		);
 
 	}
