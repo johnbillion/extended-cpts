@@ -1213,14 +1213,20 @@ class Extended_CPT_Admin {
 		if ( !isset( $this->args['admin_cols'][$vars['orderby']] ) ) {
 			return $vars;
 		}
-		if ( !is_array( $this->args['admin_cols'][$vars['orderby']] ) ) {
+
+		$orderby = $this->args['admin_cols'][$vars['orderby']];
+
+		if ( !is_array( $orderby ) ) {
 			return $vars;
 		}
-		if ( !isset( $this->args['admin_cols'][$vars['orderby']]['meta_key'] ) ) {
+		if ( !isset( $orderby['meta_key'] ) ) {
+			return $vars;
+		}
+		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
 			return $vars;
 		}
 
-		$vars['meta_key'] = $this->args['admin_cols'][$vars['orderby']]['meta_key'];
+		$vars['meta_key'] = $orderby['meta_key'];
 		$vars['orderby']  = 'meta_value';
 
 		return $vars;
@@ -1241,14 +1247,20 @@ class Extended_CPT_Admin {
 		if ( !isset( $this->args['admin_cols'][$vars['orderby']] ) ) {
 			return $vars;
 		}
-		if ( !is_array( $this->args['admin_cols'][$vars['orderby']] ) ) {
+
+		$orderby = $this->args['admin_cols'][$vars['orderby']];
+
+		if ( !is_array( $orderby ) ) {
 			return $vars;
 		}
-		if ( !isset( $this->args['admin_cols'][$vars['orderby']]['post_field'] ) ) {
+		if ( !isset( $orderby['post_field'] ) ) {
+			return $vars;
+		}
+		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
 			return $vars;
 		}
 
-		$field = str_replace( 'post_', '', $this->args['admin_cols'][$vars['orderby']]['post_field'] );
+		$field = str_replace( 'post_', '', $orderby['post_field'] );
 		$vars['orderby'] = $field;
 
 		return $vars;
@@ -1272,10 +1284,16 @@ class Extended_CPT_Admin {
 		if ( !isset( $this->args['admin_cols'][$q->query['orderby']] ) ) {
 			return $clauses;
 		}
-		if ( !is_array( $this->args['admin_cols'][$q->query['orderby']] ) ) {
+
+		$orderby = $this->args['admin_cols'][$q->query['orderby']];
+
+		if ( !is_array( $orderby ) ) {
 			return $clauses;
 		}
-		if ( !isset( $this->args['admin_cols'][$q->query['orderby']]['taxonomy'] ) ) {
+		if ( !isset( $orderby['taxonomy'] ) ) {
+			return $clauses;
+		}
+		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
 			return $clauses;
 		}
 
@@ -1286,7 +1304,7 @@ class Extended_CPT_Admin {
 			LEFT OUTER JOIN {$wpdb->term_taxonomy} as ext_cpts_tt ON ( ext_cpts_tr.term_taxonomy_id = ext_cpts_tt.term_taxonomy_id )
 			LEFT OUTER JOIN {$wpdb->terms} as ext_cpts_t ON ( ext_cpts_tt.term_id = ext_cpts_t.term_id )
 		";
-		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $this->args['admin_cols'][$q->query['orderby']]['taxonomy'] );
+		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $orderby['taxonomy'] );
 		$clauses['groupby'] = 'ext_cpts_tr.object_id';
 		$clauses['orderby'] = "GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ";
 		$clauses['orderby'] .= ( 'ASC' == strtoupper( $q->get('order') ) ) ? 'ASC' : 'DESC';
