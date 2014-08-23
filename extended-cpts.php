@@ -38,7 +38,7 @@ if ( !function_exists( 'register_extended_post_type' ) ) {
  *
  *     @type bool   $show_in_feed         Whether to include this post type in the site's main feed. Default false.
  *     @type array  $archive              Associative array of query vars to override on this post type's archive. Handy
- *                                        for setting `no_paging` to true, for example. Default null.
+ *                                        for setting `nopaging` to true, for example. Default null.
  *     @type bool   $archive_in_nav_menus Whether to show an 'All Items' checkbox for this post type on the nav menus
  *                                        admin screen. Default true.
  *     @type bool   $quick_edit           Whether to show Quick Edit links for this post type. Default true.
