@@ -333,13 +333,9 @@ class Extended_CPT {
 	 */
 	public function add_filter_query_vars( array $vars ) {
 
-		foreach ( $this->args['site_filters'] as $filter_key => $filter ) {
-			if ( isset( $filter['meta_key'] ) or isset( $filter['meta_search_key'] ) or isset( $filter['meta_exists'] ) ) {
-				$vars[] = $filter_key;
-			}
-		}
+		$filters = array_keys( $this->args['site_filters'] );
 
-		return $vars;
+		return array_merge( $vars, $filters );
 
 	}
 
@@ -1030,13 +1026,9 @@ class Extended_CPT_Admin {
 	 */
 	public function add_filter_query_vars( array $vars ) {
 
-		foreach ( $this->args['admin_filters'] as $filter_key => $filter ) {
-			if ( isset( $filter['meta_key'] ) or isset( $filter['meta_search_key'] ) or isset( $filter['meta_exists'] ) ) {
-				$vars[] = $filter_key;
-			}
-		}
+		$filters = array_keys( $this->args['admin_filters'] );
 
-		return $vars;
+		return array_merge( $vars, $filters );
 
 	}
 
