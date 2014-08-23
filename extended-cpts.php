@@ -207,7 +207,7 @@ class Extended_CPT {
 		# Front-end filters:
 		if ( $this->args['site_filters'] and !is_admin() ) {
 			add_action( 'pre_get_posts', array( $this, 'maybe_filter' ) );
-			add_filter( 'query_vars',    array( $this, 'add_filter_query_vars' ) );
+			add_filter( 'query_vars',    array( $this, 'add_query_vars' ) );
 		}
 
 		# Post type in the site's main feed:
@@ -331,7 +331,7 @@ class Extended_CPT {
 	 * @param  array $vars Public query variables
 	 * @return array       Updated public query variables
 	 */
-	public function add_filter_query_vars( array $vars ) {
+	public function add_query_vars( array $vars ) {
 
 		$filters = array_keys( $this->args['site_filters'] );
 
@@ -626,7 +626,7 @@ class Extended_CPT_Admin {
 		}
 		if ( $this->args['admin_filters'] ) {
 			add_action( 'load-edit.php', array( $this, 'maybe_filter' ) );
-			add_filter( 'query_vars',    array( $this, 'add_filter_query_vars' ) );
+			add_filter( 'query_vars',            array( $this, 'add_query_vars' ) );
 		}
 
 		# 'Enter title here' filter:
@@ -1024,7 +1024,7 @@ class Extended_CPT_Admin {
 	 * @param  array $vars Public query variables
 	 * @return array       Updated public query variables
 	 */
-	public function add_filter_query_vars( array $vars ) {
+	public function add_query_vars( array $vars ) {
 
 		$filters = array_keys( $this->args['admin_filters'] );
 
