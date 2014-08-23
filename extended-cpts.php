@@ -251,7 +251,7 @@ class Extended_CPT {
 			return;
 		}
 
-		$vars = self::get_filter_query_vars( $wp_query->query, $this->args['site_filters'] );
+		$vars = Extended_CPT::get_filter_vars( $wp_query->query, $this->args['site_filters'] );
 
 		if ( empty( $vars ) ) {
 			return;
@@ -268,7 +268,14 @@ class Extended_CPT {
 
 	}
 
-	public static function get_filter_query_vars( array $query, array $filters ) {
+	/**
+	 * @TODO [get_filter_vars description]
+	 * 
+	 * @param  array  $query   [description]
+	 * @param  array  $filters [description]
+	 * @return array           [description]
+	 */
+	public static function get_filter_vars( array $query, array $filters ) {
 
 		$return = array();
 
@@ -322,6 +329,94 @@ class Extended_CPT {
 		}
 
 		return $return;
+
+	}
+
+	/**
+	 * Sort posts by post meta value.
+	 *
+	 * @param  array $vars      Query variables
+	 * @param  array $sortables @TODO
+	 * @return array|bool       Updated request parameters or false for some unimaginable reason
+	 */
+	public static function get_sort_field_vars( array $vars, array $sortables ) {
+
+		if ( !isset( $vars['orderby'] ) ) {
+			return false;
+		}
+		if ( !isset( $sortables[$vars['orderby']] ) ) {
+			return false;
+		}
+
+		$orderby = $sortables[$vars['orderby']];
+
+		if ( !is_array( $orderby ) ) {
+			return false;
+		}
+		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
+			return false;
+		}
+
+		if ( isset( $orderby['meta_key'] ) ) {
+			$vars['meta_key'] = $orderby['meta_key'];
+			$vars['orderby']  = 'meta_value';
+			// @TODO meta_value_num
+		} else if ( isset( $orderby['post_field'] ) ) {
+			$field = str_replace( 'post_', '', $orderby['post_field'] );
+			$vars['orderby'] = $field;
+		}
+
+		return $vars;
+
+	}
+
+	/**
+	 * Sort posts by taxonomy terms.
+	 *
+	 * @param  array $clauses   Request SQL clauses
+	 * @param  array $vars      Query variables
+	 * @param  array $sortables @TODO
+	 * @return array|false      Updated request SQL clauses or false
+	 */
+	public static function get_sort_taxonomy_clauses( array $clauses, array $vars, array $sortables ) {
+
+		global $wpdb;
+
+		if ( !isset( $vars['orderby'] ) ) {
+			return false;
+		}
+		if ( !isset( $sortables[$vars['orderby']] ) ) {
+			return false;
+		}
+
+		$orderby = $sortables[$vars['orderby']];
+
+		if ( !is_array( $orderby ) ) {
+			return false;
+		}
+		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
+			return false;
+		}
+		if ( !isset( $orderby['taxonomy'] ) ) {
+			return false;
+		}
+
+		# Taxonomy term ordering courtesy of http://scribu.net/wordpress/sortable-taxonomy-columns.html
+
+		$clauses['join'] .= "
+			LEFT OUTER JOIN {$wpdb->term_relationships} as ext_cpts_tr
+			ON ( {$wpdb->posts}.ID = ext_cpts_tr.object_id )
+			LEFT OUTER JOIN {$wpdb->term_taxonomy} as ext_cpts_tt
+			ON ( ext_cpts_tr.term_taxonomy_id = ext_cpts_tt.term_taxonomy_id )
+			LEFT OUTER JOIN {$wpdb->terms} as ext_cpts_t
+			ON ( ext_cpts_tt.term_id = ext_cpts_t.term_id )
+		";
+		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $orderby['taxonomy'] );
+		$clauses['groupby'] = 'ext_cpts_tr.object_id';
+		$clauses['orderby'] = "GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ";
+		$clauses['orderby'] .= ( 'ASC' == strtoupper( $vars['order'] ) ) ? 'ASC' : 'DESC';
+
+		return $clauses;
 
 	}
 
@@ -612,7 +707,8 @@ class Extended_CPT_Admin {
 			add_filter( "manage_{$this->cpt->post_type}_posts_columns",         array( $this, 'cols' ) );
 			add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   array( $this, 'col' ) );
 			add_action( 'load-edit.php',                                        array( $this, 'default_sort' ) );
-			add_action( 'load-edit.php',                                        array( $this, 'maybe_sort' ) );
+			add_filter( 'pre_get_posts',                                        array( $this, 'maybe_sort_by_fields' ) );
+			add_filter( 'posts_clauses',                                        array( $this, 'maybe_sort_by_taxonomy' ), 10, 2 );
 		}
 
 		# Admin filters:
@@ -625,7 +721,9 @@ class Extended_CPT_Admin {
 			$this->args['admin_filters'] = $this->args['filters'];
 		}
 		if ( $this->args['admin_filters'] ) {
-			add_action( 'load-edit.php', array( $this, 'maybe_filter' ) );
+			add_filter( 'pre_get_posts',         array( $this, 'maybe_filter' ) );
+			add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
+
 			add_filter( 'query_vars',            array( $this, 'add_query_vars' ) );
 		}
 
@@ -712,37 +810,6 @@ class Extended_CPT_Admin {
 				break;
 			}
 		}
-
-	}
-
-	/**
-	 * Add the relevant filters for sorting posts by our sortable fields.
-	 *
-	 */
-	public function maybe_sort() {
-
-		if ( $this->cpt->post_type != self::get_current_post_type() ) {
-			return;
-		}
-
-		add_filter( 'request',       array( $this, 'sort_posts_by_post_meta' ) );
-		add_filter( 'request',       array( $this, 'sort_posts_by_post_field' ) );
-		add_filter( 'posts_clauses', array( $this, 'sort_posts_by_taxonomy' ), 10, 2 );
-
-	}
-
-	/**
-	 * Add the relevant filters for filtering posts by our custom admin filters.
-	 *
-	 */
-	public function maybe_filter() {
-
-		if ( $this->cpt->post_type != self::get_current_post_type() ) {
-			return;
-		}
-
-		add_filter( 'request',               array( $this, 'filter_request' ) );
-		add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
 
 	}
 
@@ -877,6 +944,10 @@ class Extended_CPT_Admin {
 	public function filters() {
 
 		global $wpdb;
+
+		if ( $this->cpt->post_type != self::get_current_post_type() ) {
+			return;
+		}
 
 		$pto = get_post_type_object( $this->cpt->post_type );
 
@@ -1032,11 +1103,31 @@ class Extended_CPT_Admin {
 
 	}
 
-	public function filter_request( array $request ) {
+	/**
+	 * Add the relevant filters for filtering posts by our custom admin filters.
+	 *
+	 * @param WP_Query $wp_query Looks a bit like a WP_Query object
+	 */
+	public function maybe_filter( WP_Query $wp_query ) {
 
-		$vars = Extended_CPT::get_filter_query_vars( $request, $this->args['admin_filters'] );
+		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+			return;
+		}
 
-		return array_merge( $request, $vars );
+		$vars = Extended_CPT::get_filter_vars( $wp_query->query, $this->cpt->args['admin_filters'] );
+
+		if ( empty( $vars ) ) {
+			return;
+		}
+
+		foreach ( $vars as $key => $value ) {
+			$query = $wp_query->get( $key );
+			if ( empty( $query ) ) {
+				$query = array();
+			}
+			$query = array_merge( $query, $value );
+			$wp_query->set( $key, $query );
+		}
 
 	}
 
@@ -1191,117 +1282,37 @@ class Extended_CPT_Admin {
 
 	}
 
-	/**
-	 * Sort posts by post meta value.
-	 *
-	 * @param array $vars Request parameters
-	 * @return array Updated request parameters
-	 */
-	public function sort_posts_by_post_meta( array $vars ) {
+	public function maybe_sort_by_fields( WP_Query $wp_query ) {
 
-		if ( !isset( $vars['orderby'] ) ) {
-			return $vars;
-		}
-		if ( !isset( $this->args['admin_cols'][$vars['orderby']] ) ) {
-			return $vars;
+		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+			return;
 		}
 
-		$orderby = $this->args['admin_cols'][$vars['orderby']];
+		$sort = Extended_CPT::get_sort_field_vars( $wp_query->query, $this->cpt->args['admin_cols'] );
 
-		if ( !is_array( $orderby ) ) {
-			return $vars;
-		}
-		if ( !isset( $orderby['meta_key'] ) ) {
-			return $vars;
-		}
-		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
-			return $vars;
+		if ( empty( $sort ) ) {
+			return;
 		}
 
-		$vars['meta_key'] = $orderby['meta_key'];
-		$vars['orderby']  = 'meta_value';
-
-		return $vars;
+		foreach ( $sort as $key => $value ) {
+			$wp_query->set( $key, $value );
+		}
 
 	}
 
-	/**
-	 * Sort posts by post field.
-	 *
-	 * @param array $vars Request parameters
-	 * @return array Updated request parameters
-	 */
-	public function sort_posts_by_post_field( array $vars ) {
+	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
 
-		if ( !isset( $vars['orderby'] ) ) {
-			return $vars;
-		}
-		if ( !isset( $this->args['admin_cols'][$vars['orderby']] ) ) {
-			return $vars;
-		}
-
-		$orderby = $this->args['admin_cols'][$vars['orderby']];
-
-		if ( !is_array( $orderby ) ) {
-			return $vars;
-		}
-		if ( !isset( $orderby['post_field'] ) ) {
-			return $vars;
-		}
-		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
-			return $vars;
-		}
-
-		$field = str_replace( 'post_', '', $orderby['post_field'] );
-		$vars['orderby'] = $field;
-
-		return $vars;
-
-	}
-
-	/**
-	 * Sort posts by taxonomy term(s).
-	 *
-	 * @param  array    $clauses Request SQL clauses
-	 * @param  WP_Query $q       The request's WP_Query object
-	 * @return array             Updated request SQL clauses
-	 */
-	public function sort_posts_by_taxonomy( array $clauses, WP_Query $q ) {
-
-		global $wpdb;
-
-		if ( !isset( $q->query['orderby'] ) ) {
-			return $clauses;
-		}
-		if ( !isset( $this->args['admin_cols'][$q->query['orderby']] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return $clauses;
 		}
 
-		$orderby = $this->args['admin_cols'][$q->query['orderby']];
+		$sort = Extended_CPT::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->cpt->args['admin_cols'] );
 
-		if ( !is_array( $orderby ) ) {
-			return $clauses;
-		}
-		if ( !isset( $orderby['taxonomy'] ) ) {
-			return $clauses;
-		}
-		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
+		if ( empty( $sort ) ) {
 			return $clauses;
 		}
 
-		# Taxonomy term ordering courtesy of http://scribu.net/wordpress/sortable-taxonomy-columns.html
-
-		$clauses['join'] .= "
-			LEFT OUTER JOIN {$wpdb->term_relationships} as ext_cpts_tr ON ( {$wpdb->posts}.ID = ext_cpts_tr.object_id )
-			LEFT OUTER JOIN {$wpdb->term_taxonomy} as ext_cpts_tt ON ( ext_cpts_tr.term_taxonomy_id = ext_cpts_tt.term_taxonomy_id )
-			LEFT OUTER JOIN {$wpdb->terms} as ext_cpts_t ON ( ext_cpts_tt.term_id = ext_cpts_t.term_id )
-		";
-		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $orderby['taxonomy'] );
-		$clauses['groupby'] = 'ext_cpts_tr.object_id';
-		$clauses['orderby'] = "GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ";
-		$clauses['orderby'] .= ( 'ASC' == strtoupper( $q->get('order') ) ) ? 'ASC' : 'DESC';
-
-		return $clauses;
+		return array_merge( $clauses, $sort );
 
 	}
 
