@@ -326,7 +326,7 @@ class Extended_CPT {
 	}
 
 	/**
-	 * Add our post meta filter names to the public query vars.
+	 * Add our filter names to the public query vars.
 	 *
 	 * @param  array $vars Public query variables
 	 * @return array       Updated public query variables
@@ -1019,10 +1019,10 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * Add our post meta filter names to the public query vars.
+	 * Add our filter names to the public query vars.
 	 *
 	 * @param  array $vars Public query variables
-	 * @return array      Updated public query variables
+	 * @return array       Updated public query variables
 	 */
 	public function add_filter_query_vars( array $vars ) {
 
@@ -1044,7 +1044,7 @@ class Extended_CPT_Admin {
 	 * Add our post type to the 'At a Glance' widget on the WordPress 3.8+ dashboard.
 	 *
 	 * @param  array $items Array of items to display on the widget
-	 * @return array       Updated array of items
+	 * @return array        Updated array of items
 	 */
 	public function glance_items( array $items ) {
 
@@ -1088,8 +1088,8 @@ class Extended_CPT_Admin {
 	 *   9 => "Post scheduled for: [date]. {Preview post}"
 	 *  10 => "Post draft updated. {Preview post}"
 	 *
-	 * @param array $messages An associative array of post updated messages with post type as keys.
-	 * @return array Updated array of post updated messages.
+	 * @param  array $messages An associative array of post updated messages with post type as keys.
+	 * @return array           Updated array of post updated messages.
 	 */
 	public function post_updated_messages( array $messages ) {
 
@@ -1153,9 +1153,9 @@ class Extended_CPT_Admin {
 	 *   trashed   => "Post moved to the trash." | "[n] posts moved to the trash."
 	 *   untrashed => "Post restored from the trash." | "[n] posts restored from the trash."
 	 *
-	 * @param array $messages An associative array of bulk post updated messages with post type as keys.
-	 * @param array $counts   An array of counts for each key in $messages.
-	 * @return array Updated array of bulk post updated messages.
+	 * @param  array $messages An associative array of bulk post updated messages with post type as keys.
+	 * @param  array $counts   An array of counts for each key in $messages.
+	 * @return array           Updated array of bulk post updated messages.
 	 */
 	public function bulk_post_updated_messages( array $messages, array $counts ) {
 
@@ -1262,9 +1262,9 @@ class Extended_CPT_Admin {
 	/**
 	 * Sort posts by taxonomy term(s).
 	 *
-	 * @param array    $clauses Request SQL clauses
-	 * @param WP_Query $q       The request's WP_Query object
-	 * @return array Updated request SQL clauses
+	 * @param  array    $clauses Request SQL clauses
+	 * @param  WP_Query $q       The request's WP_Query object
+	 * @return array             Updated request SQL clauses
 	 */
 	public function sort_posts_by_taxonomy( array $clauses, WP_Query $q ) {
 
@@ -1308,8 +1308,8 @@ class Extended_CPT_Admin {
 	/**
 	 * Add our custom columns to the list of sortable columns.
 	 *
-	 * @param array $cols Associative array of sortable columns
-	 * @return array Updated array of sortable columns
+	 * @param  array $cols Associative array of sortable columns
+	 * @return array       Updated array of sortable columns
 	 */
 	public function sortables( array $cols ) {
 
@@ -1407,8 +1407,8 @@ class Extended_CPT_Admin {
 	 * array key with a string value to change the column title. You can also pass boolean false to remove
 	 * the 'cb' or 'title' columns, which are otherwise kept regardless.
 	 *
-	 * @param array $cols Associative array of columns
-	 * @return array Updated array of columns
+	 * @param  array $cols Associative array of columns
+	 * @return array       Updated array of columns
 	 */
 	public function cols( array $cols ) {
 
@@ -1799,10 +1799,10 @@ class Extended_CPT_Admin {
 	/**
 	 * Add our post type archive link to the nav menus screen.
 	 *
-	 * @param array  $posts     Array of post objects and pseudo-post objects to show on the screen
-	 * @param array  $meta_box  The meta box arguments
-	 * @param array  $post_type The current post type in the context of the nav menus screen
-	 * @return array Updated array of posts and pseudo-posts
+	 * @param  array  $posts     Array of post objects and pseudo-post objects to show on the screen
+	 * @param  array  $meta_box  The meta box arguments
+	 * @param  array  $post_type The current post type in the context of the nav menus screen
+	 * @return array             Updated array of posts and pseudo-posts
 	 */
 	public function nav_menu_items( array $posts, array $meta_box, array $post_type ) {
 
@@ -1832,9 +1832,9 @@ class Extended_CPT_Admin {
 	/**
 	 * Removes the Quick Edit link from the post row actions.
 	 *
-	 * @param $actions array Array of post actions
-	 * @param $post WP_Post the current post object
-	 * @return array Array of updated post actions
+	 * @param  array   $actions Array of post actions
+	 * @param  WP_Post $post    The current post object
+	 * @return array            Array of updated post actions
 	 */
 	public function remove_quick_edit_action( array $actions, WP_Post $post ) {
 
@@ -1850,8 +1850,8 @@ class Extended_CPT_Admin {
 	/**
 	 * Removes the Quick Edit link from the bulk actions menu.
 	 *
-	 * @param $actions array Array of bulk actions
-	 * @return array Array of updated bulk actions
+	 * @param  array $actions Array of bulk actions
+	 * @return array          Array of updated bulk actions
 	 */
 	public function remove_quick_edit_menu( array $actions ) {
 
@@ -1863,8 +1863,8 @@ class Extended_CPT_Admin {
 	/**
 	 * Logs the default columns so we don't remove any custom columns added by other plugins.
 	 *
-	 * @param array $cols The default columns for this post type screen
-	 * @return array The default columns for this post type screen
+	 * @param  array $cols The default columns for this post type screen
+	 * @return array       The default columns for this post type screen
 	 */
 	public function _log_default_cols( array $cols ) {
 
@@ -1875,10 +1875,10 @@ class Extended_CPT_Admin {
 	/**
 	 * A non-localised version of _n()
 	 *
-	 * @param string $single The text that will be used if $number is 1
-	 * @param string $plural The text that will be used if $number is not 1
-	 * @param int $number The number to compare against to use either $single or $plural
-	 * @return string Either $single or $plural text
+	 * @param  string $single The text that will be used if $number is 1
+	 * @param  string $plural The text that will be used if $number is not 1
+	 * @param  int    $number The number to compare against to use either $single or $plural
+	 * @return string         Either $single or $plural text
 	 */
 	protected static function n( $single, $plural, $number ) {
 
