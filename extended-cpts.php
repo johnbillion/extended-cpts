@@ -1104,7 +1104,7 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * Add the relevant filters for filtering posts by our custom admin filters.
+	 * Filter posts by our custom admin filters.
 	 *
 	 * @param WP_Query $wp_query Looks a bit like a WP_Query object
 	 */
@@ -1128,6 +1128,40 @@ class Extended_CPT_Admin {
 			$query = array_merge( $query, $value );
 			$wp_query->set( $key, $query );
 		}
+
+	}
+
+	public function maybe_sort_by_fields( WP_Query $wp_query ) {
+
+		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+			return;
+		}
+
+		$sort = Extended_CPT::get_sort_field_vars( $wp_query->query, $this->cpt->args['admin_cols'] );
+
+		if ( empty( $sort ) ) {
+			return;
+		}
+
+		foreach ( $sort as $key => $value ) {
+			$wp_query->set( $key, $value );
+		}
+
+	}
+
+	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
+
+		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+			return $clauses;
+		}
+
+		$sort = Extended_CPT::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->cpt->args['admin_cols'] );
+
+		if ( empty( $sort ) ) {
+			return $clauses;
+		}
+
+		return array_merge( $clauses, $sort );
 
 	}
 
@@ -1279,40 +1313,6 @@ class Extended_CPT_Admin {
 		);
 
 		return $messages;
-
-	}
-
-	public function maybe_sort_by_fields( WP_Query $wp_query ) {
-
-		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
-			return;
-		}
-
-		$sort = Extended_CPT::get_sort_field_vars( $wp_query->query, $this->cpt->args['admin_cols'] );
-
-		if ( empty( $sort ) ) {
-			return;
-		}
-
-		foreach ( $sort as $key => $value ) {
-			$wp_query->set( $key, $value );
-		}
-
-	}
-
-	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
-
-		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
-			return $clauses;
-		}
-
-		$sort = Extended_CPT::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->cpt->args['admin_cols'] );
-
-		if ( empty( $sort ) ) {
-			return $clauses;
-		}
-
-		return array_merge( $clauses, $sort );
 
 	}
 
