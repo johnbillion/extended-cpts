@@ -342,18 +342,18 @@ class Extended_CPT {
 			}
 
 			if ( isset( $filter['meta_key'] ) ) {
-				$args = array(
+				$meta_query = array(
 					'key'   => $filter['meta_key'],
 					'value' => stripslashes( $query[$filter_key] )
 				);
 			} else if ( isset( $filter['meta_search_key'] ) ) {
-				$args = array(
+				$meta_query = array(
 					'key'     => $filter['meta_search_key'],
 					'value'   => stripslashes( $query[$filter_key] ),
 					'compare' => 'LIKE'
 				);
 			} else if ( isset( $filter['meta_exists'] ) ) {
-				$args = array(
+				$meta_query = array(
 					'key'     => stripslashes( $query[$filter_key] ),
 					'compare' => 'NOT IN',
 					'value'   => array( '', '0', 'false', 'null' ),
@@ -365,18 +365,18 @@ class Extended_CPT {
 					_doing_it_wrong( 'register_extended_post_type', sprintf(
 						__( 'The %1$s parameter for filters is deprecated. Use %2$s instead.', 'extended-cpts' ),
 						"<code>meta_{$arg}</code>",
-						"<code>query['{$arg}']</code>"
+						"<code>meta_query['{$arg}']</code>"
 					), '2.4' );
-					$args['query'][$arg] = $filter["meta_{$arg}"];
+					$filter['meta_query'][$arg] = $filter["meta_{$arg}"];
 				}
 			}
 
-			if ( isset( $filter['query'] ) ) {
-				$args = array_merge( $args, $filter['query'] );
+			if ( isset( $filter['meta_query'] ) ) {
+				$meta_query = array_merge( $meta_query, $filter['meta_query'] );
 			}
 
-			if ( !empty( $args ) ) {
-				$return['meta_query'][] = $args;
+			if ( !empty( $meta_query ) ) {
+				$return['meta_query'][] = $meta_query;
 			}
 
 		}
@@ -1174,12 +1174,14 @@ class Extended_CPT_Admin {
 		}
 
 		foreach ( $vars as $key => $value ) {
-			$query = $wp_query->get( $key );
-			if ( empty( $query ) ) {
-				$query = array();
+			if ( is_array( $value ) ) {
+				$query = $wp_query->get( $key );
+				if ( empty( $query ) ) {
+					$query = array();
+				}
+				$value = array_merge( $query, $value );
 			}
-			$query = array_merge( $query, $value );
-			$wp_query->set( $key, $query );
+			$wp_query->set( $key, $value );
 		}
 
 	}
