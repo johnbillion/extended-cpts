@@ -91,6 +91,7 @@ class Extended_CPT {
 		'supports'        => array( 'title', 'editor', 'thumbnail' ),
 		'has_archive'     => true,
 		'site_filters'    => null,  # Custom arg
+		'site_sortables'  => null,  # Custom arg
 		'show_in_feed'    => false, # Custom arg
 		'archive'         => null,  # Custom arg
 	);
@@ -204,6 +205,12 @@ class Extended_CPT {
 			$this->args['rewrite'] = array_merge( $this->defaults['rewrite'], $args['rewrite'] );
 		}
 
+		# Front-end sortables:
+		if ( $this->args['site_sortables'] and !is_admin() ) {
+			add_filter( 'pre_get_posts', array( $this, 'maybe_sort_by_fields' ) );
+			add_filter( 'posts_clauses', array( $this, 'maybe_sort_by_taxonomy' ), 10, 2 );
+		}
+
 		# Front-end filters:
 		if ( $this->args['site_filters'] and !is_admin() ) {
 			add_action( 'pre_get_posts', array( $this, 'maybe_filter' ) );
@@ -265,6 +272,55 @@ class Extended_CPT {
 			$query = array_merge( $query, $value );
 			$wp_query->set( $key, $query );
 		}
+
+	}
+
+	public function maybe_sort_by_fields( WP_Query $wp_query ) {
+
+		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+			return;
+		}
+
+		// If we've not specified an order:
+		if ( empty( $wp_query->query['orderby'] ) ) {
+
+			// Loop over our sortables to find the default sort field (if there is one):
+			foreach ( $this->args['site_sortables'] as $id => $col ) {
+				if ( is_array( $col ) and isset( $col['default'] ) ) {
+					// @TODO Don't set 'order' if 'orderby' is an array (WP 4.0+)
+					$wp_query->query['orderby'] = $id;
+					$wp_query->query['order']   = ( 'desc' == strtolower( $col['default'] ) ? 'desc' : 'asc' );
+					break;
+				}
+			}
+
+		}
+
+		$sort = Extended_CPT::get_sort_field_vars( $wp_query->query, $this->args['site_sortables'] );
+
+		if ( empty( $sort ) ) {
+			return;
+		}
+
+		foreach ( $sort as $key => $value ) {
+			$wp_query->set( $key, $value );
+		}
+
+	}
+
+	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
+
+		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+			return $clauses;
+		}
+
+		$sort = Extended_CPT::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->args['site_sortables'] );
+
+		if ( empty( $sort ) ) {
+			return $clauses;
+		}
+
+		return array_merge( $clauses, $sort );
 
 	}
 
