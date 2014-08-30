@@ -1999,8 +1999,6 @@ class Extended_CPT_Admin {
 if ( !class_exists( 'Extended_Rewrite_Testing' ) ) {
 abstract class Extended_Rewrite_Testing {
 
-	abstract public function __construct();
-
 	abstract public function get_tests();
 
 	public function get_rewrites( array $struct, array $additional = array() ) {
