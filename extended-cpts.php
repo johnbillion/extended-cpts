@@ -1516,7 +1516,7 @@ class Extended_CPT_Admin {
 					continue;
 				}
 				if ( !isset( $col['title'] ) ) {
-					$col['title'] = self::get_item_title( $col );
+					$col['title'] = self::get_item_title( $col, $this->cpt->post_type );
 				}
 				$new_cols[$id] = $col['title'];
 			}
@@ -1963,28 +1963,33 @@ class Extended_CPT_Admin {
 	 * @param  array  $item An array of arguments
 	 * @return string       The item title
 	 */
-	protected static function get_item_title( array $item ) {
+	protected static function get_item_title( array $item, $post_type = null ) {
 
 		if ( isset( $item['taxonomy'] ) ) {
-			$tax = get_taxonomy( $item['taxonomy'] );
-			if ( !empty( $tax->exclusive ) ) {
-				$title = $tax->labels->singular_name;
+			if ( $tax = get_taxonomy( $item['taxonomy'] ) ) {
+				if ( !empty( $tax->exclusive ) ) {
+					return $tax->labels->singular_name;
+				} else {
+					return $tax->labels->name;
+				}
 			} else {
-				$title = $tax->labels->name;
+				return $item['taxonomy'];
 			}
 		} else if ( isset( $item['post_field'] ) ) {
-			$title = ucwords( trim( str_replace( array( 'post_', '_' ), ' ', $item['post_field'] ) ) );
+			return ucwords( trim( str_replace( array( 'post_', '_' ), ' ', $item['post_field'] ) ) );
 		} else if ( isset( $item['meta_key'] ) ) {
-			$title = ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['meta_key'] ) ) );
+			return ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['meta_key'] ) ) );
 		} else if ( isset( $item['connection'] ) and isset( $item['value'] ) ) {
-			$title = ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['value'] ) ) );
+			return ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['value'] ) ) );
 		} else if ( isset( $item['connection'] ) ) {
-			$title = ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['connection'] ) ) );
-		} else {
-			$title = '';
+			if ( function_exists( 'p2p_type' ) and p2p_connection_exists( $item['connection'] ) ) {
+				$ctype = p2p_type( $item['connection'] );
+				$other = ( 'from' == $ctype->direction_from_types( 'post', $post_type ) ) ? 'to' : 'from';
+				return $ctype->side[$other]->get_title();
+			} else {
+				return $item['connection'];
+			}
 		}
-
-		return $title;
 
 	}
 
