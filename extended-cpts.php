@@ -1495,6 +1495,10 @@ class Extended_CPT_Admin {
 			return;
 		}
 
+		if ( !isset( $c[$col]['link'] ) ) {
+			$c[$col]['link'] = 'list';
+		}
+
 		if ( isset( $c[$col]['function'] ) ) {
 			call_user_func( $c[$col]['function'] );
 		} else if ( isset( $c[$col]['meta_key'] ) ) {
@@ -1586,7 +1590,7 @@ class Extended_CPT_Admin {
 
 		foreach ( $terms as $term ) {
 
-			if ( isset( $args['link'] ) ) {
+			if ( $args['link'] ) {
 
 				switch ( $args['link'] ) {
 					case 'view':
@@ -1759,7 +1763,7 @@ class Extended_CPT_Admin {
 				continue;
 			}
 
-			if ( isset( $args['link'] ) ) {
+			if ( $args['link'] ) {
 
 				switch ( $args['link'] ) {
 					case 'view':
