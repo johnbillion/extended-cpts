@@ -195,14 +195,11 @@ class Extended_CPT {
 		# Merge our args with the defaults:
 		$this->args = array_merge( $this->defaults, $args );
 
-		# This allows the 'labels' arg to contain some, none or all labels:
-		if ( isset( $args['labels'] ) ) {
-			$this->args['labels'] = array_merge( $this->defaults['labels'], $args['labels'] );
-		}
-
-		# This allows the 'rewrite' arg to contain some or all options:
-		if ( isset( $args['rewrite'] ) and is_array( $args['rewrite'] ) ) {
-			$this->args['rewrite'] = array_merge( $this->defaults['rewrite'], $args['rewrite'] );
+		# This allows the 'labels' and 'rewrite' args to contain some, none, or all values:
+		foreach ( array( 'labels', 'rewrite' ) as $arg ) {
+			if ( isset( $args[$arg] ) and is_array( $args[$arg] ) ) {
+				$this->args[$arg] = array_merge( $this->defaults[$arg], $args[$arg] );
+			}
 		}
 
 		# Front-end sortables:
@@ -1784,7 +1781,7 @@ class Extended_CPT_Admin {
 		}
 
 		if ( !p2p_connection_exists( $connection ) ) {
-			_e( 'Invalid connection type', 'extended-cpts' );
+			printf( __( 'Invalid connection type: %s', 'extended-cpts' ), $connection );
 			return;
 		}
 
