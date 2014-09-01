@@ -803,6 +803,14 @@ class Extended_CPT_Admin {
 		}
 
 		# 'At a Glance' dashboard panels:
+		if ( isset( $this->args['right_now'] ) ) {
+			_doing_it_wrong( 'register_extended_post_type', sprintf(
+				__( 'The %1$s argument is deprecated. Use %2$s instead.', 'extended-cpts' ),
+				'<code>right_now</code>',
+				'<code>dashboard_glance</code>'
+			), '2.4' );
+			$this->args['dashboard_glance'] = $this->args['right_now'];
+		}
 		if ( $this->args['dashboard_glance'] ) {
 			add_filter( 'dashboard_glance_items', array( $this, 'glance_items' ), $this->cpt->args['menu_position'] );
 		}
