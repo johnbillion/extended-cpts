@@ -10,7 +10,16 @@
 			"homepage": "https://johnblackbourn.com/"
 		}
 	],
+	"repositories":[
+		{
+			"type": "composer",
+			"url" : "http://wpackagist.org"
+		}
+	],
 	"require": {
 		"composer/installers": "~1.0"
+	"suggest": {
+		"johnbillion/extended-taxos": "Extended Taxonomies",
+		"wpackagist-plugin/rewrite-testing": "Rewrite Rule Testing"
 	}
 }
