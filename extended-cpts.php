@@ -1551,7 +1551,7 @@ class Extended_CPT_Admin {
 					continue;
 				}
 				if ( !isset( $col['title'] ) ) {
-					$col['title'] = self::get_item_title( $col, $this->cpt->post_type );
+					$col['title'] = $this->get_item_title( $col );
 				}
 				$new_cols[$id] = $col['title'];
 			}
@@ -1998,7 +1998,7 @@ class Extended_CPT_Admin {
 	 * @param  array  $item An array of arguments
 	 * @return string       The item title
 	 */
-	protected static function get_item_title( array $item, $post_type = null ) {
+	protected function get_item_title( array $item ) {
 
 		if ( isset( $item['taxonomy'] ) ) {
 			if ( $tax = get_taxonomy( $item['taxonomy'] ) ) {
@@ -2019,7 +2019,7 @@ class Extended_CPT_Admin {
 		} else if ( isset( $item['connection'] ) ) {
 			if ( function_exists( 'p2p_type' ) and p2p_connection_exists( $item['connection'] ) ) {
 				$ctype = p2p_type( $item['connection'] );
-				$other = ( 'from' == $ctype->direction_from_types( 'post', $post_type ) ) ? 'to' : 'from';
+				$other = ( 'from' == $ctype->direction_from_types( 'post', $this->cpt->post_type ) ) ? 'to' : 'from';
 				return $ctype->side[$other]->get_title();
 			} else {
 				return $item['connection'];
