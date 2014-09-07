@@ -273,12 +273,14 @@ class Extended_CPT {
 		}
 
 		foreach ( $vars as $key => $value ) {
-			$query = $wp_query->get( $key );
-			if ( empty( $query ) ) {
-				$query = array();
+			if ( is_array( $value ) ) {
+				$query = $wp_query->get( $key );
+				if ( empty( $query ) ) {
+					$query = array();
+				}
+				$value = array_merge( $query, $value );
 			}
-			$query = array_merge( $query, $value );
-			$wp_query->set( $key, $query );
+			$wp_query->set( $key, $value );
 		}
 
 	}
@@ -422,31 +424,33 @@ class Extended_CPT {
 	public static function get_sort_field_vars( array $vars, array $sortables ) {
 
 		if ( !isset( $vars['orderby'] ) ) {
-			return false;
+			return array();
 		}
 		if ( !isset( $sortables[$vars['orderby']] ) ) {
-			return false;
+			return array();
 		}
 
 		$orderby = $sortables[$vars['orderby']];
 
 		if ( !is_array( $orderby ) ) {
-			return false;
+			return array();
 		}
 		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
-			return false;
+			return array();
 		}
 
+		$return = array();
+
 		if ( isset( $orderby['meta_key'] ) ) {
-			$vars['meta_key'] = $orderby['meta_key'];
-			$vars['orderby']  = 'meta_value';
+			$return['meta_key'] = $orderby['meta_key'];
+			$return['orderby']  = 'meta_value';
 			// @TODO meta_value_num
 		} else if ( isset( $orderby['post_field'] ) ) {
 			$field = str_replace( 'post_', '', $orderby['post_field'] );
-			$vars['orderby'] = $field;
+			$return['orderby'] = $field;
 		}
 
-		return $vars;
+		return $return;
 
 	}
 
@@ -464,22 +468,22 @@ class Extended_CPT {
 		global $wpdb;
 
 		if ( !isset( $vars['orderby'] ) ) {
-			return false;
+			return array();
 		}
 		if ( !isset( $sortables[$vars['orderby']] ) ) {
-			return false;
+			return array();
 		}
 
 		$orderby = $sortables[$vars['orderby']];
 
 		if ( !is_array( $orderby ) ) {
-			return false;
+			return array();
 		}
 		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
-			return false;
+			return array();
 		}
 		if ( !isset( $orderby['taxonomy'] ) ) {
-			return false;
+			return array();
 		}
 
 		# Taxonomy term ordering courtesy of http://scribu.net/wordpress/sortable-taxonomy-columns.html
