@@ -806,9 +806,8 @@ class Extended_CPT_Admin {
 		}
 		if ( $this->args['admin_filters'] ) {
 			add_filter( 'pre_get_posts',         array( $this, 'maybe_filter' ) );
-			add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
-
 			add_filter( 'query_vars',            array( $this, 'add_query_vars' ) );
+			add_action( 'restrict_manage_posts', array( $this, 'filters' ) );
 		}
 
 		# 'Enter title here' filter:
@@ -1317,7 +1316,7 @@ class Extended_CPT_Admin {
 		$messages[$this->cpt->post_type] = array(
 			1 => sprintf( ( $pto->publicly_queryable ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ),
 				$this->cpt->post_singular,
-				esc_url( get_permalink( $post->ID ) ),
+				esc_url( get_permalink( $post ) ),
 				$this->cpt->post_singular_low
 			),
 			2 => 'Custom field updated.',
@@ -1331,7 +1330,7 @@ class Extended_CPT_Admin {
 			) : false,
 			6 => sprintf( ( $pto->publicly_queryable ? '%1$s published. <a href="%2$s">View %3$s</a>' : '%1$s published.' ),
 				$this->cpt->post_singular,
-				esc_url( get_permalink( $post->ID ) ),
+				esc_url( get_permalink( $post ) ),
 				$this->cpt->post_singular_low
 			),
 			7 => sprintf( '%s saved.',
@@ -1339,18 +1338,18 @@ class Extended_CPT_Admin {
 			),
 			8 => sprintf( ( $pto->publicly_queryable ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ),
 				$this->cpt->post_singular,
-				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post->ID ) ) ),
+				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post ) ) ),
 				$this->cpt->post_singular_low
 			),
 			9 => sprintf( ( $pto->publicly_queryable ? '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview %4$s</a>' : '%1$s scheduled for: <strong>%2$s</strong>.' ),
 				$this->cpt->post_singular,
 				date_i18n( 'M j, Y @ G:i', strtotime( $post->post_date ) ),
-				esc_url( get_permalink( $post->ID ) ),
+				esc_url( get_permalink( $post ) ),
 				$this->cpt->post_singular_low
 			),
 			10 => sprintf( ( $pto->publicly_queryable ? '%1$s draft updated. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s draft updated.' ),
 				$this->cpt->post_singular,
-				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post->ID ) ) ),
+				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post ) ) ),
 				$this->cpt->post_singular_low
 			),
 		);
