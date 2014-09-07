@@ -18,6 +18,10 @@
 	],
 	"require": {
 		"composer/installers": "~1.0"
+	},
+	"require-dev" : {
+		"phpunit/phpunit": ">=3.7"
+	},
 	"suggest": {
 		"johnbillion/extended-taxos": "Extended Taxonomies",
 		"wpackagist-plugin/rewrite-testing": "Rewrite Rule Testing"

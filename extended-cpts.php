@@ -247,7 +247,7 @@ class Extended_CPT {
 		}
 
 		# Register post type when WordPress initialises:
-		if ( 'init' === current_filter() ) {
+		if ( did_action( 'init' ) ) {
 			$this->register_post_type();
 		} else {
 			add_action( 'init', array( $this, 'register_post_type' ), 9 );
