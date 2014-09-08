@@ -1,6 +1,6 @@
 <?php
 
-class Extended_CPT_Test extends WP_UnitTestCase {
+class Extended_CPT_Test_Setup extends WP_UnitTestCase {
 
 	public $cpts  = array();
 	public $posts = array();
