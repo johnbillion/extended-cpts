@@ -324,7 +324,7 @@ class Extended_CPT {
 	}
 
 	/**
-	 * Filter the query's SQL clauses so we can filter posts by taxonomy terms.
+	 * Filter the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
 	 * @param  array    $clauses  The current query's SQL clauses.
 	 * @param  WP_Query $wp_query The current WP_Query object.
@@ -569,7 +569,9 @@ class Extended_CPT {
 	}
 
 	/**
-	 * @param string $post_type Post type.
+	 * Action fired after a CPT is registered in order to set up the custom permalink structure for the post type.
+	 * 
+	 * @param string $post_type Post type name.
 	 * @param object $args      Arguments used to register the post type.
 	 */
 	public function registered_post_type( $post_type, stdClass $args ) {
@@ -581,6 +583,8 @@ class Extended_CPT {
 	}
 
 	/**
+	 * Filter the post type permalink in order to populate its rewrite tags.
+	 * 
 	 * @param  string  $post_link The post's permalink.
 	 * @param  WP_Post $post      The post in question.
 	 * @param  bool    $leavename Whether to keep the post name.
@@ -654,6 +658,12 @@ class Extended_CPT {
 
 	}
 
+	/**
+	 * Add our rewrite tests to the Rewrite Rule Testing tests array.
+	 * 
+	 * @param  array $tests The existing rewrite rule tests.
+	 * @return array        Updated rewrite rule tests.
+	 */
 	public function rewrite_testing_tests( array $tests ) {
 
 		$extended = new Extended_CPT_Rewrite_Testing( $this );
@@ -1222,6 +1232,11 @@ class Extended_CPT_Admin {
 
 	}
 
+	/**
+	 * Set the relevant query vars for sorting posts by our admin sortables.
+	 *
+	 * @param WP_Query $wp_query The current WP_Query object.
+	 */
 	public function maybe_sort_by_fields( WP_Query $wp_query ) {
 
 		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
@@ -1240,6 +1255,13 @@ class Extended_CPT_Admin {
 
 	}
 
+	/**
+	 * Filter the query's SQL clauses so we can sort posts by taxonomy terms.
+	 *
+	 * @param  array    $clauses  The current query's SQL clauses.
+	 * @param  WP_Query $wp_query The current WP_Query object.
+	 * @return array              The updated SQL clauses.
+	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
 
 		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
@@ -1467,6 +1489,7 @@ class Extended_CPT_Admin {
 	 *     - post_field     - The name of a post field (eg. post_excerpt)
 	 *     - featured_image - A featured image size (eg. thumbnail)
 	 *     - connection     - A connection ID registered with the Posts 2 Posts plugin
+	 *     - function       - The name of a callback function
 	 *
 	 * The value for the corresponding taxonomy terms, post meta or post field are safely escaped and output
 	 * into the column, and the values are used to provide the sortable functionality for the column. For
@@ -1481,8 +1504,7 @@ class Extended_CPT_Admin {
 	 * so it must use the global $post object.
 	 *
  	 * - default - Specifies that the admin screen should be sorted by this column by default (instead of
-	 * sorting by post date). Can be boolean true (which will be treated as 'asc'), or 'asc' or 'desc' to
-	 * explicitly control the default order.
+	 * sorting by post date). Value should be one of 'asc' or 'desc' to control the default order.
 	 *
 	 * - width & height - These are only used for the 'featured_image' column type and allow you to set an
 	 * explicit width and/or height on the <img> tag. Handy for downsizing the image.
@@ -1491,8 +1513,8 @@ class Extended_CPT_Admin {
 	 * connection meta field and value from the fields argument of the connection type.
 	 *
 	 * - date_format - This is used with the 'meta_key' column type. The value of the meta field will be
-	 * treated as a timestamp if this is present (Unix and MySQL timestamp formats are both supported in the
-	 * meta value). Pass in boolean true to format the date according to the 'Date Format' setting or pass
+	 * treated as a timestamp if this is present. Unix and MySQL format timestamps are supported in the
+	 * meta value. Pass in boolean true to format the date according to the 'Date Format' setting, or pass
 	 * in a valid date formatting string (eg. 'd/m/Y H:i:s').
 	 *
 	 * - cap - A capability required in order for this column to be displayed to the current user. Defaults
@@ -1504,8 +1526,8 @@ class Extended_CPT_Admin {
 	 *
 	 * - sortable - A boolean value which specifies whether the column should be sortable. Defaults to true.
 	 *
-	 * Remember, in addition to custom columns there are also columns built in to WordPress which you can
-	 * use: 'comments', 'date', 'title' and 'author'. You can use these columns as the array value or as the
+	 * In addition to custom columns there are also columns built in to WordPress which you can
+	 * use: 'comments', 'date', 'title' and 'author'. You can use these column names as the array value, or as the
 	 * array key with a string value to change the column title. You can also pass boolean false to remove
 	 * the 'cb' or 'title' columns, which are otherwise kept regardless.
 	 *
