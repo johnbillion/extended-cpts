@@ -20,7 +20,7 @@ class Extended_CPT_Test_Setup extends WP_UnitTestCase {
 		), array(
 			'plural' => 'People',
 		) );
-		$this->cpts['thing'] = register_extended_post_type( 'nice-thing', array(), array(
+		$this->cpts['nice-thing'] = register_extended_post_type( 'nice-thing', array(), array(
 			'slug' => 'Things',
 		) );
 		$this->cpts['foo'] = register_extended_post_type( 'foo', array(
@@ -37,12 +37,22 @@ class Extended_CPT_Test_Setup extends WP_UnitTestCase {
 		$this->posts['person'] = $this->factory->post->create( array(
 			'post_type' => 'person',
 		) );
-		$this->posts['thing'] = $this->factory->post->create( array(
+		$this->posts['nice-thing'] = $this->factory->post->create( array(
 			'post_type' => 'nice-thing',
 		) );
 		$this->posts['foo'] = $this->factory->post->create( array(
 			'post_type' => 'foo',
 		) );
+
+	}
+
+	function tearDown() {
+
+		parent::tearDown();
+
+		foreach ( $this->cpts as $cpt => $cpto ) {
+			_unregister_post_type( $cpt );
+		}
 
 	}
 
@@ -62,12 +72,12 @@ class Extended_CPT_Test_Setup extends WP_UnitTestCase {
 		$this->assertEquals( $this->cpts['person']->post_singular_low, 'person' );
 		$this->assertEquals( $this->cpts['person']->post_plural_low, 'people' );
 
-		$this->assertEquals( $this->cpts['thing']->post_type, 'nice-thing' );
-		$this->assertEquals( $this->cpts['thing']->post_slug, 'things' );
-		$this->assertEquals( $this->cpts['thing']->post_singular, 'Nice Thing' );
-		$this->assertEquals( $this->cpts['thing']->post_plural, 'Nice Things' );
-		$this->assertEquals( $this->cpts['thing']->post_singular_low, 'nice thing' );
-		$this->assertEquals( $this->cpts['thing']->post_plural_low, 'nice things' );
+		$this->assertEquals( $this->cpts['nice-thing']->post_type, 'nice-thing' );
+		$this->assertEquals( $this->cpts['nice-thing']->post_slug, 'things' );
+		$this->assertEquals( $this->cpts['nice-thing']->post_singular, 'Nice Thing' );
+		$this->assertEquals( $this->cpts['nice-thing']->post_plural, 'Nice Things' );
+		$this->assertEquals( $this->cpts['nice-thing']->post_singular_low, 'nice thing' );
+		$this->assertEquals( $this->cpts['nice-thing']->post_plural_low, 'nice things' );
 
 	}
 
@@ -79,7 +89,7 @@ class Extended_CPT_Test_Setup extends WP_UnitTestCase {
 		$link = get_post_type_archive_link( $this->cpts['person']->post_type );
 		$this->assertEquals( $link, user_trailingslashit( home_url( 'team' ) ) );
 
-		$link = get_post_type_archive_link( $this->cpts['thing']->post_type );
+		$link = get_post_type_archive_link( $this->cpts['nice-thing']->post_type );
 		$this->assertEquals( $link, user_trailingslashit( home_url( 'things' ) ) );
 
 		$link = get_post_type_archive_link( $this->cpts['foo']->post_type );
@@ -97,7 +107,7 @@ class Extended_CPT_Test_Setup extends WP_UnitTestCase {
 		$link = get_permalink( $post );
 		$this->assertEquals( $link, user_trailingslashit( home_url( sprintf( 'people/%s', $post->post_name ) ) ) );
 
-		$post = get_post( $this->posts['thing'] );
+		$post = get_post( $this->posts['nice-thing'] );
 		$link = get_permalink( $post );
 		$this->assertEquals( $link, user_trailingslashit( home_url( sprintf( 'things/%s', $post->post_name ) ) ) );
 

@@ -46,6 +46,7 @@ class Extended_CPT_Test_Queries extends WP_UnitTestCase {
 		$this->posts[0] = $this->factory->post->create( array(
 			'post_type' => self::$post_type,
 			'post_name' => 'Alpha',
+			'post_date' => '1984-02-25 00:04:00'
 		) );
 		add_post_meta( $this->posts[0], 'test_meta_key', 'Delta' );
 		wp_add_object_terms( $this->posts[0], 'Beta', self::$taxonomy );
@@ -54,6 +55,7 @@ class Extended_CPT_Test_Queries extends WP_UnitTestCase {
 		$this->posts[1] = $this->factory->post->create( array(
 			'post_type' => self::$post_type,
 			'post_name' => 'Delta',
+			'post_date' => '1984-02-25 00:03:00'
 		) );
 		add_post_meta( $this->posts[1], 'test_meta_key', 'Alpha' );
 
@@ -61,6 +63,7 @@ class Extended_CPT_Test_Queries extends WP_UnitTestCase {
 		$this->posts[2] = $this->factory->post->create( array(
 			'post_type' => self::$post_type,
 			'post_name' => 'Beta',
+			'post_date' => '1984-02-25 00:02:00'
 		) );
 		add_post_meta( $this->posts[2], 'test_meta_key', 'Beta' );
 		wp_add_object_terms( $this->posts[2], 'Alpha', self::$taxonomy );
@@ -69,8 +72,18 @@ class Extended_CPT_Test_Queries extends WP_UnitTestCase {
 		$this->posts[3] = $this->factory->post->create( array(
 			'post_type' => self::$post_type,
 			'post_name' => 'Gamma',
+			'post_date' => '1984-02-25 00:01:00'
 		) );
 		wp_add_object_terms( $this->posts[3], 'Gamma', self::$taxonomy );
+
+	}
+
+	function tearDown() {
+
+		parent::tearDown();
+
+		_unregister_post_type( self::$post_type );
+		_unregister_taxonomy( self::$taxonomy );
 
 	}
 
