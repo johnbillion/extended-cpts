@@ -4,33 +4,33 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 	function test_properties() {
 
-		$this->assertEquals( $this->cpts['hello']->post_type, 'hello' );
-		$this->assertEquals( $this->cpts['hello']->post_slug, 'hellos' );
-		$this->assertEquals( $this->cpts['hello']->post_singular, 'Hello' );
-		$this->assertEquals( $this->cpts['hello']->post_plural, 'Hellos' );
-		$this->assertEquals( $this->cpts['hello']->post_singular_low, 'hello' );
-		$this->assertEquals( $this->cpts['hello']->post_plural_low, 'hellos' );
+		$this->assertEquals( 'hello',  $this->cpts['hello']->post_type );
+		$this->assertEquals( 'hellos', $this->cpts['hello']->post_slug );
+		$this->assertEquals( 'Hello',  $this->cpts['hello']->post_singular );
+		$this->assertEquals( 'Hellos', $this->cpts['hello']->post_plural );
+		$this->assertEquals( 'hello',  $this->cpts['hello']->post_singular_low );
+		$this->assertEquals( 'hellos', $this->cpts['hello']->post_plural_low );
 
-		$this->assertEquals( $this->cpts['person']->post_type, 'person' );
-		$this->assertEquals( $this->cpts['person']->post_slug, 'people' );
-		$this->assertEquals( $this->cpts['person']->post_singular, 'Person' );
-		$this->assertEquals( $this->cpts['person']->post_plural, 'People' );
-		$this->assertEquals( $this->cpts['person']->post_singular_low, 'person' );
-		$this->assertEquals( $this->cpts['person']->post_plural_low, 'people' );
+		$this->assertEquals( 'person', $this->cpts['person']->post_type );
+		$this->assertEquals( 'people', $this->cpts['person']->post_slug );
+		$this->assertEquals( 'Person', $this->cpts['person']->post_singular );
+		$this->assertEquals( 'People', $this->cpts['person']->post_plural );
+		$this->assertEquals( 'person', $this->cpts['person']->post_singular_low );
+		$this->assertEquals( 'people', $this->cpts['person']->post_plural_low );
 
-		$this->assertEquals( $this->cpts['nice-thing']->post_type, 'nice-thing' );
-		$this->assertEquals( $this->cpts['nice-thing']->post_slug, 'things' );
-		$this->assertEquals( $this->cpts['nice-thing']->post_singular, 'Nice Thing' );
-		$this->assertEquals( $this->cpts['nice-thing']->post_plural, 'Nice Things' );
-		$this->assertEquals( $this->cpts['nice-thing']->post_singular_low, 'nice thing' );
-		$this->assertEquals( $this->cpts['nice-thing']->post_plural_low, 'nice things' );
+		$this->assertEquals( 'nice-thing',  $this->cpts['nice-thing']->post_type );
+		$this->assertEquals( 'things',      $this->cpts['nice-thing']->post_slug );
+		$this->assertEquals( 'Nice Thing',  $this->cpts['nice-thing']->post_singular );
+		$this->assertEquals( 'Nice Things', $this->cpts['nice-thing']->post_plural );
+		$this->assertEquals( 'nice thing',  $this->cpts['nice-thing']->post_singular_low );
+		$this->assertEquals( 'nice things', $this->cpts['nice-thing']->post_plural_low );
 
-		$this->assertEquals( $this->cpts['foo']->post_type, 'foo' );
-		$this->assertEquals( $this->cpts['foo']->post_slug, 'foos' );
-		$this->assertEquals( $this->cpts['foo']->post_singular, 'Bar' );
-		$this->assertEquals( $this->cpts['foo']->post_plural, 'Bars' );
-		$this->assertEquals( $this->cpts['foo']->post_singular_low, 'bar' );
-		$this->assertEquals( $this->cpts['foo']->post_plural_low, 'bars' );
+		$this->assertEquals( 'foo',  $this->cpts['foo']->post_type );
+		$this->assertEquals( 'foos', $this->cpts['foo']->post_slug );
+		$this->assertEquals( 'Bar',  $this->cpts['foo']->post_singular );
+		$this->assertEquals( 'Bars', $this->cpts['foo']->post_plural );
+		$this->assertEquals( 'bar',  $this->cpts['foo']->post_singular_low );
+		$this->assertEquals( 'bars', $this->cpts['foo']->post_plural_low );
 
 	}
 
@@ -38,26 +38,26 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 		$hello = get_post_type_object( 'hello' );
 
-		$this->assertEquals( $hello->public, true );
-		$this->assertEquals( $hello->capability_type, 'page' );
-		$this->assertEquals( $hello->hierarchical, true );
-		$this->assertEquals( $hello->has_archive, true );
+		$this->assertEquals( true,   $hello->public );
+		$this->assertEquals( 'page', $hello->capability_type );
+		$this->assertEquals( true,   $hello->hierarchical );
+		$this->assertEquals( true,   $hello->has_archive );
 
 	}
 
 	function test_archive_links() {
 
 		$link = get_post_type_archive_link( $this->cpts['hello']->post_type );
-		$this->assertEquals( $link, user_trailingslashit( home_url( 'hellos' ) ) );
+		$this->assertEquals( user_trailingslashit( home_url( 'hellos' ) ), $link );
 
 		$link = get_post_type_archive_link( $this->cpts['person']->post_type );
-		$this->assertEquals( $link, user_trailingslashit( home_url( 'team' ) ) );
+		$this->assertEquals( user_trailingslashit( home_url( 'team' ) ), $link );
 
 		$link = get_post_type_archive_link( $this->cpts['nice-thing']->post_type );
-		$this->assertEquals( $link, user_trailingslashit( home_url( 'things' ) ) );
+		$this->assertEquals( user_trailingslashit( home_url( 'things' ) ), $link );
 
 		$link = get_post_type_archive_link( $this->cpts['foo']->post_type );
-		$this->assertEquals( $link, user_trailingslashit( home_url( 'foos' ) ) );
+		$this->assertEquals( user_trailingslashit( home_url( 'foos' ) ), $link );
 
 	}
 
