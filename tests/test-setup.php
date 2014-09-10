@@ -1,70 +1,6 @@
 <?php
 
-class Extended_CPT_Test_Setup extends WP_UnitTestCase {
-
-	public $cpts  = array();
-	public $posts = array();
-
-	function setUp() {
-
-		global $wp_rewrite;
-
-		parent::setUp();
-
-		$wp_rewrite->init();
-		$wp_rewrite->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
-
-		$this->cpts['hello']  = register_extended_post_type( 'hello' );
-		$this->cpts['person'] = register_extended_post_type( 'person', array(
-			'has_archive' => 'team',
-		), array(
-			'plural' => 'People',
-		) );
-		$this->cpts['nice-thing'] = register_extended_post_type( 'nice-thing', array(), array(
-			'slug' => 'Things',
-		) );
-		$this->cpts['foo'] = register_extended_post_type( 'foo', array(
-			'rewrite' => array(
-				'permastruct' => 'foo/%author%/%foo_category%/%foo%',
-			),
-		), array(
-			'singular' => 'Bar',
-		) );
-		$this->cpts['foo']->add_taxonomy( 'foo_category' );
-
-		$wp_rewrite->flush_rules();
-
-		foreach ( array( 'Alpha', 'Beta', 'Gamma', 'Delta' ) as $slug ) {
-			wp_insert_term( $slug, 'foo_category' );
-		}
-
-		$this->posts['hello'] = $this->factory->post->create( array(
-			'post_type' => 'hello',
-		) );
-		$this->posts['person'] = $this->factory->post->create( array(
-			'post_type' => 'person',
-		) );
-		$this->posts['nice-thing'] = $this->factory->post->create( array(
-			'post_type' => 'nice-thing',
-		) );
-		$this->posts['foo'] = $this->factory->post->create( array(
-			'post_type'   => 'foo',
-			'post_author' => 1,
-		) );
-		wp_add_object_terms( $this->posts['foo'], array( 'Gamma', 'Delta' ), 'foo_category' );
-
-	}
-
-	function tearDown() {
-
-		parent::tearDown();
-
-		foreach ( $this->cpts as $cpt => $cpto ) {
-			_unregister_post_type( $cpt );
-			_unregister_taxonomy( "{$cpt}_category" );
-		}
-
-	}
+class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 	function test_properties() {
 
@@ -127,19 +63,19 @@ class Extended_CPT_Test_Setup extends WP_UnitTestCase {
 
 	function test_permalinks() {
 
-		$post = get_post( $this->posts['hello'] );
+		$post = get_post( $this->posts['hello'][0] );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'hellos/%s', $post->post_name ) ) ), $link );
 
-		$post = get_post( $this->posts['person'] );
+		$post = get_post( $this->posts['person'][0] );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'people/%s', $post->post_name ) ) ), $link );
 
-		$post = get_post( $this->posts['nice-thing'] );
+		$post = get_post( $this->posts['nice-thing'][0] );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'things/%s', $post->post_name ) ) ), $link );
 
-		$post = get_post( $this->posts['foo'] );
+		$post = get_post( $this->posts['foo'][0] );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'foo/admin/delta/%s', $post->post_name ) ) ), $link );
 
