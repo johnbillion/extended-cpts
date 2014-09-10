@@ -1,6 +1,6 @@
 <?php
 
-class Extended_CPT_Test_Queries extends WP_UnitTestCase {
+class Extended_CPT_Test_Site_Queries extends WP_UnitTestCase {
 
 	public static $post_type = 'test_queries';
 	public static $taxonomy  = 'test_queries_taxonomy';
