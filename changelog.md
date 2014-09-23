@@ -1,6 +1,20 @@
 
 ## Changelog ##
 
+### 2.4 ###
+
+* Support for custom post type permastructs.
+* Automatic integration with the [Rewrite Rule Testing](https://wordpress.org/plugins/rewrite-testing/) plugin.
+* Query variables for front-end filtering via the `site_filters` argument.
+* Query variables for front-end sorting via the `site_sortables` argument.
+* Filters for the post type arguments and names (`ext-cpts/{$post_type}/args` and `ext-cpts/{$post_type}/names`).
+* Support for outputting multiple values per key in post meta admin columns.
+* The default value of the `link` argument for admin columns is now `list`.
+* The `filters` argument has been renamed `admin_filters`.
+* The `cols` argument has been renamed `admin_cols`.
+* The `right_now` argument has been renamed `dashboard_glance`.
+* Remove the backwards compatibility with pre-2.3 plural, slug, and singular arguments.
+
 ### 2.3.3 ###
 
 * Added `type` of `wordpress-plugin` to composer.json.

@@ -93,7 +93,7 @@ Bam, we have a 'Stories' post type, with correctly generated labels and post upd
 
 There's quite a bit more you can do. See the wiki for more examples.
 
-## License: GPLv2 ##
+## License: GPLv2 or later ##
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
