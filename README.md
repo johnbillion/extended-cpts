@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/johnbillion/extended-cpts.svg?branch=master)](https://travis-ci.org/johnbillion/extended-cpts)
+[![Stable Release](https://img.shields.io/packagist/v/johnbillion/extended-cpts.svg)](https://github.com/johnbillion/extended-cpts/releases)
+[![License](https://img.shields.io/packagist/l/johnbillion/extended-cpts.svg)](https://github.com/johnbillion/extended-cpts/blob/master/LICENSE)
+
 # Extended CPTs #
 
 Extended CPTs is a library which provides extended functionality to WordPress custom post types, allowing developers to quickly build post types without having to write the same code again and again.
