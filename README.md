@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/johnbillion/extended-cpts.svg?branch=master)](https://travis-ci.org/johnbillion/extended-cpts)
 [![Coverage Status](https://coveralls.io/repos/johnbillion/extended-cpts/badge.svg)](https://coveralls.io/r/johnbillion/extended-cpts)
 [![Stable Release](https://img.shields.io/packagist/v/johnbillion/extended-cpts.svg)](https://packagist.org/packages/johnbillion/extended-cpts)
-[![License](https://img.shields.io/badge/license-GPL--2.0%2B-red.svg)](https://github.com/johnbillion/extended-cpts/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-GPL_v2%2B-blue.svg)](https://github.com/johnbillion/extended-cpts/blob/master/LICENSE)
 
 # Extended CPTs #
 
