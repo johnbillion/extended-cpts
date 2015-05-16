@@ -262,7 +262,7 @@ class Extended_CPT {
 	 */
 	public function maybe_filter( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return;
 		}
 
@@ -292,7 +292,7 @@ class Extended_CPT {
 	 */
 	public function maybe_sort_by_fields( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return;
 		}
 
@@ -331,7 +331,7 @@ class Extended_CPT {
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return $clauses;
 		}
 
@@ -360,7 +360,7 @@ class Extended_CPT {
 
 		foreach ( $filters as $filter_key => $filter ) {
 
-			if ( ! isset( $query[ $filter_key ] ) or ( '' === $query[ $filter_key ] ) ) {
+			if ( ! isset( $query[ $filter_key ] ) || ( '' === $query[ $filter_key ] ) ) {
 				continue;
 			}
 			if ( isset( $filter['cap'] ) && ! current_user_can( $filter['cap'] ) ) {
@@ -548,7 +548,7 @@ class Extended_CPT {
 	public function override_private_query_vars( WP $wp ) {
 
 		# If it's not our post type, bail out:
-		if ( ! isset( $wp->query_vars['post_type'] ) or ( $this->post_type != $wp->query_vars['post_type'] ) ) {
+		if ( ! isset( $wp->query_vars['post_type'] ) || ( $this->post_type != $wp->query_vars['post_type'] ) ) {
 			return $wp;
 		}
 
@@ -679,7 +679,7 @@ class Extended_CPT {
 	 */
 	public function register_post_type() {
 
-		if ( ! isset( $this->args['query_var'] ) or ( true === $this->args['query_var'] ) ) {
+		if ( ! isset( $this->args['query_var'] ) || ( true === $this->args['query_var'] ) ) {
 			$query_var = $this->post_type;
 		} else {
 			$query_var = $this->args['query_var'];
@@ -1203,7 +1203,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_filter( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return;
 		}
 
@@ -1233,7 +1233,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_sort_by_fields( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return;
 		}
 
@@ -1258,7 +1258,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return $clauses;
 		}
 
@@ -1438,7 +1438,7 @@ class Extended_CPT_Admin {
 			if ( isset( $col['sortable'] ) && ! $col['sortable'] ) {
 				continue;
 			}
-			if ( isset( $col['meta_key'] ) or isset( $col['taxonomy'] ) or isset( $col['post_field'] ) ) {
+			if ( isset( $col['meta_key'] ) || isset( $col['taxonomy'] ) || isset( $col['post_field'] ) ) {
 				$cols[ $id ] = $id;
 			}
 		}
@@ -1653,7 +1653,7 @@ class Extended_CPT_Admin {
 
 			foreach ( $vals as $val ) {
 
-				if ( ! empty( $val ) or ( '0' === $val ) ) {
+				if ( ! empty( $val ) || ( '0' === $val ) ) {
 					$echo[] = esc_html( $val );
 				}
 			}
