@@ -2,7 +2,7 @@
 
 class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
-	function test_query_vars() {
+	function test_registered_query_vars() {
 
 		// Need to trigger a new request
 		$this->go_to( home_url( '/' ) );
@@ -19,7 +19,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_default() {
+	function test_default_post_type_query() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'post',
@@ -38,7 +38,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_no_args() {
+	function test_query_with_no_args() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'hello',
@@ -57,7 +57,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_site_sortables_post_meta() {
+	function test_query_sorted_by_post_meta() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'hello',
@@ -82,7 +82,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_site_sortables_post_field() {
+	function test_query_sorted_by_post_field() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'hello',
@@ -108,7 +108,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_site_sortables_taxonomy() {
+	function test_query_sorted_by_taxonomy() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'hello',
@@ -134,7 +134,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_site_filters_post_meta_key() {
+	function test_query_filtered_by_post_meta_key() {
 
 		$query = new WP_Query( array(
 			'post_type'                       => 'hello',
@@ -157,7 +157,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_site_filters_post_meta_search() {
+	function test_query_filtered_by_post_meta_search() {
 
 		$query = new WP_Query( array(
 			'post_type'                          => 'hello',
@@ -182,7 +182,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_site_filters_post_meta_exists() {
+	function test_query_filtered_by_post_meta_exists() {
 
 		$query = new WP_Query( array(
 			'post_type'                          => 'hello',
