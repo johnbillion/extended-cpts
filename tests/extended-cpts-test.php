@@ -40,6 +40,24 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 						'test_meta_key',
 					),
 				),
+				'test_site_filters_with_cap' => array(
+					'meta_key' => 'test_meta_key',
+					'cap'      => 'have_kittens',
+				),
+				'test_site_filters_post_meta_query' => array(
+					'meta_key'   => 'test_meta_key',
+					'meta_query' => array(
+						'compare' => '>=',
+						'value'   => 'B',
+						'type'    => 'CHAR',
+					),
+				),
+				'test_site_filters_post_meta_query_deprecated' => array(
+					'meta_key'     => 'test_meta_key',
+					'meta_compare' => '>=',
+					'meta_value'   => 'B',
+					'meta_type'    => 'CHAR',
+				),
 			),
 		);
 

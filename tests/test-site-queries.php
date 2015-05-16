@@ -57,6 +57,32 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
+	function test_query_with_no_custom_values() {
+
+		$query = new WP_Query( array(
+			'post_type' => 'hello',
+			'nopaging'  => true,
+			'orderby'   => 'post_name',
+			'order'     => 'ASC',
+		) );
+
+		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
+
+		$this->assertEquals( 'post_name', $query->get( 'orderby' ) );
+		$this->assertEquals( 'ASC',       $query->get( 'order' ) );
+		$this->assertEquals( '',          $query->get( 'meta_key' ) );
+		$this->assertEquals( '',          $query->get( 'meta_value' ) );
+		$this->assertEquals( '',          $query->get( 'meta_query' ) );
+
+		$this->assertEquals( array(
+			$this->posts['hello'][0],
+			$this->posts['hello'][2],
+			$this->posts['hello'][1],
+			$this->posts['hello'][3],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
 	function test_query_sorted_by_post_meta() {
 
 		$query = new WP_Query( array(
@@ -91,7 +117,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 			'order'     => 'ASC',
 		) );
 
-		$this->assertEquals( 4, $query->found_posts );
+		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
 
 		$this->assertEquals( 'name', $query->get( 'orderby' ) );
 		$this->assertEquals( 'ASC',  $query->get( 'order' ) );
@@ -117,7 +143,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 			'order'     => 'DESC',
 		) );
 
-		$this->assertEquals( 4, $query->found_posts );
+		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
 
 		$this->assertEquals( 'test_site_sortables_taxonomy', $query->get( 'orderby' ) );
 		$this->assertEquals( 'DESC',                         $query->get( 'order' ) );
@@ -153,6 +179,65 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 		$this->assertEquals( array(
 			$this->posts['hello'][1],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	function test_query_filtered_by_post_meta_query() {
+
+		$query = new WP_Query( array(
+			'post_type'                         => 'hello',
+			'nopaging'                          => true,
+			'test_site_filters_post_meta_query' => 'ZZZ',
+		) );
+
+		$meta_query = $query->get( 'meta_query' );
+
+		$this->assertEquals( 2, $query->found_posts );
+
+		$this->assertEquals( '', $query->get( 'meta_key' ) );
+		$this->assertEquals( '', $query->get( 'meta_value' ) );
+		$this->assertEquals( array(
+			'key'     => 'test_meta_key',
+			'value'   => 'B',
+			'compare' => '>=',
+			'type'    => 'CHAR',
+		), $meta_query[0] );
+
+		$this->assertEquals( array(
+			$this->posts['hello'][0],
+			$this->posts['hello'][2],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	/**
+	 * @expectedIncorrectUsage register_extended_post_type
+	 */
+	function test_query_filtered_by_post_meta_query_deprecated() {
+
+		$query = new WP_Query( array(
+			'post_type'                                    => 'hello',
+			'nopaging'                                     => true,
+			'test_site_filters_post_meta_query_deprecated' => 'ZZZ',
+		) );
+
+		$meta_query = $query->get( 'meta_query' );
+
+		$this->assertEquals( 2, $query->found_posts );
+
+		$this->assertEquals( '', $query->get( 'meta_key' ) );
+		$this->assertEquals( '', $query->get( 'meta_value' ) );
+		$this->assertEquals( array(
+			'key'     => 'test_meta_key',
+			'value'   => 'B',
+			'compare' => '>=',
+			'type'    => 'CHAR',
+		), $meta_query[0] );
+
+		$this->assertEquals( array(
+			$this->posts['hello'][0],
+			$this->posts['hello'][2],
 		), wp_list_pluck( $query->posts, 'ID' ) );
 
 	}
@@ -206,6 +291,26 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 			$this->posts['hello'][1],
 			$this->posts['hello'][2],
 		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	function test_query_filtered_without_required_cap() {
+
+		$query = new WP_Query( array(
+			'post_type'                  => 'hello',
+			'nopaging'                   => true,
+			'test_site_filters_with_cap' => 'Alpha',
+		) );
+
+		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
+
+		$this->assertEquals( '',     $query->get( 'orderby' ) ); // date
+		$this->assertEquals( 'DESC', $query->get( 'order' ) );
+		$this->assertEquals( '',     $query->get( 'meta_key' ) );
+		$this->assertEquals( '',     $query->get( 'meta_value' ) );
+		$this->assertEquals( '',     $query->get( 'meta_query' ) );
+
+		$this->assertEquals( $this->posts['hello'], wp_list_pluck( $query->posts, 'ID' ) );
 
 	}
 
