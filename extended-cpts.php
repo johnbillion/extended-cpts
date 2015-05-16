@@ -873,13 +873,13 @@ class Extended_CPT_Admin {
 		}
 
 		?>
-		<style type="text/css">
 		<?php if ( isset( $this->args['admin_filters']['m'] ) && ! $this->args['admin_filters']['m'] ) { ?>
-			#posts-filter select[name="m"] {
-				display: none;
-			}
+			<style type="text/css">
+				#posts-filter select[name="m"] {
+					display: none;
+				}
+			</style>
 		<?php } ?>
-		</style>
 		<?php
 
 	}
