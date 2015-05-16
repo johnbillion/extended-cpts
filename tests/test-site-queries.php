@@ -2,7 +2,7 @@
 
 class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
-	function test_registered_query_vars() {
+	function testFilterQueryVarsRegistered() {
 
 		// Need to trigger a new request
 		$this->go_to( home_url( '/' ) );
@@ -19,7 +19,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_default_post_type_query() {
+	function testDefaultPostTypeQueryNotAffected() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'post',
@@ -38,7 +38,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_query_with_no_args() {
+	function testQueryWithNoArgsNotAffected() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'hello',
@@ -57,7 +57,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_query_with_no_custom_values() {
+	function testQueryWithNoCustomValuesNotAffected() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'hello',
@@ -83,7 +83,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_query_sorted_by_post_meta() {
+	function testQuerySortedByPostMeta() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'hello',
@@ -108,7 +108,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_query_sorted_by_post_field() {
+	function testQuerySortedByPostField() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'hello',
@@ -134,7 +134,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_query_sorted_by_taxonomy() {
+	function testQuerySortedByTaxonomyTerms() {
 
 		$query = new WP_Query( array(
 			'post_type' => 'hello',
@@ -160,7 +160,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_query_filtered_by_post_meta_key() {
+	function testQueryFilteredByPostMetaKey() {
 
 		$query = new WP_Query( array(
 			'post_type'                       => 'hello',
@@ -183,7 +183,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_query_filtered_by_post_meta_query() {
+	function testQueryFilteredByPostMetaQuery() {
 
 		$query = new WP_Query( array(
 			'post_type'                         => 'hello',
@@ -214,7 +214,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 	/**
 	 * @expectedIncorrectUsage register_extended_post_type
 	 */
-	function test_query_filtered_by_post_meta_query_deprecated() {
+	function testQueryFilteredByDeprecatedPostMetaQuery() {
 
 		$query = new WP_Query( array(
 			'post_type'                                    => 'hello',
@@ -242,7 +242,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_query_filtered_by_post_meta_search() {
+	function testQueryFilteredByPostMetaSearch() {
 
 		$query = new WP_Query( array(
 			'post_type'                          => 'hello',
@@ -267,7 +267,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_query_filtered_by_post_meta_exists() {
+	function testQueryFilteredByPostMetaExists() {
 
 		$query = new WP_Query( array(
 			'post_type'                          => 'hello',
@@ -294,7 +294,7 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
-	function test_query_filtered_without_required_cap() {
+	function testQueryNotFilteredWithoutRequiredCap() {
 
 		$query = new WP_Query( array(
 			'post_type'                  => 'hello',

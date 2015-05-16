@@ -2,7 +2,7 @@
 
 class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
-	function test_properties() {
+	function testPostTypeArgsAreCorrect() {
 
 		$this->assertEquals( 'hello',  $this->cpts['hello']->post_type );
 		$this->assertEquals( 'hellos', $this->cpts['hello']->post_slug );
@@ -34,7 +34,7 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 	}
 
-	function test_args() {
+	function testPostTypePropertiesAreCorrect() {
 
 		$hello = get_post_type_object( 'hello' );
 
@@ -45,7 +45,7 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 	}
 
-	function test_archive_links() {
+	function testArchiveLinksAreCorrect() {
 
 		$link = get_post_type_archive_link( $this->cpts['hello']->post_type );
 		$this->assertEquals( user_trailingslashit( home_url( 'hellos' ) ), $link );
@@ -61,7 +61,7 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 	}
 
-	function test_permalinks() {
+	function testPermalinksAreCorrect() {
 
 		$post = get_post( $this->posts['hello'][0] );
 		$link = get_permalink( $post );
