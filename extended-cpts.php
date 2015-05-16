@@ -24,7 +24,7 @@ GNU General Public License for more details.
 
 */
 
-if ( !function_exists( 'register_extended_post_type' ) ) {
+if ( ! function_exists( 'register_extended_post_type' ) ) {
 /**
  * Register an Extended Post Type.
  *
@@ -49,7 +49,7 @@ if ( !function_exists( 'register_extended_post_type' ) ) {
  *
  * @param string $post_type The post type name.
  * @param array  $args {
- *     Optional. The post type arguments. 
+ *     Optional. The post type arguments.
  *
  *     @type array  $admin_cols           Associative array of admin screen columns to show for this post type.
  *     @type array  $admin_filters        Associative array of admin screen filters to show for this post type.
@@ -87,12 +87,12 @@ function register_extended_post_type( $post_type, array $args = array(), array $
 }
 }
 
-if ( !class_exists( 'Extended_CPT' ) ) {
+if ( ! class_exists( 'Extended_CPT' ) ) {
 class Extended_CPT {
 
 	/**
 	 * Default arguments for custom post types.
-	 * 
+	 *
 	 * The arguments listed are the ones which differ from the defaults in `register_post_type()`.
 	 *
 	 * @var array
@@ -193,13 +193,13 @@ class Extended_CPT {
 			'all_items'          => sprintf( 'All %s', $this->post_plural ),
 		);
 
-		# Only set rewrites if we need them
-		if ( isset( $args['public'] ) and !$args['public'] ) {
+		# Only set default rewrites if we need them
+		if ( isset( $args['public'] ) and ! $args['public'] ) {
 			$this->defaults['rewrite'] = false;
 		} else {
 			$this->defaults['rewrite'] = array(
 				'slug'       => $this->post_slug,
-				'with_front' => false
+				'with_front' => false,
 			);
 		}
 
@@ -208,19 +208,19 @@ class Extended_CPT {
 
 		# This allows the 'labels' and 'rewrite' args to contain some, none, or all values:
 		foreach ( array( 'labels', 'rewrite' ) as $arg ) {
-			if ( isset( $args[$arg] ) and is_array( $args[$arg] ) ) {
-				$this->args[$arg] = array_merge( $this->defaults[$arg], $args[$arg] );
+			if ( isset( $args[ $arg ] ) and is_array( $args[ $arg ] ) ) {
+				$this->args[ $arg ] = array_merge( $this->defaults[ $arg ], $args[ $arg ] );
 			}
 		}
 
 		# Front-end sortables:
-		if ( $this->args['site_sortables'] and !is_admin() ) {
+		if ( $this->args['site_sortables'] and ! is_admin() ) {
 			add_filter( 'pre_get_posts', array( $this, 'maybe_sort_by_fields' ) );
 			add_filter( 'posts_clauses', array( $this, 'maybe_sort_by_taxonomy' ), 10, 2 );
 		}
 
 		# Front-end filters:
-		if ( $this->args['site_filters'] and !is_admin() ) {
+		if ( $this->args['site_filters'] and ! is_admin() ) {
 			add_action( 'pre_get_posts', array( $this, 'maybe_filter' ) );
 			add_filter( 'query_vars',    array( $this, 'add_query_vars' ) );
 		}
@@ -231,12 +231,12 @@ class Extended_CPT {
 		}
 
 		# Post type archive query vars:
-		if ( $this->args['archive'] and !is_admin() ) {
+		if ( $this->args['archive'] and ! is_admin() ) {
 			add_filter( 'parse_request', array( $this, 'override_private_query_vars' ), 1 );
 		}
 
 		# Custom post type permastruct:
-		if ( $this->args['rewrite'] and !empty( $this->args['rewrite']['permastruct'] ) ) {
+		if ( $this->args['rewrite'] and ! empty( $this->args['rewrite']['permastruct'] ) ) {
 			add_action( 'registered_post_type', array( $this, 'registered_post_type' ), 1, 2 );
 			add_filter( 'post_type_link',       array( $this, 'post_type_link' ), 1, 4 );
 		}
@@ -262,7 +262,7 @@ class Extended_CPT {
 	 */
 	public function maybe_filter( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return;
 		}
 
@@ -292,7 +292,7 @@ class Extended_CPT {
 	 */
 	public function maybe_sort_by_fields( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return;
 		}
 
@@ -308,7 +308,6 @@ class Extended_CPT {
 					break;
 				}
 			}
-
 		}
 
 		$sort = Extended_CPT::get_sort_field_vars( $wp_query->query, $this->args['site_sortables'] );
@@ -332,7 +331,7 @@ class Extended_CPT {
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return $clauses;
 		}
 
@@ -349,7 +348,7 @@ class Extended_CPT {
 	/**
 	 * Get the array of private query vars for the given filters, to apply to the current query in order to filter it by the
 	 * given public query vars.
-	 * 
+	 *
 	 * @param  array $query   The public query vars, usually from `$wp_query->query`.
 	 * @param  array $filters The filters valid for this query (usually the value of the `admin_filters` or
 	 *                        `site_filters` argument when registering an extended post type).
@@ -361,40 +360,40 @@ class Extended_CPT {
 
 		foreach ( $filters as $filter_key => $filter ) {
 
-			if ( ! isset( $query[$filter_key] ) or ( '' === $query[$filter_key] ) ) {
+			if ( ! isset( $query[ $filter_key ] ) or ( '' === $query[ $filter_key ] ) ) {
 				continue;
 			}
-			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) ) {
+			if ( isset( $filter['cap'] ) and ! current_user_can( $filter['cap'] ) ) {
 				continue;
 			}
 
 			if ( isset( $filter['meta_key'] ) ) {
 				$meta_query = array(
 					'key'   => $filter['meta_key'],
-					'value' => stripslashes( $query[$filter_key] )
+					'value' => stripslashes( $query[ $filter_key ] ),
 				);
 			} else if ( isset( $filter['meta_search_key'] ) ) {
 				$meta_query = array(
 					'key'     => $filter['meta_search_key'],
-					'value'   => stripslashes( $query[$filter_key] ),
-					'compare' => 'LIKE'
+					'value'   => stripslashes( $query[ $filter_key ] ),
+					'compare' => 'LIKE',
 				);
 			} else if ( isset( $filter['meta_exists'] ) ) {
 				$meta_query = array(
-					'key'     => stripslashes( $query[$filter_key] ),
+					'key'     => stripslashes( $query[ $filter_key ] ),
 					'compare' => 'NOT IN',
 					'value'   => array( '', '0', 'false', 'null' ),
 				);
 			}
 
 			foreach ( array( 'compare', 'value', 'type' ) as $arg ) {
-				if ( isset( $filter["meta_{$arg}"] ) ) {
+				if ( isset( $filter[ "meta_{$arg}" ] ) ) {
 					_doing_it_wrong( 'register_extended_post_type', sprintf(
 						__( 'The %1$s parameter for filters is deprecated. Use %2$s instead.', 'extended-cpts' ),
 						"<code>meta_{$arg}</code>",
 						"<code>meta_query['{$arg}']</code>"
 					), '2.4' );
-					$filter['meta_query'][$arg] = $filter["meta_{$arg}"];
+					$filter['meta_query'][ $arg ] = $filter[ "meta_{$arg}" ];
 				}
 			}
 
@@ -402,10 +401,9 @@ class Extended_CPT {
 				$meta_query = array_merge( $meta_query, $filter['meta_query'] );
 			}
 
-			if ( !empty( $meta_query ) ) {
+			if ( ! empty( $meta_query ) ) {
 				$return['meta_query'][] = $meta_query;
 			}
-
 		}
 
 		return $return;
@@ -415,7 +413,7 @@ class Extended_CPT {
 	/**
 	 * Get the array of private and public query vars for the given sortables, to apply to the current query in order to
 	 * sort it by the requested orderby field.
-	 * 
+	 *
 	 * @param  array $query     The public query vars, usually from `$wp_query->query`.
 	 * @param  array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
 	 *                          `site_sortables` argument when registering an extended post type.
@@ -423,19 +421,19 @@ class Extended_CPT {
 	 */
 	public static function get_sort_field_vars( array $vars, array $sortables ) {
 
-		if ( !isset( $vars['orderby'] ) ) {
+		if ( ! isset( $vars['orderby'] ) ) {
 			return array();
 		}
-		if ( !isset( $sortables[$vars['orderby']] ) ) {
+		if ( ! isset( $sortables[ $vars['orderby'] ] ) ) {
 			return array();
 		}
 
-		$orderby = $sortables[$vars['orderby']];
+		$orderby = $sortables[ $vars['orderby'] ];
 
-		if ( !is_array( $orderby ) ) {
+		if ( ! is_array( $orderby ) ) {
 			return array();
 		}
-		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
+		if ( isset( $orderby['sortable'] ) and ! $orderby['sortable'] ) {
 			return array();
 		}
 
@@ -457,7 +455,7 @@ class Extended_CPT {
 	/**
 	 * Get the array of private and public query vars for the given sortables, to apply to the current query in order to
 	 * sort it by the requested orderby field.
-	 * 
+	 *
 	 * @param  array $query     The public query vars, usually from `$wp_query->query`.
 	 * @param  array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
 	 *                          `site_sortables` argument when registering an extended post type).
@@ -467,22 +465,22 @@ class Extended_CPT {
 
 		global $wpdb;
 
-		if ( !isset( $vars['orderby'] ) ) {
+		if ( ! isset( $vars['orderby'] ) ) {
 			return array();
 		}
-		if ( !isset( $sortables[$vars['orderby']] ) ) {
+		if ( ! isset( $sortables[ $vars['orderby'] ] ) ) {
 			return array();
 		}
 
-		$orderby = $sortables[$vars['orderby']];
+		$orderby = $sortables[ $vars['orderby'] ];
 
-		if ( !is_array( $orderby ) ) {
+		if ( ! is_array( $orderby ) ) {
 			return array();
 		}
-		if ( isset( $orderby['sortable'] ) and !$orderby['sortable'] ) {
+		if ( isset( $orderby['sortable'] ) and ! $orderby['sortable'] ) {
 			return array();
 		}
-		if ( !isset( $orderby['taxonomy'] ) ) {
+		if ( ! isset( $orderby['taxonomy'] ) ) {
 			return array();
 		}
 
@@ -495,9 +493,9 @@ class Extended_CPT {
 			LEFT OUTER JOIN {$wpdb->terms} as ext_cpts_t
 			ON ( ext_cpts_tt.term_id = ext_cpts_t.term_id )
 		";
-		$clauses['where'] .= $wpdb->prepare( " AND ( taxonomy = %s OR taxonomy IS NULL )", $orderby['taxonomy'] );
+		$clauses['where'] .= $wpdb->prepare( ' AND ( taxonomy = %s OR taxonomy IS NULL )', $orderby['taxonomy'] );
 		$clauses['groupby'] = 'ext_cpts_tr.object_id';
-		$clauses['orderby'] = "GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ";
+		$clauses['orderby'] = 'GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ';
 		$clauses['orderby'] .= ( 'ASC' == strtoupper( $vars['order'] ) ) ? 'ASC' : 'DESC';
 
 		return $clauses;
@@ -527,11 +525,11 @@ class Extended_CPT {
 	public function add_to_feed( array $vars ) {
 
 		# If it's not a feed, we're not interested:
-		if ( !isset( $vars['feed'] ) ) {
+		if ( ! isset( $vars['feed'] ) ) {
 			return $vars;
 		}
 
-		if ( !isset( $vars['post_type'] ) ) {
+		if ( ! isset( $vars['post_type'] ) ) {
 			$vars['post_type'] = array( 'post', $this->post_type );
 		} else if ( is_array( $vars['post_type'] ) and ( count( $vars['post_type'] ) > 1 ) ) {
 			$vars['post_type'][] = $this->post_type;
@@ -550,7 +548,7 @@ class Extended_CPT {
 	public function override_private_query_vars( WP $wp ) {
 
 		# If it's not our post type, bail out:
-		if ( !isset( $wp->query_vars['post_type'] ) or ( $this->post_type != $wp->query_vars['post_type'] ) ) {
+		if ( ! isset( $wp->query_vars['post_type'] ) or ( $this->post_type != $wp->query_vars['post_type'] ) ) {
 			return $wp;
 		}
 
@@ -561,7 +559,7 @@ class Extended_CPT {
 
 		# Set the vars:
 		foreach ( $this->args['archive'] as $var => $value ) {
-			$wp->query_vars[$var] = $value;
+			$wp->query_vars[ $var ] = $value;
 		}
 
 		return $wp;
@@ -570,7 +568,7 @@ class Extended_CPT {
 
 	/**
 	 * Action fired after a CPT is registered in order to set up the custom permalink structure for the post type.
-	 * 
+	 *
 	 * @param string $post_type Post type name.
 	 * @param object $args      Arguments used to register the post type.
 	 */
@@ -584,7 +582,7 @@ class Extended_CPT {
 
 	/**
 	 * Filter the post type permalink in order to populate its rewrite tags.
-	 * 
+	 *
 	 * @param  string  $post_link The post's permalink.
 	 * @param  WP_Post $post      The post in question.
 	 * @param  bool    $leavename Whether to keep the post name.
@@ -648,7 +646,7 @@ class Extended_CPT {
 				}
 			}
 
-			$replacements["%{$tax}%"] = $term;
+			$replacements[ "%{$tax}%" ] = $term;
 
 		}
 
@@ -660,7 +658,7 @@ class Extended_CPT {
 
 	/**
 	 * Add our rewrite tests to the Rewrite Rule Testing tests array.
-	 * 
+	 *
 	 * @param  array $tests The existing rewrite rule tests.
 	 * @return array        Updated rewrite rule tests.
 	 */
@@ -700,7 +698,6 @@ class Extended_CPT {
 			if ( is_wp_error( $cpt ) ) {
 				trigger_error( $cpt->get_error_message(), E_USER_ERROR );
 			}
-
 		} else {
 
 			# This allows us to call register_extended_post_type() on an existing post type to add custom functionality
@@ -717,7 +714,7 @@ class Extended_CPT {
 	 * @param object $pto A post type object
 	 */
 	public function extend( stdClass $pto ) {
-		$GLOBALS['wp_post_types'][$pto->name]->labels = (object) $this->args['labels'];
+		$GLOBALS['wp_post_types'][ $pto->name ]->labels = (object) $this->args['labels'];
 	}
 
 	/**
@@ -752,7 +749,7 @@ class Extended_CPT {
 }
 }
 
-if ( !class_exists( 'Extended_CPT_Admin' ) ) {
+if ( ! class_exists( 'Extended_CPT_Admin' ) ) {
 class Extended_CPT_Admin {
 
 	/**
@@ -775,7 +772,7 @@ class Extended_CPT_Admin {
 
 	/**
 	 * Class constructor.
-	 * 
+	 *
 	 * @param Extended_CPT $cpt  An extended post type object.
 	 * @param array        $args Optional. The post type arguments.
 	 */
@@ -831,12 +828,12 @@ class Extended_CPT_Admin {
 		}
 
 		# Hide month filter:
-		if ( isset( $this->args['admin_filters']['m'] ) and !$this->args['admin_filters']['m'] ) {
+		if ( isset( $this->args['admin_filters']['m'] ) and ! $this->args['admin_filters']['m'] ) {
 			add_action( 'admin_head-edit.php', array( $this, 'admin_head' ) );
 		}
 
 		# Quick Edit:
-		if ( !$this->args['quick_edit'] ) {
+		if ( ! $this->args['quick_edit'] ) {
 			add_filter( 'post_row_actions',                          array( $this, 'remove_quick_edit_action' ), 10, 2 );
 			add_filter( 'page_row_actions',                          array( $this, 'remove_quick_edit_action' ), 10, 2 );
 			add_filter( "bulk_actions-edit-{$this->cpt->post_type}", array( $this, 'remove_quick_edit_menu' ) );
@@ -1052,7 +1049,7 @@ class Extended_CPT_Admin {
 
 		foreach ( $this->args['admin_filters'] as $filter_key => $filter ) {
 
-			if ( isset( $filter['cap'] ) and !current_user_can( $filter['cap'] ) ) {
+			if ( isset( $filter['cap'] ) and ! current_user_can( $filter['cap'] ) ) {
 				continue;
 			}
 
@@ -1065,17 +1062,17 @@ class Extended_CPT_Admin {
 				}
 
 				# For this, we need the dropdown walker from Extended Taxonomies:
-				if ( !class_exists( $class = 'Walker_ExtendedTaxonomyDropdown' ) ) {
+				if ( ! class_exists( $class = 'Walker_ExtendedTaxonomyDropdown' ) ) {
 					trigger_error( sprintf( __( 'The %s class is required in order to display taxonomy filters', 'extended-cpts' ), $class ), E_USER_WARNING );
 					continue;
 				} else {
 					$walker = new Walker_ExtendedTaxonomyDropdown( array(
-						'field' => 'slug'
+						'field' => 'slug',
 					) );
 				}
 
 				# If we haven't specified a title, use the all_items label from the taxonomy:
-				if ( !isset( $filter['title'] ) ) {
+				if ( ! isset( $filter['title'] ) ) {
 					$filter['title'] = $tax->labels->all_items;
 				}
 
@@ -1091,19 +1088,19 @@ class Extended_CPT_Admin {
 					'id'              => 'filter_' . $filter_key,
 					'name'            => $tax->query_var,
 					'taxonomy'        => $filter['taxonomy'],
-					'walker'          => $walker
+					'walker'          => $walker,
 				) );
 
 			} else if ( isset( $filter['meta_key'] ) ) {
 
 				# If we haven't specified a title, generate one from the meta key:
-				if ( !isset( $filter['title'] ) ) {
+				if ( ! isset( $filter['title'] ) ) {
 					$filter['title'] = str_replace( array( '-', '_' ), ' ', $filter['meta_key'] );
 					$filter['title'] = ucwords( $filter['title'] ) . 's';
 					$filter['title'] = sprintf( 'All %s', $filter['title'] );
 				}
 
-				if ( !isset( $filter['options'] ) ) {
+				if ( ! isset( $filter['options'] ) ) {
 					# Fetch all the values for our meta key:
 					# @TODO AND m.meta_value != null ?
 					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
@@ -1138,7 +1135,7 @@ class Extended_CPT_Admin {
 			} else if ( isset( $filter['meta_search_key'] ) ) {
 
 				# If we haven't specified a title, generate one from the meta key:
-				if ( !isset( $filter['title'] ) ) {
+				if ( ! isset( $filter['title'] ) ) {
 					$filter['title'] = str_replace( array( '-', '_' ), ' ', $filter['meta_search_key'] );
 					$filter['title'] = ucwords( $filter['title'] );
 				}
@@ -1153,7 +1150,7 @@ class Extended_CPT_Admin {
 			} else if ( isset( $filter['meta_exists'] ) ) {
 
 				# If we haven't specified a title, use the all_items label from the post type:
-				if ( !isset( $filter['title'] ) ) {
+				if ( ! isset( $filter['title'] ) ) {
 					$filter['title'] = $pto->labels->all_items;
 				}
 
@@ -1167,7 +1164,6 @@ class Extended_CPT_Admin {
 						<label><input type="checkbox" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $v ); ?>" <?php checked( $selected, $v ); ?>>&nbsp;<?php echo esc_html( $t ); ?></label>
 						<?php
 					}
-
 				} else {
 
 					# Output a dropdown:
@@ -1181,9 +1177,7 @@ class Extended_CPT_Admin {
 					<?php
 
 				}
-
 			}
-
 		}
 
 	}
@@ -1209,7 +1203,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_filter( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return;
 		}
 
@@ -1239,7 +1233,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_sort_by_fields( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return;
 		}
 
@@ -1264,7 +1258,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) or !in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) or ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return $clauses;
 		}
 
@@ -1288,7 +1282,7 @@ class Extended_CPT_Admin {
 
 		$pto = get_post_type_object( $this->cpt->post_type );
 
-		if ( !current_user_can( $pto->cap->edit_posts ) ) {
+		if ( ! current_user_can( $pto->cap->edit_posts ) ) {
 			return $items;
 		}
 		if ( $pto->_builtin ) {
@@ -1335,7 +1329,7 @@ class Extended_CPT_Admin {
 
 		$pto = get_post_type_object( $this->cpt->post_type );
 
-		$messages[$this->cpt->post_type] = array(
+		$messages[ $this->cpt->post_type ] = array(
 			1 => sprintf( ( $pto->publicly_queryable ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ),
 				$this->cpt->post_singular,
 				esc_url( get_permalink( $post ) ),
@@ -1397,7 +1391,7 @@ class Extended_CPT_Admin {
 	 */
 	public function bulk_post_updated_messages( array $messages, array $counts ) {
 
-		$messages[$this->cpt->post_type] = array(
+		$messages[ $this->cpt->post_type ] = array(
 			'updated' => sprintf( self::n( '%2$s updated.', '%1$s %3$s updated.', $counts['updated'] ),
 				number_format_i18n( $counts['updated'] ),
 				$this->cpt->post_singular,
@@ -1438,14 +1432,14 @@ class Extended_CPT_Admin {
 	public function sortables( array $cols ) {
 
 		foreach ( $this->args['admin_cols'] as $id => $col ) {
-			if ( !is_array( $col ) ) {
+			if ( ! is_array( $col ) ) {
 				continue;
 			}
-			if ( isset( $col['sortable'] ) and !$col['sortable'] ) {
+			if ( isset( $col['sortable'] ) and ! $col['sortable'] ) {
 				continue;
 			}
 			if ( isset( $col['meta_key'] ) or isset( $col['taxonomy'] ) or isset( $col['post_field'] ) ) {
-				$cols[$id] = $id;
+				$cols[ $id ] = $id;
 			}
 		}
 
@@ -1499,11 +1493,11 @@ class Extended_CPT_Admin {
 	 *
 	 * - title - Generated from the field if not specified.
 	 *
- 	 * - function - The name of a callback function for the column (eg. 'my_function') which gets called
+	 * - function - The name of a callback function for the column (eg. 'my_function') which gets called
 	 * instead of the built-in function for handling that column. Note that it's not passed any parameters,
 	 * so it must use the global $post object.
 	 *
- 	 * - default - Specifies that the admin screen should be sorted by this column by default (instead of
+	 * - default - Specifies that the admin screen should be sorted by this column by default (instead of
 	 * sorting by post date). Value should be one of 'asc' or 'desc' to control the default order.
 	 *
 	 * - width & height - These are only used for the 'featured_image' column type and allow you to set an
@@ -1538,24 +1532,25 @@ class Extended_CPT_Admin {
 
 		$new_cols = array();
 		$keep = array(
-			'cb', 'title'
+			'cb',
+			'title',
 		);
 
 		# Add existing columns we want to keep:
 		foreach ( $cols as $id => $title ) {
-			if ( in_array( $id, $keep ) and !isset( $this->args['admin_cols'][$id] ) ) {
-				$new_cols[$id] = $title;
+			if ( in_array( $id, $keep ) and ! isset( $this->args['admin_cols'][ $id ] ) ) {
+				$new_cols[ $id ] = $title;
 			}
 		}
 
 		# Add our custom columns:
 		foreach ( array_filter( $this->args['admin_cols'] ) as $id => $col ) {
-			if ( is_string( $col ) and isset( $cols[$col] ) ) {
+			if ( is_string( $col ) and isset( $cols[ $col ] ) ) {
 				# Existing (ie. built-in) column with id as the value
-				$new_cols[$col] = $cols[$col];
-			} else if ( is_string( $col ) and isset( $cols[$id] ) ) {
+				$new_cols[ $col ] = $cols[ $col ];
+			} else if ( is_string( $col ) and isset( $cols[ $id ] ) ) {
 				# Existing (ie. built-in) column with id as the key and title as the value
-				$new_cols[$id] = $col;
+				$new_cols[ $id ] = $col;
 			} else if ( 'author' === $col ) {
 				# Automatic support for Co-Authors Plus plugin and special case for
 				# displaying author column when the post type doesn't support 'author'
@@ -1564,18 +1559,18 @@ class Extended_CPT_Admin {
 				} else {
 					$k = 'author';
 				}
-				$new_cols[$k] = __( 'Author' );
+				$new_cols[ $k ] = __( 'Author' );
 			} else if ( is_array( $col ) ) {
-				if ( isset( $col['cap'] ) and !current_user_can( $col['cap'] ) ) {
+				if ( isset( $col['cap'] ) and ! current_user_can( $col['cap'] ) ) {
 					continue;
 				}
-				if ( isset( $col['connection'] ) and !function_exists( 'p2p_type' ) ) {
+				if ( isset( $col['connection'] ) and ! function_exists( 'p2p_type' ) ) {
 					continue;
 				}
-				if ( !isset( $col['title'] ) ) {
+				if ( ! isset( $col['title'] ) ) {
 					$col['title'] = $this->get_item_title( $col );
 				}
-				$new_cols[$id] = $col['title'];
+				$new_cols[ $id ] = $col['title'];
 			}
 		}
 
@@ -1600,30 +1595,30 @@ class Extended_CPT_Admin {
 		# We're only interested in our custom columns:
 		$custom_cols = array_filter( array_keys( $c ) );
 
-		if ( !in_array( $col, $custom_cols ) ) {
+		if ( ! in_array( $col, $custom_cols ) ) {
 			return;
 		}
 
-		if ( isset( $c[$col]['post_cap'] ) and !current_user_can( $c[$col]['post_cap'], get_the_ID() ) ) {
+		if ( isset( $c[ $col ]['post_cap'] ) and ! current_user_can( $c[ $col ]['post_cap'], get_the_ID() ) ) {
 			return;
 		}
 
-		if ( !isset( $c[$col]['link'] ) ) {
-			$c[$col]['link'] = 'list';
+		if ( ! isset( $c[ $col ]['link'] ) ) {
+			$c[ $col ]['link'] = 'list';
 		}
 
-		if ( isset( $c[$col]['function'] ) ) {
-			call_user_func( $c[$col]['function'] );
-		} else if ( isset( $c[$col]['meta_key'] ) ) {
-			$this->col_post_meta( $c[$col]['meta_key'], $c[$col] );
-		} else if ( isset( $c[$col]['taxonomy'] ) ) {
-			$this->col_taxonomy( $c[$col]['taxonomy'], $c[$col] );
-		} else if ( isset( $c[$col]['post_field'] ) ) {
-			$this->col_post_field( $c[$col]['post_field'], $c[$col] );
-		} else if ( isset( $c[$col]['featured_image'] ) ) {
-			$this->col_featured_image( $c[$col]['featured_image'], $c[$col] );
-		} else if ( isset( $c[$col]['connection'] ) ) {
-			$this->col_connection( $c[$col]['connection'], $c[$col] );
+		if ( isset( $c[ $col ]['function'] ) ) {
+			call_user_func( $c[ $col ]['function'] );
+		} else if ( isset( $c[ $col ]['meta_key'] ) ) {
+			$this->col_post_meta( $c[ $col ]['meta_key'], $c[ $col ] );
+		} else if ( isset( $c[ $col ]['taxonomy'] ) ) {
+			$this->col_taxonomy( $c[ $col ]['taxonomy'], $c[ $col ] );
+		} else if ( isset( $c[ $col ]['post_field'] ) ) {
+			$this->col_post_field( $c[ $col ]['post_field'], $c[ $col ] );
+		} else if ( isset( $c[ $col ]['featured_image'] ) ) {
+			$this->col_featured_image( $c[ $col ]['featured_image'], $c[ $col ] );
+		} else if ( isset( $c[ $col ]['connection'] ) ) {
+			$this->col_connection( $c[ $col ]['connection'], $c[ $col ] );
 		}
 
 	}
@@ -1650,22 +1645,18 @@ class Extended_CPT_Admin {
 
 				if ( is_numeric( $val ) ) {
 					$echo[] = date( $args['date_format'], $val );
-				} else if ( !empty( $val ) ) {
+				} else if ( ! empty( $val ) ) {
 					$echo[] = mysql2date( $args['date_format'], $val );
 				}
-
 			}
-
 		} else {
 
 			foreach ( $vals as $val ) {
 
-				if ( !empty( $val ) or ( '0' === $val ) ) {
+				if ( ! empty( $val ) or ( '0' === $val ) ) {
 					$echo[] = esc_html( $val );
 				}
-
 			}
-
 		}
 
 		if ( empty( $echo ) ) {
@@ -1723,18 +1714,16 @@ class Extended_CPT_Admin {
 					case 'list':
 						$link = add_query_arg( array(
 							'post_type' => $post->post_type,
-							$taxonomy   => $term->slug
+							$taxonomy   => $term->slug,
 						), admin_url( 'edit.php' ) );
 						$out[] = sprintf( '<a href="%1$s">%2$s</a>', $link, $term->name );
 						break;
 				}
-
 			} else {
 
 				$out[] = $term->name;
 
 			}
-
 		}
 
 		echo implode( ', ', $out );
@@ -1799,25 +1788,25 @@ class Extended_CPT_Admin {
 	 */
 	public function col_featured_image( $image_size, array $args = array() ) {
 
-		if ( !function_exists( 'has_post_thumbnail' ) ) {
+		if ( ! function_exists( 'has_post_thumbnail' ) ) {
 			return;
 		}
 
 		if ( isset( $args['width'] ) ) {
-			$width = is_numeric( $args['width'] ) ? sprintf( '%dpx', $args['width']  ) : $args['width'];
+			$width = is_numeric( $args['width'] ) ? sprintf( '%dpx', $args['width'] ) : $args['width'];
 		} else {
 			$width = 'auto';
 		}
 
 		if ( isset( $args['height'] ) ) {
-			$height = is_numeric( $args['height'] ) ? sprintf( '%dpx', $args['height']  ) : $args['height'];
+			$height = is_numeric( $args['height'] ) ? sprintf( '%dpx', $args['height'] ) : $args['height'];
 		} else {
 			$height = 'auto';
 		}
 
 		$image_atts = array(
 			'style' => sprintf( 'width:%1$s;height:%2$s', $width, $height ),
-			'title' => ''
+			'title' => '',
 		);
 
 		if ( has_post_thumbnail() ) {
@@ -1836,11 +1825,11 @@ class Extended_CPT_Admin {
 
 		global $post, $wp_query;
 
-		if ( !function_exists( 'p2p_type' ) ) {
+		if ( ! function_exists( 'p2p_type' ) ) {
 			return;
 		}
 
-		if ( !p2p_connection_exists( $connection ) ) {
+		if ( ! p2p_connection_exists( $connection ) ) {
 			printf( __( 'Invalid connection type: %s', 'extended-cpts' ), $connection );
 			return;
 		}
@@ -1852,13 +1841,13 @@ class Extended_CPT_Admin {
 		if ( isset( $args['field'] ) and isset( $args['value'] ) ) {
 			$meta = array(
 				'connected_meta' => array(
-					$args['field'] => $args['value']
+					$args['field'] => $args['value'],
 				)
 			);
 			$field .= sanitize_title( '_' . $args['field'] . '_' . $args['value'] );
 		}
 
-		if ( !isset( $_post->$field ) ) {
+		if ( ! isset( $_post->$field ) ) {
 			p2p_type( $connection )->each_connected( $wp_query, $meta, $field );
 		}
 
@@ -1869,7 +1858,7 @@ class Extended_CPT_Admin {
 			$pto = get_post_type_object( $post->post_type );
 			$pso = get_post_status_object( $post->post_status );
 
-			if ( $pso->protected and !current_user_can( 'edit_post', $post->ID ) ) {
+			if ( $pso->protected and ! current_user_can( 'edit_post', $post->ID ) ) {
 				continue;
 			}
 			if ( 'trash' == $post->post_status ) {
@@ -1903,18 +1892,16 @@ class Extended_CPT_Admin {
 						$link = add_query_arg( array_merge( array(
 							'post_type'       => $_post->post_type,
 							'connected_type'  => $connection,
-							'connected_items' => $post->ID
+							'connected_items' => $post->ID,
 						), $meta ), admin_url( 'edit.php' ) );
 						$out[] = sprintf( '<a href="%1$s">%2$s</a>', $link, get_the_title() );
 						break;
 				}
-
 			} else {
 
 				$out[] = get_the_title();
 
 			}
-
 		}
 
 		#wp_reset_postdata();
@@ -2016,7 +2003,7 @@ class Extended_CPT_Admin {
 
 	/**
 	 * Get a sensible title for the current item (usually the arguments array for a column)
-	 * 
+	 *
 	 * @param  array  $item An array of arguments
 	 * @return string       The item title
 	 */
@@ -2024,7 +2011,7 @@ class Extended_CPT_Admin {
 
 		if ( isset( $item['taxonomy'] ) ) {
 			if ( $tax = get_taxonomy( $item['taxonomy'] ) ) {
-				if ( !empty( $tax->exclusive ) ) {
+				if ( ! empty( $tax->exclusive ) ) {
 					return $tax->labels->singular_name;
 				} else {
 					return $tax->labels->name;
@@ -2042,7 +2029,7 @@ class Extended_CPT_Admin {
 			if ( function_exists( 'p2p_type' ) and p2p_connection_exists( $item['connection'] ) ) {
 				$ctype = p2p_type( $item['connection'] );
 				$other = ( 'from' == $ctype->direction_from_types( 'post', $this->cpt->post_type ) ) ? 'to' : 'from';
-				return $ctype->side[$other]->get_title();
+				return $ctype->side[ $other ]->get_title();
 			} else {
 				return $item['connection'];
 			}
@@ -2053,7 +2040,7 @@ class Extended_CPT_Admin {
 }
 }
 
-if ( !class_exists( 'Extended_Rewrite_Testing' ) ) {
+if ( ! class_exists( 'Extended_Rewrite_Testing' ) ) {
 abstract class Extended_Rewrite_Testing {
 
 	abstract public function get_tests();
@@ -2097,11 +2084,11 @@ abstract class Extended_Rewrite_Testing {
 			$regex  = str_replace( array_keys( $replace ), $replace, $regex );
 			// Change '$2' to '$matches[2]'
 			$result = preg_replace( '/\$([0-9]+)/', '\$matches[$1]', $result );
-			$new["/{$regex}"] = $result;
+			$new[ "/{$regex}" ] = $result;
 			if ( false !== strpos( $regex, $replace['(/[0-9]+)?'] ) ) {
 				// Add an extra rule for this optional block
 				$regex = str_replace( $replace['(/[0-9]+)?'], '', $regex );
-				$new["/{$regex}"] = $result;
+				$new[ "/{$regex}" ] = $result;
 			}
 		}
 
@@ -2112,7 +2099,7 @@ abstract class Extended_Rewrite_Testing {
 }
 }
 
-if ( !class_exists( 'Extended_CPT_Rewrite_Testing' ) ) {
+if ( ! class_exists( 'Extended_CPT_Rewrite_Testing' ) ) {
 class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 
 	public function __construct( Extended_CPT $cpt ) {
@@ -2123,7 +2110,7 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 
 		global $wp_rewrite;
 
-		$struct     = $wp_rewrite->extra_permastructs[$this->cpt->post_type];
+		$struct     = $wp_rewrite->extra_permastructs[ $this->cpt->post_type ];
 		$pto        = get_post_type_object( $this->cpt->post_type );
 		$name       = sprintf( '%s (%s)', $pto->labels->name, $this->cpt->post_type );
 		$additional = array();
@@ -2138,15 +2125,15 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 				$archive_slug = $wp_rewrite->root . $archive_slug;
 			}
 
-			$additional["{$archive_slug}/?$"] = "index.php?post_type={$this->cpt->post_type}";
+			$additional[ "{$archive_slug}/?$" ] = "index.php?post_type={$this->cpt->post_type}";
 
 			if ( $pto->rewrite['feeds'] && $wp_rewrite->feeds ) {
 				$feeds = '(' . trim( implode( '|', $wp_rewrite->feeds ) ) . ')';
-				$additional["{$archive_slug}/feed/{$feeds}/?$"] = "index.php?post_type={$this->cpt->post_type}" . '&feed=$matches[1]';
-				$additional["{$archive_slug}/{$feeds}/?$"] = "index.php?post_type={$this->cpt->post_type}" . '&feed=$matches[1]';
+				$additional[ "{$archive_slug}/feed/{$feeds}/?$" ] = "index.php?post_type={$this->cpt->post_type}" . '&feed=$matches[1]';
+				$additional[ "{$archive_slug}/{$feeds}/?$" ] = "index.php?post_type={$this->cpt->post_type}" . '&feed=$matches[1]';
 			}
 			if ( $pto->rewrite['pages'] ) {
-				$additional["{$archive_slug}/{$wp_rewrite->pagination_base}/([0-9]{1,})/?$"] = "index.php?post_type={$this->cpt->post_type}" . '&paged=$matches[1]';
+				$additional[ "{$archive_slug}/{$wp_rewrite->pagination_base}/([0-9]{1,})/?$" ] = "index.php?post_type={$this->cpt->post_type}" . '&paged=$matches[1]';
 			}
 		}
 
