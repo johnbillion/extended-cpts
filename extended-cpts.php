@@ -770,6 +770,7 @@ class Extended_CPT_Admin {
 	public $cpt;
 	public $args;
 	protected static $current_post_type;
+	protected $_cols;
 
 	/**
 	 * Class constructor.
@@ -935,7 +936,7 @@ class Extended_CPT_Admin {
 	 * @param  string $text The "featured image" text.
 	 * @return string       The updated "featured image" text.
 	 */
-	function featured_image_text( $text ) {
+	public function featured_image_text( $text ) {
 
 		if ( false === stripos( $text, 'featured image' ) ) {
 			return $text;
@@ -1705,7 +1706,7 @@ class Extended_CPT_Admin {
 							$out[] = $term->name;
 						}
 						break;
-					case 'edit' :
+					case 'edit':
 						if ( current_user_can( $tax->cap->edit_terms ) ) {
 							$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_edit_term_link( $term, $taxonomy, $post->post_type ), $term->name );
 						} else {
@@ -2103,6 +2104,8 @@ abstract class Extended_Rewrite_Testing {
 if ( ! class_exists( 'Extended_CPT_Rewrite_Testing' ) ) {
 class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 
+	public $cpt;
+
 	public function __construct( Extended_CPT $cpt ) {
 		$this->cpt = $cpt;
 	}
@@ -2118,7 +2121,7 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 
 		// Post type archive rewrites are generated separately. See the `has_archive` handling in `register_post_type()`.
 		if ( $pto->has_archive ) {
-			$archive_slug = $pto->has_archive === true ? $pto->rewrite['slug'] : $pto->has_archive;
+			$archive_slug = ( $pto->has_archive === true ) ? $pto->rewrite['slug'] : $pto->has_archive;
 
 			if ( $pto->rewrite['with_front'] ) {
 				$archive_slug = substr( $wp_rewrite->front, 1 ) . $archive_slug;
