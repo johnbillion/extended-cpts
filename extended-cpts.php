@@ -10,7 +10,7 @@ Text Domain:  extended-cpts
 Domain Path:  /languages/
 License:      GPL v2 or later
 
-Copyright © 2014 John Blackbourn
+Copyright © 2012-2015 John Blackbourn
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -414,7 +414,7 @@ class Extended_CPT {
 	 * Get the array of private and public query vars for the given sortables, to apply to the current query in order to
 	 * sort it by the requested orderby field.
 	 *
-	 * @param  array $query     The public query vars, usually from `$wp_query->query`.
+	 * @param  array $vars      The public query vars, usually from `$wp_query->query`.
 	 * @param  array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
 	 *                          `site_sortables` argument when registering an extended post type.
 	 * @return array            The list of private and public query vars to apply to the query.
@@ -453,13 +453,14 @@ class Extended_CPT {
 	}
 
 	/**
-	 * Get the array of private and public query vars for the given sortables, to apply to the current query in order to
+	 * Get the array of SQL clauses for the given sortables, to apply to the current query in order to
 	 * sort it by the requested orderby field.
 	 *
-	 * @param  array $query     The public query vars, usually from `$wp_query->query`.
+	 * @param  array $clauses   The query's SQL clauses.
+	 * @param  array $vars      The public query vars, usually from `$wp_query->query`.
 	 * @param  array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
 	 *                          `site_sortables` argument when registering an extended post type).
-	 * @return array            The list of private and public query vars to apply to the query.
+	 * @return array            The list of SQL clauses to apply to the query.
 	 */
 	public static function get_sort_taxonomy_clauses( array $clauses, array $vars, array $sortables ) {
 
