@@ -59,13 +59,17 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 					'meta_type'    => 'CHAR',
 				),
 			),
+			'archive' => array(
+				'orderby' => 'post_title',
+			),
 		);
 
 		$this->cpts['hello']  = register_extended_post_type( 'hello', $this->args['hello'] );
 		$this->cpts['hello']->add_taxonomy( 'hello_category' );
 
 		$this->cpts['person'] = register_extended_post_type( 'person', array(
-			'has_archive' => 'team',
+			'has_archive'  => 'team',
+			'show_in_feed' => true,
 		), array(
 			'plural' => 'People',
 		) );
@@ -76,6 +80,7 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 			'rewrite' => array(
 				'permastruct' => 'foo/%author%/%foo_category%/%foo%',
 			),
+			'show_in_feed' => true,
 		), array(
 			'singular' => 'Bar',
 		) );

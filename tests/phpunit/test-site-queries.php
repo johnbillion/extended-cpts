@@ -2,23 +2,6 @@
 
 class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
-	function testFilterQueryVarsRegistered() {
-
-		// Need to trigger a new request
-		$this->go_to( home_url( '/' ) );
-
-		// These globals need to be declared after `go_to()` because of the way it resets vars
-		global $wp;
-
-		$filters = array_keys( $this->args['hello']['site_filters'] );
-		$found   = array_intersect( $filters, $wp->public_query_vars );
-
-		$this->assertEquals( $filters, $found );
-
-		// @TODO test that the admin query vars are not present
-
-	}
-
 	function testDefaultPostTypeQueryNotAffected() {
 
 		$query = new WP_Query( array(
