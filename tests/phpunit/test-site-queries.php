@@ -297,4 +297,26 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
 
 	}
 
+	function testQueryWithDefaultSortOrder() {
+
+		$query = new WP_Query( array(
+			'post_type' => 'person',
+			'nopaging'  => true,
+		) );
+
+		$this->assertEquals( count( $this->posts['person'] ), $query->found_posts );
+
+		$this->assertEquals( 'name', $query->get( 'orderby' ) ); // date
+		$this->assertEquals( 'ASC',  $query->get( 'order' ) );
+		$this->assertEquals( '',     $query->get( 'meta_key' ) );
+		$this->assertEquals( '',     $query->get( 'meta_value' ) );
+		$this->assertEquals( '',     $query->get( 'meta_query' ) );
+
+		$this->assertEquals( array(
+			$this->posts['person'][1],
+			$this->posts['person'][0],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
 }

@@ -68,8 +68,14 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 		$this->cpts['hello']->add_taxonomy( 'hello_category' );
 
 		$this->cpts['person'] = register_extended_post_type( 'person', array(
-			'has_archive'  => 'team',
-			'show_in_feed' => true,
+			'has_archive'    => 'team',
+			'show_in_feed'   => true,
+			'site_sortables' => array(
+				'test_site_sortables_post_name' => array(
+					'post_field' => 'post_name',
+					'default'    => 'asc',
+				),
+			),
 		), array(
 			'plural' => 'People',
 		) );
@@ -135,6 +141,13 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 
 		$this->posts['person'][0] = $this->factory->post->create( array(
 			'post_type' => 'person',
+			'post_name' => 'Beta',
+			'post_date' => '1984-02-25 00:01:00'
+		) );
+		$this->posts['person'][1] = $this->factory->post->create( array(
+			'post_type' => 'person',
+			'post_name' => 'Alpha',
+			'post_date' => '1984-02-25 00:02:00'
 		) );
 		$this->posts['nice-thing'][0] = $this->factory->post->create( array(
 			'post_type' => 'nice-thing',
