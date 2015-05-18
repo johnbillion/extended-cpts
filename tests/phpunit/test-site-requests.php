@@ -65,7 +65,7 @@ class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test {
 			'post_type' => 'hello',
 			'name'      => 'alpha',
 			'page'      => '',
-			'hello'     => 'alpha',
+			'hi'        => 'alpha',
 		), $wp->query_vars );
 
 	}

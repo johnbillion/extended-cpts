@@ -62,6 +62,7 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 			'archive' => array(
 				'orderby' => 'post_title',
 			),
+			'query_var' => 'hi',
 		);
 
 		$this->cpts['hello']  = register_extended_post_type( 'hello', $this->args['hello'] );

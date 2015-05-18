@@ -49,6 +49,7 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$this->assertEquals( 'page', $hello->capability_type );
 		$this->assertEquals( true,   $hello->hierarchical );
 		$this->assertEquals( true,   $hello->has_archive );
+		$this->assertEquals( 'hi',   $hello->query_var );
 
 	}
 
