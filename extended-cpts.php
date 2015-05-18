@@ -250,7 +250,9 @@ class Extended_CPT {
 		if ( did_action( 'init' ) ) {
 			$this->register_post_type();
 		} else {
+			// @codeCoverageIgnoreStart
 			add_action( 'init', array( $this, 'register_post_type' ), 9 );
+			// @codeCoverageIgnoreEnd
 		}
 
 	}
@@ -659,6 +661,8 @@ class Extended_CPT {
 
 	/**
 	 * Add our rewrite tests to the Rewrite Rule Testing tests array.
+	 *
+	 * @codeCoverageIgnore
 	 *
 	 * @param  array $tests The existing rewrite rule tests.
 	 * @return array        Updated rewrite rule tests.
@@ -2043,6 +2047,9 @@ class Extended_CPT_Admin {
 }
 
 if ( ! class_exists( 'Extended_Rewrite_Testing' ) ) {
+/**
+ * @codeCoverageIgnore
+ */
 abstract class Extended_Rewrite_Testing {
 
 	abstract public function get_tests();
@@ -2102,6 +2109,9 @@ abstract class Extended_Rewrite_Testing {
 }
 
 if ( ! class_exists( 'Extended_CPT_Rewrite_Testing' ) ) {
+/**
+ * @codeCoverageIgnore
+ */
 class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 
 	public $cpt;
