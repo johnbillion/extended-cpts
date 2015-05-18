@@ -32,6 +32,13 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$this->assertEquals( 'bar',  $this->cpts['foo']->post_singular_low );
 		$this->assertEquals( 'bars', $this->cpts['foo']->post_plural_low );
 
+		$this->assertEquals( 'bar',      $this->cpts['bar']->post_type );
+		$this->assertEquals( 'slug',     $this->cpts['bar']->post_slug );
+		$this->assertEquals( 'Singular', $this->cpts['bar']->post_singular );
+		$this->assertEquals( 'Plural',   $this->cpts['bar']->post_plural );
+		$this->assertEquals( 'singular', $this->cpts['bar']->post_singular_low );
+		$this->assertEquals( 'plural',   $this->cpts['bar']->post_plural_low );
+
 	}
 
 	function testPostTypePropertiesAreCorrect() {
@@ -42,6 +49,27 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$this->assertEquals( 'page', $hello->capability_type );
 		$this->assertEquals( true,   $hello->hierarchical );
 		$this->assertEquals( true,   $hello->has_archive );
+
+	}
+
+	function testPostTypeLabelsAreCorrect() {
+
+		$bar = get_post_type_object( 'bar' );
+
+		$this->assertEquals( 'Plural',                    $bar->labels->name );
+		$this->assertEquals( 'Singular',                  $bar->labels->singular_name );
+		$this->assertEquals( 'Plural',                    $bar->labels->menu_name );
+		$this->assertEquals( 'Singular',                  $bar->labels->name_admin_bar );
+		$this->assertEquals( 'Add New',                   $bar->labels->add_new );
+		$this->assertEquals( 'Add New Singular',          $bar->labels->add_new_item );
+		$this->assertEquals( 'Edit Singular',             $bar->labels->edit_item );
+		$this->assertEquals( 'New Singular',              $bar->labels->new_item );
+		$this->assertEquals( 'View Singular',             $bar->labels->view_item );
+		$this->assertEquals( 'Search Plural',             $bar->labels->search_items );
+		$this->assertEquals( 'No plural found.',          $bar->labels->not_found );
+		$this->assertEquals( 'No plural found in trash.', $bar->labels->not_found_in_trash );
+		$this->assertEquals( 'Parent Singular:',          $bar->labels->parent_item_colon );
+		$this->assertEquals( 'All Plural',                $bar->labels->all_items );
 
 	}
 

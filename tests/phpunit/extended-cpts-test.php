@@ -92,6 +92,14 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 		) );
 		$this->cpts['foo']->add_taxonomy( 'foo_category' );
 
+		$this->cpts['bar'] = register_extended_post_type( 'bar', array(
+			'public' => false,
+		), array(
+			'plural'   => 'Plural',
+			'singular' => 'Singular',
+			'slug'     => 'Slug',
+		) );
+
 		$wp_rewrite->flush_rules();
 
 		foreach ( array( 'Alpha', 'Beta', 'Gamma', 'Delta' ) as $slug ) {
