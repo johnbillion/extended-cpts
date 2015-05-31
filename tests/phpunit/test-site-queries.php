@@ -1,6 +1,6 @@
 <?php
 
-class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test {
+class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	function testDefaultPostTypeQueryNotAffected() {
 

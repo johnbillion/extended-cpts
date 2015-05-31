@@ -1,6 +1,6 @@
 <?php
 
-class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test {
+class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
 	function testFilterQueryVarsRegistered() {
 

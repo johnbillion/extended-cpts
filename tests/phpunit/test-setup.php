@@ -2,6 +2,11 @@
 
 class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
+	function setUp() {
+		parent::setUp();
+		$this->register_post_types();
+	}
+
 	function testPostTypeArgsAreCorrect() {
 
 		$this->assertEquals( 'hello',  $this->cpts['hello']->post_type );

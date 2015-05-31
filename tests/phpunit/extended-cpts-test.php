@@ -7,11 +7,9 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 	public $posts = array();
 	public $args  = array();
 
-	function setUp() {
+	protected function register_post_types() {
 
 		global $wp_rewrite;
-
-		parent::setUp();
 
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
