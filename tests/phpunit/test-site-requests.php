@@ -2,7 +2,7 @@
 
 class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
-	function testFilterQueryVarsRegistered() {
+	function testSiteFilterQueryVarsRegistered() {
 
 		// Need to trigger a new request
 		$this->go_to( home_url() );
@@ -13,6 +13,20 @@ class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 		$found   = array_intersect( $filters, $wp->public_query_vars );
 
 		$this->assertEquals( $filters, $found );
+
+	}
+
+	function testAdminColQueryVarsNotRegistered() {
+
+		// Need to trigger a new request
+		$this->go_to( home_url() );
+
+		global $wp, $wp_query;
+
+		$filters = array_keys( $this->args['hello']['admin_cols'] );
+		$found   = array_intersect( $filters, $wp->public_query_vars );
+
+		$this->assertEquals( array(), $found );
 
 	}
 

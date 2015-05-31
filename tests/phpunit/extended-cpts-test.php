@@ -26,6 +26,17 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 					'taxonomy' => 'hello_category',
 				),
 			),
+			'admin_cols' => array(
+				'test_admin_cols_post_meta' => array(
+					'meta_key' => 'test_meta_key',
+				),
+				'test_admin_cols_post_field' => array(
+					'post_field' => 'name',
+				),
+				'test_admin_cols_taxonomy' => array(
+					'taxonomy' => 'hello_category',
+				),
+			),
 			'site_filters' => array(
 				'test_site_filters_post_meta_key' => array(
 					'meta_key' => 'test_meta_key',
