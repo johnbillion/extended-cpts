@@ -69,6 +69,36 @@ class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
 	}
 
+	function testPostTypeArchiveRequestWithFilterIsCorrect() {
+
+		$this->go_to( add_query_arg( array(
+			'test_site_filters_post_meta_key' => 'Alpha',
+		), get_post_type_archive_link( 'hello' ) ) );
+
+		global $wp, $wp_query;
+
+		$this->assertEquals( array_merge( array(
+			'post_type'                       => 'hello',
+			'test_site_filters_post_meta_key' => 'Alpha',
+		), $this->args['hello']['archive'] ), $wp->query_vars );
+
+	}
+
+	function testPostTypeArchiveRequestWithOrderbyIsCorrect() {
+
+		$this->go_to( add_query_arg( array(
+			'orderby' => 'test_site_sortables_post_meta',
+		), get_post_type_archive_link( 'hello' ) ) );
+
+		global $wp, $wp_query;
+
+		$this->assertEquals( array_merge( array(
+			'post_type' => 'hello',
+			'orderby'   => 'test_site_sortables_post_meta',
+		), $this->args['hello']['archive'] ), $wp->query_vars );
+
+	}
+
 	function testPostTypePermalinkRequestIsCorrect() {
 
 		$this->go_to( get_permalink( $this->posts['hello'][0] ) );
