@@ -450,6 +450,10 @@ class Extended_CPT {
 			$return['orderby'] = $field;
 		}
 
+		if ( isset( $vars['order'] ) ) {
+			$return['order'] = $vars['order'];
+		}
+
 		return $return;
 
 	}
