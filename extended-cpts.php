@@ -100,6 +100,7 @@ class Extended_CPT {
 	protected $defaults = array(
 		'public'          => true,
 		'menu_position'   => 6,
+		'menu_icon'       => null,
 		'capability_type' => 'page',
 		'hierarchical'    => true,
 		'supports'        => array( 'title', 'editor', 'thumbnail' ),
