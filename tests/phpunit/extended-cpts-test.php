@@ -119,12 +119,14 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 
 		// Post
 		$this->posts['post'][] = $this->factory->post->create( array(
+			'guid'      => 'guid',
 			'post_type' => 'post',
 			'post_date' => '1984-02-25 00:05:00'
 		) );
 
 		// Hello 0
 		$this->posts['hello'][0] = $this->factory->post->create( array(
+			'guid'      => 'guid',
 			'post_type' => 'hello',
 			'post_name' => 'Alpha',
 			'post_date' => '1984-02-25 00:04:00'
@@ -134,6 +136,7 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 
 		// Hello 1
 		$this->posts['hello'][1] = $this->factory->post->create( array(
+			'guid'      => 'guid',
 			'post_type' => 'hello',
 			'post_name' => 'Delta',
 			'post_date' => '1984-02-25 00:03:00'
@@ -142,6 +145,7 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 
 		// Hello 2
 		$this->posts['hello'][2] = $this->factory->post->create( array(
+			'guid'      => 'guid',
 			'post_type' => 'hello',
 			'post_name' => 'Beta',
 			'post_date' => '1984-02-25 00:02:00'
@@ -151,6 +155,7 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 
 		// Hello 3
 		$this->posts['hello'][3] = $this->factory->post->create( array(
+			'guid'      => 'guid',
 			'post_type' => 'hello',
 			'post_name' => 'Gamma',
 			'post_date' => '1984-02-25 00:01:00'
@@ -158,19 +163,23 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 		wp_add_object_terms( $this->posts['hello'][3], 'Gamma', 'hello_category' );
 
 		$this->posts['person'][0] = $this->factory->post->create( array(
+			'guid'      => 'guid',
 			'post_type' => 'person',
 			'post_name' => 'Beta',
 			'post_date' => '1984-02-25 00:01:00'
 		) );
 		$this->posts['person'][1] = $this->factory->post->create( array(
+			'guid'      => 'guid',
 			'post_type' => 'person',
 			'post_name' => 'Alpha',
 			'post_date' => '1984-02-25 00:02:00'
 		) );
 		$this->posts['nice-thing'][0] = $this->factory->post->create( array(
+			'guid'      => 'guid',
 			'post_type' => 'nice-thing',
 		) );
 		$this->posts['foo'][0] = $this->factory->post->create( array(
+			'guid'        => 'guid',
 			'post_type'   => 'foo',
 			'post_author' => 1,
 		) );
