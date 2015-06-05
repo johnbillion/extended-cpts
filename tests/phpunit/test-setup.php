@@ -62,21 +62,22 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 		$bar = get_post_type_object( 'bar' );
 
-		$this->assertEquals( 'Plural',                    $bar->labels->name );
-		$this->assertEquals( 'Singular',                  $bar->labels->singular_name );
-		$this->assertEquals( 'Plural',                    $bar->labels->menu_name );
-		$this->assertEquals( 'Singular',                  $bar->labels->name_admin_bar );
-		$this->assertEquals( 'Add New',                   $bar->labels->add_new );
-		$this->assertEquals( 'Add New Singular',          $bar->labels->add_new_item );
-		$this->assertEquals( 'Edit Singular',             $bar->labels->edit_item );
-		$this->assertEquals( 'New Singular',              $bar->labels->new_item );
-		$this->assertEquals( 'View Singular',             $bar->labels->view_item );
-		$this->assertEquals( 'Search Plural',             $bar->labels->search_items );
-		$this->assertEquals( 'No plural found.',          $bar->labels->not_found );
-		$this->assertEquals( 'No plural found in trash.', $bar->labels->not_found_in_trash );
-		$this->assertEquals( 'Parent Singular:',          $bar->labels->parent_item_colon );
-		$this->assertEquals( 'All Plural',                $bar->labels->all_items );
-
+		$this->assertEquals( (object) array(
+			'name'               => 'Plural',
+			'singular_name'      => 'Singular',
+			'menu_name'          => 'Plural',
+			'name_admin_bar'     => 'Singular',
+			'add_new'            => 'Add New',
+			'add_new_item'       => 'Add New Singular',
+			'edit_item'          => 'Edit Singular',
+			'new_item'           => 'New Singular',
+			'view_item'          => 'View Singular',
+			'search_items'       => 'Search Plural',
+			'not_found'          => 'No plural found.',
+			'not_found_in_trash' => 'No plural found in trash.',
+			'parent_item_colon'  => 'Parent Singular:',
+			'all_items'          => 'All Plural',
+		), $bar->labels );
 	}
 
 	function testArchiveLinksAreCorrect() {
