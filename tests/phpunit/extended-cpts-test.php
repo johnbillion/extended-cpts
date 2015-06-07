@@ -86,6 +86,12 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 					'default'    => 'asc',
 				),
 			),
+			'admin_cols' => array(
+				'test_admin_cols_post_name' => array(
+					'post_field' => 'post_name',
+					'default'    => 'asc',
+				),
+			),
 		), array(
 			'plural' => 'People',
 		) );

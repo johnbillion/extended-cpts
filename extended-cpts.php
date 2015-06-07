@@ -968,9 +968,9 @@ class Extended_CPT_Admin {
 	 */
 	protected static function get_current_post_type() {
 
-		if ( isset( self::$current_post_type ) ) {
-			return self::$current_post_type;
-		}
+		// if ( isset( self::$current_post_type ) ) {
+		// 	return self::$current_post_type;
+		// }
 
 		if ( function_exists( 'get_current_screen' ) && is_object( get_current_screen() ) ) {
 			$post_type = get_current_screen()->post_type;
