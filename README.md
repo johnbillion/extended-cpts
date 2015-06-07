@@ -14,30 +14,31 @@ See also: [Extended Taxonomies](https://github.com/johnbillion/extended-taxos).
  * Automatically generated labels and post updated messages
  * Public post type with admin UI enabled
  * Hierarchical with `page` capability type
- * Support post thumbnails
+ * Support for post thumbnails
  * Optimal admin menu placement
  * Remove `with_front` from rewrite rules
 
 ## Extended admin features ##
 
  * Ridiculously easy custom columns on the post type listing screen:
-    * Columns for post meta, taxonomy terms, featured images, post fields, [Posts 2 Posts](https://wordpress.org/plugins/posts-to-posts/) connections, and callback functions
-    * Sortable columns for post meta, taxonomy terms, and post fields
-    * User capability restrictions
-    * Default sort column and sort order
- * Filter controls on the post type listing screen for filtering by post meta fields and taxonomy terms
+   * Columns for post meta, taxonomy terms, featured images, post fields, [Posts 2 Posts](https://wordpress.org/plugins/posts-to-posts/) connections, and callback functions
+   * Sortable columns for post meta, taxonomy terms, and post fields
+   * User capability restrictions
+   * Default sort column and sort order
+ * Filter controls on the post type listing screen to enable filtering by post meta and taxonomy terms
  * Override the 'Featured Image' and 'Enter title here' text
  * Add the post type to the 'At a Glance' section on the dashboard
  * Add the post type archive link to the nav menus screen
 
 ## Extended front-end features ##
 
- * Easily specify custom permalink structures
-     * For example `reviews/%year%/%month%/%review%/`
-     * Supports all relevant rewrite tags including dates and custom taxonomies
-     * Automatic integration with the [Rewrite Rule Testing](https://wordpress.org/plugins/rewrite-testing/) plugin
- * Easily specify public query vars for filtering by post meta fields
- * Override public or private query variables such as `posts_per_page`, `orderby`, `order` and `nopaging`
+ * Specify a custom permalink structure
+   * For example `reviews/%year%/%month%/%review%`
+   * Supports all relevant rewrite tags including dates and custom taxonomies
+   * Automatic integration with the [Rewrite Rule Testing](https://wordpress.org/plugins/rewrite-testing/) plugin
+ * Specify public query vars which enable filtering by post meta
+ * Specify public query vars which enable sorting by post meta, taxonomy terms, and post fields
+ * Override public or private query vars such as `posts_per_page`, `orderby`, `order` and `nopaging`
  * Add the post type to the site's main RSS feed
 
 ## Usage ##
@@ -96,7 +97,13 @@ register_extended_post_type( 'story', array(
 
 Bam, we have a 'Stories' post type, with correctly generated labels and post updated messages, three custom columns in the admin area (two of which are sortable), stories added to the main RSS feed, and all stories displayed on the post type archive.
 
-There's quite a bit more you can do. See the wiki for more examples.
+There's quite a bit more you can do. [See the wiki for more examples](https://github.com/johnbillion/extended-cpts/wiki).
+
+## Contributing and Testing ##
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for information on contributing.
+
+Please see [the tests readme](tests/README.md) for information on running the unit test suite.
 
 ## License: GPLv2 or later ##
 
