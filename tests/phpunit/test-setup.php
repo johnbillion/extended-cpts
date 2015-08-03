@@ -56,6 +56,22 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$this->assertEquals( true,   $hello->has_archive );
 		$this->assertEquals( 'hi',   $hello->query_var );
 
+		$bar = get_post_type_object( 'bar' );
+
+		$this->assertEquals( false,  $bar->public );
+		$this->assertEquals( 'page', $bar->capability_type );
+		$this->assertEquals( true,   $bar->hierarchical );
+		$this->assertEquals( false,  $bar->has_archive );
+		$this->assertEquals( 'bar',  $bar->query_var );
+
+		$baz = get_post_type_object( 'baz' );
+
+		$this->assertEquals( true,   $baz->public );
+		$this->assertEquals( 'page', $baz->capability_type );
+		$this->assertEquals( true,   $baz->hierarchical );
+		$this->assertEquals( false,  $baz->has_archive );
+		$this->assertEquals( 'baz',  $baz->query_var );
+
 	}
 
 	function testPostTypeLabelsAreCorrect() {
@@ -93,6 +109,12 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 		$link = get_post_type_archive_link( $this->cpts['foo']->post_type );
 		$this->assertEquals( user_trailingslashit( home_url( 'foos' ) ), $link );
+
+		$link = get_post_type_archive_link( $this->cpts['bar']->post_type );
+		$this->assertFalse( $link );
+
+		$link = get_post_type_archive_link( $this->cpts['baz']->post_type );
+		$this->assertFalse( $link );
 
 	}
 

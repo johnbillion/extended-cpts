@@ -116,6 +116,10 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 			'slug'     => 'Slug',
 		) );
 
+		$this->cpts['baz'] = register_extended_post_type( 'baz', array(
+			'has_archive' => false,
+		) );
+
 		$wp_rewrite->flush_rules();
 
 		foreach ( array( 'Alpha', 'Beta', 'Gamma', 'Delta' ) as $slug ) {
@@ -190,6 +194,16 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 			'post_author' => 1,
 		) );
 		wp_add_object_terms( $this->posts['foo'][0], array( 'Gamma', 'Delta' ), 'foo_category' );
+
+		$this->posts['bar'][0] = $this->factory->post->create( array(
+			'guid'        => 'guid',
+			'post_type'   => 'bar',
+		) );
+
+		$this->posts['baz'][0] = $this->factory->post->create( array(
+			'guid'        => 'guid',
+			'post_type'   => 'baz',
+		) );
 
 	}
 

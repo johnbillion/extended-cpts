@@ -103,7 +103,6 @@ class Extended_CPT {
 		'capability_type' => 'page',
 		'hierarchical'    => true,
 		'supports'        => array( 'title', 'editor', 'thumbnail' ),
-		'has_archive'     => true,
 		'site_filters'    => null,  # Custom arg
 		'site_sortables'  => null,  # Custom arg
 		'show_in_feed'    => false, # Custom arg
@@ -211,6 +210,11 @@ class Extended_CPT {
 			if ( isset( $args[ $arg ] ) && is_array( $args[ $arg ] ) ) {
 				$this->args[ $arg ] = array_merge( $this->defaults[ $arg ], $args[ $arg ] );
 			}
+		}
+
+		# Enable post type archives by default
+		if ( ! isset( $this->args['has_archive'] ) ) {
+			$this->args['has_archive'] = $this->args['public'];
 		}
 
 		# Front-end sortables:
