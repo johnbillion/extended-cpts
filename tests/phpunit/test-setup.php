@@ -136,6 +136,14 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'foo/admin/delta/%s', $post->post_name ) ) ), $link );
 
+		$post = get_post( $this->posts['bar'][0] );
+		$link = get_permalink( $post );
+		$this->assertEquals( add_query_arg( 'bar', $post->post_name, user_trailingslashit( home_url() ) ), $link );
+
+		$post = get_post( $this->posts['baz'][0] );
+		$link = get_permalink( $post );
+		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'baz/%s', $post->post_name ) ) ), $link );
+
 	}
 
 }

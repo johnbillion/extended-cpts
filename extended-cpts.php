@@ -588,6 +588,7 @@ class Extended_CPT {
 			return;
 		}
 		$struct = str_replace( "%{$this->post_type}_slug%", $this->post_slug, $args->rewrite['permastruct'] );
+		$struct = str_replace( '%postname%', "%{$this->post_type}%", $struct );
 		add_permastruct( $this->post_type, $struct, $args->rewrite );
 	}
 

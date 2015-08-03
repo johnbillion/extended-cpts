@@ -117,6 +117,9 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 		) );
 
 		$this->cpts['baz'] = register_extended_post_type( 'baz', array(
+			'rewrite' => array(
+				'permastruct' => 'baz/%postname%',
+			),
 			'has_archive' => false,
 		) );
 
