@@ -28,17 +28,17 @@ if ( ! function_exists( 'register_extended_post_type' ) ) {
 /**
  * Register an Extended Post Type.
  *
- * The $args parameter accepts all the standard arguments for `register_post_type()` in addition to several custom
+ * The `$args` parameter accepts all the standard arguments for `register_post_type()` in addition to several custom
  * arguments that provide extended functionality. Some of the default arguments differ from the defaults in
  * `register_post_type()`.
  *
- * The $post_type parameter is used as the post type name and to build the post type labels. This means you can create
+ * The `$post_type` parameter is used as the post type name and to build the post type labels. This means you can create
  * a post type with just one parameter and all labels and post updated messages will be generated for you. Example:
  *
  *     register_extended_post_type( 'event' );
  *
  * The singular name, plural name, and slug are generated from the post type name. These can be overridden with the
- * $names parameter if necessary. Example:
+ * `$names` parameter if necessary. Example:
  *
  *     register_extended_post_type( 'person', array(), array(
  *         'plural' => 'People',
@@ -125,8 +125,8 @@ class Extended_CPT {
 	 * Class constructor.
 	 *
 	 * @param string $post_type The post type name.
-	 * @param array  $args      Optional. The post type arguments. @see register_extended_post_type().
-	 * @param array  $names     Optional. The plural, singular, and slug names. @see register_extended_post_type().
+	 * @param array  $args      Optional. The post type arguments. {@see register_extended_post_type()}.
+	 * @param array  $names     Optional. The plural, singular, and slug names. {@see register_extended_post_type()}.
 	 */
 	public function __construct( $post_type, array $args = array(), array $names = array() ) {
 
@@ -332,7 +332,7 @@ class Extended_CPT {
 	 * Filter the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
 	 * @param  array    $clauses  The current query's SQL clauses.
-	 * @param  WP_Query $wp_query The current WP_Query object.
+	 * @param  WP_Query $wp_query The current `WP_Query` object.
 	 * @return array              The updated SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
@@ -631,10 +631,11 @@ class Extended_CPT {
 			if ( $terms = get_the_terms( $post, $tax ) ) {
 
 				/**
-				 * Filter the term that gets used in the $tax permalink token.
+				 * Filter the term that gets used in the `$tax` permalink token.
+				 * @TODO make this more betterer ^
 				 *
-				 * @param stdClass $term  The $tax term to use in the permalink.
-				 * @param array    $terms Array of all $tax terms associated with the post.
+				 * @param stdClass $term  The `$tax` term to use in the permalink.
+				 * @param array    $terms Array of all `$tax` terms associated with the post.
 				 * @param WP_Post  $post  The post in question.
 				 */
 				$term_object = apply_filters( "post_link_{$tax}", reset( $terms ), $terms, $post );
@@ -645,9 +646,10 @@ class Extended_CPT {
 				$term = $post->post_type;
 
 				/**
-				 * Filter the default term name that gets used in the $tax permalink token.
+				 * Filter the default term name that gets used in the `$tax` permalink token.
+				 * @TODO make this more betterer ^
 				 *
-				 * @param string  $term The $tax term name to use in the permalink.
+				 * @param string  $term The `$tax` term name to use in the permalink.
 				 * @param WP_Post $post The post in question.
 				 */
 				$default_term_name = apply_filters( "default_{$tax}", get_option( "default_{$tax}" ), $post );
@@ -687,8 +689,8 @@ class Extended_CPT {
 	/**
 	 * Registers our post type.
 	 *
-	 * The only difference between this and regular register_post_type() calls is this will trigger an error of
-	 * E_USER_ERROR level if a WP_Error is returned.
+	 * The only difference between this and regular `register_post_type()` calls is this will trigger an error of
+	 * `E_USER_ERROR` level if a `WP_Error` is returned.
 	 *
 	 */
 	public function register_post_type() {
@@ -714,7 +716,7 @@ class Extended_CPT {
 			}
 		} else {
 
-			# This allows us to call register_extended_post_type() on an existing post type to add custom functionality
+			# This allows us to call `register_extended_post_type()` on an existing post type to add custom functionality
 			# to the post type.
 			$this->extend( $existing );
 
@@ -732,9 +734,10 @@ class Extended_CPT {
 	}
 
 	/**
-	 * Helper function for registering a taxonomy and adding it to this post type. Accepts the same parameters as
-	 * register_extended_taxonomy(), minus the $object_type parameter. Will fall back to register_taxonomy() if
-	 * Extended Taxonomies isn't present.
+	 * Helper function for registering a taxonomy and adding it to this post type.
+	 * 
+	 * Accepts the same parameters as `register_extended_taxonomy()`, minus the `$object_type` parameter. Will fall back
+	 * to `register_taxonomy()` if Extended Taxonomies isn't present.
 	 *
 	 * Example usage:
 	 *
@@ -944,7 +947,7 @@ class Extended_CPT_Admin {
 	/**
 	 * Set the "featured image" text for this post type.
 	 *
-	 * See https://core.trac.wordpress.org/ticket/19257
+	 * @link https://core.trac.wordpress.org/ticket/19257
 	 *
 	 * @param  string $text The "featured image" text.
 	 * @return string       The updated "featured image" text.
@@ -1002,11 +1005,11 @@ class Extended_CPT_Admin {
 	/**
 	 * Output custom filter dropdown menus on the admin screen for this post type.
 	 *
-	 * Each item in the 'admin_filters' array is an associative array of information for a filter. Defining a filter is
+	 * Each item in the `admin_filters` array is an associative array of information for a filter. Defining a filter is
 	 * easy. Just define an array which includes the filter title and filter type. You can display filters for post meta
 	 * fields and taxonomy terms.
 	 *
-	 * The example below adds filters for the 'event_type' meta key and the 'location' taxonomy:
+	 * The example below adds filters for the `event_type` meta key and the `location` taxonomy:
 	 *
 	 *     register_extended_post_type( 'event', array(
 	 *         'admin_filters' => array(
@@ -1031,21 +1034,20 @@ class Extended_CPT_Admin {
 	 * That's all you need to do. WordPress handles taxonomy term filtering itself, and the plugin handles the dropdown
 	 * menu and filtering for post meta.
 	 *
-	 * Each item in the 'admin_filters' array needs either a 'taxonomy', 'meta_key', 'meta_search', or 'meta_exists'
+	 * Each item in the `admin_filters` array needs either a `taxonomy`, `meta_key`, `meta_search`, or `meta_exists`
 	 * element containing the corresponding taxonomy name or post meta key.
 	 *
-	 * The 'meta_exists' filter outputs a dropdown menu listing each of the meta_exists fields, allowing users to
+	 * The `meta_exists` filter outputs a dropdown menu listing each of the meta_exists fields, allowing users to
 	 * filter the screen by posts which have the corresponding meta field.
 	 *
-	 * The 'meta_search' filter outputs a search input, allowing users to filter the screen by an arbitrary search value.
+	 * The `meta_search` filter outputs a search input, allowing users to filter the screen by an arbitrary search value.
 	 *
 	 * There are a few optional elements:
 	 *
-	 * - title - The filter title. If omitted, the title will use the all_items taxonomy label or a formatted version of
-	 * the post meta key.
-	 *
-	 * - cap - A capability required in order for this filter to be displayed to the current user. Defaults to null,
-	 * meaning the filter is shown to all users.
+	 *  - title - The filter title. If omitted, the title will use the `all_items` taxonomy label or a formatted version
+	 *    of the post meta key.
+	 *  - cap - A capability required in order for this filter to be displayed to the current user. Defaults to null,
+	 *    meaning the filter is shown to all users.
 	 *
 	 * @TODO - query - array
 	 *
@@ -1214,7 +1216,7 @@ class Extended_CPT_Admin {
 	/**
 	 * Filter posts by our custom admin filters.
 	 *
-	 * @param WP_Query $wp_query Looks a bit like a WP_Query object
+	 * @param WP_Query $wp_query Looks a bit like a `WP_Query` object
 	 */
 	public function maybe_filter( WP_Query $wp_query ) {
 
@@ -1244,7 +1246,7 @@ class Extended_CPT_Admin {
 	/**
 	 * Set the relevant query vars for sorting posts by our admin sortables.
 	 *
-	 * @param WP_Query $wp_query The current WP_Query object.
+	 * @param WP_Query $wp_query The current `WP_Query` object.
 	 */
 	public function maybe_sort_by_fields( WP_Query $wp_query ) {
 
@@ -1268,7 +1270,7 @@ class Extended_CPT_Admin {
 	 * Filter the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
 	 * @param  array    $clauses  The current query's SQL clauses.
-	 * @param  WP_Query $wp_query The current WP_Query object.
+	 * @param  WP_Query $wp_query The current `WP_Query` object.
 	 * @return array              The updated SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
@@ -1394,14 +1396,14 @@ class Extended_CPT_Admin {
 	 *
 	 * The messages are as follows:
 	 *
-	 *   updated   => "Post updated." | "[n] posts updated."
-	 *   locked    => "Post not updated, somebody is editing it." | "[n] posts not updated, somebody is editing them."
-	 *   deleted   => "Post permanently deleted." | "[n] posts permanently deleted."
-	 *   trashed   => "Post moved to the trash." | "[n] posts moved to the trash."
-	 *   untrashed => "Post restored from the trash." | "[n] posts restored from the trash."
+	 *  - updated   => "Post updated." | "[n] posts updated."
+	 *  - locked    => "Post not updated, somebody is editing it." | "[n] posts not updated, somebody is editing them."
+	 *  - deleted   => "Post permanently deleted." | "[n] posts permanently deleted."
+	 *  - trashed   => "Post moved to the trash." | "[n] posts moved to the trash."
+	 *  - untrashed => "Post restored from the trash." | "[n] posts restored from the trash."
 	 *
 	 * @param  array $messages An associative array of bulk post updated messages with post type as keys.
-	 * @param  array $counts   An array of counts for each key in $messages.
+	 * @param  array $counts   An array of counts for each key in `$messages`.
 	 * @return array           Updated array of bulk post updated messages.
 	 */
 	public function bulk_post_updated_messages( array $messages, array $counts ) {
@@ -1465,15 +1467,15 @@ class Extended_CPT_Admin {
 	/**
 	 * Add columns to the admin screen for this post type.
 	 *
-	 * Each item in the 'admin_cols' array is either a string name of an existing column, or an associative
+	 * Each item in the `admin_cols` array is either a string name of an existing column, or an associative
 	 * array of information for a custom column.
 	 *
 	 * Defining a custom column is easy. Just define an array which includes the column title, column
 	 * type, and optional callback function. You can display columns for post meta, taxonomy terms,
 	 * post fields, the featured image, and custom functions.
 	 *
-	 * The example below adds two columns; one which displays the value of the post's 'event_type' meta
-	 * key and one which lists the post's terms from the 'location' taxonomy:
+	 * The example below adds two columns; one which displays the value of the post's `event_type` meta
+	 * key and one which lists the post's terms from the `location` taxonomy:
 	 *
 	 *     register_extended_post_type( 'event', array(
 	 *         'admin_cols' => array(
@@ -1492,13 +1494,14 @@ class Extended_CPT_Admin {
 	 * (escaping text, and comma-separating taxonomy terms). No more messing about with all of those
 	 * annoyingly named column filters and actions.
 	 *
-	 * Each item in the 'admin_cols' array must contain one of the following elements which defines the column type:
-	 *     - taxonomy       - The name of a taxonomy
-	 *     - meta_key       - A post meta key
-	 *     - post_field     - The name of a post field (eg. post_excerpt)
-	 *     - featured_image - A featured image size (eg. thumbnail)
-	 *     - connection     - A connection ID registered with the Posts 2 Posts plugin
-	 *     - function       - The name of a callback function
+	 * Each item in the `admin_cols` array must contain one of the following elements which defines the column type:
+	 *
+	 *  - taxonomy       - The name of a taxonomy
+	 *  - meta_key       - A post meta key
+	 *  - post_field     - The name of a post field (eg. post_excerpt)
+	 *  - featured_image - A featured image size (eg. thumbnail)
+	 *  - connection     - A connection ID registered with the Posts 2 Posts plugin
+	 *  - function       - The name of a callback function
 	 *
 	 * The value for the corresponding taxonomy terms, post meta or post field are safely escaped and output
 	 * into the column, and the values are used to provide the sortable functionality for the column. For
@@ -1506,39 +1509,32 @@ class Extended_CPT_Admin {
 	 *
 	 * There are a few optional elements:
 	 *
-	 * - title - Generated from the field if not specified.
-	 *
-	 * - function - The name of a callback function for the column (eg. 'my_function') which gets called
-	 * instead of the built-in function for handling that column. Note that it's not passed any parameters,
-	 * so it must use the global $post object.
-	 *
-	 * - default - Specifies that the admin screen should be sorted by this column by default (instead of
-	 * sorting by post date). Value should be one of 'asc' or 'desc' to control the default order.
-	 *
-	 * - width & height - These are only used for the 'featured_image' column type and allow you to set an
-	 * explicit width and/or height on the <img> tag. Handy for downsizing the image.
-	 *
-	 * - field & value - These are used for the 'connection' column type and allow you to specify a
-	 * connection meta field and value from the fields argument of the connection type.
-	 *
-	 * - date_format - This is used with the 'meta_key' column type. The value of the meta field will be
-	 * treated as a timestamp if this is present. Unix and MySQL format timestamps are supported in the
-	 * meta value. Pass in boolean true to format the date according to the 'Date Format' setting, or pass
-	 * in a valid date formatting string (eg. 'd/m/Y H:i:s').
-	 *
-	 * - cap - A capability required in order for this column to be displayed to the current user. Defaults
-	 * to null, meaning the column is shown to all users.
+	 *  - title - Generated from the field if not specified.
+	 *  - function - The name of a callback function for the column (eg. `my_function`) which gets called
+	 *    instead of the built-in function for handling that column. Note that it's not passed any parameters,
+	 *    so it must use the global $post object.
+	 *  - default - Specifies that the admin screen should be sorted by this column by default (instead of
+	 *    sorting by post date). Value should be one of `asc` or `desc` to control the default order.
+	 *  - width & height - These are only used for the `featured_image` column type and allow you to set an
+	 *    explicit width and/or height on the <img> tag. Handy for downsizing the image.
+	 *  - field & value - These are used for the `connection` column type and allow you to specify a
+	 *    connection meta field and value from the fields argument of the connection type.
+	 *  - date_format - This is used with the `meta_key` column type. The value of the meta field will be
+	 *    treated as a timestamp if this is present. Unix and MySQL format timestamps are supported in the
+	 *    meta value. Pass in boolean true to format the date according to the 'Date Format' setting, or pass
+	 *    in a valid date formatting string (eg. `d/m/Y H:i:s`).
+	 *  - cap - A capability required in order for this column to be displayed to the current user. Defaults
+	 *    to null, meaning the column is shown to all users.
+	 *  - sortable - A boolean value which specifies whether the column should be sortable. Defaults to true.
 	 *
 	 * @TODO - post_cap
 	 *
 	 * @TODO - link
 	 *
-	 * - sortable - A boolean value which specifies whether the column should be sortable. Defaults to true.
-	 *
 	 * In addition to custom columns there are also columns built in to WordPress which you can
-	 * use: 'comments', 'date', 'title' and 'author'. You can use these column names as the array value, or as the
+	 * use: `comments`, `date`, `title` and `author`. You can use these column names as the array value, or as the
 	 * array key with a string value to change the column title. You can also pass boolean false to remove
-	 * the 'cb' or 'title' columns, which are otherwise kept regardless.
+	 * the `cb` or `title` columns, which are otherwise kept regardless.
 	 *
 	 * @param  array $cols Associative array of columns
 	 * @return array       Updated array of columns
@@ -1799,7 +1795,7 @@ class Extended_CPT_Admin {
 	 * Output column data for a post's featured image.
 	 *
 	 * @param string $image_size The image size
-	 * @param array  $args       Optional array of 'width' and 'height' attributes for the image
+	 * @param array  $args       Optional array of `width` and `height` attributes for the image
 	 */
 	public function col_featured_image( $image_size, array $args = array() ) {
 
@@ -2007,8 +2003,8 @@ class Extended_CPT_Admin {
 	 *
 	 * @param  string $single The text that will be used if $number is 1
 	 * @param  string $plural The text that will be used if $number is not 1
-	 * @param  int    $number The number to compare against to use either $single or $plural
-	 * @return string         Either $single or $plural text
+	 * @param  int    $number The number to compare against to use either `$single` or `$plural`
+	 * @return string         Either `$single` or `$plural` text
 	 */
 	protected static function n( $single, $plural, $number ) {
 
