@@ -735,7 +735,7 @@ class Extended_CPT {
 
 	/**
 	 * Helper function for registering a taxonomy and adding it to this post type.
-	 * 
+	 *
 	 * Accepts the same parameters as `register_extended_taxonomy()`, minus the `$object_type` parameter. Will fall back
 	 * to `register_taxonomy()` if Extended Taxonomies isn't present.
 	 *
@@ -745,8 +745,8 @@ class Extended_CPT {
 	 *     $location = $events->add_taxonomy( 'location' );
 	 *
 	 * @param  string $taxonomy The taxonomy name.
-	 * @param  array  $args     The taxonomy arguments. Optional.
-	 * @param  array  $names    An associative array of the plural, singular, and slug names. Optional.
+	 * @param  array  $args     Optional. The taxonomy arguments.
+	 * @param  array  $names    Optional. An associative array of the plural, singular, and slug names.
 	 * @return object|false     Taxonomy object, or boolean false if there's a problem.
 	 */
 	public function add_taxonomy( $taxonomy, array $args = array(), array $names = array() ) {
@@ -1638,7 +1638,7 @@ class Extended_CPT_Admin {
 	 * Output column data for a post meta field.
 	 *
 	 * @param string $meta_key The post meta key
-	 * @param array  $args     Optional array of arguments for this field
+	 * @param array  $args     Optional. Array of arguments for this field
 	 */
 	public function col_post_meta( $meta_key, array $args = array() ) {
 
@@ -1682,7 +1682,7 @@ class Extended_CPT_Admin {
 	 * Output column data for a taxonomy's term names.
 	 *
 	 * @param string $taxonomy The taxonomy name
-	 * @param array  $args     Optional array of arguments for this field
+	 * @param array  $args     Optional. Array of arguments for this field
 	 */
 	public function col_taxonomy( $taxonomy, array $args = array() ) {
 
@@ -1745,7 +1745,7 @@ class Extended_CPT_Admin {
 	 * Output column data for a post field.
 	 *
 	 * @param string $field The post field
-	 * @param array  $args  Optional array of arguments for this field
+	 * @param array  $args  Optional. Array of arguments for this field
 	 */
 	public function col_post_field( $field, array $args = array() ) {
 
@@ -1795,7 +1795,7 @@ class Extended_CPT_Admin {
 	 * Output column data for a post's featured image.
 	 *
 	 * @param string $image_size The image size
-	 * @param array  $args       Optional array of `width` and `height` attributes for the image
+	 * @param array  $args       Optional. Array of `width` and `height` attributes for the image
 	 */
 	public function col_featured_image( $image_size, array $args = array() ) {
 
@@ -1830,7 +1830,7 @@ class Extended_CPT_Admin {
 	 * Output column data for a Posts 2 Posts connection.
 	 *
 	 * @param string $connection The ID of the connection type
-	 * @param array  $args       Optional array of arguments for a given connection type
+	 * @param array  $args       Optional. Array of arguments for a given connection type
 	 */
 	public function col_connection( $connection, array $args = array() ) {
 
