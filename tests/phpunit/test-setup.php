@@ -79,20 +79,24 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$bar = get_post_type_object( 'bar' );
 
 		$this->assertEquals( (object) array(
-			'name'               => 'Plural',
-			'singular_name'      => 'Singular',
-			'menu_name'          => 'Plural',
-			'name_admin_bar'     => 'Singular',
-			'add_new'            => 'Add New',
-			'add_new_item'       => 'Add New Singular',
-			'edit_item'          => 'Edit Singular',
-			'new_item'           => 'New Singular',
-			'view_item'          => 'View Singular',
-			'search_items'       => 'Search Plural',
-			'not_found'          => 'No plural found.',
-			'not_found_in_trash' => 'No plural found in trash.',
-			'parent_item_colon'  => 'Parent Singular:',
-			'all_items'          => 'All Plural',
+			'name'                  => 'Plural',
+			'singular_name'         => 'Singular',
+			'menu_name'             => 'Plural',
+			'name_admin_bar'        => 'Singular',
+			'add_new'               => 'Add New',
+			'add_new_item'          => 'Add New Singular',
+			'edit_item'             => 'Edit Singular',
+			'new_item'              => 'New Singular',
+			'view_item'             => 'View Singular',
+			'search_items'          => 'Search Plural',
+			'not_found'             => 'No plural found.',
+			'not_found_in_trash'    => 'No plural found in trash.',
+			'parent_item_colon'     => 'Parent Singular:',
+			'all_items'             => 'All Plural',
+			'featured_image'        => 'Icon',
+			'set_featured_image'    => 'Set icon',
+			'remove_featured_image' => 'Remove icon',
+			'use_featured_image'    => 'Use as icon',
 		), $bar->labels );
 	}
 

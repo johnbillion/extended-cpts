@@ -107,6 +107,7 @@ class Extended_CPT {
 		'site_sortables'  => null,  # Custom arg
 		'show_in_feed'    => false, # Custom arg
 		'archive'         => null,  # Custom arg
+		'featured_image'  => null,  # Custom arg
 	);
 
 	/**
@@ -190,7 +191,20 @@ class Extended_CPT {
 			'not_found_in_trash' => sprintf( 'No %s found in trash.', $this->post_plural_low ),
 			'parent_item_colon'  => sprintf( 'Parent %s:', $this->post_singular ),
 			'all_items'          => sprintf( 'All %s', $this->post_plural ),
+			'featured_image'        => 'Featured Image',
+			'set_featured_image'    => 'Set featured image',
+			'remove_featured_image' => 'Remove featured image',
+			'use_featured_image'    => 'Use as featured image',
 		);
+
+		# Build the featured image labels:
+		if ( isset( $args['featured_image'] ) ) {
+			$featured_image_low = strtolower( $args['featured_image'] );
+			$this->defaults['labels']['featured_image']        = $args['featured_image'];
+			$this->defaults['labels']['set_featured_image']    = sprintf( 'Set %s', $featured_image_low );
+			$this->defaults['labels']['remove_featured_image'] = sprintf( 'Remove %s', $featured_image_low );
+			$this->defaults['labels']['use_featured_image']    = sprintf( 'Use as %s', $featured_image_low );
+		}
 
 		# Only set default rewrites if we need them
 		if ( isset( $args['public'] ) && ! $args['public'] ) {
@@ -781,7 +795,6 @@ class Extended_CPT_Admin {
 		'admin_cols'           => null,  # Custom arg
 		'admin_filters'        => null,  # Custom arg
 		'enter_title_here'     => null,  # Custom arg
-		'featured_image'       => null,  # Custom arg
 	);
 	public $cpt;
 	public $args;
@@ -838,11 +851,6 @@ class Extended_CPT_Admin {
 		# 'Enter title here' filter:
 		if ( $this->args['enter_title_here'] ) {
 			add_filter( 'enter_title_here', array( $this, 'enter_title_here' ), 10, 2 );
-		}
-
-		# Featured Image title:
-		if ( $this->args['featured_image'] ) {
-			add_filter( 'gettext', array( $this, 'featured_image_text' ) );
 		}
 
 		# Hide month filter:
@@ -941,31 +949,6 @@ class Extended_CPT_Admin {
 		}
 
 		return $this->args['enter_title_here'];
-
-	}
-
-	/**
-	 * Set the "featured image" text for this post type.
-	 *
-	 * @link https://core.trac.wordpress.org/ticket/19257
-	 *
-	 * @param  string $text The "featured image" text.
-	 * @return string       The updated "featured image" text.
-	 */
-	public function featured_image_text( $text ) {
-
-		if ( false === stripos( $text, 'featured image' ) ) {
-			return $text;
-		}
-
-		if ( $this->cpt->post_type != self::get_current_post_type() ) {
-			return $text;
-		}
-
-		$text = str_replace( 'featured image', strtolower( $this->args['featured_image'] ), $text );
-		$text = str_replace( 'Featured Image', $this->args['featured_image'], $text );
-
-		return $text;
 
 	}
 
