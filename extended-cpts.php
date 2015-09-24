@@ -219,7 +219,7 @@ class Extended_CPT {
 		# Merge our args with the defaults:
 		$this->args = array_merge( $this->defaults, $args );
 
-		# This allows the 'labels' and 'rewrite' args to contain some, none, or all values:
+		# This allows the 'labels' and 'rewrite' args to contain all, some, or no values:
 		foreach ( array( 'labels', 'rewrite' ) as $arg ) {
 			if ( isset( $args[ $arg ] ) && is_array( $args[ $arg ] ) ) {
 				$this->args[ $arg ] = array_merge( $this->defaults[ $arg ], $args[ $arg ] );
@@ -633,12 +633,12 @@ class Extended_CPT {
 			'%post_id%'  => $post->ID,
 		);
 
-		if ( strpos( $post_link, '%author%' ) !== false ) {
+		if ( false !== strpos( $post_link, '%author%' ) ) {
 			$replacements['%author%'] = get_userdata( $post->post_author )->user_nicename;
 		}
 
 		foreach ( get_object_taxonomies( $post ) as $tax ) {
-			if ( strpos( $post_link, "%{$tax}%" ) === false ) {
+			if ( false === strpos( $post_link, "%{$tax}%" ) ) {
 				continue;
 			}
 
@@ -798,7 +798,6 @@ class Extended_CPT_Admin {
 	);
 	public $cpt;
 	public $args;
-	protected static $current_post_type;
 	protected $_cols;
 
 	/**
@@ -959,10 +958,6 @@ class Extended_CPT_Admin {
 	 */
 	protected static function get_current_post_type() {
 
-		// if ( isset( self::$current_post_type ) ) {
-		// 	return self::$current_post_type;
-		// }
-
 		if ( function_exists( 'get_current_screen' ) && is_object( get_current_screen() ) ) {
 			$post_type = get_current_screen()->post_type;
 		} else {
@@ -981,7 +976,7 @@ class Extended_CPT_Admin {
 			}
 		}
 
-		return self::$current_post_type = $post_type;
+		return $post_type;
 
 	}
 
