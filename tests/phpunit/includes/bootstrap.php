@@ -11,6 +11,8 @@ function _manually_load_plugin() {
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 require $_tests_dir . '/includes/bootstrap.php';
+
+require dirname( dirname( __FILE__ ) ) . '/includes/compat.php';
 require dirname( dirname( __FILE__ ) ) . '/extended-cpts-test.php';
 require dirname( dirname( __FILE__ ) ) . '/extended-cpts-test-site.php';
 require dirname( dirname( __FILE__ ) ) . '/extended-cpts-test-admin.php';
