@@ -102,6 +102,7 @@ There's quite a bit more you can do. [See the wiki for more examples](https://gi
 ## Minimum Requirements ##
 
 **PHP:** 5.4  
+**WordPress:** 4.3  
 
 ## Contributing and Testing ##
 
