@@ -7,7 +7,7 @@ notifications:
 php:
     - 7.0
     - 5.6
-    - 5.3
+    - 5.4
     - hhvm
 
 env:

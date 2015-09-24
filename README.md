@@ -99,6 +99,10 @@ Bam, we have a 'Stories' post type, with correctly generated labels and post upd
 
 There's quite a bit more you can do. [See the wiki for more examples](https://github.com/johnbillion/extended-cpts/wiki).
 
+## Minimum Requirements ##
+
+**PHP:** 5.4  
+
 ## Contributing and Testing ##
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for information on contributing.
