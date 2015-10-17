@@ -54,8 +54,6 @@ if ( ! function_exists( 'register_extended_post_type' ) ) {
  *     @type array  $admin_cols           Associative array of admin screen columns to show for this post type.
  *     @type array  $admin_filters        Associative array of admin screen filters to show for this post type.
  *     @type array  $archive              Associative array of query vars to override on this post type's archive.
- *     @type bool   $archive_in_nav_menus Whether to show an 'All Items' checkbox for this post type on the nav menus
- *                                        admin screen. Default true.
  *     @type bool   $dashboard_glance     Whether to show this post type on the 'At a Glance' section of the admin
  *                                        dashboard. Default true.
  *     @type string $enter_title_here     Placeholder text which appears in the title field for this post type.
@@ -789,7 +787,6 @@ class Extended_CPT_Admin {
 	 * @var array
 	 */
 	protected $defaults = array(
-		'archive_in_nav_menus' => true,  # Custom arg
 		'quick_edit'           => true,  # Custom arg
 		'dashboard_glance'     => true,  # Custom arg
 		'admin_cols'           => null,  # Custom arg
@@ -878,7 +875,7 @@ class Extended_CPT_Admin {
 		}
 
 		# Nav menus screen item:
-		if ( $this->args['archive_in_nav_menus'] && $this->cpt->args['has_archive'] ) {
+		if ( $this->cpt->args['has_archive'] ) {
 			add_filter( "nav_menu_items_{$this->cpt->post_type}", array( $this, 'nav_menu_items' ), 10, 3 );
 		}
 
