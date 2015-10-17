@@ -41,6 +41,11 @@ See also: [Extended Taxonomies](https://github.com/johnbillion/extended-taxos).
  * Override public or private query vars such as `posts_per_page`, `orderby`, `order` and `nopaging`
  * Add the post type to the site's main RSS feed
 
+## Minimum Requirements ##
+
+**PHP:** 5.4  
+**WordPress:** 4.3  
+
 ## Usage ##
 
 Need a simple post type with no frills? You can register a post type with a single parameter:
@@ -98,11 +103,6 @@ register_extended_post_type( 'story', array(
 Bam, we have a 'Stories' post type, with correctly generated labels and post updated messages, three custom columns in the admin area (two of which are sortable), stories added to the main RSS feed, and all stories displayed on the post type archive.
 
 There's quite a bit more you can do. [See the wiki for more examples](https://github.com/johnbillion/extended-cpts/wiki).
-
-## Minimum Requirements ##
-
-**PHP:** 5.4  
-**WordPress:** 4.3  
 
 ## Contributing and Testing ##
 
