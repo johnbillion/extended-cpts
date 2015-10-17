@@ -1,8 +1,11 @@
+# run on container environment
+sudo: false
+
 language: php
 
 notifications:
     on_success: change
-    on_failure: change
+    on_failure: always
 
 php:
     - 7.0
