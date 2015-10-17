@@ -67,6 +67,12 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 					'meta_value'   => 'B',
 					'meta_type'    => 'CHAR',
 				),
+				'test_site_filters_invalid' => array(
+					'meta_query' => array(
+						'key'     => 'foo',
+						'value'   => 'bar',
+					),
+				),
 			),
 			'archive' => array(
 				'orderby' => 'post_title',

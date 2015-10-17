@@ -194,6 +194,24 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	}
 
+	function testQueryFilteredByInvalidFilter() {
+
+		$query = new WP_Query( array(
+			'post_type'                 => 'hello',
+			'nopaging'                  => true,
+			'test_site_filters_invalid' => 'ZZZ',
+		) );
+
+		$meta_query = $query->get( 'meta_query' );
+
+		$this->assertSame( '', $query->get( 'meta_key' ) );
+		$this->assertSame( '', $query->get( 'meta_value' ) );
+		$this->assertEmpty( $meta_query );
+
+		$this->assertEquals( $this->posts['hello'], wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
 	/**
 	 * @expectedIncorrectUsage register_extended_post_type
 	 */

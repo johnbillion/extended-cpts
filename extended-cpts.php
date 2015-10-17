@@ -402,6 +402,8 @@ class Extended_CPT {
 					'compare' => 'NOT IN',
 					'value'   => array( '', '0', 'false', 'null' ),
 				);
+			} else {
+				continue;
 			}
 
 			foreach ( array( 'compare', 'value', 'type' ) as $arg ) {
