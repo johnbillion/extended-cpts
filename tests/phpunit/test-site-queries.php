@@ -11,11 +11,11 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( 1, $query->found_posts );
 
-		$this->assertEquals( '',     $query->get( 'orderby' ) ); // date
+		$this->assertSame( '',       $query->get( 'orderby' ) ); // date
 		$this->assertEquals( 'DESC', $query->get( 'order' ) );
-		$this->assertEquals( '',     $query->get( 'meta_key' ) );
-		$this->assertEquals( '',     $query->get( 'meta_value' ) );
-		$this->assertEquals( '',     $query->get( 'meta_query' ) );
+		$this->assertSame( '',       $query->get( 'meta_key' ) );
+		$this->assertSame( '',       $query->get( 'meta_value' ) );
+		$this->assertSame( '',       $query->get( 'meta_query' ) );
 
 		$this->assertEquals( $this->posts['post'], wp_list_pluck( $query->posts, 'ID' ) );
 
@@ -30,11 +30,11 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
 
-		$this->assertEquals( '',     $query->get( 'orderby' ) ); // date
+		$this->assertSame( '',       $query->get( 'orderby' ) ); // date
 		$this->assertEquals( 'DESC', $query->get( 'order' ) );
-		$this->assertEquals( '',     $query->get( 'meta_key' ) );
-		$this->assertEquals( '',     $query->get( 'meta_value' ) );
-		$this->assertEquals( '',     $query->get( 'meta_query' ) );
+		$this->assertSame( '',       $query->get( 'meta_key' ) );
+		$this->assertSame( '',       $query->get( 'meta_value' ) );
+		$this->assertSame( '',       $query->get( 'meta_query' ) );
 
 		$this->assertEquals( $this->posts['hello'], wp_list_pluck( $query->posts, 'ID' ) );
 
@@ -53,9 +53,9 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( 'post_name', $query->get( 'orderby' ) );
 		$this->assertEquals( 'ASC',       $query->get( 'order' ) );
-		$this->assertEquals( '',          $query->get( 'meta_key' ) );
-		$this->assertEquals( '',          $query->get( 'meta_value' ) );
-		$this->assertEquals( '',          $query->get( 'meta_query' ) );
+		$this->assertSame( '',            $query->get( 'meta_key' ) );
+		$this->assertSame( '',            $query->get( 'meta_value' ) );
+		$this->assertSame( '',            $query->get( 'meta_query' ) );
 
 		$this->assertEquals( array(
 			$this->posts['hello'][0],
@@ -80,8 +80,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 		$this->assertEquals( 'meta_value',    $query->get( 'orderby' ) );
 		$this->assertEquals( 'ASC',           $query->get( 'order' ) );
 		$this->assertEquals( 'test_meta_key', $query->get( 'meta_key' ) );
-		$this->assertEquals( '',              $query->get( 'meta_value' ) );
-		$this->assertEquals( '',              $query->get( 'meta_query' ) );
+		$this->assertSame( '',                $query->get( 'meta_value' ) );
+		$this->assertSame( '',                $query->get( 'meta_query' ) );
 
 		$this->assertEquals( array(
 			$this->posts['hello'][1],
@@ -104,9 +104,9 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( 'name', $query->get( 'orderby' ) );
 		$this->assertEquals( 'ASC',  $query->get( 'order' ) );
-		$this->assertEquals( '',     $query->get( 'meta_key' ) );
-		$this->assertEquals( '',     $query->get( 'meta_value' ) );
-		$this->assertEquals( '',     $query->get( 'meta_query' ) );
+		$this->assertSame( '',       $query->get( 'meta_key' ) );
+		$this->assertSame( '',       $query->get( 'meta_value' ) );
+		$this->assertSame( '',       $query->get( 'meta_query' ) );
 
 		$this->assertEquals( array(
 			$this->posts['hello'][0],
@@ -130,9 +130,9 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( 'test_site_sortables_taxonomy', $query->get( 'orderby' ) );
 		$this->assertEquals( 'DESC',                         $query->get( 'order' ) );
-		$this->assertEquals( '',                             $query->get( 'meta_key' ) );
-		$this->assertEquals( '',                             $query->get( 'meta_value' ) );
-		$this->assertEquals( '',                             $query->get( 'meta_query' ) );
+		$this->assertSame( '',                               $query->get( 'meta_key' ) );
+		$this->assertSame( '',                               $query->get( 'meta_value' ) );
+		$this->assertSame( '',                               $query->get( 'meta_query' ) );
 
 		$this->assertEquals( array(
 			$this->posts['hello'][3],
@@ -155,8 +155,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( 1, $query->found_posts );
 
-		$this->assertEquals( '',              $query->get( 'meta_key' ) );
-		$this->assertEquals( '',              $query->get( 'meta_value' ) );
+		$this->assertSame( '',                $query->get( 'meta_key' ) );
+		$this->assertSame( '',                $query->get( 'meta_value' ) );
 		$this->assertEquals( 'test_meta_key', $meta_query[0]['key'] );
 		$this->assertEquals( 'Alpha',         $meta_query[0]['value'] );
 
@@ -178,8 +178,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( 2, $query->found_posts );
 
-		$this->assertEquals( '', $query->get( 'meta_key' ) );
-		$this->assertEquals( '', $query->get( 'meta_value' ) );
+		$this->assertSame( '', $query->get( 'meta_key' ) );
+		$this->assertSame( '', $query->get( 'meta_value' ) );
 		$this->assertEquals( array(
 			'key'     => 'test_meta_key',
 			'value'   => 'B',
@@ -227,8 +227,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( 2, $query->found_posts );
 
-		$this->assertEquals( '', $query->get( 'meta_key' ) );
-		$this->assertEquals( '', $query->get( 'meta_value' ) );
+		$this->assertSame( '', $query->get( 'meta_key' ) );
+		$this->assertSame( '', $query->get( 'meta_value' ) );
 		$this->assertEquals( array(
 			'key'     => 'test_meta_key',
 			'value'   => 'B',
@@ -255,8 +255,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( 2, $query->found_posts );
 
-		$this->assertEquals( '',              $query->get( 'meta_key' ) );
-		$this->assertEquals( '',              $query->get( 'meta_value' ) );
+		$this->assertSame( '',                $query->get( 'meta_key' ) );
+		$this->assertSame( '',                $query->get( 'meta_value' ) );
 		$this->assertEquals( 'test_meta_key', $meta_query[0]['key'] );
 		$this->assertEquals( 'ta',            $meta_query[0]['value'] );
 		$this->assertEquals( 'LIKE',          $meta_query[0]['compare'] );
@@ -280,8 +280,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( 3, $query->found_posts );
 
-		$this->assertEquals( '',              $query->get( 'meta_key' ) );
-		$this->assertEquals( '',              $query->get( 'meta_value' ) );
+		$this->assertSame( '',                $query->get( 'meta_key' ) );
+		$this->assertSame( '',                $query->get( 'meta_value' ) );
 		$this->assertEquals( 'test_meta_key', $meta_query[0]['key'] );
 		$this->assertEquals( 'NOT IN',        $meta_query[0]['compare'] );
 
@@ -305,11 +305,11 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
 
-		$this->assertEquals( '',     $query->get( 'orderby' ) ); // date
+		$this->assertSame( '',       $query->get( 'orderby' ) ); // date
 		$this->assertEquals( 'DESC', $query->get( 'order' ) );
-		$this->assertEquals( '',     $query->get( 'meta_key' ) );
-		$this->assertEquals( '',     $query->get( 'meta_value' ) );
-		$this->assertEquals( '',     $query->get( 'meta_query' ) );
+		$this->assertSame( '',       $query->get( 'meta_key' ) );
+		$this->assertSame( '',       $query->get( 'meta_value' ) );
+		$this->assertSame( '',       $query->get( 'meta_query' ) );
 
 		$this->assertEquals( $this->posts['hello'], wp_list_pluck( $query->posts, 'ID' ) );
 
@@ -324,11 +324,11 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 		$this->assertEquals( count( $this->posts['person'] ), $query->found_posts );
 
-		$this->assertEquals( 'name', $query->get( 'orderby' ) ); // date
+		$this->assertEquals( 'name', $query->get( 'orderby' ) );
 		$this->assertEquals( 'ASC',  $query->get( 'order' ) );
-		$this->assertEquals( '',     $query->get( 'meta_key' ) );
-		$this->assertEquals( '',     $query->get( 'meta_value' ) );
-		$this->assertEquals( '',     $query->get( 'meta_query' ) );
+		$this->assertSame( '',       $query->get( 'meta_key' ) );
+		$this->assertSame( '',       $query->get( 'meta_value' ) );
+		$this->assertSame( '',       $query->get( 'meta_query' ) );
 
 		$this->assertEquals( array(
 			$this->posts['person'][1],
