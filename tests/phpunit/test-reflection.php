@@ -99,6 +99,12 @@ class Extended_CPT_Test_Reflection extends Extended_CPT_Test {
 				) );
 			}
 
+			$this->assertFalse( strpos( $param_doc_type, 'callback' ), sprintf(
+				'`callback` is not a valid type. `callable` should be used in the @param type hint for the `%s` parameter of `%s` instead.',
+				$param_doc->getVariableName(),
+				$name
+			) );
+
 			if ( $param->isCallable() ) {
 				$this->assertNotFalse( strpos( $param_doc_type, 'callable' ), sprintf(
 					'The @param type hint for the `%s` parameter of `%s` should state that it accepts a callable.',
