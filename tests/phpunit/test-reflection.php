@@ -61,6 +61,13 @@ class Extended_CPT_Test_Reflection extends Extended_CPT_Test {
 			// @TODO decide how to handle variadic functions
 			// ReflectionParameter::isVariadic — Checks if the parameter is variadic
 
+			$is_hash = ( ( 0 === strpos( $description, '{' ) ) && ( ( strlen( $description ) - 1 ) === strrpos( $description, '}' ) ) );
+
+			if ( $is_hash ) {
+				$lines = explode( "\n", $description );
+				$description = $lines[1];
+			}
+
 			$this->assertNotEmpty( $description, sprintf(
 				'The @param description for the `%s` parameter of `%s` should not be empty.',
 				$param_doc->getVariableName(),
@@ -116,13 +123,13 @@ class Extended_CPT_Test_Reflection extends Extended_CPT_Test {
 
 			if ( $param->isDefaultValueAvailable() && ( array() !== $param->getDefaultValue() ) ) {
 				$this->assertNotFalse( strpos( $description, 'Default ' ), sprintf(
-					'The @param description for the optional `%s` parameter of `%s` should state its default value.',
+					'The @param description for the `%s` parameter of `%s` should state its default value.',
 					$param_doc->getVariableName(),
 					$name
 				) );
 			} else {
 				$this->assertFalse( strpos( $description, 'Default ' ), sprintf(
-					'The @param description for the optional `%s` parameter of `%s` should not state a default value.',
+					'The @param description for the `%s` parameter of `%s` should not state a default value.',
 					$param_doc->getVariableName(),
 					$name
 				) );
