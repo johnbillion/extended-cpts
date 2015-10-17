@@ -1642,7 +1642,7 @@ class Extended_CPT_Admin {
 			foreach ( $vals as $val ) {
 
 				if ( ! empty( $val ) || ( '0' === $val ) ) {
-					$echo[] = esc_html( $val );
+					$echo[] = $val;
 				}
 			}
 		}
@@ -1650,7 +1650,7 @@ class Extended_CPT_Admin {
 		if ( empty( $echo ) ) {
 			echo '&#8212;';
 		} else {
-			echo implode( ', ', $echo );
+			echo esc_html( implode( ', ', $echo ) );
 		}
 
 	}
@@ -1669,7 +1669,7 @@ class Extended_CPT_Admin {
 		$tax   = get_taxonomy( $taxonomy );
 
 		if ( is_wp_error( $terms ) ) {
-			echo $terms->get_error_message();
+			echo esc_html( $terms->get_error_message() );
 			return;
 		}
 
@@ -1687,16 +1687,24 @@ class Extended_CPT_Admin {
 				switch ( $args['link'] ) {
 					case 'view':
 						if ( $tax->public ) {
-							$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_term_link( $term ), $term->name );
+							$out[] = sprintf(
+								'<a href="%1$s">%2$s</a>',
+								esc_url( get_term_link( $term ) ),
+								esc_html( $term->name )
+							);
 						} else {
-							$out[] = $term->name;
+							$out[] = esc_html( $term->name );
 						}
 						break;
 					case 'edit':
 						if ( current_user_can( $tax->cap->edit_terms ) ) {
-							$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_edit_term_link( $term, $taxonomy, $post->post_type ), $term->name );
+							$out[] = sprintf(
+								'<a href="%1$s">%2$s</a>',
+								esc_url( get_edit_term_link( $term, $taxonomy, $post->post_type ) ),
+								esc_html( $term->name )
+							);
 						} else {
-							$out[] = $term->name;
+							$out[] = esc_html( $term->name );
 						}
 						break;
 					case 'list':
@@ -1704,17 +1712,21 @@ class Extended_CPT_Admin {
 							'post_type' => $post->post_type,
 							$taxonomy   => $term->slug,
 						), admin_url( 'edit.php' ) );
-						$out[] = sprintf( '<a href="%1$s">%2$s</a>', $link, $term->name );
+						$out[] = sprintf(
+							'<a href="%1$s">%2$s</a>',
+							esc_url( $link ),
+							esc_html( $term->name )
+						);
 						break;
 				}
 			} else {
 
-				$out[] = $term->name;
+				$out[] = esc_html( $term->name );
 
 			}
 		}
 
-		echo implode( ', ', $out );
+		echo implode( ', ', $out ); // WPCS: XSS ok.
 
 	}
 
@@ -1733,31 +1745,31 @@ class Extended_CPT_Admin {
 			case 'post_date':
 			case 'post_date_gmt':
 				if ( '0000-00-00 00:00:00' != $post->$field ) {
-					echo mysql2date( get_option( 'date_format' ), $post->$field );
+					echo esc_html( mysql2date( get_option( 'date_format' ), $post->$field ) );
 				}
 				break;
 
 			case 'post_modified':
 			case 'post_modified_gmt':
-				echo mysql2date( get_option( 'date_format' ), $post->$field );
+				echo esc_html( mysql2date( get_option( 'date_format' ), $post->$field ) );
 				break;
 
 			case 'post_status':
 				if ( $status = get_post_status_object( get_post_status( $post ) ) ) {
-					echo $status->label;
+					echo esc_html( $status->label );
 				}
 				break;
 
 			case 'post_author':
-				echo get_the_author();
+				echo esc_html( get_the_author() );
 				break;
 
 			case 'post_title':
-				echo get_the_title();
+				echo esc_html( get_the_title() );
 				break;
 
 			case 'post_excerpt':
-				echo get_the_excerpt();
+				echo esc_html( get_the_excerpt() );
 				break;
 
 			default:
@@ -1818,7 +1830,10 @@ class Extended_CPT_Admin {
 		}
 
 		if ( ! p2p_connection_exists( $connection ) ) {
-			printf( __( 'Invalid connection type: %s', 'extended-cpts' ), $connection );
+			echo esc_html( sprintf(
+				__( 'Invalid connection type: %s', 'extended-cpts' ),
+				$connection
+			) );
 			return;
 		}
 
@@ -1860,20 +1875,32 @@ class Extended_CPT_Admin {
 
 						if ( $pto->public ) {
 							if ( $pso->protected ) {
-								$out[] = sprintf( '<a href="%1$s">%2$s</a>', add_query_arg( 'preview', 'true', get_permalink() ), get_the_title() );
+								$out[] = sprintf(
+									'<a href="%1$s">%2$s</a>',
+									esc_url( get_preview_post_link() ),
+									esc_html( get_the_title() )
+								);
 							} else {
-								$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_permalink(), get_the_title() );
+								$out[] = sprintf(
+									'<a href="%1$s">%2$s</a>',
+									esc_url( get_permalink() ),
+									esc_html( get_the_title() )
+								);
 							}
 						} else {
-							$out[] = get_the_title();
+							$out[] = esc_html( get_the_title() );
 						}
 
 						break;
 					case 'edit':
 						if ( current_user_can( 'edit_post', $post->ID ) ) {
-							$out[] = sprintf( '<a href="%1$s">%2$s</a>', get_edit_post_link(), get_the_title() );
+							$out[] = sprintf(
+								'<a href="%1$s">%2$s</a>',
+								esc_url( get_edit_post_link() ),
+								esc_html( get_the_title() )
+							);
 						} else {
-							$out[] = get_the_title();
+							$out[] = esc_html( get_the_title() );
 						}
 						break;
 					case 'list':
@@ -1882,20 +1909,23 @@ class Extended_CPT_Admin {
 							'connected_type'  => $connection,
 							'connected_items' => $post->ID,
 						), $meta ), admin_url( 'edit.php' ) );
-						$out[] = sprintf( '<a href="%1$s">%2$s</a>', $link, get_the_title() );
+						$out[] = sprintf(
+							'<a href="%1$s">%2$s</a>',
+							esc_url( $link ),
+							esc_html( get_the_title() )
+						);
 						break;
 				}
 			} else {
 
-				$out[] = get_the_title();
+				$out[] = esc_html( get_the_title() );
 
 			}
 		}
 
-		#wp_reset_postdata();
-		$post = $_post;
+		$post = $_post; // WPCS: override ok.
 
-		echo implode( ', ', $out );
+		echo implode( ', ', $out ); // WPCS: XSS ok.
 
 	}
 
@@ -1912,7 +1942,7 @@ class Extended_CPT_Admin {
 		global $_nav_menu_placeholder;
 
 		$pto = $post_type['args'];
-		$_nav_menu_placeholder = ( 0 > $_nav_menu_placeholder ) ? intval( $_nav_menu_placeholder ) - 1 : -1;
+		$_nav_menu_placeholder = ( 0 > $_nav_menu_placeholder ) ? intval( $_nav_menu_placeholder ) - 1 : -1; // WPCS: override ok.
 
 		# Add our 'All Posts' item to the beginning of the list:
 		array_unshift( $posts, (object) array(
