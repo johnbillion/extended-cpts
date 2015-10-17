@@ -154,6 +154,7 @@ class Extended_CPT_Test_Reflection extends Extended_CPT_Test {
 			'Extended_CPT',
 			'Extended_CPT_Admin',
 		);
+		$data = array();
 
 		foreach ( $functions as $function ) {
 
@@ -161,7 +162,7 @@ class Extended_CPT_Test_Reflection extends Extended_CPT_Test {
 				$this->fail( sprintf( 'The function `%s` doesn\'t exist.', $function ) );
 			}
 
-			yield array(
+			$data[] = array(
 				$function,
 			);
 
@@ -177,7 +178,7 @@ class Extended_CPT_Test_Reflection extends Extended_CPT_Test {
 
 			foreach ( $class_ref->getMethods() as $method_ref ) {
 
-				yield array(
+				$data[] = array(
 					array(
 						$class,
 						$method_ref->getName(),
@@ -187,6 +188,8 @@ class Extended_CPT_Test_Reflection extends Extended_CPT_Test {
 			}
 
 		}
+
+		return $data;
 
 	}
 
