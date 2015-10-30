@@ -50,26 +50,28 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 		$hello = get_post_type_object( 'hello' );
 
-		$this->assertEquals( true,   $hello->public );
-		$this->assertEquals( 'page', $hello->capability_type );
-		$this->assertEquals( true,   $hello->hierarchical );
-		$this->assertEquals( true,   $hello->has_archive );
+		$this->assertTrue( $hello->public );
+		$this->assertTrue( $hello->hierarchical );
+		$this->assertTrue( $hello->has_archive );
 		$this->assertEquals( 'hi',   $hello->query_var );
+		$this->assertEquals( 'page', $hello->capability_type );
 
 		$bar = get_post_type_object( 'bar' );
 
-		$this->assertEquals( false,  $bar->public );
-		$this->assertEquals( 'page', $bar->capability_type );
-		$this->assertEquals( true,   $bar->hierarchical );
-		$this->assertEquals( false,  $bar->has_archive );
+		$this->assertFalse( $bar->public );
+		$this->assertTrue( $bar->hierarchical );
+		$this->assertFalse( $bar->has_archive );
+		$this->assertFalse( $bar->rewrite );
+		// This should be boolean false, but it's not:
 		$this->assertEquals( 'bar',  $bar->query_var );
+		$this->assertEquals( 'page', $bar->capability_type );
 
 		$baz = get_post_type_object( 'baz' );
 
-		$this->assertEquals( true,   $baz->public );
+		$this->assertTrue( $baz->public );
+		$this->assertTrue( $baz->hierarchical );
+		$this->assertFalse( $baz->has_archive );
 		$this->assertEquals( 'page', $baz->capability_type );
-		$this->assertEquals( true,   $baz->hierarchical );
-		$this->assertEquals( false,  $baz->has_archive );
 		$this->assertEquals( 'baz',  $baz->query_var );
 
 	}
