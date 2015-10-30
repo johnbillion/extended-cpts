@@ -189,6 +189,12 @@ class Extended_CPT {
 			'not_found_in_trash' => sprintf( 'No %s found in trash.', $this->post_plural_low ),
 			'parent_item_colon'  => sprintf( 'Parent %s:', $this->post_singular ),
 			'all_items'          => sprintf( 'All %s', $this->post_plural ),
+			'archives'              => sprintf( '%s Archives', $this->post_singular ),
+			'insert_into_item'      => sprintf( 'Insert into %s', $this->post_singular_low ),
+			'uploaded_to_this_item' => sprintf( 'Uploaded to this %s', $this->post_singular_low ),
+			'filter_items_list'     => sprintf( 'Filter %s list', $this->post_plural_low ),
+			'items_list_navigation' => sprintf( '%s list navigation', $this->post_plural ),
+			'items_list'            => sprintf( '%s list', $this->post_plural ),
 		);
 
 		# Build the featured image labels:

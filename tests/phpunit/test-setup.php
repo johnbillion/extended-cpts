@@ -93,10 +93,16 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 			'not_found_in_trash'    => 'No plural found in trash.',
 			'parent_item_colon'     => 'Parent Singular:',
 			'all_items'             => 'All Plural',
+			'archives'              => 'Singular Archives',
+			'insert_into_item'      => 'Insert into singular',
+			'uploaded_to_this_item' => 'Uploaded to this singular',
 			'featured_image'        => 'Icon',
 			'set_featured_image'    => 'Set icon',
 			'remove_featured_image' => 'Remove icon',
 			'use_featured_image'    => 'Use as icon',
+			'filter_items_list'     => 'Filter plural list',
+			'items_list_navigation' => 'Plural list navigation',
+			'items_list'            => 'Plural list',
 		), $bar->labels );
 	}
 
