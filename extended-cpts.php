@@ -189,10 +189,6 @@ class Extended_CPT {
 			'not_found_in_trash' => sprintf( 'No %s found in trash.', $this->post_plural_low ),
 			'parent_item_colon'  => sprintf( 'Parent %s:', $this->post_singular ),
 			'all_items'          => sprintf( 'All %s', $this->post_plural ),
-			'featured_image'        => 'Featured Image',
-			'set_featured_image'    => 'Set featured image',
-			'remove_featured_image' => 'Remove featured image',
-			'use_featured_image'    => 'Use as featured image',
 		);
 
 		# Build the featured image labels:
