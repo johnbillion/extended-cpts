@@ -97,10 +97,21 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 					'post_field' => 'post_name',
 					'default'    => 'asc',
 				),
+				'test_admin_cols_unsortable' => array(
+					'meta_key' => 'test_meta_key',
+					'sortable' => false,
+				),
+				'test_admin_cols_test_meta_key' => array(
+					'meta_key' => 'test_meta_key',
+				),
+				'test_admin_cols_person_category' => array(
+					'taxonomy' => 'person_category',
+				),
 			),
 		), array(
 			'plural' => 'People',
 		) );
+		$this->cpts['person']->add_taxonomy( 'person_category' );
 		$this->cpts['nice-thing'] = register_extended_post_type( 'nice-thing', array(), array(
 			'slug' => 'Things',
 		) );
