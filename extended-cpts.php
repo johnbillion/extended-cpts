@@ -523,7 +523,7 @@ class Extended_CPT {
 		$clauses['where'] .= $wpdb->prepare( ' AND ( taxonomy = %s OR taxonomy IS NULL )', $orderby['taxonomy'] );
 		$clauses['groupby'] = 'ext_cpts_tr.object_id';
 		$clauses['orderby'] = 'GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ';
-		$clauses['orderby'] .= ( 'ASC' == strtoupper( $vars['order'] ) ) ? 'ASC' : 'DESC';
+		$clauses['orderby'] .= ( isset( $vars['order'] ) && ( 'ASC' == strtoupper( $vars['order'] ) ) ) ? 'ASC' : 'DESC';
 
 		return $clauses;
 
