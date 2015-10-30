@@ -800,6 +800,7 @@ class Extended_CPT_Admin {
 	public $cpt;
 	public $args;
 	protected $_cols;
+	protected $the_cols = null;
 	protected $connection_exists = array();
 
 	/**
@@ -1521,6 +1522,11 @@ class Extended_CPT_Admin {
 	 */
 	public function cols( array $cols ) {
 
+		// This function gets called multiple times, so let's cache it for efficiency:
+		if ( isset( $this->the_cols ) ) {
+			return $this->the_cols;
+		}
+
 		$new_cols = array();
 		$keep = array(
 			'cb',
@@ -1569,7 +1575,7 @@ class Extended_CPT_Admin {
 		$custom   = array_diff_key( $cols, $this->_cols );
 		$new_cols = array_merge( $new_cols, $custom );
 
-		return $new_cols;
+		return $this->the_cols = $new_cols;
 
 	}
 
