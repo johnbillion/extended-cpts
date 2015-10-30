@@ -800,6 +800,7 @@ class Extended_CPT_Admin {
 	public $cpt;
 	public $args;
 	protected $_cols;
+	protected $connection_exists = array();
 
 	/**
 	 * Class constructor.
@@ -1831,7 +1832,7 @@ class Extended_CPT_Admin {
 			return;
 		}
 
-		if ( ! p2p_connection_exists( $connection ) ) {
+		if ( ! $this->p2p_connection_exists( $connection ) ) {
 			echo esc_html( sprintf(
 				__( 'Invalid connection type: %s', 'extended-cpts' ),
 				$connection
@@ -2046,7 +2047,7 @@ class Extended_CPT_Admin {
 		} else if ( isset( $item['connection'] ) && isset( $item['value'] ) ) {
 			return ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['value'] ) ) );
 		} else if ( isset( $item['connection'] ) ) {
-			if ( function_exists( 'p2p_type' ) && p2p_connection_exists( $item['connection'] ) ) {
+			if ( function_exists( 'p2p_type' ) && $this->p2p_connection_exists( $item['connection'] ) ) {
 				$ctype = p2p_type( $item['connection'] );
 				$other = ( 'from' == $ctype->direction_from_types( 'post', $this->cpt->post_type ) ) ? 'to' : 'from';
 				return $ctype->side[ $other ]->get_title();
@@ -2055,6 +2056,22 @@ class Extended_CPT_Admin {
 			}
 		}
 
+	}
+
+	/**
+	 * Check if a certain Posts 2 Posts connection exists.
+	 *
+	 * This is just a caching wrapper for `p2p_connection_exists()`, which performs a
+	 * database query on every call.
+	 *
+	 * @param string $connection A connection type.
+	 * @return bool Whether the connection exists.
+	 */
+	protected function p2p_connection_exists( $connection ) {
+		if ( ! isset( $this->connection_exists[ $connection ] ) ) {
+			$this->connection_exists[ $connection ] = p2p_connection_exists( $connection );
+		}
+		return $this->connection_exists[ $connection ];
 	}
 
 }
