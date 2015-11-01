@@ -140,7 +140,7 @@ class Extended_CPT {
 		 * Filter the names for this post type.
 		 *
 		 * @since 2.4.0
-		 * @param array $args The plural, singular, and slug names (if any were specified).
+		 * @param array $names The plural, singular, and slug names (if any were specified).
 		 */
 		$names = apply_filters( "ext-cpts/{$post_type}/names", $names );
 
