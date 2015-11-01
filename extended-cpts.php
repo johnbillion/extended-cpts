@@ -2095,6 +2095,10 @@ abstract class Extended_Rewrite_Testing {
 
 		global $wp_rewrite;
 
+		if ( ! $wp_rewrite->using_permalinks() ) {
+			return array();
+		}
+
 		$new   = array();
 		$rules = $wp_rewrite->generate_rewrite_rules(
 			$struct['struct'],
@@ -2160,6 +2164,10 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 	public function get_tests() {
 
 		global $wp_rewrite;
+
+		if ( ! $wp_rewrite->using_permalinks() ) {
+			return array();
+		}
 
 		$struct     = $wp_rewrite->extra_permastructs[ $this->cpt->post_type ];
 		$pto        = get_post_type_object( $this->cpt->post_type );
