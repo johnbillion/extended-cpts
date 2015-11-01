@@ -228,7 +228,7 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 
 	}
 
-	function tearDown() {
+	public function tearDown() {
 
 		parent::tearDown();
 

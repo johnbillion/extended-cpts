@@ -2,7 +2,7 @@
 
 abstract class Extended_CPT_Test_Admin extends Extended_CPT_Test {
 
-	function setUp() {
+	public function setUp() {
 		parent::setUp();
 
 		// lie about being in the admin area so is_admin() returns true
@@ -43,7 +43,7 @@ abstract class Extended_CPT_Test_Admin extends Extended_CPT_Test {
 		);
 	}
 
-	function tearDown() {
+	public function tearDown() {
 		parent::tearDown();
 
 		// reset

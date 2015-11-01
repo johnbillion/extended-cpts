@@ -2,7 +2,7 @@
 
 class Extended_CPT_Test_Admin_Requests extends Extended_CPT_Test_Admin {
 
-	function testDefaultPostTypeListingRequestIsCorrect() {
+	public function testDefaultPostTypeListingRequestIsCorrect() {
 
 		$this->go_to_listing( array(
 			'post_type' => 'post',
@@ -17,7 +17,7 @@ class Extended_CPT_Test_Admin_Requests extends Extended_CPT_Test_Admin {
 
 	}
 
-	function testPostTypeListingRequestWithDefaultOrderIsCorrect() {
+	public function testPostTypeListingRequestWithDefaultOrderIsCorrect() {
 
 		$this->go_to_listing( array(
 			'post_type' => 'person',
@@ -34,7 +34,7 @@ class Extended_CPT_Test_Admin_Requests extends Extended_CPT_Test_Admin {
 
 	}
 
-	function testPostTypeListingRequestWithStandardOrderIsCorrect() {
+	public function testPostTypeListingRequestWithStandardOrderIsCorrect() {
 
 		$this->go_to_listing( array(
 			'post_type' => 'person',
@@ -53,7 +53,7 @@ class Extended_CPT_Test_Admin_Requests extends Extended_CPT_Test_Admin {
 
 	}
 
-	function testPostTypeListingRequestWithPostFieldOrderIsCorrect() {
+	public function testPostTypeListingRequestWithPostFieldOrderIsCorrect() {
 
 		$this->go_to_listing( array(
 			'post_type' => 'person',
@@ -72,7 +72,7 @@ class Extended_CPT_Test_Admin_Requests extends Extended_CPT_Test_Admin {
 
 	}
 
-	function testPostTypeListingRequestWithPostMetaOrderIsCorrect() {
+	public function testPostTypeListingRequestWithPostMetaOrderIsCorrect() {
 
 		$this->go_to_listing( array(
 			'post_type' => 'person',
@@ -89,7 +89,7 @@ class Extended_CPT_Test_Admin_Requests extends Extended_CPT_Test_Admin {
 
 	}
 
-	function testPostTypeListingRequestWithTaxonomyOrderIsCorrect() {
+	public function testPostTypeListingRequestWithTaxonomyOrderIsCorrect() {
 
 		$this->go_to_listing( array(
 			'post_type' => 'person',
@@ -106,7 +106,7 @@ class Extended_CPT_Test_Admin_Requests extends Extended_CPT_Test_Admin {
 
 	}
 
-	function testPostTypeListingRequestWithUnsortableOrderIsCorrect() {
+	public function testPostTypeListingRequestWithUnsortableOrderIsCorrect() {
 
 		// Even though the `test_admin_cols_unsortable` column is unsortable, the request should still reflect
 		// the orderby value as requested. The actual sort order is handled at the query level.

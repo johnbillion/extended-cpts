@@ -2,7 +2,7 @@
 
 class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
-	function testSiteFilterQueryVarsRegistered() {
+	public function testSiteFilterQueryVarsRegistered() {
 
 		// Need to trigger a new request
 		$this->go_to( home_url() );
@@ -16,7 +16,7 @@ class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
 	}
 
-	function testAdminColQueryVarsNotRegistered() {
+	public function testAdminColQueryVarsNotRegistered() {
 
 		// Need to trigger a new request
 		$this->go_to( home_url() );
@@ -30,7 +30,7 @@ class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
 	}
 
-	function testHomeRequestIsCorrect() {
+	public function testHomeRequestIsCorrect() {
 
 		$this->go_to( home_url() );
 
@@ -40,7 +40,7 @@ class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
 	}
 
-	function testFeedRequestIsCorrect() {
+	public function testFeedRequestIsCorrect() {
 
 		$this->go_to( get_feed_link() );
 
@@ -57,7 +57,7 @@ class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
 	}
 
-	function testPostTypeArchiveRequestIsCorrect() {
+	public function testPostTypeArchiveRequestIsCorrect() {
 
 		$this->go_to( get_post_type_archive_link( 'hello' ) );
 
@@ -69,7 +69,7 @@ class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
 	}
 
-	function testPostTypeArchiveRequestWithFilterIsCorrect() {
+	public function testPostTypeArchiveRequestWithFilterIsCorrect() {
 
 		$this->go_to( add_query_arg( array(
 			'test_site_filters_post_meta_key' => 'Alpha',
@@ -84,7 +84,7 @@ class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
 	}
 
-	function testPostTypeArchiveRequestWithOrderbyIsCorrect() {
+	public function testPostTypeArchiveRequestWithOrderbyIsCorrect() {
 
 		$this->go_to( add_query_arg( array(
 			'orderby' => 'test_site_sortables_post_meta',
@@ -99,7 +99,7 @@ class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
 
 	}
 
-	function testPostTypePermalinkRequestIsCorrect() {
+	public function testPostTypePermalinkRequestIsCorrect() {
 
 		$this->go_to( get_permalink( $this->posts['hello'][0] ) );
 

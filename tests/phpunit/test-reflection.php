@@ -2,7 +2,7 @@
 
 class Extended_CPT_Test_Reflection extends Extended_CPT_Test {
 
-	function setUp() {
+	public function setUp() {
 
 		parent::setUp();
 
@@ -17,7 +17,7 @@ class Extended_CPT_Test_Reflection extends Extended_CPT_Test {
 	 *
 	 * @param string|array $function The function name, or array of class name and method name.
 	 */
-	function testFunction( $function ) {
+	public function testFunction( $function ) {
 
 		// We can't pass Reflector objects in here because they get printed out as the
 		// data set when a test fails
@@ -145,7 +145,7 @@ class Extended_CPT_Test_Reflection extends Extended_CPT_Test {
 
 	}
 
-	function dataReflectionTestFunctions() {
+	public function dataReflectionTestFunctions() {
 
 		$functions = array(
 			'register_extended_post_type',
