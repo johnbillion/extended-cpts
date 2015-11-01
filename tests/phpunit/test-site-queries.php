@@ -4,9 +4,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testDefaultPostTypeQueryNotAffected() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type' => 'post',
-			'nopaging'  => true,
 		) );
 
 		$this->assertEquals( 1, $query->found_posts );
@@ -23,9 +22,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQueryWithNoArgsNotAffected() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type' => 'hello',
-			'nopaging'  => true,
 		) );
 
 		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
@@ -42,9 +40,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQueryWithNoCustomValuesNotAffected() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type' => 'hello',
-			'nopaging'  => true,
 			'orderby'   => 'post_name',
 			'order'     => 'ASC',
 		) );
@@ -68,9 +65,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQuerySortedByPostMeta() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type' => 'hello',
-			'nopaging'  => true,
 			'orderby'   => 'test_site_sortables_post_meta',
 			'order'     => 'ASC',
 		) );
@@ -93,9 +89,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQuerySortedByPostField() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type' => 'hello',
-			'nopaging'  => true,
 			'orderby'   => 'test_site_sortables_post_field',
 			'order'     => 'ASC',
 		) );
@@ -119,9 +114,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQuerySortedByTaxonomyTerms() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type' => 'hello',
-			'nopaging'  => true,
 			'orderby'   => 'test_site_sortables_taxonomy',
 			'order'     => 'DESC',
 		) );
@@ -145,9 +139,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQueryFilteredByPostMetaKey() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type'                       => 'hello',
-			'nopaging'                        => true,
 			'test_site_filters_post_meta_key' => 'Alpha',
 		) );
 
@@ -168,9 +161,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQueryFilteredByPostMetaQuery() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type'                         => 'hello',
-			'nopaging'                          => true,
 			'test_site_filters_post_meta_query' => 'ZZZ',
 		) );
 
@@ -196,9 +188,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQueryFilteredByInvalidFilter() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type'                 => 'hello',
-			'nopaging'                  => true,
 			'test_site_filters_invalid' => 'ZZZ',
 		) );
 
@@ -217,9 +208,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 	 */
 	public function testQueryFilteredByDeprecatedPostMetaQuery() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type'                                    => 'hello',
-			'nopaging'                                     => true,
 			'test_site_filters_post_meta_query_deprecated' => 'ZZZ',
 		) );
 
@@ -245,9 +235,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQueryFilteredByPostMetaSearch() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type'                          => 'hello',
-			'nopaging'                           => true,
 			'test_site_filters_post_meta_search' => 'ta',
 		) );
 
@@ -270,9 +259,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQueryFilteredByPostMetaExists() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type'                          => 'hello',
-			'nopaging'                           => true,
 			'test_site_filters_post_meta_exists' => 'test_meta_key',
 		) );
 
@@ -297,9 +285,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQueryNotFilteredWithoutRequiredCap() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type'                  => 'hello',
-			'nopaging'                   => true,
 			'test_site_filters_with_cap' => 'Alpha',
 		) );
 
@@ -317,9 +304,8 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	public function testQueryWithDefaultSortOrder() {
 
-		$query = new WP_Query( array(
+		$query = $this->get_query( array(
 			'post_type' => 'person',
-			'nopaging'  => true,
 		) );
 
 		$this->assertEquals( count( $this->posts['person'] ), $query->found_posts );
@@ -335,6 +321,13 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 			$this->posts['person'][0],
 		), wp_list_pluck( $query->posts, 'ID' ) );
 
+	}
+
+	protected function get_query( array $args ) {
+		$args = array_merge( array(
+			'nopaging' => true,
+		), $args );
+		return new WP_Query( $args );
 	}
 
 }
