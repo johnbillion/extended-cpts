@@ -1860,7 +1860,15 @@ class Extended_CPT_Admin {
 		}
 
 		if ( ! isset( $_post->$field ) ) {
-			p2p_type( $connection )->each_connected( $wp_query, $meta, $field );
+			if ( $type = p2p_type( $connection ) ) {
+				$type->each_connected( $wp_query, $meta, $field );
+			} else {
+				echo esc_html( sprintf(
+					__( 'Invalid connection type: %s', 'extended-cpts' ),
+					$connection
+				) );
+				return;
+			}
 		}
 
 		foreach ( $_post->$field as $post ) {
@@ -2054,12 +2062,12 @@ class Extended_CPT_Admin {
 			return ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['value'] ) ) );
 		} else if ( isset( $item['connection'] ) ) {
 			if ( function_exists( 'p2p_type' ) && $this->p2p_connection_exists( $item['connection'] ) ) {
-				$ctype = p2p_type( $item['connection'] );
-				$other = ( 'from' == $ctype->direction_from_types( 'post', $this->cpt->post_type ) ) ? 'to' : 'from';
-				return $ctype->side[ $other ]->get_title();
-			} else {
-				return $item['connection'];
+				if ( $ctype = p2p_type( $item['connection'] ) ) {
+					$other = ( 'from' == $ctype->direction_from_types( 'post', $this->cpt->post_type ) ) ? 'to' : 'from';
+					return $ctype->side[ $other ]->get_title();
+				}
 			}
+			return $item['connection'];
 		}
 
 	}
