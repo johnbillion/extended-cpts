@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.5
+Version:      2.5.1
 Plugin URI:   https://github.com/johnbillion/extended-cpts
 Author:       John Blackbourn
 Author URI:   https://johnblackbourn.com
