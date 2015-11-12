@@ -7,6 +7,12 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$this->register_post_types();
 	}
 
+	public function testMinimumWordPressVersion() {
+		global $wp_version;
+
+		$this->assertTrue( version_compare( $wp_version, '4.3', '>=' ) );
+	}
+
 	public function testPostTypeArgsAreCorrect() {
 
 		$this->assertEquals( 'hello',  $this->cpts['hello']->post_type );
