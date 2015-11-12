@@ -106,6 +106,12 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 			'items_list_navigation' => 'Plural list navigation',
 			'items_list'            => 'Plural list',
 		), $bar->labels );
+
+		$post = get_post_type_object( 'post' );
+
+		$this->assertEquals( 'Featured Image', $post->labels->featured_image );
+		$this->assertEquals( 'Remove!', $post->labels->remove_featured_image );
+
 	}
 
 	public function testArchiveLinksAreCorrect() {

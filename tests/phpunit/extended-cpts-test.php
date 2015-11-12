@@ -141,6 +141,12 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 			'has_archive' => false,
 		) );
 
+		$this->cpts['post'] = register_extended_post_type( 'post', array(
+			'labels' => array(
+				'remove_featured_image' => 'Remove!',
+			),
+		) );
+
 		$wp_rewrite->flush_rules();
 
 		foreach ( array( 'Alpha', 'Beta', 'Gamma', 'Delta' ) as $slug ) {

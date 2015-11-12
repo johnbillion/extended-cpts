@@ -748,7 +748,7 @@ class Extended_CPT {
 	public function extend( stdClass $pto ) {
 		
 		# Merge core with overridden labels
-		$this->args['labels'] = array_merge( (array) get_post_type_labels( $pto ), (array) $this->args['labels'] );
+		$this->args['labels'] = array_merge( (array) get_post_type_labels( $pto ), $this->args['labels'] );
 		
 		$GLOBALS['wp_post_types'][ $pto->name ]->labels = (object) $this->args['labels'];
 
