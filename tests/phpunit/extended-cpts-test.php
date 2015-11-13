@@ -239,8 +239,11 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 		parent::tearDown();
 
 		foreach ( $this->cpts as $cpt => $cpto ) {
-			_unregister_post_type( $cpt );
-			_unregister_taxonomy( "{$cpt}_category" );
+			$pto = get_post_type_object( $cpt );
+			if ( ! $pto->_builtin ) {
+				_unregister_post_type( $cpt );
+				_unregister_taxonomy( "{$cpt}_category" );
+			}
 		}
 
 	}
