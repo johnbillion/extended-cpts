@@ -2182,6 +2182,10 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 			return array();
 		}
 
+		if ( ! isset( $wp_rewrite->extra_permastructs[ $this->cpt->post_type ] ) ) {
+			return array();
+		}
+
 		$struct     = $wp_rewrite->extra_permastructs[ $this->cpt->post_type ];
 		$pto        = get_post_type_object( $this->cpt->post_type );
 		$name       = sprintf( '%s (%s)', $pto->labels->name, $this->cpt->post_type );
