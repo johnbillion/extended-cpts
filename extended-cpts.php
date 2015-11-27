@@ -1876,7 +1876,7 @@ class Extended_CPT_Admin {
 			}
 		}
 
-		foreach ( $_post->$field as $post ) {
+		foreach ( $wp_query->post->$field as $post ) {
 
 			setup_postdata( $post );
 
