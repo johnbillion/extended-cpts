@@ -2,7 +2,7 @@
 /*
 Plugin Name:  Extended CPTs
 Description:  Extended custom post types.
-Version:      2.5.1
+Version:      2.5.2
 Plugin URI:   https://github.com/johnbillion/extended-cpts
 Author:       John Blackbourn
 Author URI:   https://johnblackbourn.com
@@ -408,17 +408,6 @@ class Extended_CPT {
 				continue;
 			}
 
-			foreach ( array( 'compare', 'value', 'type' ) as $arg ) {
-				if ( isset( $filter[ "meta_{$arg}" ] ) ) {
-					_doing_it_wrong( 'register_extended_post_type', sprintf(
-						__( 'The %1$s parameter for filters is deprecated. Use %2$s instead.', 'extended-cpts' ),
-						"<code>meta_{$arg}</code>",
-						"<code>meta_query['{$arg}']</code>"
-					), '2.4' );
-					$filter['meta_query'][ $arg ] = $filter[ "meta_{$arg}" ];
-				}
-			}
-
 			if ( isset( $filter['meta_query'] ) ) {
 				$meta_query = array_merge( $meta_query, $filter['meta_query'] );
 			}
@@ -821,14 +810,6 @@ class Extended_CPT_Admin {
 		$this->args = array_merge( $this->defaults, $args );
 
 		# Admin columns:
-		if ( isset( $this->args['cols'] ) ) {
-			_doing_it_wrong( 'register_extended_post_type', sprintf(
-				__( 'The %1$s argument is deprecated. Use %2$s instead.', 'extended-cpts' ),
-				'<code>cols</code>',
-				'<code>admin_cols</code>'
-			), '2.4' );
-			$this->args['admin_cols'] = $this->args['cols'];
-		}
 		if ( $this->args['admin_cols'] ) {
 			add_filter( 'manage_posts_columns',                                 array( $this, '_log_default_cols' ), 0 );
 			add_filter( 'manage_pages_columns',                                 array( $this, '_log_default_cols' ), 0 );
@@ -841,14 +822,6 @@ class Extended_CPT_Admin {
 		}
 
 		# Admin filters:
-		if ( isset( $this->args['filters'] ) ) {
-			_doing_it_wrong( 'register_extended_post_type', sprintf(
-				__( 'The %1$s argument is deprecated. Use %2$s instead.', 'extended-cpts' ),
-				'<code>filters</code>',
-				'<code>admin_filters</code>'
-			), '2.4' );
-			$this->args['admin_filters'] = $this->args['filters'];
-		}
 		if ( $this->args['admin_filters'] ) {
 			add_filter( 'pre_get_posts',         array( $this, 'maybe_filter' ) );
 			add_filter( 'query_vars',            array( $this, 'add_query_vars' ) );
@@ -873,14 +846,6 @@ class Extended_CPT_Admin {
 		}
 
 		# 'At a Glance' dashboard panels:
-		if ( isset( $this->args['right_now'] ) ) {
-			_doing_it_wrong( 'register_extended_post_type', sprintf(
-				__( 'The %1$s argument is deprecated. Use %2$s instead.', 'extended-cpts' ),
-				'<code>right_now</code>',
-				'<code>dashboard_glance</code>'
-			), '2.4' );
-			$this->args['dashboard_glance'] = $this->args['right_now'];
-		}
 		if ( $this->args['dashboard_glance'] ) {
 			add_filter( 'dashboard_glance_items', array( $this, 'glance_items' ), $this->cpt->args['menu_position'] );
 		}

@@ -1,6 +1,12 @@
 
 ## Changelog ##
 
+### 2.5.2 ###
+
+* Fix admin columns for P2P connections.
+* Fix featured image box when extending core post types
+* Avoid referencing non-existent permastructs when extending built-in post types.
+
 ### 2.5.1 ###
 
 * More sanity checking for invalid P2P connection types.
