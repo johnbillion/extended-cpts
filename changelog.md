@@ -1,6 +1,27 @@
 
 ## Changelog ##
 
+### 2.5.1 ###
+
+* More sanity checking for invalid P2P connection types.
+* Avoid a PHP notice when a query uses `orderby` without `order`.
+* Add a caching wrapper for column generation, as this gets called multiple times on a post listing screen.
+* Add a caching wrapper for `p2p_connection_exists()` which gets called multiple times and which performs a database query on every call.
+* Implement post type labels introduced in WordPress 4.4.
+
+### 2.5 ###
+
+* Bump the minimum supported WordPress version to 4.3.
+* Bump the minimum supported PHP version to 5.4.
+* Remove `archive_in_nav_menus` as an option. The 'All' menu item should always be shown when `has_archive` is true.
+* Implement featured image post type labels.
+* Allow the `%postname%` token in custom permastructs.
+* Conditionally set the default value of `has_archive` depending on the value of `public`.
+* Correct the sort order for site queries with a default sort specified.
+* Code tweaks courtesy of Scrutinizer and WPCS.
+* Escaping!
+* Clean up some docblocks.
+
 ### 2.4 ###
 
 * Support for custom post type permastructs.
