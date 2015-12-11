@@ -27,7 +27,6 @@ See also: [Extended Taxonomies](https://github.com/johnbillion/extended-taxos).
  * Filter controls on the post type listing screen to enable filtering by post meta and taxonomy terms
  * Override the 'Featured Image' and 'Enter title here' text
  * Add the post type to the 'At a Glance' section on the dashboard
- * Adds the post type archive link to the nav menus screen
 
 ## Extended front-end features ##
 

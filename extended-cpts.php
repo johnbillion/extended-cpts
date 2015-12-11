@@ -850,11 +850,6 @@ class Extended_CPT_Admin {
 			add_filter( 'dashboard_glance_items', array( $this, 'glance_items' ), $this->cpt->args['menu_position'] );
 		}
 
-		# Nav menus screen item:
-		if ( $this->cpt->args['has_archive'] ) {
-			add_filter( "nav_menu_items_{$this->cpt->post_type}", array( $this, 'nav_menu_items' ), 10, 3 );
-		}
-
 		# Post updated messages:
 		add_filter( 'post_updated_messages',      array( $this, 'post_updated_messages' ), 1 );
 		add_filter( 'bulk_post_updated_messages', array( $this, 'bulk_post_updated_messages' ), 1, 2 );
@@ -1913,39 +1908,6 @@ class Extended_CPT_Admin {
 		$post = $_post; // WPCS: override ok.
 
 		echo implode( ', ', $out ); // WPCS: XSS ok.
-
-	}
-
-	/**
-	 * Add our post type archive link to the nav menus screen.
-	 *
-	 * @param  array  $posts     Array of post objects and pseudo-post objects to show on the screen
-	 * @param  array  $meta_box  The meta box arguments
-	 * @param  array  $post_type The current post type in the context of the nav menus screen
-	 * @return array             Updated array of posts and pseudo-posts
-	 */
-	public function nav_menu_items( array $posts, array $meta_box, array $post_type ) {
-
-		global $_nav_menu_placeholder;
-
-		$pto = $post_type['args'];
-		$_nav_menu_placeholder = ( 0 > $_nav_menu_placeholder ) ? intval( $_nav_menu_placeholder ) - 1 : -1; // WPCS: override ok.
-
-		# Add our 'All Posts' item to the beginning of the list:
-		array_unshift( $posts, (object) array(
-			'ID'           => 0,
-			'object_id'    => $_nav_menu_placeholder,
-			'post_content' => '',
-			'post_excerpt' => '',
-			'post_parent'  => 0,
-			'post_type'    => 'nav_menu_item',
-			'post_title'   => $pto->labels->name,
-			'label'        => $pto->labels->all_items, # http://core.trac.wordpress.org/ticket/24840
-			'type'         => 'custom',
-			'url'          => get_post_type_archive_link( $this->cpt->post_type ),
-		) );
-
-		return $posts;
 
 	}
 
