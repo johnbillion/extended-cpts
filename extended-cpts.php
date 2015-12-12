@@ -2052,7 +2052,7 @@ abstract class Extended_Rewrite_Testing {
 			'.+?'            => 'hello',
 			'([^/]+)'        => 'world',
 			'[^/]+'          => 'world',
-			'(/[0-9]+)?'     => '/456',
+			'(?:/([0-9]+))?' => '/456',
 			'([0-9]{4})'     => date( 'Y' ),
 			'[0-9]{4}'       => date( 'Y' ),
 			'([0-9]{1,2})'   => date( 'm' ),
@@ -2071,9 +2071,9 @@ abstract class Extended_Rewrite_Testing {
 			// Change '$2' to '$matches[2]'
 			$result = preg_replace( '/\$([0-9]+)/', '\$matches[$1]', $result );
 			$new[ "/{$regex}" ] = $result;
-			if ( false !== strpos( $regex, $replace['(/[0-9]+)?'] ) ) {
+			if ( false !== strpos( $regex, $replace['(?:/([0-9]+))?'] ) ) {
 				// Add an extra rule for this optional block
-				$regex = str_replace( $replace['(/[0-9]+)?'], '', $regex );
+				$regex = str_replace( $replace['(?:/([0-9]+))?'], '', $regex );
 				$new[ "/{$regex}" ] = $result;
 			}
 		}
