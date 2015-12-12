@@ -386,17 +386,17 @@ class Extended_CPT {
 			if ( isset( $filter['meta_key'] ) ) {
 				$meta_query = array(
 					'key'   => $filter['meta_key'],
-					'value' => stripslashes( $query[ $filter_key ] ),
+					'value' => wp_unslash( $query[ $filter_key ] ),
 				);
 			} else if ( isset( $filter['meta_search_key'] ) ) {
 				$meta_query = array(
 					'key'     => $filter['meta_search_key'],
-					'value'   => stripslashes( $query[ $filter_key ] ),
+					'value'   => wp_unslash( $query[ $filter_key ] ),
 					'compare' => 'LIKE',
 				);
 			} else if ( isset( $filter['meta_exists'] ) ) {
 				$meta_query = array(
-					'key'     => stripslashes( $query[ $filter_key ] ),
+					'key'     => wp_unslash( $query[ $filter_key ] ),
 					'compare' => 'NOT IN',
 					'value'   => array( '', '0', 'false', 'null' ),
 				);
@@ -1079,7 +1079,7 @@ class Extended_CPT_Admin {
 					continue;
 				}
 
-				$selected = stripslashes( get_query_var( $filter_key ) );
+				$selected = wp_unslash( get_query_var( $filter_key ) );
 
 				$use_key = false;
 
@@ -1111,7 +1111,7 @@ class Extended_CPT_Admin {
 					$filter['title'] = ucwords( $filter['title'] );
 				}
 
-				$value = stripslashes( get_query_var( $filter_key ) );
+				$value = wp_unslash( get_query_var( $filter_key ) );
 
 				# Output the search box:
 				?>
@@ -1125,7 +1125,7 @@ class Extended_CPT_Admin {
 					$filter['title'] = $pto->labels->all_items;
 				}
 
-				$selected = stripslashes( get_query_var( $filter_key ) );
+				$selected = wp_unslash( get_query_var( $filter_key ) );
 
 				if ( 1 == count( $filter['meta_exists'] ) ) {
 
