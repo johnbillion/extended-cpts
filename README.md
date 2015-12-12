@@ -7,6 +7,8 @@
 
 Extended CPTs is a library which provides extended functionality to WordPress custom post types, allowing developers to quickly build post types without having to write the same code again and again.
 
+[See the wiki for full documentation.](https://github.com/johnbillion/extended-cpts/wiki)
+
 See also: [Extended Taxonomies](https://github.com/johnbillion/extended-taxos).
 
 ## Improved defaults ##
@@ -42,9 +44,15 @@ See also: [Extended Taxonomies](https://github.com/johnbillion/extended-taxos).
 ## Minimum Requirements ##
 
 **PHP:** 5.4  
-**WordPress:** 4.3  
+**WordPress:** 4.4  
 
 ## Usage ##
+
+Extended CPTs is a developer library, not a plugin, which means you need to include it somewhere in your own plugin or theme:
+
+```php
+require_once 'extended-cpts/extended-cpts.php';
+```
 
 Need a simple post type with no frills? You can register a post type with a single parameter:
 
@@ -100,7 +108,9 @@ register_extended_post_type( 'story', array(
 
 Bam, we have a 'Stories' post type, with correctly generated labels and post updated messages, three custom columns in the admin area (two of which are sortable), stories added to the main RSS feed, and all stories displayed on the post type archive.
 
-There's quite a bit more you can do. [See the wiki for more examples](https://github.com/johnbillion/extended-cpts/wiki).
+The `register_extended_post_type()` function is ultimately a wrapper for `register_post_type()`, so any of the latter's parameters can be used.
+
+There's quite a bit more you can do. [See the wiki for full documentation.](https://github.com/johnbillion/extended-cpts/wiki)
 
 ## Contributing and Testing ##
 
