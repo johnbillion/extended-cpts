@@ -203,36 +203,6 @@ class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
 
 	}
 
-	/**
-	 * @expectedIncorrectUsage register_extended_post_type
-	 */
-	public function testQueryFilteredByDeprecatedPostMetaQuery() {
-
-		$query = $this->get_query( array(
-			'post_type'                                    => 'hello',
-			'test_site_filters_post_meta_query_deprecated' => 'ZZZ',
-		) );
-
-		$meta_query = $query->get( 'meta_query' );
-
-		$this->assertEquals( 2, $query->found_posts );
-
-		$this->assertSame( '', $query->get( 'meta_key' ) );
-		$this->assertSame( '', $query->get( 'meta_value' ) );
-		$this->assertEquals( array(
-			'key'     => 'test_meta_key',
-			'value'   => 'B',
-			'compare' => '>=',
-			'type'    => 'CHAR',
-		), $meta_query[0] );
-
-		$this->assertEquals( array(
-			$this->posts['hello'][0],
-			$this->posts['hello'][2],
-		), wp_list_pluck( $query->posts, 'ID' ) );
-
-	}
-
 	public function testQueryFilteredByPostMetaSearch() {
 
 		$query = $this->get_query( array(
