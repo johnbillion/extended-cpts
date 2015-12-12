@@ -17,14 +17,12 @@ env:
     # nightly:
     - WP_VERSION=nightly WP_MULTISITE=0
     - WP_VERSION=nightly WP_MULTISITE=1
-    # latest stable:
-    - WP_VERSION=latest WP_MULTISITE=0
-    - WP_VERSION=latest WP_MULTISITE=1
+    # minimum supported version:
+    - WP_VERSION=4.4 WP_MULTISITE=0
+    - WP_VERSION=4.4 WP_MULTISITE=1
 
 matrix:
     allow_failures:
-        # allow failures on PHP 7:
-        - php: 7.0
         # allow failures on nightlies:
         - env: WP_VERSION=nightly WP_MULTISITE=0
         - env: WP_VERSION=nightly WP_MULTISITE=1
