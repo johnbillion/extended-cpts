@@ -1081,12 +1081,24 @@ class Extended_CPT_Admin {
 
 				$selected = stripslashes( get_query_var( $filter_key ) );
 
+				$use_key = false;
+
+				foreach ( $filter['options'] as $k => $v ) {
+					if ( ! is_numeric( $k ) ) {
+						$use_key = true;
+						break;
+					}
+				}
+
 				# Output the dropdown:
 				?>
 				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
 					<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
-					<?php foreach ( $filter['options'] as $v ) { ?>
-						<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $v ); ?></option>
+					<?php
+						foreach ( $filter['options'] as $k => $v ) {
+							$key = ( $use_key ? $k : $v );
+						?>
+						<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $selected, $key ); ?>><?php echo esc_html( $v ); ?></option>
 					<?php } ?>
 				</select>
 				<?php
