@@ -923,24 +923,10 @@ class Extended_CPT_Admin {
 	protected static function get_current_post_type() {
 
 		if ( function_exists( 'get_current_screen' ) && is_object( get_current_screen() ) ) {
-			$post_type = get_current_screen()->post_type;
+			return get_current_screen()->post_type;
 		} else {
-			$post_type = '';
+			return '';
 		}
-
-		if ( empty( $post_type ) ) {
-			if ( isset( $_REQUEST['post_type'] ) ) {
-				$post_type = $_REQUEST['post_type'];
-			} else if ( isset( $_REQUEST['post'] ) ) {
-				$post_type = get_post_type( $_REQUEST['post'] );
-			} else if ( isset( $_REQUEST['post_id'] ) ) {
-				$post_type = get_post_type( $_REQUEST['post_id'] );
-			} else if ( isset( $_REQUEST['attachment_id'] ) ) {
-				$post_type = get_post_type( get_post( $_REQUEST['attachment_id'] )->post_parent );
-			}
-		}
-
-		return $post_type;
 
 	}
 
