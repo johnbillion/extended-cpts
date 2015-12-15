@@ -206,4 +206,27 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 	}
 
+	/**
+	 * @expectedIncorrectUsage register_post_type
+	 */
+	public function testInvalidPostTypeTriggersError() {
+		$max_length = 20;
+
+		$name = str_repeat( 'a', $max_length + 1 );
+
+		$result = register_post_type( $name );
+
+		$this->assertWPError( $result );
+
+		try {
+			register_extended_post_type( $name );
+			$this->fail( 'register_extended_post_type() should trigger an error when registering a post type which causes an error' );
+		} catch ( PHPUnit_Framework_Error $e ) {
+			$this->assertContains( "$max_length", $e->getMessage() );
+		}
+
+		_unregister_post_type( $name );
+
+	}
+
 }
