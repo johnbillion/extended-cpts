@@ -704,11 +704,21 @@ class Extended_CPT {
 
 		$existing = get_post_type_object( $this->post_type );
 
-		if ( $query_var && count( get_taxonomies( array( 'query_var' => $query_var ) ) ) ) {
+		if ( $query_var && count( $taxonomies = get_taxonomies( array( 'query_var' => $query_var ), 'objects' ) ) ) {
 
-			trigger_error( sprintf( __( 'Post type query var %s clashes with a taxonomy query var of the same name', 'extended-cpts' ), "<code>{$query_var}</code>" ), E_USER_ERROR );
+			// https://core.trac.wordpress.org/ticket/35089
+			foreach ( $taxonomies as $tax ) {
+				if ( $tax->query_var === $query_var ) {
+					trigger_error( sprintf(
+						__( 'Post type query var %s clashes with a taxonomy query var of the same name', 'extended-cpts' ),
+						"<code>{$query_var}</code>"
+					), E_USER_ERROR );
+				}
+			}
 
-		} else if ( empty( $existing ) ) {
+		}
+
+		if ( empty( $existing ) ) {
 
 			$cpt = register_post_type( $this->post_type, $this->args );
 

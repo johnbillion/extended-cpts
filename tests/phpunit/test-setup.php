@@ -174,4 +174,36 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 	}
 
+	public function testTaxonomyQueryVarClashTriggersError() {
+		register_taxonomy( 'public_taxonomy', 'post', array(
+			'public'    => true,
+			'query_var' => 'public_taxonomy',
+		) );
+
+		try {
+			register_extended_post_type( 'public_taxonomy' );
+			$this->fail( 'register_extended_post_type() should trigger an error when registering a post type which clashes with a taxonomy' );
+		} catch ( PHPUnit_Framework_Error $e ) {
+			$this->assertContains( 'public_taxonomy', $e->getMessage() );
+			$this->assertFalse( post_type_exists( 'public_taxonomy' ) );
+		}
+
+		_unregister_taxonomy( 'public_taxonomy' );
+
+	}
+
+	public function testPrivateTaxonomyWithNoQueryVarDoesNotTriggerError() {
+		register_taxonomy( 'private_taxonomy', 'post', array(
+			'public'    => false,
+			'query_var' => true,
+		) );
+
+		register_extended_post_type( 'private_taxonomy' );
+		$this->assertTrue( post_type_exists( 'private_taxonomy' ) );
+
+		_unregister_post_type( 'private_taxonomy' );
+		_unregister_taxonomy( 'private_taxonomy' );
+
+	}
+
 }
