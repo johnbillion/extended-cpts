@@ -863,7 +863,7 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * Add some CSS to the post edit screen. Used to hide various screen elements.
+	 * Add some CSS to the post listing screen. Used to hide various screen elements.
 	 */
 	public function admin_head() {
 
@@ -987,7 +987,7 @@ class Extended_CPT_Admin {
 	 *  - cap - A capability required in order for this filter to be displayed to the current user. Defaults to null,
 	 *    meaning the filter is shown to all users.
 	 *
-	 * @TODO - query - array
+	 * @TODO - meta_query - array
 	 *
 	 * @TODO - options - array or callable
 	 *
