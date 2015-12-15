@@ -1722,14 +1722,11 @@ class Extended_CPT_Admin {
 
 			case 'post_date':
 			case 'post_date_gmt':
-				if ( '0000-00-00 00:00:00' != $post->$field ) {
-					echo esc_html( mysql2date( get_option( 'date_format' ), $post->$field ) );
-				}
-				break;
-
 			case 'post_modified':
 			case 'post_modified_gmt':
-				echo esc_html( mysql2date( get_option( 'date_format' ), $post->$field ) );
+				if ( '0000-00-00 00:00:00' != get_post_field( $field, $post ) ) {
+					echo esc_html( mysql2date( get_option( 'date_format' ), get_post_field( $field, $post ) ) );
+				}
 				break;
 
 			case 'post_status':
