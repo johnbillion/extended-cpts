@@ -18,13 +18,15 @@ abstract class Extended_CPT_Test_Admin extends Extended_CPT_Test {
 
 		$GLOBALS['hook_suffix'] = 'edit.php';
 
-		set_current_screen( $args['post_type'] );
+		set_current_screen( 'edit-' . $args['post_type'] );
 		do_action( 'load-edit.php' );
 
 		wp_set_current_user( 1 ); // @TODO change
 
 		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 
+		$this->assertSame( 'edit', get_current_screen()->base );
+		$this->assertSame( $args['post_type'], get_current_screen()->post_type );
 		$this->assertInstanceOf( 'WP_List_Table', $wp_list_table );
 
 		ob_start();
