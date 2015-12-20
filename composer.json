@@ -21,6 +21,7 @@
 	},
 	"require-dev" : {
 		"satooshi/php-coveralls": ">=0.7.0",
+		"phpdocumentor/reflection-docblock": "~2.0",
 		"phpunit/phpunit": ">=3.7"
 	},
 	"suggest": {
