@@ -13,7 +13,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -114,7 +114,6 @@ class Extended_CPT {
 	public $post_singular_low;
 	public $post_plural_low;
 	public $args;
-	protected $_cols;
 
 	/**
 	 * Class constructor.
@@ -741,10 +740,10 @@ class Extended_CPT {
 	 * @param object $pto A post type object
 	 */
 	public function extend( stdClass $pto ) {
-		
+
 		# Merge core with overridden labels
 		$this->args['labels'] = array_merge( (array) get_post_type_labels( $pto ), $this->args['labels'] );
-		
+
 		$GLOBALS['wp_post_types'][ $pto->name ]->labels = (object) $this->args['labels'];
 
 	}
@@ -1820,7 +1819,7 @@ class Extended_CPT_Admin {
 			$meta = array(
 				'connected_meta' => array(
 					$args['field'] => $args['value'],
-				)
+				),
 			);
 			$field .= sanitize_title( '_' . $args['field'] . '_' . $args['value'] );
 		}
