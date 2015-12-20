@@ -118,9 +118,11 @@ class Extended_CPT {
 	/**
 	 * Class constructor.
 	 *
+	 * @see register_extended_post_type()
+	 *
 	 * @param string $post_type The post type name.
-	 * @param array  $args      Optional. The post type arguments. {@see register_extended_post_type()}.
-	 * @param array  $names     Optional. The plural, singular, and slug names. {@see register_extended_post_type()}.
+	 * @param array  $args      Optional. The post type arguments.
+	 * @param array  $names     Optional. The plural, singular, and slug names.
 	 */
 	public function __construct( $post_type, array $args = array(), array $names = array() ) {
 
@@ -128,6 +130,7 @@ class Extended_CPT {
 		 * Filter the arguments for this post type.
 		 *
 		 * @since 2.4.0
+		 *
 		 * @param array $args The post type arguments.
 		 */
 		$args  = apply_filters( "ext-cpts/{$post_type}/args", $args );
@@ -135,6 +138,7 @@ class Extended_CPT {
 		 * Filter the names for this post type.
 		 *
 		 * @since 2.4.0
+		 *
 		 * @param array $names The plural, singular, and slug names (if any were specified).
 		 */
 		$names = apply_filters( "ext-cpts/{$post_type}/names", $names );
