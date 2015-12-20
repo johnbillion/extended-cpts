@@ -1,6 +1,15 @@
 
 ## Changelog ##
 
+### 3.0.0 ###
+
+* Bump the minimum supported WordPress version to 4.4.
+* Extended CPTs no longer contains a plugin header, reinforcing the fact this is a developer library.
+* Allow the `options` parameter of the admin filters to be an associative array of values and their labels.
+* Update the rewrite rule tests to work in WordPress 4.4.
+* Remove the functionality which adds post type archives to nav menus as this is natively supported in WordPress 4.4.
+* Implement a workaround for WordPress core bug #35089.
+
 ### 2.5.2 ###
 
 * Fix admin columns for P2P connections.
