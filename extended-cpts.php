@@ -1592,9 +1592,9 @@ class Extended_CPT_Admin {
 	 * Output column data for a post meta field.
 	 *
 	 * @param string $meta_key The post meta key
-	 * @param array  $args     Optional. Array of arguments for this field
+	 * @param array  $args     Array of arguments for this field
 	 */
-	public function col_post_meta( $meta_key, array $args = array() ) {
+	public function col_post_meta( $meta_key, array $args ) {
 
 		$vals = get_post_meta( get_the_ID(), $meta_key, false );
 		$echo = array();
@@ -1636,9 +1636,9 @@ class Extended_CPT_Admin {
 	 * Output column data for a taxonomy's term names.
 	 *
 	 * @param string $taxonomy The taxonomy name
-	 * @param array  $args     Optional. Array of arguments for this field
+	 * @param array  $args     Array of arguments for this field
 	 */
-	public function col_taxonomy( $taxonomy, array $args = array() ) {
+	public function col_taxonomy( $taxonomy, array $args ) {
 
 		global $post;
 
@@ -1711,9 +1711,9 @@ class Extended_CPT_Admin {
 	 * Output column data for a post field.
 	 *
 	 * @param string $field The post field
-	 * @param array  $args  Optional. Array of arguments for this field
+	 * @param array  $args  Array of arguments for this field
 	 */
-	public function col_post_field( $field, array $args = array() ) {
+	public function col_post_field( $field, array $args ) {
 
 		global $post;
 
@@ -1758,9 +1758,9 @@ class Extended_CPT_Admin {
 	 * Output column data for a post's featured image.
 	 *
 	 * @param string $image_size The image size
-	 * @param array  $args       Optional. Array of `width` and `height` attributes for the image
+	 * @param array  $args       Array of `width` and `height` attributes for the image
 	 */
-	public function col_featured_image( $image_size, array $args = array() ) {
+	public function col_featured_image( $image_size, array $args ) {
 
 		if ( ! function_exists( 'has_post_thumbnail' ) ) {
 			return;
@@ -1793,9 +1793,9 @@ class Extended_CPT_Admin {
 	 * Output column data for a Posts 2 Posts connection.
 	 *
 	 * @param string $connection The ID of the connection type
-	 * @param array  $args       Optional. Array of arguments for a given connection type
+	 * @param array  $args       Array of arguments for a given connection type
 	 */
-	public function col_connection( $connection, array $args = array() ) {
+	public function col_connection( $connection, array $args ) {
 
 		global $post, $wp_query;
 
@@ -2031,7 +2031,7 @@ abstract class Extended_Rewrite_Testing {
 
 	abstract public function get_tests();
 
-	public function get_rewrites( array $struct, array $additional = array() ) {
+	public function get_rewrites( array $struct, array $additional ) {
 
 		global $wp_rewrite;
 
