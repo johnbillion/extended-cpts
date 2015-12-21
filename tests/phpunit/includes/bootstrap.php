@@ -12,6 +12,7 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 require $_tests_dir . '/includes/bootstrap.php';
 
+require dirname( dirname( dirname( __DIR__ ) ) ) . '/vendor/autoload.php';
 require dirname( dirname( __FILE__ ) ) . '/extended-cpts-test.php';
 require dirname( dirname( __FILE__ ) ) . '/extended-cpts-test-site.php';
 require dirname( dirname( __FILE__ ) ) . '/extended-cpts-test-admin.php';
