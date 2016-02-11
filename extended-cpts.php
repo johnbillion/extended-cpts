@@ -712,10 +712,10 @@ class Extended_CPT {
 			// https://core.trac.wordpress.org/ticket/35089
 			foreach ( $taxonomies as $tax ) {
 				if ( $tax->query_var === $query_var ) {
-					trigger_error( sprintf(
-						__( 'Post type query var %s clashes with a taxonomy query var of the same name', 'extended-cpts' ),
-						"<code>{$query_var}</code>"
-					), E_USER_ERROR );
+					trigger_error( esc_html( sprintf(
+						__( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'extended-cpts' ),
+						$query_var
+					) ), E_USER_ERROR );
 				}
 			}
 
@@ -726,7 +726,7 @@ class Extended_CPT {
 			$cpt = register_post_type( $this->post_type, $this->args );
 
 			if ( is_wp_error( $cpt ) ) {
-				trigger_error( $cpt->get_error_message(), E_USER_ERROR );
+				trigger_error( esc_html( $cpt->get_error_message() ), E_USER_ERROR );
 			}
 		} else {
 
@@ -1021,7 +1021,10 @@ class Extended_CPT_Admin {
 
 				# For this, we need the dropdown walker from Extended Taxonomies:
 				if ( ! class_exists( $class = 'Walker_ExtendedTaxonomyDropdown' ) ) {
-					trigger_error( sprintf( __( 'The %s class is required in order to display taxonomy filters', 'extended-cpts' ), $class ), E_USER_WARNING );
+					trigger_error( esc_html( sprintf(
+						__( 'The "%s" class is required in order to display taxonomy filters', 'extended-cpts' ),
+						$class
+					) ), E_USER_WARNING );
 					continue;
 				} else {
 					$walker = new Walker_ExtendedTaxonomyDropdown( array(
@@ -1300,43 +1303,51 @@ class Extended_CPT_Admin {
 		$pto = get_post_type_object( $this->cpt->post_type );
 
 		$messages[ $this->cpt->post_type ] = array(
-			1 => sprintf( ( $pto->publicly_queryable ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ),
-				$this->cpt->post_singular,
+			1 => sprintf(
+				( $pto->publicly_queryable ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ),
+				esc_html( $this->cpt->post_singular ),
 				esc_url( get_permalink( $post ) ),
-				$this->cpt->post_singular_low
+				esc_html( $this->cpt->post_singular_low )
 			),
 			2 => 'Custom field updated.',
 			3 => 'Custom field deleted.',
-			4 => sprintf( '%s updated.',
-				$this->cpt->post_singular
+			4 => sprintf(
+				'%s updated.',
+				esc_html( $this->cpt->post_singular )
 			),
-			5 => isset( $_GET['revision'] ) ? sprintf( '%1$s restored to revision from %2$s',
-				$this->cpt->post_singular,
+			5 => isset( $_GET['revision'] ) ? sprintf(
+				'%1$s restored to revision from %2$s',
+				esc_html( $this->cpt->post_singular ),
 				wp_post_revision_title( intval( $_GET['revision'] ), false )
 			) : false,
-			6 => sprintf( ( $pto->publicly_queryable ? '%1$s published. <a href="%2$s">View %3$s</a>' : '%1$s published.' ),
-				$this->cpt->post_singular,
+			6 => sprintf(
+				( $pto->publicly_queryable ? '%1$s published. <a href="%2$s">View %3$s</a>' : '%1$s published.' ),
+				esc_html( $this->cpt->post_singular ),
 				esc_url( get_permalink( $post ) ),
-				$this->cpt->post_singular_low
+				esc_html( $this->cpt->post_singular_low )
 			),
-			7 => sprintf( '%s saved.',
-				$this->cpt->post_singular
+			7 => sprintf(
+				'%s saved.',
+				esc_html( $this->cpt->post_singular )
 			),
-			8 => sprintf( ( $pto->publicly_queryable ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ),
-				$this->cpt->post_singular,
+			8 => sprintf(
+				( $pto->publicly_queryable ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ),
+				esc_html( $this->cpt->post_singular ),
 				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post ) ) ),
-				$this->cpt->post_singular_low
+				esc_html( $this->cpt->post_singular_low )
 			),
-			9 => sprintf( ( $pto->publicly_queryable ? '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview %4$s</a>' : '%1$s scheduled for: <strong>%2$s</strong>.' ),
-				$this->cpt->post_singular,
-				date_i18n( 'M j, Y @ G:i', strtotime( $post->post_date ) ),
+			9 => sprintf(
+				( $pto->publicly_queryable ? '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview %4$s</a>' : '%1$s scheduled for: <strong>%2$s</strong>.' ),
+				esc_html( $this->cpt->post_singular ),
+				esc_html( date_i18n( 'M j, Y @ G:i', strtotime( $post->post_date ) ) ),
 				esc_url( get_permalink( $post ) ),
-				$this->cpt->post_singular_low
+				esc_html( $this->cpt->post_singular_low )
 			),
-			10 => sprintf( ( $pto->publicly_queryable ? '%1$s draft updated. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s draft updated.' ),
-				$this->cpt->post_singular,
+			10 => sprintf(
+				( $pto->publicly_queryable ? '%1$s draft updated. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s draft updated.' ),
+				esc_html( $this->cpt->post_singular ),
 				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post ) ) ),
-				$this->cpt->post_singular_low
+				esc_html( $this->cpt->post_singular_low )
 			),
 		);
 
@@ -1362,30 +1373,35 @@ class Extended_CPT_Admin {
 	public function bulk_post_updated_messages( array $messages, array $counts ) {
 
 		$messages[ $this->cpt->post_type ] = array(
-			'updated' => sprintf( self::n( '%2$s updated.', '%1$s %3$s updated.', $counts['updated'] ),
-				number_format_i18n( $counts['updated'] ),
-				$this->cpt->post_singular,
-				$this->cpt->post_plural_low
+			'updated' => sprintf(
+				self::n( '%2$s updated.', '%1$s %3$s updated.', $counts['updated'] ),
+				esc_html( number_format_i18n( $counts['updated'] ) ),
+				esc_html( $this->cpt->post_singular ),
+				esc_html( $this->cpt->post_plural_low )
 			),
-			'locked' => sprintf( self::n( '%2$s not updated, somebody is editing it.', '%1$s %3$s not updated, somebody is editing them.', $counts['locked'] ),
-				number_format_i18n( $counts['locked'] ),
-				$this->cpt->post_singular,
-				$this->cpt->post_plural_low
+			'locked' => sprintf(
+				self::n( '%2$s not updated, somebody is editing it.', '%1$s %3$s not updated, somebody is editing them.', $counts['locked'] ),
+				esc_html( number_format_i18n( $counts['locked'] ) ),
+				esc_html( $this->cpt->post_singular ),
+				esc_html( $this->cpt->post_plural_low )
 			),
-			'deleted' => sprintf( self::n( '%2$s permanently deleted.', '%1$s %3$s permanently deleted.', $counts['deleted'] ),
-				number_format_i18n( $counts['deleted'] ),
-				$this->cpt->post_singular,
-				$this->cpt->post_plural_low
+			'deleted' => sprintf(
+				self::n( '%2$s permanently deleted.', '%1$s %3$s permanently deleted.', $counts['deleted'] ),
+				esc_html( number_format_i18n( $counts['deleted'] ) ),
+				esc_html( $this->cpt->post_singular ),
+				esc_html( $this->cpt->post_plural_low )
 			),
-			'trashed' => sprintf( self::n( '%2$s moved to the trash.', '%1$s %3$s moved to the trash.', $counts['trashed'] ),
-				number_format_i18n( $counts['trashed'] ),
-				$this->cpt->post_singular,
-				$this->cpt->post_plural_low
+			'trashed' => sprintf(
+				self::n( '%2$s moved to the trash.', '%1$s %3$s moved to the trash.', $counts['trashed'] ),
+				esc_html( number_format_i18n( $counts['trashed'] ) ),
+				esc_html( $this->cpt->post_singular ),
+				esc_html( $this->cpt->post_plural_low )
 			),
-			'untrashed' => sprintf( self::n( '%2$s restored from the trash.', '%1$s %3$s restored from the trash.', $counts['untrashed'] ),
-				number_format_i18n( $counts['untrashed'] ),
-				$this->cpt->post_singular,
-				$this->cpt->post_plural_low
+			'untrashed' => sprintf(
+				self::n( '%2$s restored from the trash.', '%1$s %3$s restored from the trash.', $counts['untrashed'] ),
+				esc_html( number_format_i18n( $counts['untrashed'] ) ),
+				esc_html( $this->cpt->post_singular ),
+				esc_html( $this->cpt->post_plural_low )
 			),
 		);
 
