@@ -1268,7 +1268,7 @@ class Extended_CPT_Admin {
 		$num   = number_format_i18n( $count->publish );
 
 		# This is absolutely not localisable. WordPress 3.8 didn't add a new post type label.
-		$text = '<a href="edit.php?post_type=' . $this->cpt->post_type . '">' . $num . ' ' . $text . '</a>';
+		$text = '<a href="edit.php?post_type=' . esc_attr( $this->cpt->post_type ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
 
 		# Go!
 		$items[] = $text;
@@ -1535,7 +1535,7 @@ class Extended_CPT_Admin {
 				$new_cols[ $col ] = $cols[ $col ];
 			} else if ( is_string( $col ) && isset( $cols[ $id ] ) ) {
 				# Existing (ie. built-in) column with id as the key and title as the value
-				$new_cols[ $id ] = $col;
+				$new_cols[ $id ] = esc_html( $col );
 			} else if ( 'author' === $col ) {
 				# Automatic support for Co-Authors Plus plugin and special case for
 				# displaying author column when the post type doesn't support 'author'
@@ -1544,7 +1544,7 @@ class Extended_CPT_Admin {
 				} else {
 					$k = 'author';
 				}
-				$new_cols[ $k ] = __( 'Author' );
+				$new_cols[ $k ] = esc_html__( 'Author' );
 			} else if ( is_array( $col ) ) {
 				if ( isset( $col['cap'] ) && ! current_user_can( $col['cap'] ) ) {
 					continue;
@@ -1555,7 +1555,7 @@ class Extended_CPT_Admin {
 				if ( ! isset( $col['title'] ) ) {
 					$col['title'] = $this->get_item_title( $col );
 				}
-				$new_cols[ $id ] = $col['title'];
+				$new_cols[ $id ] = esc_html( $col['title'] );
 			}
 		}
 
@@ -1799,7 +1799,11 @@ class Extended_CPT_Admin {
 		}
 
 		$image_atts = array(
-			'style' => sprintf( 'width:%1$s;height:%2$s', $width, $height ),
+			'style' => esc_attr( sprintf(
+				'width:%1$s;height:%2$s',
+				$width,
+				$height
+			) ),
 			'title' => '',
 		);
 
