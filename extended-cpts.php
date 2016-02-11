@@ -323,7 +323,7 @@ class Extended_CPT {
 				if ( is_array( $col ) && isset( $col['default'] ) ) {
 					// @TODO Don't set 'order' if 'orderby' is an array (WP 4.0+)
 					$wp_query->query['orderby'] = $id;
-					$wp_query->query['order']   = ( 'desc' == strtolower( $col['default'] ) ? 'desc' : 'asc' );
+					$wp_query->query['order']   = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
 					break;
 				}
 			}
@@ -511,7 +511,7 @@ class Extended_CPT {
 		$clauses['where'] .= $wpdb->prepare( ' AND ( taxonomy = %s OR taxonomy IS NULL )', $orderby['taxonomy'] );
 		$clauses['groupby'] = 'ext_cpts_tr.object_id';
 		$clauses['orderby'] = 'GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ';
-		$clauses['orderby'] .= ( isset( $vars['order'] ) && ( 'ASC' == strtoupper( $vars['order'] ) ) ) ? 'ASC' : 'DESC';
+		$clauses['orderby'] .= ( isset( $vars['order'] ) && ( 'ASC' === strtoupper( $vars['order'] ) ) ) ? 'ASC' : 'DESC';
 
 		return $clauses;
 
@@ -563,7 +563,7 @@ class Extended_CPT {
 	public function override_private_query_vars( WP $wp ) {
 
 		# If it's not our post type, bail out:
-		if ( ! isset( $wp->query_vars['post_type'] ) || ( $this->post_type != $wp->query_vars['post_type'] ) ) {
+		if ( ! isset( $wp->query_vars['post_type'] ) || ( $this->post_type !== $wp->query_vars['post_type'] ) ) {
 			return $wp;
 		}
 
@@ -588,7 +588,7 @@ class Extended_CPT {
 	 * @param object $args      Arguments used to register the post type.
 	 */
 	public function registered_post_type( $post_type, stdClass $args ) {
-		if ( $post_type != $this->post_type ) {
+		if ( $post_type !== $this->post_type ) {
 			return;
 		}
 		$struct = str_replace( "%{$this->post_type}_slug%", $this->post_slug, $args->rewrite['permastruct'] );
@@ -608,7 +608,7 @@ class Extended_CPT {
 	public function post_type_link( $post_link, WP_Post $post, $leavename, $sample ) {
 
 		# If it's not our post type, bail out:
-		if ( $this->post_type != $post->post_type ) {
+		if ( $this->post_type !== $post->post_type ) {
 			return $post_link;
 		}
 
@@ -870,7 +870,7 @@ class Extended_CPT_Admin {
 	 */
 	public function admin_head() {
 
-		if ( $this->cpt->post_type != self::get_current_post_type() ) {
+		if ( $this->cpt->post_type !== self::get_current_post_type() ) {
 			return;
 		}
 
@@ -891,7 +891,7 @@ class Extended_CPT_Admin {
 	 */
 	public function default_sort() {
 
-		if ( $this->cpt->post_type != self::get_current_post_type() ) {
+		if ( $this->cpt->post_type !== self::get_current_post_type() ) {
 			return;
 		}
 
@@ -904,7 +904,7 @@ class Extended_CPT_Admin {
 		foreach ( $this->args['admin_cols'] as $id => $col ) {
 			if ( is_array( $col ) && isset( $col['default'] ) ) {
 				$_GET['orderby'] = $id;
-				$_GET['order']   = ( 'desc' == strtolower( $col['default'] ) ? 'desc' : 'asc' );
+				$_GET['order']   = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
 				break;
 			}
 		}
@@ -920,7 +920,7 @@ class Extended_CPT_Admin {
 	 */
 	public function enter_title_here( $title, WP_Post $post ) {
 
-		if ( $this->cpt->post_type != $post->post_type ) {
+		if ( $this->cpt->post_type !== $post->post_type ) {
 			return $title;
 		}
 
@@ -999,7 +999,7 @@ class Extended_CPT_Admin {
 
 		global $wpdb;
 
-		if ( $this->cpt->post_type != self::get_current_post_type() ) {
+		if ( $this->cpt->post_type !== self::get_current_post_type() ) {
 			return;
 		}
 
@@ -1126,7 +1126,7 @@ class Extended_CPT_Admin {
 
 				$selected = wp_unslash( get_query_var( $filter_key ) );
 
-				if ( 1 == count( $filter['meta_exists'] ) ) {
+				if ( 1 === count( $filter['meta_exists'] ) ) {
 
 					# Output a checkbox:
 					foreach ( $filter['meta_exists'] as $v => $t ) {
@@ -1727,7 +1727,7 @@ class Extended_CPT_Admin {
 			case 'post_date_gmt':
 			case 'post_modified':
 			case 'post_modified_gmt':
-				if ( '0000-00-00 00:00:00' != get_post_field( $field, $post ) ) {
+				if ( '0000-00-00 00:00:00' !== get_post_field( $field, $post ) ) {
 					echo esc_html( mysql2date( get_option( 'date_format' ), get_post_field( $field, $post ) ) );
 				}
 				break;
@@ -1850,7 +1850,7 @@ class Extended_CPT_Admin {
 			if ( $pso->protected && ! current_user_can( 'edit_post', $post->ID ) ) {
 				continue;
 			}
-			if ( 'trash' == $post->post_status ) {
+			if ( 'trash' === $post->post_status ) {
 				continue;
 			}
 
@@ -1924,7 +1924,7 @@ class Extended_CPT_Admin {
 	 */
 	public function remove_quick_edit_action( array $actions, WP_Post $post ) {
 
-		if ( $this->cpt->post_type != $post->post_type ) {
+		if ( $this->cpt->post_type !== $post->post_type ) {
 			return $actions;
 		}
 
@@ -1968,7 +1968,7 @@ class Extended_CPT_Admin {
 	 */
 	protected static function n( $single, $plural, $number ) {
 
-		return ( 1 == $number ) ? $single : $plural;
+		return ( 1 === intval( $number ) ) ? $single : $plural;
 
 	}
 
@@ -1999,7 +1999,7 @@ class Extended_CPT_Admin {
 		} else if ( isset( $item['connection'] ) ) {
 			if ( function_exists( 'p2p_type' ) && $this->p2p_connection_exists( $item['connection'] ) ) {
 				if ( $ctype = p2p_type( $item['connection'] ) ) {
-					$other = ( 'from' == $ctype->direction_from_types( 'post', $this->cpt->post_type ) ) ? 'to' : 'from';
+					$other = ( 'from' === $ctype->direction_from_types( 'post', $this->cpt->post_type ) ) ? 'to' : 'from';
 					return $ctype->side[ $other ]->get_title();
 				}
 			}
