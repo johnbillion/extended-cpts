@@ -3,10 +3,10 @@
  * Extended custom post types for WordPress.
  *
  * @package   ExtendedCPTs
- * @version   3.0.0
+ * @version   3.0.1
  * @author    John Blackbourn <https://johnblackbourn.com>
  * @link      https://github.com/johnbillion/extended-cpts
- * @copyright 2012-2015 John Blackbourn
+ * @copyright 2012-2016 John Blackbourn
  * @license   GPL v2 or later
  *
  * This program is free software; you can redistribute it and/or modify

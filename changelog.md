@@ -1,6 +1,10 @@
 
 ## Changelog ##
 
+### 3.0.1 ###
+
+* Add some missing escaping and make some code standards tweaks.
+
 ### 3.0.0 ###
 
 * Bump the minimum supported WordPress version to 4.4.
