@@ -705,8 +705,6 @@ class Extended_CPT {
 			$query_var = $this->args['query_var'];
 		}
 
-		$existing = get_post_type_object( $this->post_type );
-
 		if ( $query_var && count( $taxonomies = get_taxonomies( array( 'query_var' => $query_var ), 'objects' ) ) ) {
 
 			// https://core.trac.wordpress.org/ticket/35089
@@ -719,21 +717,14 @@ class Extended_CPT {
 				}
 			}
 
+			return;
+
 		}
 
-		if ( empty( $existing ) ) {
+		$cpt = register_post_type( $this->post_type, $this->args );
 
-			$cpt = register_post_type( $this->post_type, $this->args );
-
-			if ( is_wp_error( $cpt ) ) {
-				trigger_error( esc_html( $cpt->get_error_message() ), E_USER_ERROR );
-			}
-		} else {
-
-			# This allows us to call `register_extended_post_type()` on an existing post type to add custom functionality
-			# to the post type.
-			$this->extend( $existing );
-
+		if ( is_wp_error( $cpt ) ) {
+			trigger_error( $cpt->get_error_message(), E_USER_ERROR );
 		}
 
 	}
