@@ -1756,7 +1756,10 @@ class Extended_CPT_Admin {
 			case 'post_date':
 			case 'post_date_gmt':
 				if ( '0000-00-00 00:00:00' != $post->$field ) {
-					echo mysql2date( get_option( 'date_format' ), $post->$field );
+					if ( ! isset( $args['date_format'] ) ) {
+						$args['date_format'] = get_option( 'date_format' );
+					}
+					echo esc_html( mysql2date( $args['date_format'], get_post_field( $field, $post ) ) );
 				}
 				break;
 
