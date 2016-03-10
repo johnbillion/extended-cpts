@@ -1268,7 +1268,10 @@ class Extended_CPT_Admin {
 		$num   = number_format_i18n( $count->publish );
 
 		# This is absolutely not localisable. WordPress 3.8 didn't add a new post type label.
-		$text = '<a href="edit.php?post_type=' . esc_attr( $this->cpt->post_type ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
+		$url = add_query_arg( [
+			'post_type' => $this->cpt->post_type,
+		], admin_url( 'edit.php' ) );
+		$text = '<a href="' . esc_url( $url ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
 
 		# Go!
 		$items[] = $text;
