@@ -781,6 +781,15 @@ class Extended_CPT {
 		return get_taxonomy( $taxonomy );
 
 	}
+	
+	/**
+	 * Initialize the library and load global functions
+	 */ 
+	public static function init() {
+		
+		// load the library
+		
+	}
 
 }
 }
