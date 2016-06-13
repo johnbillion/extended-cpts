@@ -1,16 +1,4 @@
 <?php
-/*
-Plugin Name:  Extended CPTs
-Description:  Extended custom post types.
-Version:      3.0.1
-Plugin URI:   https://github.com/johnbillion/extended-cpts
-Author:       John Blackbourn
-Author URI:   https://johnblackbourn.com
-Text Domain:  extended-cpts
-Domain Path:  /languages/
-License:      GPL v2 or later
-*/
-
 /**
  * Extended custom post types for WordPress.
  *
