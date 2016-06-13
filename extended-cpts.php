@@ -1,4 +1,16 @@
 <?php
+/*
+Plugin Name:  Extended CPTs
+Description:  Extended custom post types.
+Version:      3.0.1
+Plugin URI:   https://github.com/johnbillion/extended-cpts
+Author:       John Blackbourn
+Author URI:   https://johnblackbourn.com
+Text Domain:  extended-cpts
+Domain Path:  /languages/
+License:      GPL v2 or later
+*/
+
 /**
  * Extended custom post types for WordPress.
  *
@@ -1854,6 +1866,7 @@ class Extended_CPT_Admin {
 		if ( ! isset( $_post->$field ) ) {
 			if ( $type = p2p_type( $connection ) ) {
 				$type->each_connected( $wp_query, $meta, $field );
+				$wp_query->the_post();
 			} else {
 				echo esc_html( sprintf(
 					__( 'Invalid connection type: %s', 'extended-cpts' ),
