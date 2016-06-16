@@ -1092,6 +1092,10 @@ class Extended_CPT_Admin {
 					}
 				}
 
+				if ( isset( $filter['date_format'] ) && true === $filter['date_format'] ) {
+					$filter['date_format'] = get_option( 'date_format' );
+				}
+
 				# Output the dropdown:
 				?>
 				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
@@ -1099,6 +1103,9 @@ class Extended_CPT_Admin {
 					<?php
 						foreach ( $filter['options'] as $k => $v ) {
 							$key = ( $use_key ? $k : $v );
+							if( !empty( $filter[ 'date_format' ] ) ){
+								$v = date_i18n( $filter[ 'date_format' ], $v );
+							}
 						?>
 						<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $selected, $key ); ?>><?php echo esc_html( $v ); ?></option>
 					<?php } ?>
