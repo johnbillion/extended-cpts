@@ -656,7 +656,7 @@ class Extended_CPT {
 				 * @param string  $term The `$tax` term name to use in the permalink.
 				 * @param WP_Post $post The post in question.
 				 */
-				$default_term_name = apply_filters( "default_{$tax}", get_option( "default_{$tax}" ), $post );
+				$default_term_name = apply_filters( "default_{$tax}", get_option( "default_{$tax}", '' ), $post );
 				if ( $default_term_name ) {
 					if ( ! is_wp_error( $default_term = get_term( $default_term_name, $tax ) ) ) {
 						$term = $default_term->slug;
