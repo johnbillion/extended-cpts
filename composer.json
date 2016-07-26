@@ -15,7 +15,7 @@
 	},
 	"require-dev" : {
 		"satooshi/php-coveralls": ">=0.7.0",
-		"johnbillion/wp-docs-standards": "*",
+		"johnbillion/php-docs-standards": "^1.0.2",
 		"phpunit/phpunit": ">=3.7"
 	},
 	"suggest": {
