@@ -1,6 +1,6 @@
 <?php
 
-class Extended_CPT_Test_Reflection extends \Johnbillion\DocsStandards\TestCase {
+class Extended_CPT_Test_Docs extends \Johnbillion\DocsStandards\TestCase {
 
 	protected function getTestFunctions() {
 		return array(
