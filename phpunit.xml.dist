@@ -16,7 +16,6 @@
 			<directory suffix=".php">./</directory>
 			<exclude>
 				<directory>./bin</directory>
-				<directory>./svn</directory>
 				<directory>./tests</directory>
 				<directory>./vendor</directory>
 			</exclude>
