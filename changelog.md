@@ -1,6 +1,15 @@
 
 ## Changelog ##
 
+### 3.0.3 ###
+
+* Remove `stdClass` type hinting to support the `WP_Post_Type` class introduced in WP 4.6.
+* Ensure the value passed to the `default_{$tax}` filter is a string by default.
+
+### 3.0.2 ###
+
+* Correctly escape the URL used in the At A Glance dashboard widget.
+
 ### 3.0.1 ###
 
 * Add some missing escaping and make some code standards tweaks.
