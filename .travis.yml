@@ -3,6 +3,12 @@ sudo: false
 
 language: php
 
+cache:
+    apt: true
+    directories:
+      - node_modules
+      - vendor
+
 notifications:
     on_success: change
     on_failure: always
