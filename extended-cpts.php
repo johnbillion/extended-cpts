@@ -584,10 +584,10 @@ class Extended_CPT {
 	/**
 	 * Action fired after a CPT is registered in order to set up the custom permalink structure for the post type.
 	 *
-	 * @param string $post_type Post type name.
-	 * @param object $args      Arguments used to register the post type.
+	 * @param string                $post_type Post type name.
+	 * @param stdClass|WP_Post_Type $args      Arguments used to register the post type.
 	 */
-	public function registered_post_type( $post_type, stdClass $args ) {
+	public function registered_post_type( $post_type, $args ) {
 		if ( $post_type !== $this->post_type ) {
 			return;
 		}
@@ -741,9 +741,9 @@ class Extended_CPT {
 	/**
 	 * Extends an existing post type object. Currently only handles labels.
 	 *
-	 * @param object $pto A post type object
+	 * @param stdClass|WP_Post_Type $pto A post type object
 	 */
-	public function extend( stdClass $pto ) {
+	public function extend( $pto ) {
 
 		# Merge core with overridden labels
 		$this->args['labels'] = array_merge( (array) get_post_type_labels( $pto ), $this->args['labels'] );
