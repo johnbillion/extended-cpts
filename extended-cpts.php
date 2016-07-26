@@ -638,7 +638,7 @@ class Extended_CPT {
 				 * Filter the term that gets used in the `$tax` permalink token.
 				 * @TODO make this more betterer ^
 				 *
-				 * @param stdClass $term  The `$tax` term to use in the permalink.
+				 * @param WP_Term  $term  The `$tax` term to use in the permalink.
 				 * @param array    $terms Array of all `$tax` terms associated with the post.
 				 * @param WP_Post  $post  The post in question.
 				 */
