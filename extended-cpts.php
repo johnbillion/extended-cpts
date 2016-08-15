@@ -451,8 +451,8 @@ class Extended_CPT {
 
 		if ( isset( $orderby['meta_key'] ) ) {
 			$return['meta_key'] = $orderby['meta_key'];
-			$return['orderby']  = 'meta_value';
-			// @TODO meta_value_num
+			// whatever user passed in orderby wordpress will be ignore none support value
+			$return['orderby']  = isset($orderby['orderby']) ? $orderby['orderby'] : 'meta_value';
 		} else if ( isset( $orderby['post_field'] ) ) {
 			$field = str_replace( 'post_', '', $orderby['post_field'] );
 			$return['orderby'] = $field;
