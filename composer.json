@@ -16,7 +16,7 @@
 	"require-dev" : {
 		"satooshi/php-coveralls": ">=0.7.0",
 		"johnbillion/php-docs-standards": "^1.0.2",
-		"phpunit/phpunit": ">=3.7"
+		"phpunit/phpunit": ">=4.8 <6.0"
 	},
 	"suggest": {
 		"johnbillion/extended-taxos": "Extended Taxonomies",
