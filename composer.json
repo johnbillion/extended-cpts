@@ -13,7 +13,7 @@
 		"php": ">=7.0"
 	},
 	"require-dev" : {
-		"satooshi/php-coveralls": ">=0.7.0",
+		"satooshi/php-coveralls": "~1.0",
 		"johnbillion/php-docs-standards": "^1.0.2",
 		"phpunit/phpunit": "~6.0"
 	},
