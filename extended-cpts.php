@@ -1865,6 +1865,7 @@ class Extended_CPT_Admin {
 		if ( ! isset( $_post->$field ) ) {
 			if ( $type = p2p_type( $connection ) ) {
 				$type->each_connected( $wp_query, $meta, $field );
+				$wp_query->the_post();
 			} else {
 				echo esc_html( sprintf(
 					__( 'Invalid connection type: %s', 'extended-cpts' ),
