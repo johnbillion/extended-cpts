@@ -1569,7 +1569,7 @@ class Extended_CPT_Admin {
 					continue;
 				}
 				if ( ! isset( $col['title'] ) ) {
-					$col['title'] = $this->get_item_title( $col );
+					$col['title'] = $this->get_item_title( $col ) ?? $id;
 				}
 				$new_cols[ $id ] = esc_html( $col['title'] );
 			}
@@ -2012,7 +2012,7 @@ class Extended_CPT_Admin {
 	 * Get a sensible title for the current item (usually the arguments array for a column)
 	 *
 	 * @param  array  $item An array of arguments
-	 * @return string       The item title
+	 * @return string|null  The item title
 	 */
 	protected function get_item_title( array $item ) {
 
