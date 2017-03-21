@@ -43,8 +43,8 @@ See also: [Extended Taxonomies](https://github.com/johnbillion/extended-taxos).
 
 ## Minimum Requirements ##
 
-**PHP:** 5.4  
-**WordPress:** 4.4  
+**PHP:** 7.0  
+**WordPress:** 4.7  
 
 ## Usage ##
 

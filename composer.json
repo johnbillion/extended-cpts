@@ -10,13 +10,12 @@
 		}
 	],
 	"require": {
-		"php": ">=5.4",
-		"composer/installers": "~1.0"
+		"php": ">=7.0"
 	},
 	"require-dev" : {
 		"satooshi/php-coveralls": ">=0.7.0",
 		"johnbillion/php-docs-standards": "^1.0.2",
-		"phpunit/phpunit": ">=4.8 <6.0"
+		"phpunit/phpunit": "~6.0"
 	},
 	"suggest": {
 		"johnbillion/extended-taxos": "Extended Taxonomies",

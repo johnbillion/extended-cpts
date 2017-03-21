@@ -14,17 +14,16 @@ notifications:
     on_failure: always
 
 php:
+    - 7.1
     - 7.0
-    - 5.6
-    - 5.4
 
 env:
     # nightly:
     - WP_VERSION=nightly WP_MULTISITE=0
     - WP_VERSION=nightly WP_MULTISITE=1
     # minimum supported version:
-    - WP_VERSION=4.4 WP_MULTISITE=0
-    - WP_VERSION=4.4 WP_MULTISITE=1
+    - WP_VERSION=4.7 WP_MULTISITE=0
+    - WP_VERSION=4.7 WP_MULTISITE=1
 
 matrix:
     allow_failures:
