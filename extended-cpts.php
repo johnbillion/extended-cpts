@@ -6,7 +6,7 @@
  * @version   3.0.3
  * @author    John Blackbourn <https://johnblackbourn.com>
  * @link      https://github.com/johnbillion/extended-cpts
- * @copyright 2012-2016 John Blackbourn
+ * @copyright 2012-2017 John Blackbourn
  * @license   GPL v2 or later
  *
  * This program is free software; you can redistribute it and/or modify
