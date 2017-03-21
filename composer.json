@@ -1,5 +1,6 @@
 {
 	"name"       : "johnbillion/extended-cpts",
+	"version"	 : "3.0.0",
 	"description": "A library which provides extended functionality to WordPress custom post types, allowing developers to quickly build custom post types without having to write the same code again and again.",
 	"homepage"   : "https://github.com/johnbillion/extended-cpts/",
 	"license"    : "GPL-2.0+",
@@ -20,5 +21,8 @@
 	"suggest": {
 		"johnbillion/extended-taxos": "Extended Taxonomies",
 		"wpackagist-plugin/rewrite-testing": "Rewrite Rule Testing"
+	},
+	"autoload": {
+		"files": ["extended-cpts.php"]
 	}
 }
