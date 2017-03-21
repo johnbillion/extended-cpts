@@ -274,6 +274,15 @@ class Extended_CPT {
 			// @codeCoverageIgnoreEnd
 		}
 
+		/**
+		 * Fired when the extended post type instance is set up.
+		 *
+		 * @since 3.1.0
+		 *
+		 * @param Extended_CPT $instance The extended post type instance.
+		 */
+		do_action( "ext-cpts/{$post_type}/instance", $this );
+
 	}
 
 	/**
