@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 /**
  * Extended custom post types for WordPress.
  *
@@ -68,7 +70,7 @@ if ( ! function_exists( 'register_extended_post_type' ) ) {
  * }
  * @return Extended_CPT
  */
-function register_extended_post_type( $post_type, array $args = array(), array $names = array() ) {
+function register_extended_post_type( string $post_type, array $args = array(), array $names = array() ): Extended_CPT {
 
 	$cpt = new Extended_CPT( $post_type, $args, $names );
 
@@ -124,7 +126,7 @@ class Extended_CPT {
 	 * @param array  $args      Optional. The post type arguments.
 	 * @param array  $names     Optional. The plural, singular, and slug names.
 	 */
-	public function __construct( $post_type, array $args = array(), array $names = array() ) {
+	public function __construct( string $post_type, array $args = array(), array $names = array() ) {
 
 		/**
 		 * Filter the arguments for this post type.
@@ -359,7 +361,7 @@ class Extended_CPT {
 	 * @param  WP_Query $wp_query The current `WP_Query` object.
 	 * @return array              The updated SQL clauses.
 	 */
-	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
+	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
 
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return $clauses;
@@ -384,7 +386,7 @@ class Extended_CPT {
 	 *                        `site_filters` argument when registering an extended post type).
 	 * @return array          The list of private query vars to apply to the query.
 	 */
-	public static function get_filter_vars( array $query, array $filters ) {
+	public static function get_filter_vars( array $query, array $filters ): array {
 
 		$return = array();
 
@@ -440,7 +442,7 @@ class Extended_CPT {
 	 *                          `site_sortables` argument when registering an extended post type.
 	 * @return array            The list of private and public query vars to apply to the query.
 	 */
-	public static function get_sort_field_vars( array $vars, array $sortables ) {
+	public static function get_sort_field_vars( array $vars, array $sortables ): array {
 
 		if ( ! isset( $vars['orderby'] ) ) {
 			return array();
@@ -487,7 +489,7 @@ class Extended_CPT {
 	 *                          `site_sortables` argument when registering an extended post type).
 	 * @return array            The list of SQL clauses to apply to the query.
 	 */
-	public static function get_sort_taxonomy_clauses( array $clauses, array $vars, array $sortables ) {
+	public static function get_sort_taxonomy_clauses( array $clauses, array $vars, array $sortables ): array {
 
 		global $wpdb;
 
@@ -534,7 +536,7 @@ class Extended_CPT {
 	 * @param  array $vars Public query variables.
 	 * @return array       Updated public query variables.
 	 */
-	public function add_query_vars( array $vars ) {
+	public function add_query_vars( array $vars ): array {
 
 		$filters = array_keys( $this->args['site_filters'] );
 
@@ -548,7 +550,7 @@ class Extended_CPT {
 	 * @param  array $vars Request parameters.
 	 * @return array       Updated request parameters.
 	 */
-	public function add_to_feed( array $vars ) {
+	public function add_to_feed( array $vars ): array {
 
 		# If it's not a feed, we're not interested:
 		if ( ! isset( $vars['feed'] ) ) {
@@ -571,7 +573,7 @@ class Extended_CPT {
 	 * @param  WP $wp The WP request object.
 	 * @return WP     Updated WP request object.
 	 */
-	public function override_private_query_vars( WP $wp ) {
+	public function override_private_query_vars( WP $wp ): WP {
 
 		# If it's not our post type, bail out:
 		if ( ! isset( $wp->query_vars['post_type'] ) || ( $this->post_type !== $wp->query_vars['post_type'] ) ) {
@@ -595,16 +597,16 @@ class Extended_CPT {
 	/**
 	 * Action fired after a CPT is registered in order to set up the custom permalink structure for the post type.
 	 *
-	 * @param string                $post_type Post type name.
-	 * @param stdClass|WP_Post_Type $args      Arguments used to register the post type.
+	 * @param string       $post_type        Post type name.
+	 * @param WP_Post_Type $post_type_object Post type object.
 	 */
-	public function registered_post_type( $post_type, $args ) {
+	public function registered_post_type( string $post_type, WP_Post_Type $post_type_object ) {
 		if ( $post_type !== $this->post_type ) {
 			return;
 		}
-		$struct = str_replace( "%{$this->post_type}_slug%", $this->post_slug, $args->rewrite['permastruct'] );
+		$struct = str_replace( "%{$this->post_type}_slug%", $this->post_slug, $post_type_object->rewrite['permastruct'] );
 		$struct = str_replace( '%postname%', "%{$this->post_type}%", $struct );
-		add_permastruct( $this->post_type, $struct, $args->rewrite );
+		add_permastruct( $this->post_type, $struct, $post_type_object->rewrite );
 	}
 
 	/**
@@ -616,7 +618,7 @@ class Extended_CPT {
 	 * @param  bool    $sample    Is it a sample permalink.
 	 * @return string             The post's permalink.
 	 */
-	public function post_type_link( $post_link, WP_Post $post, $leavename, $sample ) {
+	public function post_type_link( string $post_link, WP_Post $post, bool $leavename, bool $sample ): string {
 
 		# If it's not our post type, bail out:
 		if ( $this->post_type !== $post->post_type ) {
@@ -693,7 +695,7 @@ class Extended_CPT {
 	 * @param  array $tests The existing rewrite rule tests.
 	 * @return array        Updated rewrite rule tests.
 	 */
-	public function rewrite_testing_tests( array $tests ) {
+	public function rewrite_testing_tests( array $tests ): array {
 
 		$extended = new Extended_CPT_Rewrite_Testing( $this );
 
@@ -752,9 +754,9 @@ class Extended_CPT {
 	/**
 	 * Extends an existing post type object. Currently only handles labels.
 	 *
-	 * @param stdClass|WP_Post_Type $pto A post type object
+	 * @param WP_Post_Type $pto A post type object.
 	 */
-	public function extend( $pto ) {
+	public function extend( WP_Post_Type $pto ) {
 
 		# Merge core with overridden labels
 		$this->args['labels'] = array_merge( (array) get_post_type_labels( $pto ), $this->args['labels'] );
@@ -777,9 +779,9 @@ class Extended_CPT {
 	 * @param  string $taxonomy The taxonomy name.
 	 * @param  array  $args     Optional. The taxonomy arguments.
 	 * @param  array  $names    Optional. An associative array of the plural, singular, and slug names.
-	 * @return object|false     Taxonomy object, or boolean false if there's a problem.
+	 * @return WP_Taxonomy      Taxonomy object.
 	 */
-	public function add_taxonomy( $taxonomy, array $args = array(), array $names = array() ) {
+	public function add_taxonomy( string $taxonomy, array $args = array(), array $names = array() ): WP_Taxonomy {
 
 		if ( taxonomy_exists( $taxonomy ) ) {
 			register_taxonomy_for_object_type( $taxonomy, $this->post_type );
@@ -929,7 +931,7 @@ class Extended_CPT_Admin {
 	 * @param  WP_Post $post  The current post.
 	 * @return string         The updated placeholder text.
 	 */
-	public function enter_title_here( $title, WP_Post $post ) {
+	public function enter_title_here( string $title, WP_Post $post ): string {
 
 		if ( $this->cpt->post_type !== $post->post_type ) {
 			return $title;
@@ -1172,7 +1174,7 @@ class Extended_CPT_Admin {
 	 * @param  array $vars Public query variables
 	 * @return array       Updated public query variables
 	 */
-	public function add_query_vars( array $vars ) {
+	public function add_query_vars( array $vars ): array {
 
 		$filters = array_keys( $this->args['admin_filters'] );
 
@@ -1240,7 +1242,7 @@ class Extended_CPT_Admin {
 	 * @param  WP_Query $wp_query The current `WP_Query` object.
 	 * @return array              The updated SQL clauses.
 	 */
-	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) {
+	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
 
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return $clauses;
@@ -1262,7 +1264,7 @@ class Extended_CPT_Admin {
 	 * @param  array $items Array of items to display on the widget.
 	 * @return array        Updated array of items.
 	 */
-	public function glance_items( array $items ) {
+	public function glance_items( array $items ): array {
 
 		$pto = get_post_type_object( $this->cpt->post_type );
 
@@ -1310,7 +1312,7 @@ class Extended_CPT_Admin {
 	 * @param  array $messages An associative array of post updated messages with post type as keys.
 	 * @return array           Updated array of post updated messages.
 	 */
-	public function post_updated_messages( array $messages ) {
+	public function post_updated_messages( array $messages ): array {
 
 		global $post;
 
@@ -1384,7 +1386,7 @@ class Extended_CPT_Admin {
 	 * @param  array $counts   An array of counts for each key in `$messages`.
 	 * @return array           Updated array of bulk post updated messages.
 	 */
-	public function bulk_post_updated_messages( array $messages, array $counts ) {
+	public function bulk_post_updated_messages( array $messages, array $counts ): array {
 
 		$messages[ $this->cpt->post_type ] = array(
 			'updated' => sprintf(
@@ -1429,7 +1431,7 @@ class Extended_CPT_Admin {
 	 * @param  array $cols Associative array of sortable columns
 	 * @return array       Updated array of sortable columns
 	 */
-	public function sortables( array $cols ) {
+	public function sortables( array $cols ): array {
 
 		foreach ( $this->args['admin_cols'] as $id => $col ) {
 			if ( ! is_array( $col ) ) {
@@ -1522,7 +1524,7 @@ class Extended_CPT_Admin {
 	 * @param  array $cols Associative array of columns
 	 * @return array       Updated array of columns
 	 */
-	public function cols( array $cols ) {
+	public function cols( array $cols ): array {
 
 		// This function gets called multiple times, so let's cache it for efficiency:
 		if ( isset( $this->the_cols ) ) {
@@ -1586,7 +1588,7 @@ class Extended_CPT_Admin {
 	 *
 	 * @param string $col The column name
 	 */
-	public function col( $col ) {
+	public function col( string $col ) {
 
 		# Shorthand:
 		$c = $this->args['admin_cols'];
@@ -1628,7 +1630,7 @@ class Extended_CPT_Admin {
 	 * @param string $meta_key The post meta key
 	 * @param array  $args     Array of arguments for this field
 	 */
-	public function col_post_meta( $meta_key, array $args ) {
+	public function col_post_meta( string $meta_key, array $args ) {
 
 		$vals = get_post_meta( get_the_ID(), $meta_key, false );
 		$echo = array();
@@ -1672,7 +1674,7 @@ class Extended_CPT_Admin {
 	 * @param string $taxonomy The taxonomy name
 	 * @param array  $args     Array of arguments for this field
 	 */
-	public function col_taxonomy( $taxonomy, array $args ) {
+	public function col_taxonomy( string $taxonomy, array $args ) {
 
 		global $post;
 
@@ -1747,7 +1749,7 @@ class Extended_CPT_Admin {
 	 * @param string $field The post field
 	 * @param array  $args  Array of arguments for this field
 	 */
-	public function col_post_field( $field, array $args ) {
+	public function col_post_field( string $field, array $args ) {
 
 		global $post;
 
@@ -1794,7 +1796,7 @@ class Extended_CPT_Admin {
 	 * @param string $image_size The image size
 	 * @param array  $args       Array of `width` and `height` attributes for the image
 	 */
-	public function col_featured_image( $image_size, array $args ) {
+	public function col_featured_image( string $image_size, array $args ) {
 
 		if ( ! function_exists( 'has_post_thumbnail' ) ) {
 			return;
@@ -1833,7 +1835,7 @@ class Extended_CPT_Admin {
 	 * @param string $connection The ID of the connection type
 	 * @param array  $args       Array of arguments for a given connection type
 	 */
-	public function col_connection( $connection, array $args ) {
+	public function col_connection( string $connection, array $args ) {
 
 		global $post, $wp_query;
 
@@ -1956,7 +1958,7 @@ class Extended_CPT_Admin {
 	 * @param  WP_Post $post    The current post object
 	 * @return array            Array of updated post actions
 	 */
-	public function remove_quick_edit_action( array $actions, WP_Post $post ) {
+	public function remove_quick_edit_action( array $actions, WP_Post $post ): array {
 
 		if ( $this->cpt->post_type !== $post->post_type ) {
 			return $actions;
@@ -1973,7 +1975,7 @@ class Extended_CPT_Admin {
 	 * @param  array $actions Array of bulk actions
 	 * @return array          Array of updated bulk actions
 	 */
-	public function remove_quick_edit_menu( array $actions ) {
+	public function remove_quick_edit_menu( array $actions ): array {
 
 		unset( $actions['edit'] );
 		return $actions;
@@ -1986,7 +1988,7 @@ class Extended_CPT_Admin {
 	 * @param  array $cols The default columns for this post type screen
 	 * @return array       The default columns for this post type screen
 	 */
-	public function _log_default_cols( array $cols ) {
+	public function _log_default_cols( array $cols ): array {
 
 		return $this->_cols = $cols;
 
@@ -2000,7 +2002,7 @@ class Extended_CPT_Admin {
 	 * @param  int    $number The number to compare against to use either `$single` or `$plural`
 	 * @return string         Either `$single` or `$plural` text
 	 */
-	protected static function n( $single, $plural, $number ) {
+	protected static function n( string $single, string $plural, int $number ): string {
 
 		return ( 1 === intval( $number ) ) ? $single : $plural;
 
@@ -2051,7 +2053,7 @@ class Extended_CPT_Admin {
 	 * @param string $connection A connection type.
 	 * @return bool Whether the connection exists.
 	 */
-	protected function p2p_connection_exists( $connection ) {
+	protected function p2p_connection_exists( string $connection ): bool {
 		if ( ! isset( $this->connection_exists[ $connection ] ) ) {
 			$this->connection_exists[ $connection ] = p2p_connection_exists( $connection );
 		}
@@ -2069,7 +2071,7 @@ abstract class Extended_Rewrite_Testing {
 
 	abstract public function get_tests();
 
-	public function get_rewrites( array $struct, array $additional ) {
+	public function get_rewrites( array $struct, array $additional ): array {
 
 		global $wp_rewrite;
 
@@ -2139,7 +2141,7 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 		$this->cpt = $cpt;
 	}
 
-	public function get_tests() {
+	public function get_tests(): array {
 
 		global $wp_rewrite;
 
