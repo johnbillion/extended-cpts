@@ -30,19 +30,7 @@ if ( ! function_exists( 'register_extended_post_type' ) ) {
  * arguments that provide extended functionality. Some of the default arguments differ from the defaults in
  * `register_post_type()`.
  *
- * The `$post_type` parameter is used as the post type name and to build the post type labels. This means you can create
- * a post type with just one parameter and all labels and post updated messages will be generated for you. Example:
- *
- *     register_extended_post_type( 'event' );
- *
- * The singular name, plural name, and slug are generated from the post type name. These can be overridden with the
- * `$names` parameter if necessary. Example:
- *
- *     register_extended_post_type( 'person', [], [
- *         'plural' => 'People',
- *         'slug'   => 'meet-the-team'
- *     ] );
- *
+ * @link https://github.com/johnbillion/extended-cpts/wiki/Basic-usage
  * @see register_post_type() for default arguments.
  *
  * @param string $post_type The post type name.
@@ -967,55 +955,9 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * Output custom filter dropdown menus on the admin screen for this post type.
+	 * Output custom filter controls on the admin screen for this post type.
 	 *
-	 * Each item in the `admin_filters` array is an associative array of information for a filter. Defining a filter is
-	 * easy. Just define an array which includes the filter title and filter type. You can display filters for post meta
-	 * fields and taxonomy terms.
-	 *
-	 * The example below adds filters for the `event_type` meta key and the `location` taxonomy:
-	 *
-	 *     register_extended_post_type( 'event', [
-	 *         'admin_filters' => [
-	 *             'event_type' => [
-	 *                 'title'    => 'Event Type',
-	 *                 'meta_key' => 'event_type'
-	 *             ],
-	 *             'event_location' => [
-	 *                 'title'    => 'Location',
-	 *                 'taxonomy' => 'location'
-	 *             ],
-	 *             'event_is' => [
-	 *                 'title'       => 'All Events',
-	 *                 'meta_exists' => [
-	 *                     'event_featured'  => 'Featured Events',
-	 *                     'event_cancelled' => 'Cancelled Events'
-	 *                 ]
-	 *             ],
-	 *         ]
-	 *     ] );
-	 *
-	 * That's all you need to do. WordPress handles taxonomy term filtering itself, and the plugin handles the dropdown
-	 * menu and filtering for post meta.
-	 *
-	 * Each item in the `admin_filters` array needs either a `taxonomy`, `meta_key`, `meta_search`, or `meta_exists`
-	 * element containing the corresponding taxonomy name or post meta key.
-	 *
-	 * The `meta_exists` filter outputs a dropdown menu listing each of the meta_exists fields, allowing users to
-	 * filter the screen by posts which have the corresponding meta field.
-	 *
-	 * The `meta_search` filter outputs a search input, allowing users to filter the screen by an arbitrary search value.
-	 *
-	 * There are a few optional elements:
-	 *
-	 *  - title - The filter title. If omitted, the title will use the `all_items` taxonomy label or a formatted version
-	 *    of the post meta key.
-	 *  - cap - A capability required in order for this filter to be displayed to the current user. Defaults to null,
-	 *    meaning the filter is shown to all users.
-	 *
-	 * @TODO - meta_query - array
-	 *
-	 * @TODO - options - array or callable
+	 * @link https://github.com/johnbillion/extended-cpts/wiki/Admin-filters
 	 *
 	 */
 	public function filters() {
@@ -1468,74 +1410,7 @@ class Extended_CPT_Admin {
 	/**
 	 * Add columns to the admin screen for this post type.
 	 *
-	 * Each item in the `admin_cols` array is either a string name of an existing column, or an associative
-	 * array of information for a custom column.
-	 *
-	 * Defining a custom column is easy. Just define an array which includes the column title, column
-	 * type, and optional callback function. You can display columns for post meta, taxonomy terms,
-	 * post fields, the featured image, and custom functions.
-	 *
-	 * The example below adds two columns; one which displays the value of the post's `event_type` meta
-	 * key and one which lists the post's terms from the `location` taxonomy:
-	 *
-	 *     register_extended_post_type( 'event', [
-	 *         'admin_cols' => [
-	 *             'event_type' => [
-	 *                 'title'    => 'Event Type',
-	 *                 'meta_key' => 'event_type'
-	 *             ],
-	 *             'event_location' => [
-	 *                 'title'    => 'Location',
-	 *                 'taxonomy' => 'location'
-	 *             ]
-	 *         ]
-	 *     ] );
-	 *
-	 * That's all you need to do. The columns will handle all the sorting and safely outputting the data
-	 * (escaping text, and comma-separating taxonomy terms). No more messing about with all of those
-	 * annoyingly named column filters and actions.
-	 *
-	 * Each item in the `admin_cols` array must contain one of the following elements which defines the column type:
-	 *
-	 *  - taxonomy       - The name of a taxonomy
-	 *  - meta_key       - A post meta key
-	 *  - post_field     - The name of a post field (eg. post_excerpt)
-	 *  - featured_image - A featured image size (eg. thumbnail)
-	 *  - connection     - A connection ID registered with the Posts 2 Posts plugin
-	 *  - function       - The name of a callback function
-	 *
-	 * The value for the corresponding taxonomy terms, post meta or post field are safely escaped and output
-	 * into the column, and the values are used to provide the sortable functionality for the column. For
-	 * featured images, the post's featured image of that size will be displayed if there is one.
-	 *
-	 * There are a few optional elements:
-	 *
-	 *  - title - Generated from the field if not specified.
-	 *  - function - The name of a callback function for the column (eg. `my_function`) which gets called
-	 *    instead of the built-in function for handling that column. Note that it's not passed any parameters,
-	 *    so it must use the global $post object.
-	 *  - default - Specifies that the admin screen should be sorted by this column by default (instead of
-	 *    sorting by post date). Value should be one of `asc` or `desc` to control the default order.
-	 *  - width & height - These are only used for the `featured_image` column type and allow you to set an
-	 *    explicit width and/or height on the <img> tag. Handy for downsizing the image.
-	 *  - field & value - These are used for the `connection` column type and allow you to specify a
-	 *    connection meta field and value from the fields argument of the connection type.
-	 *  - date_format - This is used with the `meta_key` column type. The value of the meta field will be
-	 *    treated as a timestamp if this is present. Unix and MySQL format timestamps are supported in the
-	 *    meta value. Pass in boolean true to format the date according to the 'Date Format' setting, or pass
-	 *    in a valid date formatting string (eg. `d/m/Y H:i:s`).
-	 *  - cap - A capability required in order for this column to be displayed to the current user. Defaults
-	 *    to null, meaning the column is shown to all users.
-	 *  - sortable - A boolean value which specifies whether the column should be sortable. Defaults to true.
-	 *
-	 * @TODO - post_cap
-	 *
-	 * @TODO - link
-	 *
-	 * In addition to custom columns there are also columns built in to WordPress which you can
-	 * use: `comments`, `date`, `title` and `author`. You can use these column names as the array value, or as the
-	 * array key with a string value to change the column title. You can also pass boolean false to remove
-	 * the `cb` or `title` columns, which are otherwise kept regardless.
+	 * @link https://github.com/johnbillion/extended-cpts/wiki/Admin-columns
 	 *
 	 * @param  array $cols Associative array of columns
 	 * @return array       Updated array of columns
