@@ -48,7 +48,14 @@ See also: [Extended Taxonomies](https://github.com/johnbillion/extended-taxos).
 
 ## Usage ##
 
-Extended CPTs is a developer library, not a plugin, which means you need to include it somewhere in your own plugin or theme:
+Extended CPTs is a developer library, not a plugin, which means you need to include it somewhere in your own project.
+You can use Composer:
+
+```bash
+composer require johnbillion/extended-cpts
+```
+
+Or you can download the library, or include it as a submodule, and then include the library manually:
 
 ```php
 require_once 'extended-cpts/extended-cpts.php';
@@ -75,25 +82,28 @@ register_extended_post_type( 'story', array(
 
 	# Add some custom columns to the admin screen:
 	'admin_cols' => array(
-		'featured_image' => array(
+		'story_featured_image' => array(
 			'title'          => 'Illustration',
 			'featured_image' => 'thumbnail'
 		),
-		'published' => array(
+		'story_published' => array(
 			'title'       => 'Published',
 			'meta_key'    => 'published_date',
 			'date_format' => 'd/m/Y'
 		),
-		'genre' => array(
+		'story_genre' => array(
 			'taxonomy' => 'genre'
 		)
 	),
 
 	# Add a dropdown filter to the admin screen:
 	'admin_filters' => array(
-		'genre' => array(
+		'story_genre' => array(
 			'taxonomy' => 'genre'
-		)
+		),
+		'story_rating' => array(
+			'meta_key' => 'star_rating',
+		),
 	)
 
 ), array(
