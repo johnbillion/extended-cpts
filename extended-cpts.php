@@ -1927,11 +1927,31 @@ class Extended_CPT_Admin {
 				'_',
 				'-',
 			], ' ', $item['meta_key'] ) ) );
-		} else if ( isset( $item['connection'] ) && isset( $item['value'] ) ) {
-			return ucwords( trim( str_replace( [
+		} else if ( isset( $item['connection'] ) && isset( $item['field'] ) && isset( $item['value'] ) ) {
+
+			$fallback = ucwords( trim( str_replace( [
 				'_',
 				'-',
 			], ' ', $item['value'] ) ) );
+
+			if ( ! function_exists( 'p2p_type' ) || ! $this->p2p_connection_exists( $item['connection'] ) ) {
+				return $fallback;
+			}
+
+			if ( ! $ctype = p2p_type( $item['connection'] ) ) {
+				return $fallback;
+			}
+
+			if ( isset( $ctype->fields[ $item['field'] ]['values'][ $item['value'] ] ) ) {
+				if ( '' === trim( $ctype->fields[ $item['field'] ]['values'][ $item['value'] ] ) ) {
+					return $ctype->fields[ $item['field'] ]['title'];
+				} else {
+					return $ctype->fields[ $item['field'] ]['values'][ $item['value'] ];
+				}
+			}
+
+			return $fallback;
+
 		} else if ( isset( $item['connection'] ) ) {
 			if ( function_exists( 'p2p_type' ) && $this->p2p_connection_exists( $item['connection'] ) ) {
 				if ( $ctype = p2p_type( $item['connection'] ) ) {
