@@ -1536,7 +1536,7 @@ class Extended_CPT_Admin {
 			foreach ( $vals as $val ) {
 
 				if ( is_numeric( $val ) ) {
-					$echo[] = date( $args['date_format'], $val );
+					$echo[] = date_i18n( $args['date_format'], $val );
 				} else if ( ! empty( $val ) ) {
 					$echo[] = mysql2date( $args['date_format'], $val );
 				}
