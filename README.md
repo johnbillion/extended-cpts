@@ -70,50 +70,50 @@ register_extended_post_type( 'article' );
 Try it. You'll have a hierarchical public post type with an admin UI, and all the labels and post updated messages will be automatically generated. Or for a bit more functionality:
 
 ```php
-register_extended_post_type( 'story', array(
+register_extended_post_type( 'story', [
 
 	# Add the post type to the site's main RSS feed:
 	'show_in_feed' => true,
 
 	# Show all posts on the post type archive:
-	'archive' => array(
-		'nopaging' => true
-	),
+	'archive' => [
+		'nopaging' => true,
+	],
 
 	# Add some custom columns to the admin screen:
-	'admin_cols' => array(
-		'story_featured_image' => array(
+	'admin_cols' => [
+		'story_featured_image' => [
 			'title'          => 'Illustration',
 			'featured_image' => 'thumbnail'
-		),
-		'story_published' => array(
+		],
+		'story_published' => [
 			'title'       => 'Published',
 			'meta_key'    => 'published_date',
 			'date_format' => 'd/m/Y'
-		),
-		'story_genre' => array(
+		],
+		'story_genre' => [
 			'taxonomy' => 'genre'
-		)
-	),
+		],
+	],
 
 	# Add a dropdown filter to the admin screen:
-	'admin_filters' => array(
-		'story_genre' => array(
+	'admin_filters' => [
+		'story_genre' => [
 			'taxonomy' => 'genre'
-		),
-		'story_rating' => array(
+		],
+		'story_rating' => [
 			'meta_key' => 'star_rating',
-		),
-	)
+		],
+	],
 
-), array(
+], [
 
 	# Override the base names used for labels:
 	'singular' => 'Story',
 	'plural'   => 'Stories',
-	'slug'     => 'stories'
+	'slug'     => 'stories',
 
-) );
+] );
 ```
 
 Bam, we have a 'Stories' post type, with correctly generated labels and post updated messages, three custom columns in the admin area (two of which are sortable), stories added to the main RSS feed, and all stories displayed on the post type archive.
