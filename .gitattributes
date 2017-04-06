@@ -2,7 +2,6 @@
 
 /tests export-ignore
 /bin export-ignore
-/.coveralls.yml export-ignore
 /.travis.yml export-ignore
 /CONTRIBUTING.md export-ignore
 /README.md export-ignore
