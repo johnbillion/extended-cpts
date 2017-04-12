@@ -18,6 +18,9 @@
 		"johnbillion/php-docs-standards": "^1.0.2",
 		"phpunit/phpunit": ">=4.8 <6.0"
 	},
+	"autoload": {
+		"classmap": ["extended-cpts.php"]
+	},
 	"suggest": {
 		"johnbillion/extended-taxos": "Extended Taxonomies",
 		"wpackagist-plugin/rewrite-testing": "Rewrite Rule Testing"
