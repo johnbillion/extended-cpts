@@ -3,6 +3,7 @@
 	"description": "A library which provides extended functionality to WordPress custom post types, allowing developers to quickly build custom post types without having to write the same code again and again.",
 	"homepage"   : "https://github.com/johnbillion/extended-cpts/",
 	"license"    : "GPL-2.0+",
+	"type"       : "wordpress-library",
 	"authors"    : [
 		{
 			"name"    : "John Blackbourn",
