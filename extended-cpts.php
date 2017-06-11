@@ -1128,7 +1128,7 @@ class Extended_CPT_Admin {
 
 				# Output the search box:
 				?>
-				<label><?php printf( '%s:', esc_html( $filter['title'] ) ); ?>&nbsp;<input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $value ); ?>" /></label>
+				<input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $value ); ?>" placeholder="<?php echo esc_attr($filter['title']) ?>"/>
 				<?php
 
 			} else if ( isset( $filter['meta_exists'] ) ) {
