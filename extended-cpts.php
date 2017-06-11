@@ -73,7 +73,7 @@ function register_extended_post_type( $post_type, array $args = array(), array $
 	$cpt = new Extended_CPT( $post_type, $args, $names );
 
 	if ( is_admin() ) {
-		new Extended_CPT_Admin( $cpt, $args );
+		new Extended_CPT_Admin( $cpt, $cpt->args );
 	}
 
 	return $cpt;
