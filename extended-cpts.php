@@ -25,5 +25,6 @@ declare(strict_types=1);
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/src/extended_cpt.php';
 require_once __DIR__ . '/src/extended_cpt_admin.php';
+require_once __DIR__ . '/src/extended_taxonomy.php';
 require_once __DIR__ . '/src/extended_rewrite_testing.php';
 require_once __DIR__ . '/src/extended_cpt_rewrite_testing.php';
