@@ -38,7 +38,7 @@ See also: [Extended Taxonomies](https://github.com/johnbillion/extended-taxos).
    * Automatic integration with the [Rewrite Rule Testing](https://wordpress.org/plugins/rewrite-testing/) plugin
  * Specify public query vars which enable filtering by post meta
  * Specify public query vars which enable sorting by post meta, taxonomy terms, and post fields
- * Override public or private query vars such as `posts_per_page`, `orderby`, `order` and `nopaging`
+ * Override public or private query vars such as `posts_per_page`, `orderby`, `order`, and `nopaging`
  * Add the post type to the site's main RSS feed
 
 ## Minimum Requirements ##
