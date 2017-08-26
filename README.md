@@ -5,11 +5,9 @@
 
 # Extended CPTs #
 
-Extended CPTs is a library which provides extended functionality to WordPress custom post types, allowing developers to quickly build post types without having to write the same code again and again.
+Extended CPTs is a library which provides extended functionality to WordPress custom post types and taxonomies. This allows developers to quickly build post types and taxonomies without having to write the same code again and again.
 
 [See the wiki for full documentation.](https://github.com/johnbillion/extended-cpts/wiki)
-
-See also: [Extended Taxonomies](https://github.com/johnbillion/extended-taxos).
 
 ## Improved defaults ##
 
