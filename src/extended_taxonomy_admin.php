@@ -45,8 +45,8 @@ class Extended_Taxonomy_Admin {
 	/**
 	* Class constructor.
 	*
-	* @param Extended_Taxonomy $taxo An extended taxonomy object
-	* @param array             $args The admin arguments
+	* @param Extended_Taxonomy $taxo An extended taxonomy object.
+	* @param array             $args Optional. The admin arguments.
 	*/
 	public function __construct( Extended_Taxonomy $taxo, array $args = array() ) {
 
@@ -200,9 +200,9 @@ class Extended_Taxonomy_Admin {
 	/**
 	 * Output the column data for our custom columns.
 	 *
-	 * @param string $string      Blank string.
-	 * @param string $column_name Name of the column.
-	 * @param int    $term_id     Term ID.
+	 * @param string $string  Blank string.
+	 * @param string $col     Name of the column.
+	 * @param int    $term_id Term ID.
 	 */
 	public function col( $string, $col, $term_id ) {
 
@@ -228,7 +228,7 @@ class Extended_Taxonomy_Admin {
 	 * Output column data for a term meta field.
 	 *
 	 * @param string $meta_key The term meta key
-	 * @param array  $args     Optional. Array of arguments for this field
+	 * @param array  $args     Array of arguments for this field
 	 * @param int    $term_id  Term ID.
 	 */
 	public function col_term_meta( $meta_key, array $args, $term_id ) {
@@ -357,8 +357,8 @@ class Extended_Taxonomy_Admin {
 	 *
 	 * Uses the Walker_ExtendedTaxonomyRadios class for the walker.
 	 *
-	 * @param object $post     The post object
-	 * @param array  $meta_box The meta box arguments
+	 * @param WP_Post $post     The post object.
+	 * @param array   $meta_box The meta box arguments.
 	 * @return null
 	 */
 	public function meta_box_radio( WP_Post $post, array $meta_box ) {
@@ -374,8 +374,8 @@ class Extended_Taxonomy_Admin {
 	 *
 	 * Uses the Walker_ExtendedTaxonomyDropdown class for the walker.
 	 *
-	 * @param object $post     The post object
-	 * @param array  $meta_box The meta box arguments
+	 * @param WP_Post $post     The post object.
+	 * @param array   $meta_box The meta box arguments.
 	 * @return null
 	 */
 	public function meta_box_dropdown( WP_Post $post, array $meta_box ) {
@@ -389,8 +389,8 @@ class Extended_Taxonomy_Admin {
 	/**
 	 * Display the 'simple' meta box on the post editing screen.
 	 *
-	 * @param object $post     The post object
-	 * @param array  $meta_box The meta box arguments
+	 * @param WP_Post $post     The post object.
+	 * @param array   $meta_box The meta box arguments.
 	 * @return null
 	 */
 	public function meta_box_simple( WP_Post $post, array $meta_box ) {
@@ -402,10 +402,10 @@ class Extended_Taxonomy_Admin {
 	/**
 	 * Display a meta box on the post editing screen.
 	 *
-	 * @param object $post The post object
-	 * @param object $walker An optional term walker
-	 * @param bool $show_none Whether to include a 'none' item in the term list
-	 * @param string $type The taxonomy list type (checklist or dropdown)
+	 * @param WP_Post $post      The post object.
+	 * @param Walker  $walker    Optional. A term walker.
+	 * @param bool    $show_none Optional. Whether to include a 'none' item in the term list. Default false.
+	 * @param string  $type      Optional. The taxonomy list type (checklist or dropdown). Default 'checklist'.
 	 * @return null
 	 */
 	protected function do_meta_box( WP_Post $post, Walker $walker = null, $show_none = false, $type = 'checklist' ) {
@@ -429,9 +429,9 @@ class Extended_Taxonomy_Admin {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param stdClass $tax  The current taxonomy object.
-		 * @param WP_Post  $post The current post object.
-		 * @param string   $type The taxonomy list type ('checklist' or 'dropdown').
+		 * @param WP_Taxonomy $tax  The current taxonomy object.
+		 * @param WP_Post     $post The current post object.
+		 * @param string      $type The taxonomy list type ('checklist' or 'dropdown').
 		 */
 		do_action( 'ext-taxos/meta_box/before', $tax, $post, $type );
 
@@ -537,9 +537,9 @@ class Extended_Taxonomy_Admin {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param stdClass $tax  The current taxonomy object.
-		 * @param WP_Post  $post The current post object.
-		 * @param string   $type The taxonomy list type ('checklist' or 'dropdown').
+		 * @param WP_Taxonomy $tax  The current taxonomy object.
+		 * @param WP_Post     $post The current post object.
+		 * @param string      $type The taxonomy list type ('checklist' or 'dropdown').
 		 */
 		do_action( 'ext-taxos/meta_box/after', $tax, $post, $type );
 
