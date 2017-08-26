@@ -22,8 +22,34 @@ declare(strict_types=1);
  * GNU General Public License for more details.
  */
 
-require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/src/extended_cpt.php';
-require_once __DIR__ . '/src/extended_cpt_admin.php';
-require_once __DIR__ . '/src/extended_taxonomy.php';
-require_once __DIR__ . '/src/extended_taxonomy_admin.php';
+class Extended_Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
+
+	public $taxo;
+
+	public function __construct( Extended_Taxonomy $taxo ) {
+		$this->taxo = $taxo;
+	}
+
+	public function get_tests() {
+
+		global $wp_rewrite;
+
+		if ( ! $wp_rewrite->using_permalinks() ) {
+			return array();
+		}
+
+		if ( ! isset( $wp_rewrite->extra_permastructs[ $this->taxo->taxonomy ] ) ) {
+			return array();
+		}
+
+		$struct     = $wp_rewrite->extra_permastructs[ $this->taxo->taxonomy ];
+		$tax        = get_taxonomy( $this->taxo->taxonomy );
+		$name       = sprintf( '%s (%s)', $tax->labels->name, $this->taxo->taxonomy );
+
+		return array(
+			$name => $this->get_rewrites( $struct, array() ),
+		);
+
+	}
+
+}
