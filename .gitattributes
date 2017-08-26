@@ -1,0 +1,10 @@
+* text=auto
+
+/tests export-ignore
+/bin export-ignore
+/.travis.yml export-ignore
+/CONTRIBUTING.md export-ignore
+/README.md export-ignore
+/changelog.md export-ignore
+/phpunit-ms.xml.dist export-ignore
+/phpunit.xml.dist export-ignore
