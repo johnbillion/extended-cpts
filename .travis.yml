@@ -18,18 +18,15 @@ php:
     - 7.0
 
 env:
+    # latest:
+    - WP_VERSION=latest
     # nightly:
-    - WP_VERSION=nightly WP_MULTISITE=0
-    - WP_VERSION=nightly WP_MULTISITE=1
-    # minimum supported version:
-    - WP_VERSION=4.7 WP_MULTISITE=0
-    - WP_VERSION=4.7 WP_MULTISITE=1
+    - WP_VERSION=nightly
 
 matrix:
     allow_failures:
         # allow failures on nightlies:
-        - env: WP_VERSION=nightly WP_MULTISITE=0
-        - env: WP_VERSION=nightly WP_MULTISITE=1
+        - env: WP_VERSION=nightly
 
 install:
     - composer install --dev --no-interaction
@@ -38,7 +35,12 @@ before_script:
     - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION 
 
 script:
-    - ./vendor/bin/phpunit --coverage-clover coverage.xml
+    - |
+      export WP_MULTISITE=0
+      ./vendor/bin/phpunit -v --exclude-group=ms-required
+    - |
+      export WP_MULTISITE=1
+      ./vendor/bin/phpunit -v --exclude-group=ms-excluded --coverage-clover coverage.xml
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
