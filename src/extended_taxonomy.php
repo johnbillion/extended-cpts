@@ -161,6 +161,15 @@ class Extended_Taxonomy {
 		# Register taxonomy:
 		$this->register_taxonomy();
 
+		/**
+		 * Fired when the extended taxonomy instance is set up.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param Extended_Taxonomy $instance The extended taxonomy instance.
+		 */
+		do_action( "ext-taxos/{taxonomy}/instance", $this );
+
 	}
 
 	/**
