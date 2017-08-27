@@ -712,8 +712,7 @@ class Extended_CPT {
 	/**
 	 * Helper function for registering a taxonomy and adding it to this post type.
 	 *
-	 * Accepts the same parameters as `register_extended_taxonomy()`, minus the `$object_type` parameter. Will fall back
-	 * to `register_taxonomy()` if Extended Taxonomies isn't present.
+	 * Accepts the same parameters as `register_extended_taxonomy()`, minus the `$object_type` parameter.
 	 *
 	 * Example usage:
 	 *
@@ -729,10 +728,8 @@ class Extended_CPT {
 
 		if ( taxonomy_exists( $taxonomy ) ) {
 			register_taxonomy_for_object_type( $taxonomy, $this->post_type );
-		} else if ( function_exists( 'register_extended_taxonomy' ) ) {
-			register_extended_taxonomy( $taxonomy, $this->post_type, $args, $names );
 		} else {
-			register_taxonomy( $taxonomy, $this->post_type, $args );
+			register_extended_taxonomy( $taxonomy, $this->post_type, $args, $names );
 		}
 
 		return get_taxonomy( $taxonomy );
