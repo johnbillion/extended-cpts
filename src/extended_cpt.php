@@ -212,14 +212,8 @@ class Extended_CPT {
 			add_filter( 'rewrite_testing_tests', [ $this, 'rewrite_testing_tests' ], 1 );
 		}
 
-		# Register post type when WordPress initialises:
-		if ( did_action( 'init' ) ) {
-			$this->register_post_type();
-		} else {
-			// @codeCoverageIgnoreStart
-			add_action( 'init', [ $this, 'register_post_type' ], 9 );
-			// @codeCoverageIgnoreEnd
-		}
+		# Register post type:
+		$this->register_post_type();
 
 		/**
 		 * Fired when the extended post type instance is set up.

@@ -158,12 +158,8 @@ class Extended_Taxonomy {
 			add_filter( 'rewrite_testing_tests', array( $this, 'rewrite_testing_tests' ), 1 );
 		}
 
-		# Register taxonomy when WordPress initialises:
-		if ( 'init' === current_filter() ) {
-			call_user_func( array( $this, 'register_taxonomy' ) );
-		} else {
-			add_action( 'init', array( $this, 'register_taxonomy' ), 9 );
-		}
+		# Register taxonomy:
+		$this->register_taxonomy();
 
 	}
 
