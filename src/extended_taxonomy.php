@@ -167,7 +167,7 @@ class Extended_Taxonomy {
 		 *
 		 * @param Extended_Taxonomy $instance The extended taxonomy instance.
 		 */
-		do_action( "ext-taxos/{taxonomy}/instance", $this );
+		do_action( "ext-taxos/{$taxonomy}/instance", $this );
 
 	}
 
