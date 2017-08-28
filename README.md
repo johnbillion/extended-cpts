@@ -59,7 +59,7 @@ Extended CPTs is a library which provides extended functionality to WordPress cu
 **PHP:** 7.0  
 **WordPress:** 4.8  
 
-## Usage ##
+## Installation ##
 
 Extended CPTs is a developer library, not a plugin, which means you need to include it somewhere in your own project.
 You can use Composer:
@@ -73,6 +73,8 @@ Or you can download the library and include it manually:
 ```php
 require_once 'extended-cpts/extended-cpts.php';
 ```
+
+## Usage ##
 
 Need a simple post type with no frills? You can register a post type with a single parameter:
 
@@ -90,7 +92,7 @@ add_action( 'init', function() {
 ) };
 ```
 
-Try it. You'll have a hierarchical public post type with an admin UI, and a hierarchical public taxonomy with an admin UI, and all the labels and updated messages will be automatically generated.
+Try it. You'll have a hierarchical public post type with an admin UI, a hierarchical public taxonomy with an admin UI, and all the labels and updated messages for them will be automatically generated.
 
 Or for a bit more functionality:
 
