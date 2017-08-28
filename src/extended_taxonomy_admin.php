@@ -419,7 +419,7 @@ class Extended_Taxonomy_Admin {
 			if ( isset( $tax->labels->no_item ) ) {
 				$none = $tax->labels->no_item;
 			} else {
-				$none = esc_html__( 'Not specified', 'ext_taxos' );
+				$none = esc_html__( 'Not specified', 'extended-cpts' );
 			}
 		} else {
 			$none = '';

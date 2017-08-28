@@ -678,7 +678,7 @@ class Extended_CPT_Admin {
 				} else {
 					$k = 'author';
 				}
-				$new_cols[ $k ] = esc_html__( 'Author' );
+				$new_cols[ $k ] = esc_html__( 'Author', 'extended-cpts' );
 			} else if ( is_array( $col ) ) {
 				if ( isset( $col['cap'] ) && ! current_user_can( $col['cap'] ) ) {
 					continue;
