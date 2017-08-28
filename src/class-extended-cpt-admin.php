@@ -208,19 +208,11 @@ class Extended_CPT_Admin {
 					continue;
 				}
 
-				# For this, we need the dropdown walker from Extended Taxonomies:
-				$class = 'Walker_ExtendedTaxonomyDropdown';
-				if ( ! class_exists( $class ) ) {
-					trigger_error( esc_html( sprintf(
-						__( 'The "%s" class is required in order to display taxonomy filters', 'extended-cpts' ),
-						$class
-					) ), E_USER_WARNING );
-					continue;
-				} else {
-					$walker = new Walker_ExtendedTaxonomyDropdown( [
-						'field' => 'slug',
-					] );
-				}
+				require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
+
+				$walker = new Walker_ExtendedTaxonomyDropdown( [
+					'field' => 'slug',
+				] );
 
 				# If we haven't specified a title, use the all_items label from the taxonomy:
 				if ( ! isset( $filter['title'] ) ) {
