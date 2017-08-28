@@ -80,7 +80,7 @@ Need a simple post type with no frills? You can register a post type with a sing
 
 ```php
 add_action( 'init', function() {
-    register_extended_post_type( 'article' );
+	register_extended_post_type( 'article' );
 } );
 ```
 
@@ -98,50 +98,50 @@ Or for a bit more functionality:
 
 ```php
 add_action( 'init', function() {
-    register_extended_post_type( 'story', [
+	register_extended_post_type( 'story', [
 
-    	# Add the post type to the site's main RSS feed:
-    	'show_in_feed' => true,
+		# Add the post type to the site's main RSS feed:
+		'show_in_feed' => true,
 
-    	# Show all posts on the post type archive:
-    	'archive' => [
-    		'nopaging' => true,
-    	],
+		# Show all posts on the post type archive:
+		'archive' => [
+			'nopaging' => true,
+		],
 
-    	# Add some custom columns to the admin screen:
-    	'admin_cols' => [
-    		'story_featured_image' => [
-    			'title'          => 'Illustration',
-    			'featured_image' => 'thumbnail'
-    		],
-    		'story_published' => [
-    			'title'       => 'Published',
-    			'meta_key'    => 'published_date',
-    			'date_format' => 'd/m/Y'
-    		],
-    		'story_genre' => [
-    			'taxonomy' => 'genre'
-    		],
-    	],
+		# Add some custom columns to the admin screen:
+		'admin_cols' => [
+			'story_featured_image' => [
+				'title'          => 'Illustration',
+				'featured_image' => 'thumbnail'
+			],
+			'story_published' => [
+				'title'       => 'Published',
+				'meta_key'    => 'published_date',
+				'date_format' => 'd/m/Y'
+			],
+			'story_genre' => [
+				'taxonomy' => 'genre'
+			],
+		],
 
-    	# Add a dropdown filter to the admin screen:
-    	'admin_filters' => [
-    		'story_genre' => [
-    			'taxonomy' => 'genre'
-    		],
-    		'story_rating' => [
-    			'meta_key' => 'star_rating',
-    		],
-    	],
+		# Add a dropdown filter to the admin screen:
+		'admin_filters' => [
+			'story_genre' => [
+				'taxonomy' => 'genre'
+			],
+			'story_rating' => [
+				'meta_key' => 'star_rating',
+			],
+		],
 
-    ], [
+	], [
 
-    	# Override the base names used for labels:
-    	'singular' => 'Story',
-    	'plural'   => 'Stories',
-    	'slug'     => 'stories',
+		# Override the base names used for labels:
+		'singular' => 'Story',
+		'plural'   => 'Stories',
+		'slug'     => 'stories',
 
-    ] );
+	] );
 
 	register_extended_taxonomy( 'genre', 'story', [
 
