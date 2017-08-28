@@ -89,7 +89,8 @@ class Extended_Taxonomy_Admin {
 	 */
 	public function _log_default_cols( array $cols ) {
 
-		return $this->_cols = $cols;
+		$this->_cols = $cols;
+		return $this->_cols;
 
 	}
 
@@ -192,7 +193,8 @@ class Extended_Taxonomy_Admin {
 		$custom   = array_diff_key( $cols, $this->_cols );
 		$new_cols = array_merge( $new_cols, $custom );
 
-		return $this->the_cols = $new_cols;
+		$this->the_cols = $new_cols;
+		return $this->the_cols;
 
 	}
 
@@ -339,14 +341,12 @@ class Extended_Taxonomy_Admin {
 				} else {
 					add_meta_box( "{$this->taxo->taxonomy}div", $tax->labels->name, $this->args['meta_box'], $post_type, 'side' );
 				}
-
 			} elseif ( false !== $this->args['meta_box'] ) {
 
 				# This must be an 'exclusive' taxonomy. Add the radio meta box:
 				add_meta_box( "{$this->taxo->taxonomy}div", $tax->labels->singular_name, array( $this, 'meta_box_radio' ), $post_type, 'side' );
 
 			}
-
 		}
 
 	}
@@ -411,7 +411,9 @@ class Extended_Taxonomy_Admin {
 
 		$taxonomy = $this->taxo->taxonomy;
 		$tax      = get_taxonomy( $taxonomy );
-		$selected = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'ids' ) );
+		$selected = wp_get_object_terms( $post->ID, $taxonomy, [
+			'fields' => 'ids',
+		] );
 
 		if ( $show_none ) {
 			if ( isset( $tax->labels->no_item ) ) {
@@ -442,7 +444,6 @@ class Extended_Taxonomy_Admin {
 			switch ( $type ) {
 
 				case 'dropdown':
-
 					wp_dropdown_categories( array(
 						'option_none_value' => ( is_taxonomy_hierarchical( $taxonomy ) ? '-1' : '' ),
 						'show_option_none'  => $none,
@@ -457,12 +458,9 @@ class Extended_Taxonomy_Admin {
 						'walker'            => $walker,
 						'required'          => $this->args['required'],
 					) );
-
 					break;
-
 				case 'checklist':
 				default:
-
 					?>
 					<style type="text/css">
 						/* Style for the 'none' item: */
@@ -521,7 +519,6 @@ class Extended_Taxonomy_Admin {
 					</ul>
 
 					<?php
-
 					break;
 
 			}

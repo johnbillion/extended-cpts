@@ -32,7 +32,7 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 		$this->cpt = $cpt;
 	}
 
-	public function get_tests(): array {
+	public function get_tests() : array {
 
 		global $wp_rewrite;
 
@@ -51,7 +51,7 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 
 		// Post type archive rewrites are generated separately. See the `has_archive` handling in `register_post_type()`.
 		if ( $pto->has_archive ) {
-			$archive_slug = ( $pto->has_archive === true ) ? $pto->rewrite['slug'] : $pto->has_archive;
+			$archive_slug = ( true === $pto->has_archive ) ? $pto->rewrite['slug'] : $pto->has_archive;
 
 			if ( $pto->rewrite['with_front'] ) {
 				$archive_slug = substr( $wp_rewrite->front, 1 ) . $archive_slug;

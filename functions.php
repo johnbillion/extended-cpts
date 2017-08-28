@@ -56,7 +56,7 @@ declare(strict_types=1);
  * }
  * @return Extended_CPT
  */
-function register_extended_post_type( string $post_type, array $args = [], array $names = [] ): Extended_CPT {
+function register_extended_post_type( string $post_type, array $args = [], array $names = [] ) : Extended_CPT {
 
 	$cpt = new Extended_CPT( $post_type, $args, $names );
 
@@ -126,7 +126,7 @@ function register_extended_post_type( string $post_type, array $args = [], array
  * }
  * @return Extended_Taxonomy
  */
-function register_extended_taxonomy( string $taxonomy, $object_type, array $args = [], array $names = [] ): Extended_Taxonomy {
+function register_extended_taxonomy( string $taxonomy, $object_type, array $args = [], array $names = [] ) : Extended_Taxonomy {
 
 	$taxo = new Extended_Taxonomy( $taxonomy, $object_type, $args, $names );
 

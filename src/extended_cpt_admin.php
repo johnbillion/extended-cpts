@@ -105,7 +105,7 @@ class Extended_CPT_Admin {
 	 */
 	public function admin_head() {
 
-		if ( $this->cpt->post_type !== self::get_current_post_type() ) {
+		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
 			return;
 		}
 
@@ -126,7 +126,7 @@ class Extended_CPT_Admin {
 	 */
 	public function default_sort() {
 
-		if ( $this->cpt->post_type !== self::get_current_post_type() ) {
+		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
 			return;
 		}
 
@@ -153,7 +153,7 @@ class Extended_CPT_Admin {
 	 * @param  WP_Post $post  The current post.
 	 * @return string         The updated placeholder text.
 	 */
-	public function enter_title_here( string $title, WP_Post $post ): string {
+	public function enter_title_here( string $title, WP_Post $post ) : string {
 
 		if ( $this->cpt->post_type !== $post->post_type ) {
 			return $title;
@@ -188,7 +188,7 @@ class Extended_CPT_Admin {
 
 		global $wpdb;
 
-		if ( $this->cpt->post_type !== self::get_current_post_type() ) {
+		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
 			return;
 		}
 
@@ -209,7 +209,8 @@ class Extended_CPT_Admin {
 				}
 
 				# For this, we need the dropdown walker from Extended Taxonomies:
-				if ( ! class_exists( $class = 'Walker_ExtendedTaxonomyDropdown' ) ) {
+				$class = 'Walker_ExtendedTaxonomyDropdown';
+				if ( ! class_exists( $class ) ) {
 					trigger_error( esc_html( sprintf(
 						__( 'The "%s" class is required in order to display taxonomy filters', 'extended-cpts' ),
 						$class
@@ -256,6 +257,7 @@ class Extended_CPT_Admin {
 				if ( ! isset( $filter['options'] ) ) {
 					# Fetch all the values for our meta key:
 					# @TODO AND m.meta_value != null ?
+					// @codingStandardsIgnoreStart
 					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
 						SELECT DISTINCT meta_value
 						FROM {$wpdb->postmeta} as m
@@ -265,6 +267,7 @@ class Extended_CPT_Admin {
 						AND p.post_type = %s
 						ORDER BY m.meta_value ASC
 					", $filter['meta_key'], $this->cpt->post_type ) );
+					// @codingStandardsIgnoreEnd
 				} else if ( is_callable( $filter['options'] ) ) {
 					$filter['options'] = call_user_func( $filter['options'] );
 				}
@@ -289,9 +292,9 @@ class Extended_CPT_Admin {
 				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
 					<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
 					<?php
-						foreach ( $filter['options'] as $k => $v ) {
-							$key = ( $use_key ? $k : $v );
-						?>
+					foreach ( $filter['options'] as $k => $v ) {
+						$key = ( $use_key ? $k : $v );
+					?>
 						<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $selected, $key ); ?>><?php echo esc_html( $v ); ?></option>
 					<?php } ?>
 				</select>
@@ -356,7 +359,7 @@ class Extended_CPT_Admin {
 	 * @param  array $vars Public query variables
 	 * @return array       Updated public query variables
 	 */
-	public function add_query_vars( array $vars ): array {
+	public function add_query_vars( array $vars ) : array {
 
 		$filters = array_keys( $this->args['admin_filters'] );
 
@@ -424,7 +427,7 @@ class Extended_CPT_Admin {
 	 * @param  WP_Query $wp_query The current `WP_Query` object.
 	 * @return array              The updated SQL clauses.
 	 */
-	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
+	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) : array {
 
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
 			return $clauses;
@@ -446,7 +449,7 @@ class Extended_CPT_Admin {
 	 * @param  array $items Array of items to display on the widget.
 	 * @return array        Updated array of items.
 	 */
-	public function glance_items( array $items ): array {
+	public function glance_items( array $items ) : array {
 
 		$pto = get_post_type_object( $this->cpt->post_type );
 
@@ -494,7 +497,7 @@ class Extended_CPT_Admin {
 	 * @param  array $messages An associative array of post updated messages with post type as keys.
 	 * @return array           Updated array of post updated messages.
 	 */
-	public function post_updated_messages( array $messages ): array {
+	public function post_updated_messages( array $messages ) : array {
 
 		global $post;
 
@@ -568,7 +571,7 @@ class Extended_CPT_Admin {
 	 * @param  array $counts   An array of counts for each key in `$messages`.
 	 * @return array           Updated array of bulk post updated messages.
 	 */
-	public function bulk_post_updated_messages( array $messages, array $counts ): array {
+	public function bulk_post_updated_messages( array $messages, array $counts ) : array {
 
 		$messages[ $this->cpt->post_type ] = [
 			'updated' => sprintf(
@@ -613,7 +616,7 @@ class Extended_CPT_Admin {
 	 * @param  array $cols Associative array of sortable columns
 	 * @return array       Updated array of sortable columns
 	 */
-	public function sortables( array $cols ): array {
+	public function sortables( array $cols ) : array {
 
 		foreach ( $this->args['admin_cols'] as $id => $col ) {
 			if ( ! is_array( $col ) ) {
@@ -639,7 +642,7 @@ class Extended_CPT_Admin {
 	 * @param  array $cols Associative array of columns
 	 * @return array       Updated array of columns
 	 */
-	public function cols( array $cols ): array {
+	public function cols( array $cols ) : array {
 
 		// This function gets called multiple times, so let's cache it for efficiency:
 		if ( isset( $this->the_cols ) ) {
@@ -694,7 +697,8 @@ class Extended_CPT_Admin {
 		$custom   = array_diff_key( $cols, $this->_cols );
 		$new_cols = array_merge( $new_cols, $custom );
 
-		return $this->the_cols = $new_cols;
+		$this->the_cols = $new_cols;
+		return $this->the_cols;
 
 	}
 
@@ -815,11 +819,14 @@ class Extended_CPT_Admin {
 				switch ( $args['link'] ) {
 					case 'view':
 						if ( $tax->public ) {
+							// https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/1096
+							// @codingStandardsIgnoreStart
 							$out[] = sprintf(
 								'<a href="%1$s">%2$s</a>',
 								esc_url( get_term_link( $term ) ),
 								esc_html( $term->name )
 							);
+							// @codingStandardsIgnoreEnd
 						} else {
 							$out[] = esc_html( $term->name );
 						}
@@ -883,7 +890,8 @@ class Extended_CPT_Admin {
 				break;
 
 			case 'post_status':
-				if ( $status = get_post_status_object( get_post_status( $post ) ) ) {
+				$status = get_post_status_object( get_post_status( $post ) );
+				if ( $status ) {
 					echo esc_html( $status->label );
 				}
 				break;
@@ -970,7 +978,8 @@ class Extended_CPT_Admin {
 		}
 
 		$_post = $post;
-		$meta  = $out = [];
+		$meta  = [];
+		$out   = [];
 		$field = 'connected_' . $connection;
 
 		if ( isset( $args['field'] ) && isset( $args['value'] ) ) {
@@ -983,7 +992,8 @@ class Extended_CPT_Admin {
 		}
 
 		if ( ! isset( $_post->$field ) ) {
-			if ( $type = p2p_type( $connection ) ) {
+			$type = p2p_type( $connection );
+			if ( $type ) {
 				$type->each_connected( array( $_post ), $meta, $field );
 			} else {
 				echo esc_html( sprintf(
@@ -1012,7 +1022,6 @@ class Extended_CPT_Admin {
 
 				switch ( $args['link'] ) {
 					case 'view':
-
 						if ( $pto->public ) {
 							if ( $pso->protected ) {
 								$out[] = sprintf(
@@ -1030,7 +1039,6 @@ class Extended_CPT_Admin {
 						} else {
 							$out[] = esc_html( get_the_title() );
 						}
-
 						break;
 					case 'edit':
 						if ( current_user_can( 'edit_post', $post->ID ) ) {
@@ -1076,7 +1084,7 @@ class Extended_CPT_Admin {
 	 * @param  WP_Post $post    The current post object
 	 * @return array            Array of updated post actions
 	 */
-	public function remove_quick_edit_action( array $actions, WP_Post $post ): array {
+	public function remove_quick_edit_action( array $actions, WP_Post $post ) : array {
 
 		if ( $this->cpt->post_type !== $post->post_type ) {
 			return $actions;
@@ -1093,7 +1101,7 @@ class Extended_CPT_Admin {
 	 * @param  array $actions Array of bulk actions
 	 * @return array          Array of updated bulk actions
 	 */
-	public function remove_quick_edit_menu( array $actions ): array {
+	public function remove_quick_edit_menu( array $actions ) : array {
 
 		unset( $actions['edit'] );
 		return $actions;
@@ -1106,9 +1114,10 @@ class Extended_CPT_Admin {
 	 * @param  array $cols The default columns for this post type screen
 	 * @return array       The default columns for this post type screen
 	 */
-	public function _log_default_cols( array $cols ): array {
+	public function _log_default_cols( array $cols ) : array {
 
-		return $this->_cols = $cols;
+		$this->_cols = $cols;
+		return $this->_cols;
 
 	}
 
@@ -1120,7 +1129,7 @@ class Extended_CPT_Admin {
 	 * @param  int    $number The number to compare against to use either `$single` or `$plural`
 	 * @return string         Either `$single` or `$plural` text
 	 */
-	protected static function n( string $single, string $plural, int $number ): string {
+	protected static function n( string $single, string $plural, int $number ) : string {
 
 		return ( 1 === intval( $number ) ) ? $single : $plural;
 
@@ -1135,7 +1144,8 @@ class Extended_CPT_Admin {
 	protected function get_item_title( array $item ) {
 
 		if ( isset( $item['taxonomy'] ) ) {
-			if ( $tax = get_taxonomy( $item['taxonomy'] ) ) {
+			$tax = get_taxonomy( $item['taxonomy'] );
+			if ( $tax ) {
 				if ( ! empty( $tax->exclusive ) ) {
 					return $tax->labels->singular_name;
 				} else {
@@ -1165,7 +1175,8 @@ class Extended_CPT_Admin {
 				return $fallback;
 			}
 
-			if ( ! $ctype = p2p_type( $item['connection'] ) ) {
+			$ctype = p2p_type( $item['connection'] );
+			if ( ! $ctype ) {
 				return $fallback;
 			}
 
@@ -1181,7 +1192,8 @@ class Extended_CPT_Admin {
 
 		} else if ( isset( $item['connection'] ) ) {
 			if ( function_exists( 'p2p_type' ) && $this->p2p_connection_exists( $item['connection'] ) ) {
-				if ( $ctype = p2p_type( $item['connection'] ) ) {
+				$ctype = p2p_type( $item['connection'] );
+				if ( $ctype ) {
 					$other = ( 'from' === $ctype->direction_from_types( 'post', $this->cpt->post_type ) ) ? 'to' : 'from';
 					return $ctype->side[ $other ]->get_title();
 				}
@@ -1200,7 +1212,7 @@ class Extended_CPT_Admin {
 	 * @param string $connection A connection type.
 	 * @return bool Whether the connection exists.
 	 */
-	protected function p2p_connection_exists( string $connection ): bool {
+	protected function p2p_connection_exists( string $connection ) : bool {
 		if ( ! isset( $this->connection_exists[ $connection ] ) ) {
 			$this->connection_exists[ $connection ] = p2p_connection_exists( $connection );
 		}

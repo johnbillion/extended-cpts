@@ -202,7 +202,11 @@ class Extended_Taxonomy {
 			$query_var = $this->args['query_var'];
 		}
 
-		if ( $query_var && count( get_post_types( array( 'query_var' => $query_var ) ) ) ) {
+		$post_types = get_post_types( [
+			'query_var' => $query_var,
+		] );
+
+		if ( $query_var && count( $post_types ) ) {
 			trigger_error( esc_html( sprintf(
 				__( 'Taxonomy query var "%s" clashes with a post type query var of the same name', 'ext_taxos' ),
 				$query_var
