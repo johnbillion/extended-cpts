@@ -22,7 +22,7 @@ declare(strict_types=1);
  */
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/src/extended_cpt.php';
-require_once __DIR__ . '/src/extended_cpt_admin.php';
-require_once __DIR__ . '/src/extended_taxonomy.php';
-require_once __DIR__ . '/src/extended_taxonomy_admin.php';
+require_once __DIR__ . '/src/class-extended-cpt.php';
+require_once __DIR__ . '/src/class-extended-cpt-admin.php';
+require_once __DIR__ . '/src/class-extended-taxonomy.php';
+require_once __DIR__ . '/src/class-extended-taxonomy-admin.php';

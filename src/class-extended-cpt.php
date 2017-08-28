@@ -639,8 +639,8 @@ class Extended_CPT {
 	 * @return array        Updated rewrite rule tests.
 	 */
 	public function rewrite_testing_tests( array $tests ) : array {
-		require_once __DIR__ . '/extended_rewrite_testing.php';
-		require_once __DIR__ . '/extended_cpt_rewrite_testing.php';
+		require_once __DIR__ . '/class-extended-rewrite-testing.php';
+		require_once __DIR__ . '/class-extended-cpt-rewrite-testing.php';
 
 		$extended = new Extended_CPT_Rewrite_Testing( $this );
 

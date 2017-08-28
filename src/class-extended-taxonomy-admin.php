@@ -361,7 +361,7 @@ class Extended_Taxonomy_Admin {
 	 * @return null
 	 */
 	public function meta_box_radio( WP_Post $post, array $meta_box ) {
-		require_once __DIR__ . '/walker_extended_taxonomy_radios.php';
+		require_once __DIR__ . '/class-walker-extendedtaxonomyradios.php';
 
 		$walker = new Walker_ExtendedTaxonomyRadios;
 		$this->do_meta_box( $post, $walker, true, 'checklist' );
@@ -378,7 +378,7 @@ class Extended_Taxonomy_Admin {
 	 * @return null
 	 */
 	public function meta_box_dropdown( WP_Post $post, array $meta_box ) {
-		require_once __DIR__ . '/walker_extended_taxonomy_dropdown.php';
+		require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
 
 		$walker = new Walker_ExtendedTaxonomyDropdown;
 		$this->do_meta_box( $post, $walker, true, 'dropdown' );
@@ -479,7 +479,7 @@ class Extended_Taxonomy_Admin {
 
 						# Standard WP Walker_Category_Checklist does not cut it
 						if ( empty( $walker ) || ! is_a( $walker, 'Walker' ) ) {
-							require_once __DIR__ . '/walker_extended_taxonomy_checkboxes.php';
+							require_once __DIR__ . '/class-walker-extendedtaxonomycheckboxes.php';
 							$walker = new Walker_ExtendedTaxonomyCheckboxes;
 						}
 

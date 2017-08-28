@@ -180,8 +180,8 @@ class Extended_Taxonomy {
 	 * @return array        Updated rewrite rule tests.
 	 */
 	public function rewrite_testing_tests( array $tests ) {
-		require_once __DIR__ . '/extended_rewrite_testing.php';
-		require_once __DIR__ . '/extended_taxonomy_rewrite_testing.php';
+		require_once __DIR__ . '/class-extended-rewrite-testing.php';
+		require_once __DIR__ . '/class-extended-taxonomy-rewrite-testing.php';
 
 		$extended = new Extended_Taxonomy_Rewrite_Testing( $this );
 
