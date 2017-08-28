@@ -42,7 +42,7 @@ Extended CPTs is a library which provides extended functionality to WordPress cu
 ## Minimum Requirements ##
 
 **PHP:** 7.0  
-**WordPress:** 4.7  
+**WordPress:** 4.8  
 
 ## Usage ##
 
