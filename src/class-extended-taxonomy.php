@@ -58,7 +58,7 @@ class Extended_Taxonomy {
 	 * @param string       $taxonomy    The taxonomy name.
 	 * @param array|string $object_type Name(s) of the object type(s) for the taxonomy.
 	 * @param array        $args        Optional. The taxonomy arguments.
-	 * @param array        $names       Optional. An associative array of the plural, singular, and slug names.
+	 * @param string[]     $names       Optional. An associative array of the plural, singular, and slug names.
 	 */
 	public function __construct( $taxonomy, $object_type, array $args = [], array $names = [] ) {
 
@@ -75,7 +75,7 @@ class Extended_Taxonomy {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array $names The plural, singular, and slug names (if any were specified).
+		 * @param string[] $names The plural, singular, and slug names (if any were specified).
 		 */
 		$names = apply_filters( "ext-taxos/{$taxonomy}/names", $names );
 

@@ -63,9 +63,9 @@ class Extended_CPT {
 	 *
 	 * @see register_extended_post_type()
 	 *
-	 * @param string $post_type The post type name.
-	 * @param array  $args      Optional. The post type arguments.
-	 * @param array  $names     Optional. The plural, singular, and slug names.
+	 * @param string   $post_type The post type name.
+	 * @param array    $args      Optional. The post type arguments.
+	 * @param string[] $names     Optional. The plural, singular, and slug names.
 	 */
 	public function __construct( string $post_type, array $args = [], array $names = [] ) {
 
@@ -82,7 +82,7 @@ class Extended_CPT {
 		 *
 		 * @since 2.4.0
 		 *
-		 * @param array $names The plural, singular, and slug names (if any were specified).
+		 * @param string[] $names The plural, singular, and slug names (if any were specified).
 		 */
 		$names = apply_filters( "ext-cpts/{$post_type}/names", $names );
 
@@ -593,9 +593,9 @@ class Extended_CPT {
 				 * Filter the term that gets used in the `$tax` permalink token.
 				 * @TODO make this more betterer ^
 				 *
-				 * @param WP_Term  $term  The `$tax` term to use in the permalink.
-				 * @param array    $terms Array of all `$tax` terms associated with the post.
-				 * @param WP_Post  $post  The post in question.
+				 * @param WP_Term   $term  The `$tax` term to use in the permalink.
+				 * @param WP_Term[] $terms Array of all `$tax` terms associated with the post.
+				 * @param WP_Post   $post  The post in question.
 				 */
 				$term_object = apply_filters( "post_link_{$tax}", reset( $terms ), $terms, $post );
 

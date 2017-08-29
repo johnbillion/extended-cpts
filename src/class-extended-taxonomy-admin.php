@@ -589,7 +589,7 @@ class Extended_Taxonomy_Admin {
 	 *   5 => "Term not updated."
 	 *   6 => "Terms deleted."
 	 *
-	 * @param array $messages An associative array of term updated messages with taxonomy name as keys.
+	 * @param string[] $messages An associative array of term updated messages with taxonomy name as keys.
 	 * @return array Updated array of term updated messages.
 	 */
 	public function term_updated_messages( array $messages ) {
