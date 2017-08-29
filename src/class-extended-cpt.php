@@ -97,7 +97,7 @@ class Extended_CPT {
 
 		if ( isset( $names['slug'] ) ) {
 			$this->post_slug = $names['slug'];
-		} else if ( isset( $names['plural'] ) ) {
+		} elseif ( isset( $names['plural'] ) ) {
 			$this->post_slug = $names['plural'];
 		} else {
 			$this->post_slug = $post_type . 's';
@@ -232,7 +232,7 @@ class Extended_CPT {
 	 */
 	public function maybe_filter( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
 
@@ -262,7 +262,7 @@ class Extended_CPT {
 	 */
 	public function maybe_sort_by_fields( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
 
@@ -301,7 +301,7 @@ class Extended_CPT {
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) : array {
 
-		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return $clauses;
 		}
 
@@ -342,13 +342,13 @@ class Extended_CPT {
 					'key'   => $filter['meta_key'],
 					'value' => wp_unslash( $query[ $filter_key ] ),
 				];
-			} else if ( isset( $filter['meta_search_key'] ) ) {
+			} elseif ( isset( $filter['meta_search_key'] ) ) {
 				$meta_query = [
 					'key'     => $filter['meta_search_key'],
 					'value'   => wp_unslash( $query[ $filter_key ] ),
 					'compare' => 'LIKE',
 				];
-			} else if ( isset( $filter['meta_exists'] ) ) {
+			} elseif ( isset( $filter['meta_exists'] ) ) {
 				$meta_query = [
 					'key'     => wp_unslash( $query[ $filter_key ] ),
 					'compare' => 'NOT IN',
@@ -404,7 +404,7 @@ class Extended_CPT {
 			$return['meta_key'] = $orderby['meta_key'];
 			$return['orderby']  = 'meta_value';
 			// @TODO meta_value_num
-		} else if ( isset( $orderby['post_field'] ) ) {
+		} elseif ( isset( $orderby['post_field'] ) ) {
 			$field = str_replace( 'post_', '', $orderby['post_field'] );
 			$return['orderby'] = $field;
 		}
@@ -500,7 +500,7 @@ class Extended_CPT {
 				'post',
 				$this->post_type,
 			];
-		} else if ( is_array( $vars['post_type'] ) && ( count( $vars['post_type'] ) > 1 ) ) {
+		} elseif ( is_array( $vars['post_type'] ) && ( count( $vars['post_type'] ) > 1 ) ) {
 			$vars['post_type'][] = $this->post_type;
 		}
 

@@ -60,7 +60,7 @@ class Extended_Taxonomy {
 	 * @param array        $args        Optional. The taxonomy arguments.
 	 * @param array        $names       Optional. An associative array of the plural, singular, and slug names.
 	 */
-	public function __construct( $taxonomy, $object_type, array $args = array(), array $names = array() ) {
+	public function __construct( $taxonomy, $object_type, array $args = [], array $names = [] ) {
 
 		/**
 		 * Filter the arguments for this taxonomy.
@@ -82,7 +82,7 @@ class Extended_Taxonomy {
 		if ( isset( $names['singular'] ) ) {
 			$this->tax_singular = $names['singular'];
 		} else {
-			$this->tax_singular = ucwords( str_replace( array( '-', '_' ), ' ', $taxonomy ) );
+			$this->tax_singular = ucwords( str_replace( [ '-', '_' ], ' ', $taxonomy ) );
 		}
 
 		if ( isset( $names['slug'] ) ) {
@@ -96,7 +96,7 @@ class Extended_Taxonomy {
 		if ( isset( $names['plural'] ) ) {
 			$this->tax_plural = $names['plural'];
 		} else {
-			$this->tax_plural = ucwords( str_replace( array( '-', '_' ), ' ', $this->tax_slug ) );
+			$this->tax_plural = ucwords( str_replace( [ '-', '_' ], ' ', $this->tax_slug ) );
 		}
 
 		$this->object_type = (array) $object_type;
@@ -154,7 +154,7 @@ class Extended_Taxonomy {
 
 		# Rewrite testing:
 		if ( $this->args['rewrite'] ) {
-			add_filter( 'rewrite_testing_tests', array( $this, 'rewrite_testing_tests' ), 1 );
+			add_filter( 'rewrite_testing_tests', [ $this, 'rewrite_testing_tests' ], 1 );
 		}
 
 		# Register taxonomy:
@@ -211,7 +211,7 @@ class Extended_Taxonomy {
 				__( 'Taxonomy query var "%s" clashes with a post type query var of the same name', 'extended-cpts' ),
 				$query_var
 			) ), E_USER_ERROR );
-		} elseif ( in_array( $query_var, array( 'type', 'tab' ) ) ) {
+		} elseif ( in_array( $query_var, [ 'type', 'tab' ], true ) ) {
 			trigger_error( esc_html( sprintf(
 				__( 'Taxonomy query var "%s" is not allowed', 'extended-cpts' ),
 				$query_var

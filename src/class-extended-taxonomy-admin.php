@@ -28,13 +28,13 @@ class Extended_Taxonomy_Admin {
 	 *
 	 * @var array
 	 */
-	protected $defaults = array(
+	protected $defaults = [
 		'meta_box'          => null,  # Custom arg
 		'dashboard_glance'  => false, # Custom arg
 		'checked_ontop'     => null,  # Custom arg
 		'admin_cols'        => null,  # Custom arg
 		'required'          => false, # Custom arg
-	);
+	];
 
 	public $taxo;
 	public $args;
@@ -47,7 +47,7 @@ class Extended_Taxonomy_Admin {
 	* @param Extended_Taxonomy $taxo An extended taxonomy object.
 	* @param array             $args Optional. The admin arguments.
 	*/
-	public function __construct( Extended_Taxonomy $taxo, array $args = array() ) {
+	public function __construct( Extended_Taxonomy $taxo, array $args = [] ) {
 
 		$this->taxo = $taxo;
 
@@ -61,22 +61,22 @@ class Extended_Taxonomy_Admin {
 
 		# Meta boxes:
 		if ( $this->taxo->args['exclusive'] || isset( $this->args['meta_box'] ) ) {
-			add_action( 'add_meta_boxes', array( $this, 'meta_boxes' ), 10, 2 );
+			add_action( 'add_meta_boxes', [ $this, 'meta_boxes' ], 10, 2 );
 		}
 
 		# 'At a Glance' dashboard panels:
 		if ( $this->args['dashboard_glance'] ) {
-			add_filter( 'dashboard_glance_items', array( $this, 'glance_items' ) );
+			add_filter( 'dashboard_glance_items', [ $this, 'glance_items' ] );
 		}
 
 		# Term updated messages:
-		add_filter( 'term_updated_messages', array( $this, 'term_updated_messages' ), 1, 2 );
+		add_filter( 'term_updated_messages', [ $this, 'term_updated_messages' ], 1, 2 );
 
 		# Admin columns:
 		if ( $this->args['admin_cols'] ) {
-			add_filter( "manage_edit-{$this->taxo->taxonomy}_columns",  array( $this, '_log_default_cols' ), 0 );
-			add_filter( "manage_edit-{$this->taxo->taxonomy}_columns",  array( $this, 'cols' ) );
-			add_action( "manage_{$this->taxo->taxonomy}_custom_column", array( $this, 'col' ), 10, 3 );
+			add_filter( "manage_edit-{$this->taxo->taxonomy}_columns",  [ $this, '_log_default_cols' ], 0 );
+			add_filter( "manage_edit-{$this->taxo->taxonomy}_columns",  [ $this, 'cols' ] );
+			add_action( "manage_{$this->taxo->taxonomy}_custom_column", [ $this, 'col' ], 10, 3 );
 		}
 
 	}
@@ -155,7 +155,7 @@ class Extended_Taxonomy_Admin {
 			return $this->the_cols;
 		}
 
-		$new_cols = array();
+		$new_cols = [];
 		$keep = array(
 			'cb',
 			'name',
@@ -165,7 +165,7 @@ class Extended_Taxonomy_Admin {
 
 		# Add existing columns we want to keep:
 		foreach ( $cols as $id => $title ) {
-			if ( in_array( $id, $keep ) && ! isset( $this->args['admin_cols'][ $id ] ) ) {
+			if ( in_array( $id, $keep, true ) && ! isset( $this->args['admin_cols'][ $id ] ) ) {
 				$new_cols[ $id ] = $title;
 			}
 		}
@@ -175,10 +175,10 @@ class Extended_Taxonomy_Admin {
 			if ( is_string( $col ) && isset( $cols[ $col ] ) ) {
 				# Existing (ie. built-in) column with id as the value
 				$new_cols[ $col ] = $cols[ $col ];
-			} else if ( is_string( $col ) && isset( $cols[ $id ] ) ) {
+			} elseif ( is_string( $col ) && isset( $cols[ $id ] ) ) {
 				# Existing (ie. built-in) column with id as the key and title as the value
 				$new_cols[ $id ] = esc_html( $col );
-			} else if ( is_array( $col ) ) {
+			} elseif ( is_array( $col ) ) {
 				if ( isset( $col['cap'] ) && ! current_user_can( $col['cap'] ) ) {
 					continue;
 				}
@@ -213,13 +213,13 @@ class Extended_Taxonomy_Admin {
 		# We're only interested in our custom columns:
 		$custom_cols = array_filter( array_keys( $c ) );
 
-		if ( ! in_array( $col, $custom_cols ) ) {
+		if ( ! in_array( $col, $custom_cols, true ) ) {
 			return;
 		}
 
 		if ( isset( $c[ $col ]['function'] ) ) {
 			call_user_func( $c[ $col ]['function'], $term_id );
-		} else if ( isset( $c[ $col ]['meta_key'] ) ) {
+		} elseif ( isset( $c[ $col ]['meta_key'] ) ) {
 			$this->col_term_meta( $c[ $col ]['meta_key'], $c[ $col ], $term_id );
 		}
 
@@ -235,7 +235,7 @@ class Extended_Taxonomy_Admin {
 	public function col_term_meta( $meta_key, array $args, $term_id ) {
 
 		$vals = get_term_meta( $term_id, $meta_key, false );
-		$echo = array();
+		$echo = [];
 		sort( $vals );
 
 		if ( isset( $args['date_format'] ) ) {
@@ -248,7 +248,7 @@ class Extended_Taxonomy_Admin {
 
 				if ( is_numeric( $val ) ) {
 					$echo[] = date( $args['date_format'], $val );
-				} else if ( ! empty( $val ) ) {
+				} elseif ( ! empty( $val ) ) {
 					$echo[] = mysql2date( $args['date_format'], $val );
 				}
 			}
@@ -279,7 +279,7 @@ class Extended_Taxonomy_Admin {
 	protected function get_item_title( array $item ) {
 
 		if ( isset( $item['meta_key'] ) ) {
-			return ucwords( trim( str_replace( array( '_', '-' ), ' ', $item['meta_key'] ) ) );
+			return ucwords( trim( str_replace( [ '_', '-' ], ' ', $item['meta_key'] ) ) );
 		} else {
 			return '';
 		}
@@ -303,7 +303,7 @@ class Extended_Taxonomy_Admin {
 		$post      = $object;
 		$taxos     = get_post_taxonomies( $post );
 
-		if ( in_array( $this->taxo->taxonomy, $taxos ) ) {
+		if ( in_array( $this->taxo->taxonomy, $taxos, true ) ) {
 
 			$tax = get_taxonomy( $this->taxo->taxonomy );
 
@@ -323,16 +323,16 @@ class Extended_Taxonomy_Admin {
 				# Set the 'meta_box' argument to the actual meta box callback function name:
 				if ( 'simple' === $this->args['meta_box'] ) {
 					if ( $this->taxo->args['exclusive'] ) {
-						$this->args['meta_box'] = array( $this, 'meta_box_radio' );
+						$this->args['meta_box'] = [ $this, 'meta_box_radio' ];
 					} else {
-						$this->args['meta_box'] = array( $this, 'meta_box_simple' );
+						$this->args['meta_box'] = [ $this, 'meta_box_simple' ];
 					}
 				} elseif ( 'radio' === $this->args['meta_box'] ) {
 					$this->taxo->args['exclusive'] = true;
-					$this->args['meta_box'] = array( $this, 'meta_box_radio' );
+					$this->args['meta_box'] = [ $this, 'meta_box_radio' ];
 				} elseif ( 'dropdown' === $this->args['meta_box'] ) {
 					$this->taxo->args['exclusive'] = true;
-					$this->args['meta_box'] = array( $this, 'meta_box_dropdown' );
+					$this->args['meta_box'] = [ $this, 'meta_box_dropdown' ];
 				}
 
 				# Add the meta box, using the plural or singular taxonomy label where relevant:
@@ -344,7 +344,7 @@ class Extended_Taxonomy_Admin {
 			} elseif ( false !== $this->args['meta_box'] ) {
 
 				# This must be an 'exclusive' taxonomy. Add the radio meta box:
-				add_meta_box( "{$this->taxo->taxonomy}div", $tax->labels->singular_name, array( $this, 'meta_box_radio' ), $post_type, 'side' );
+				add_meta_box( "{$this->taxo->taxonomy}div", $tax->labels->singular_name, [ $this, 'meta_box_radio' ], $post_type, 'side' );
 
 			}
 		}
@@ -500,7 +500,7 @@ class Extended_Taxonomy_Admin {
 								'slug'    => 'none',
 							);
 							if ( empty( $selected ) ) {
-								$_selected = array( 0 );
+								$_selected = [ 0 ];
 							} else {
 								$_selected = $selected;
 							}

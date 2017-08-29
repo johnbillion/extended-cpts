@@ -34,11 +34,11 @@ class Extended_Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
 		global $wp_rewrite;
 
 		if ( ! $wp_rewrite->using_permalinks() ) {
-			return array();
+			return [];
 		}
 
 		if ( ! isset( $wp_rewrite->extra_permastructs[ $this->taxo->taxonomy ] ) ) {
-			return array();
+			return [];
 		}
 
 		$struct     = $wp_rewrite->extra_permastructs[ $this->taxo->taxonomy ];
@@ -46,7 +46,7 @@ class Extended_Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
 		$name       = sprintf( '%s (%s)', $tax->labels->name, $this->taxo->taxonomy );
 
 		return array(
-			$name => $this->get_rewrites( $struct, array() ),
+			$name => $this->get_rewrites( $struct, [] ),
 		);
 
 	}

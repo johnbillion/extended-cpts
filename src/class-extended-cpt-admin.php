@@ -234,7 +234,7 @@ class Extended_CPT_Admin {
 					'walker'          => $walker,
 				] );
 
-			} else if ( isset( $filter['meta_key'] ) ) {
+			} elseif ( isset( $filter['meta_key'] ) ) {
 
 				# If we haven't specified a title, generate one from the meta key:
 				if ( ! isset( $filter['title'] ) ) {
@@ -260,7 +260,7 @@ class Extended_CPT_Admin {
 						ORDER BY m.meta_value ASC
 					", $filter['meta_key'], $this->cpt->post_type ) );
 					// @codingStandardsIgnoreEnd
-				} else if ( is_callable( $filter['options'] ) ) {
+				} elseif ( is_callable( $filter['options'] ) ) {
 					$filter['options'] = call_user_func( $filter['options'] );
 				}
 
@@ -292,7 +292,7 @@ class Extended_CPT_Admin {
 				</select>
 				<?php
 
-			} else if ( isset( $filter['meta_search_key'] ) ) {
+			} elseif ( isset( $filter['meta_search_key'] ) ) {
 
 				# If we haven't specified a title, generate one from the meta key:
 				if ( ! isset( $filter['title'] ) ) {
@@ -310,7 +310,7 @@ class Extended_CPT_Admin {
 				<label><?php printf( '%s:', esc_html( $filter['title'] ) ); ?>&nbsp;<input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $value ); ?>" /></label>
 				<?php
 
-			} else if ( isset( $filter['meta_exists'] ) ) {
+			} elseif ( isset( $filter['meta_exists'] ) ) {
 
 				# If we haven't specified a title, use the all_items label from the post type:
 				if ( ! isset( $filter['title'] ) ) {
@@ -366,7 +366,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_filter( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
 
@@ -396,7 +396,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_sort_by_fields( WP_Query $wp_query ) {
 
-		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
 
@@ -421,7 +421,7 @@ class Extended_CPT_Admin {
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) : array {
 
-		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'] ) ) {
+		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return $clauses;
 		}
 
@@ -649,7 +649,7 @@ class Extended_CPT_Admin {
 
 		# Add existing columns we want to keep:
 		foreach ( $cols as $id => $title ) {
-			if ( in_array( $id, $keep ) && ! isset( $this->args['admin_cols'][ $id ] ) ) {
+			if ( in_array( $id, $keep, true ) && ! isset( $this->args['admin_cols'][ $id ] ) ) {
 				$new_cols[ $id ] = $title;
 			}
 		}
@@ -659,10 +659,10 @@ class Extended_CPT_Admin {
 			if ( is_string( $col ) && isset( $cols[ $col ] ) ) {
 				# Existing (ie. built-in) column with id as the value
 				$new_cols[ $col ] = $cols[ $col ];
-			} else if ( is_string( $col ) && isset( $cols[ $id ] ) ) {
+			} elseif ( is_string( $col ) && isset( $cols[ $id ] ) ) {
 				# Existing (ie. built-in) column with id as the key and title as the value
 				$new_cols[ $id ] = esc_html( $col );
-			} else if ( 'author' === $col ) {
+			} elseif ( 'author' === $col ) {
 				# Automatic support for Co-Authors Plus plugin and special case for
 				# displaying author column when the post type doesn't support 'author'
 				if ( class_exists( 'coauthors_plus' ) ) {
@@ -671,7 +671,7 @@ class Extended_CPT_Admin {
 					$k = 'author';
 				}
 				$new_cols[ $k ] = esc_html__( 'Author', 'extended-cpts' );
-			} else if ( is_array( $col ) ) {
+			} elseif ( is_array( $col ) ) {
 				if ( isset( $col['cap'] ) && ! current_user_can( $col['cap'] ) ) {
 					continue;
 				}
@@ -707,7 +707,7 @@ class Extended_CPT_Admin {
 		# We're only interested in our custom columns:
 		$custom_cols = array_filter( array_keys( $c ) );
 
-		if ( ! in_array( $col, $custom_cols ) ) {
+		if ( ! in_array( $col, $custom_cols, true ) ) {
 			return;
 		}
 
@@ -721,15 +721,15 @@ class Extended_CPT_Admin {
 
 		if ( isset( $c[ $col ]['function'] ) ) {
 			call_user_func( $c[ $col ]['function'] );
-		} else if ( isset( $c[ $col ]['meta_key'] ) ) {
+		} elseif ( isset( $c[ $col ]['meta_key'] ) ) {
 			$this->col_post_meta( $c[ $col ]['meta_key'], $c[ $col ] );
-		} else if ( isset( $c[ $col ]['taxonomy'] ) ) {
+		} elseif ( isset( $c[ $col ]['taxonomy'] ) ) {
 			$this->col_taxonomy( $c[ $col ]['taxonomy'], $c[ $col ] );
-		} else if ( isset( $c[ $col ]['post_field'] ) ) {
+		} elseif ( isset( $c[ $col ]['post_field'] ) ) {
 			$this->col_post_field( $c[ $col ]['post_field'], $c[ $col ] );
-		} else if ( isset( $c[ $col ]['featured_image'] ) ) {
+		} elseif ( isset( $c[ $col ]['featured_image'] ) ) {
 			$this->col_featured_image( $c[ $col ]['featured_image'], $c[ $col ] );
-		} else if ( isset( $c[ $col ]['connection'] ) ) {
+		} elseif ( isset( $c[ $col ]['connection'] ) ) {
 			$this->col_connection( $c[ $col ]['connection'], $c[ $col ] );
 		}
 
@@ -757,7 +757,7 @@ class Extended_CPT_Admin {
 
 				if ( is_numeric( $val ) ) {
 					$echo[] = date_i18n( $args['date_format'], $val );
-				} else if ( ! empty( $val ) ) {
+				} elseif ( ! empty( $val ) ) {
 					$echo[] = mysql2date( $args['date_format'], $val );
 				}
 			}
@@ -986,7 +986,7 @@ class Extended_CPT_Admin {
 		if ( ! isset( $_post->$field ) ) {
 			$type = p2p_type( $connection );
 			if ( $type ) {
-				$type->each_connected( array( $_post ), $meta, $field );
+				$type->each_connected( [ $_post ], $meta, $field );
 			} else {
 				echo esc_html( sprintf(
 					__( 'Invalid connection type: %s', 'extended-cpts' ),
@@ -1146,17 +1146,17 @@ class Extended_CPT_Admin {
 			} else {
 				return $item['taxonomy'];
 			}
-		} else if ( isset( $item['post_field'] ) ) {
+		} elseif ( isset( $item['post_field'] ) ) {
 			return ucwords( trim( str_replace( [
 				'post_',
 				'_',
 			], ' ', $item['post_field'] ) ) );
-		} else if ( isset( $item['meta_key'] ) ) {
+		} elseif ( isset( $item['meta_key'] ) ) {
 			return ucwords( trim( str_replace( [
 				'_',
 				'-',
 			], ' ', $item['meta_key'] ) ) );
-		} else if ( isset( $item['connection'] ) && isset( $item['field'] ) && isset( $item['value'] ) ) {
+		} elseif ( isset( $item['connection'] ) && isset( $item['field'] ) && isset( $item['value'] ) ) {
 
 			$fallback = ucwords( trim( str_replace( [
 				'_',
@@ -1182,7 +1182,7 @@ class Extended_CPT_Admin {
 
 			return $fallback;
 
-		} else if ( isset( $item['connection'] ) ) {
+		} elseif ( isset( $item['connection'] ) ) {
 			if ( function_exists( 'p2p_type' ) && $this->p2p_connection_exists( $item['connection'] ) ) {
 				$ctype = p2p_type( $item['connection'] );
 				if ( $ctype ) {
