@@ -673,6 +673,7 @@ class Extended_CPT {
 			foreach ( $taxonomies as $tax ) {
 				if ( $tax->query_var === $query_var ) {
 					trigger_error( esc_html( sprintf(
+						/* translators: %s: Post type query variable name */
 						__( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'extended-cpts' ),
 						$query_var
 					) ), E_USER_ERROR );

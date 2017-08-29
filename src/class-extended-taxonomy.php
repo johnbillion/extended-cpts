@@ -208,11 +208,13 @@ class Extended_Taxonomy {
 
 		if ( $query_var && count( $post_types ) ) {
 			trigger_error( esc_html( sprintf(
+				/* translators: %s: Taxonomy query variable name */
 				__( 'Taxonomy query var "%s" clashes with a post type query var of the same name', 'extended-cpts' ),
 				$query_var
 			) ), E_USER_ERROR );
 		} elseif ( in_array( $query_var, [ 'type', 'tab' ], true ) ) {
 			trigger_error( esc_html( sprintf(
+				/* translators: %s: Taxonomy query variable name */
 				__( 'Taxonomy query var "%s" is not allowed', 'extended-cpts' ),
 				$query_var
 			) ), E_USER_ERROR );

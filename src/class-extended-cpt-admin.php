@@ -963,6 +963,7 @@ class Extended_CPT_Admin {
 
 		if ( ! $this->p2p_connection_exists( $connection ) ) {
 			echo esc_html( sprintf(
+				/* translators: %s: The ID of the Posts 2 Posts connection type */
 				__( 'Invalid connection type: %s', 'extended-cpts' ),
 				$connection
 			) );
@@ -989,6 +990,7 @@ class Extended_CPT_Admin {
 				$type->each_connected( [ $_post ], $meta, $field );
 			} else {
 				echo esc_html( sprintf(
+					/* translators: %s: The ID of the Posts 2 Posts connection type */
 					__( 'Invalid connection type: %s', 'extended-cpts' ),
 					$connection
 				) );
