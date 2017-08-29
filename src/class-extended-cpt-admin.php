@@ -798,7 +798,10 @@ class Extended_CPT_Admin {
 		}
 
 		if ( empty( $terms ) ) {
-			echo '&#8212;';
+			printf(
+				'<span aria-hidden="true">&#8212;</span><span class="screen-reader-text">%s</span>',
+				esc_html( $tax->labels->no_terms )
+			);
 			return;
 		}
 
