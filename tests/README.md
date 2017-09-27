@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/johnbillion/extended-cpts.svg?branch=master)](https://travis-ci.org/johnbillion/extended-cpts)
-[![Coverage Status](https://coveralls.io/repos/johnbillion/extended-cpts/badge.svg)](https://coveralls.io/r/johnbillion/extended-cpts)
 
 # Extended CPTs Unit Tests
 
