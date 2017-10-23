@@ -385,6 +385,9 @@ class Extended_CPT {
 		if ( ! isset( $vars['orderby'] ) ) {
 			return [];
 		}
+		if ( ! is_string( $vars['orderby'] ) ) {
+			return [];
+		}
 		if ( ! isset( $sortables[ $vars['orderby'] ] ) ) {
 			return [];
 		}
@@ -432,6 +435,9 @@ class Extended_CPT {
 		global $wpdb;
 
 		if ( ! isset( $vars['orderby'] ) ) {
+			return [];
+		}
+		if ( ! is_string( $vars['orderby'] ) ) {
 			return [];
 		}
 		if ( ! isset( $sortables[ $vars['orderby'] ] ) ) {
