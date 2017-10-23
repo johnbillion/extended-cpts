@@ -113,8 +113,17 @@ class Extended_CPT {
 		$this->post_slug = strtolower( $this->post_slug );
 
 		# Build our base post type names:
-		$this->post_singular_low = strtolower( $this->post_singular );
-		$this->post_plural_low   = strtolower( $this->post_plural );
+		# Lower-casing is not forced if the name looks like an initialism, eg. FAQ.
+		if ( ! preg_match( '/[A-Z]{2,}/', $this->post_singular ) ) {
+			$this->post_singular_low = strtolower( $this->post_singular );
+		} else {
+			$this->post_singular_low = $this->post_singular;
+		}
+		if ( ! preg_match( '/[A-Z]{2,}/', $this->post_plural ) ) {
+			$this->post_plural_low = strtolower( $this->post_plural );
+		} else {
+			$this->post_plural_low = $this->post_plural;
+		}
 
 		# Build our labels:
 		# Why aren't these translatable?

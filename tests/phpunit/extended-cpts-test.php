@@ -147,6 +147,13 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 			),
 		) );
 
+		$this->cpts['faq'] = register_extended_post_type( 'faq', array(
+		), array(
+			'plural'   => 'FAQs',
+			'singular' => 'FAQ',
+			'slug'     => 'faqs',
+		) );
+
 		$wp_rewrite->flush_rules();
 
 		foreach ( array( 'Alpha', 'Beta', 'Gamma', 'Delta' ) as $slug ) {

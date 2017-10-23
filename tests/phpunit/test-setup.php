@@ -134,6 +134,7 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 	public function testPostTypeLabelsAreCorrect() {
 
 		$bar = get_post_type_object( 'bar' );
+		$faq = get_post_type_object( 'faq' );
 
 		$this->assertEquals( (object) array(
 			'name'                  => 'Plural',
@@ -163,6 +164,35 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 			'items_list_navigation' => 'Plural list navigation',
 			'items_list'            => 'Plural list',
 		), $bar->labels );
+
+		$this->assertEquals( (object) array(
+			'name'                  => 'FAQs',
+			'singular_name'         => 'FAQ',
+			'menu_name'             => 'FAQs',
+			'name_admin_bar'        => 'FAQ',
+			'add_new'               => 'Add New',
+			'add_new_item'          => 'Add New FAQ',
+			'edit_item'             => 'Edit FAQ',
+			'new_item'              => 'New FAQ',
+			'view_item'             => 'View FAQ',
+			'view_items'            => 'View FAQs',
+			'search_items'          => 'Search FAQs',
+			'not_found'             => 'No FAQs found.',
+			'not_found_in_trash'    => 'No FAQs found in trash.',
+			'parent_item_colon'     => 'Parent FAQ:',
+			'all_items'             => 'All FAQs',
+			'archives'              => 'FAQ Archives',
+			'attributes'            => 'FAQ Attributes',
+			'insert_into_item'      => 'Insert into FAQ',
+			'uploaded_to_this_item' => 'Uploaded to this FAQ',
+			'featured_image'        => 'Featured Image',
+			'set_featured_image'    => 'Set featured image',
+			'remove_featured_image' => 'Remove featured image',
+			'use_featured_image'    => 'Use as featured image',
+			'filter_items_list'     => 'Filter FAQs list',
+			'items_list_navigation' => 'FAQs list navigation',
+			'items_list'            => 'FAQs list',
+		), $faq->labels );
 
 		$post = get_post_type_object( 'post' );
 
