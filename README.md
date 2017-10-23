@@ -88,7 +88,7 @@ And you can register a taxonomy with just two parameters:
 ```php
 add_action( 'init', function() {
 	register_extended_taxonomy( 'location', 'post' );
-) };
+} );
 ```
 
 Try it. You'll have a hierarchical public post type with an admin UI, a hierarchical public taxonomy with an admin UI, and all the labels and updated messages for them will be automatically generated.
