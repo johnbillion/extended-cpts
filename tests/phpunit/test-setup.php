@@ -10,11 +10,26 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 	public function testMinimumWordPressVersion() {
 		global $wp_version;
 
-		$this->assertTrue( version_compare( $wp_version, '4.3', '>=' ) );
+		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/readme.md';
+		$this->assertFileExists( $filename );
+
+		$min = self::get_minimum_version( 'WordPress', $filename );
+
+		$this->assertNotFalse( $min );
+		$this->assertTrue( is_numeric( $min ), "Min is not numeric: {$min}" );
+		$this->assertTrue( version_compare( $wp_version, $min, '>=' ), "{$wp_version} is not >= {$min}" );
 	}
 
 	public function testMinimumPHPVersion() {
-		$this->assertTrue( version_compare( PHP_VERSION, '5.4', '>=' ) );
+		$php_version = PHP_VERSION;
+		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/readme.md';
+		$this->assertFileExists( $filename );
+
+		$min = self::get_minimum_version( 'PHP', $filename );
+
+		$this->assertNotFalse( $min );
+		$this->assertTrue( is_numeric( $min ), "Min is not numeric: {$min}" );
+		$this->assertTrue( version_compare( $php_version, $min, '>=' ), "{$php_version} is not >= {$min}" );
 	}
 
 	public function testPostTypeArgsAreCorrect() {

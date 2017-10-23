@@ -234,6 +234,17 @@ abstract class Extended_CPT_Test extends WP_UnitTestCase {
 
 	}
 
+	protected static function get_minimum_version( string $type, string $filename ) {
+		$file    = file_get_contents( $filename );
+		$pattern = '/^\*\*' . preg_quote( $type ) . ':\*\* (?P<version>[0-9]\.[0-9])/m';
+
+		if ( ! preg_match( $pattern, $file, $matches ) ) {
+			return false;
+		}
+
+		return $matches['version'];
+	}
+
 	public function tearDown() {
 
 		parent::tearDown();
