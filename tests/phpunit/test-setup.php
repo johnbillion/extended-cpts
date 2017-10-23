@@ -32,6 +32,23 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$this->assertTrue( version_compare( $php_version, $min, '>=' ), "{$php_version} is not >= {$min}" );
 	}
 
+	public function testCodeSnifferMinimumWordPressVersionIsCorrect() {
+		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/phpcs.xml.dist';
+		$this->assertFileExists( $filename );
+
+		$phpcs   = file_get_contents( $filename );
+		$pattern = '/minimum_supported_version" value="(?P<version>[0-9]\.[0-9])"/';
+		$result  = preg_match( $pattern, $phpcs, $matches );
+		$this->assertNotEmpty( $result );
+
+		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/readme.md';
+		$this->assertFileExists( $filename );
+
+		$min = self::get_minimum_version( 'WordPress', $filename );
+
+		$this->assertSame( $min, $matches['version'] );
+	}
+
 	public function testPostTypeArgsAreCorrect() {
 
 		$this->assertEquals( 'hello',  $this->cpts['hello']->post_type );
