@@ -49,6 +49,19 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$this->assertSame( $min, $matches['version'] );
 	}
 
+	public function testVersionMatchesTag() {
+		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/extended-cpts.php';
+		$this->assertFileExists( $filename );
+
+		$file    = file_get_contents( $filename );
+		$pattern = '/@version\s+(?P<version>[0-9]\.[0-9]\.[0-9])$/m';
+		$result  = preg_match( $pattern, $file, $matches );
+		$this->assertNotEmpty( $result );
+
+		$tag = trim( exec( 'git describe --abbrev=0 --tags' ) );
+		$this->assertSame( $matches['version'], $tag );
+	}
+
 	public function testPostTypeArgsAreCorrect() {
 
 		$this->assertEquals( 'hello',  $this->cpts['hello']->post_type );
