@@ -130,6 +130,7 @@ class Extended_Taxonomy {
 			'items_list_navigation'      => sprintf( '%s list navigation', $this->tax_plural ),
 			'items_list'                 => sprintf( '%s list', $this->tax_plural ),
 			'most_used'                  => 'Most Used',
+			'back_to_items'              => sprintf( '&larr; Back to %s', $this->tax_plural ),
 			'no_item'                    => sprintf( 'No %s', $this->tax_singular_low ), # Custom label
 		);
 
