@@ -1,26 +1,28 @@
 {
-	"name"       : "johnbillion/extended-cpts",
+	"name": "johnbillion/extended-cpts",
 	"description": "A library which provides extended functionality to WordPress custom post types and taxonomies.",
-	"homepage"   : "https://github.com/johnbillion/extended-cpts/",
-	"license"    : "GPL-2.0+",
-	"authors"    : [
+	"homepage": "https://github.com/johnbillion/extended-cpts/",
+	"license": "GPL-2.0+",
+	"authors": [
 		{
-			"name"    : "John Blackbourn",
+			"name": "John Blackbourn",
 			"homepage": "https://johnblackbourn.com/"
 		}
 	],
 	"require": {
-		"php": ">=7.0"
+		"php": "^7.0"
 	},
-	"require-dev" : {
-        "wp-coding-standards/wpcs": "^0.13.0",
+	"require-dev": {
 		"johnbillion/php-docs-standards": "^1.2",
-		"phpunit/phpunit": "~5.7"
+		"phpunit/phpunit": "^5.7",
+		"wp-coding-standards/wpcs": "^0.13.0"
+	},
+	"autoload": {
+		"files": [
+			"extended-cpts.php"
+		]
 	},
 	"suggest": {
 		"wpackagist-plugin/rewrite-testing": "Rewrite Rule Testing"
-	},
-	"autoload": {
-		"files": ["extended-cpts.php"]
 	}
 }
