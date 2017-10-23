@@ -59,7 +59,7 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$this->assertNotEmpty( $result );
 
 		$tag = trim( exec( 'git describe --abbrev=0 --tags' ) );
-		$this->assertSame( $matches['version'], $tag );
+		$this->assertSame( $tag, $matches['version'] );
 	}
 
 	public function testPostTypeArgsAreCorrect() {
