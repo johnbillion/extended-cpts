@@ -10,7 +10,7 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 	public function testMinimumWordPressVersion() {
 		global $wp_version;
 
-		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/readme.md';
+		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/README.md';
 		$this->assertFileExists( $filename );
 
 		$min = self::get_minimum_version( 'WordPress', $filename );
@@ -22,7 +22,7 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 
 	public function testMinimumPHPVersion() {
 		$php_version = PHP_VERSION;
-		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/readme.md';
+		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/README.md';
 		$this->assertFileExists( $filename );
 
 		$min = self::get_minimum_version( 'PHP', $filename );
@@ -41,7 +41,7 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 		$result  = preg_match( $pattern, $phpcs, $matches );
 		$this->assertNotEmpty( $result );
 
-		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/readme.md';
+		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/README.md';
 		$this->assertFileExists( $filename );
 
 		$min = self::get_minimum_version( 'WordPress', $filename );
