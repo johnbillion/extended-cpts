@@ -15,6 +15,7 @@
 	"require-dev": {
 		"johnbillion/php-docs-standards": "^1.2",
 		"phpunit/phpunit": "^5.7",
+		"slevomat/coding-standard": "^4.0",
 		"wp-coding-standards/wpcs": "^0.13.0"
 	},
 	"autoload": {
