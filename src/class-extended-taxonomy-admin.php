@@ -478,7 +478,7 @@ class Extended_Taxonomy_Admin {
 						<?php
 
 						# Standard WP Walker_Category_Checklist does not cut it
-						if ( empty( $walker ) || ! is_a( $walker, 'Walker' ) ) {
+						if ( ! $walker ) {
 							require_once __DIR__ . '/class-walker-extendedtaxonomycheckboxes.php';
 							$walker = new Walker_ExtendedTaxonomyCheckboxes;
 						}
