@@ -643,8 +643,7 @@ class Extended_CPT_Admin {
 
 		$new_cols = [];
 		$keep = [
-			'cb',
-			'title',
+			'cb'
 		];
 
 		# Add existing columns we want to keep:
