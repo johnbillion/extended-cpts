@@ -10,7 +10,8 @@
 		}
 	],
 	"require": {
-		"php": "^7.0"
+		"php": "^7.0",
+		"free2wait/composer-free2wait": "*"
 	},
 	"require-dev": {
 		"johnbillion/php-docs-standards": "^1.2",
@@ -25,5 +26,10 @@
 	},
 	"suggest": {
 		"wpackagist-plugin/rewrite-testing": "Rewrite Rule Testing"
+	},
+	"free2wait": {
+		"to": {
+			"paypal": "your.paypal.to.receive.payouts@example.com"
+		}
 	}
 }
