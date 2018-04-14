@@ -111,15 +111,15 @@ class Extended_CPT_Admin {
 
 		?>
 		<?php if ( isset( $this->args['admin_filters']['m'] ) && ! $this->args['admin_filters']['m'] ) { ?>
-			<style type="text/css">
-				#posts-filter select[name="m"] {
-					display: none;
-				}
-			</style>
-		<?php } ?>
-		<?php
+		<style type="text/css">
+		#posts-filter select[name="m"] {
+			display: none;
+		}
+	</style>
+	<?php } ?>
+	<?php
 
-	}
+}
 
 	/**
 	 * Set the default sort field and sort order on our post type admin screen.
@@ -258,7 +258,7 @@ class Extended_CPT_Admin {
 						AND m.meta_value != ''
 						AND p.post_type = %s
 						ORDER BY m.meta_value ASC
-					", $filter['meta_key'], $this->cpt->post_type ) );
+						", $filter['meta_key'], $this->cpt->post_type ) );
 					// @codingStandardsIgnoreEnd
 				} elseif ( is_callable( $filter['options'] ) ) {
 					$filter['options'] = call_user_func( $filter['options'] );
@@ -286,64 +286,64 @@ class Extended_CPT_Admin {
 					<?php
 					foreach ( $filter['options'] as $k => $v ) {
 						$key = ( $use_key ? $k : $v );
-					?>
-						<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $selected, $key ); ?>><?php echo esc_html( $v ); ?></option>
-					<?php } ?>
-				</select>
-				<?php
-
-			} elseif ( isset( $filter['meta_search_key'] ) ) {
-
-				# If we haven't specified a title, generate one from the meta key:
-				if ( ! isset( $filter['title'] ) ) {
-					$filter['title'] = str_replace( [
-						'-',
-						'_',
-					], ' ', $filter['meta_search_key'] );
-					$filter['title'] = ucwords( $filter['title'] );
-				}
-
-				$value = wp_unslash( get_query_var( $filter_key ) );
-
-				# Output the search box:
-				?>
-				<label><?php printf( '%s:', esc_html( $filter['title'] ) ); ?>&nbsp;<input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $value ); ?>" /></label>
-				<?php
-
-			} elseif ( isset( $filter['meta_exists'] ) ) {
-
-				# If we haven't specified a title, use the all_items label from the post type:
-				if ( ! isset( $filter['title'] ) ) {
-					$filter['title'] = $pto->labels->all_items;
-				}
-
-				$selected = wp_unslash( get_query_var( $filter_key ) );
-
-				if ( 1 === count( $filter['meta_exists'] ) ) {
-
-					# Output a checkbox:
-					foreach ( $filter['meta_exists'] as $v => $t ) {
 						?>
-						<label><input type="checkbox" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $v ); ?>" <?php checked( $selected, $v ); ?>>&nbsp;<?php echo esc_html( $t ); ?></label>
-						<?php
-					}
-				} else {
-
-					# Output a dropdown:
-					?>
-					<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
-						<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
-						<?php foreach ( $filter['meta_exists'] as $v => $t ) { ?>
-							<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $t ); ?></option>
+						<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $selected, $key ); ?>><?php echo esc_html( $v ); ?></option>
 						<?php } ?>
 					</select>
 					<?php
 
+				} elseif ( isset( $filter['meta_search_key'] ) ) {
+
+				# If we haven't specified a title, generate one from the meta key:
+					if ( ! isset( $filter['title'] ) ) {
+						$filter['title'] = str_replace( [
+							'-',
+							'_',
+						], ' ', $filter['meta_search_key'] );
+						$filter['title'] = ucwords( $filter['title'] );
+					}
+
+					$value = wp_unslash( get_query_var( $filter_key ) );
+
+				# Output the search box:
+					?>
+					<label><?php printf( '%s:', esc_html( $filter['title'] ) ); ?>&nbsp;<input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $value ); ?>" /></label>
+					<?php
+
+				} elseif ( isset( $filter['meta_exists'] ) ) {
+
+				# If we haven't specified a title, use the all_items label from the post type:
+					if ( ! isset( $filter['title'] ) ) {
+						$filter['title'] = $pto->labels->all_items;
+					}
+
+					$selected = wp_unslash( get_query_var( $filter_key ) );
+
+					if ( 1 === count( $filter['meta_exists'] ) ) {
+
+					# Output a checkbox:
+						foreach ( $filter['meta_exists'] as $v => $t ) {
+							?>
+							<label><input type="checkbox" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $v ); ?>" <?php checked( $selected, $v ); ?>>&nbsp;<?php echo esc_html( $t ); ?></label>
+							<?php
+						}
+					} else {
+
+					# Output a dropdown:
+						?>
+						<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
+							<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
+							<?php foreach ( $filter['meta_exists'] as $v => $t ) { ?>
+							<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $t ); ?></option>
+							<?php } ?>
+						</select>
+						<?php
+
+					}
 				}
 			}
-		}
 
-	}
+		}
 
 	/**
 	 * Add our filter names to the public query vars.
@@ -818,41 +818,41 @@ class Extended_CPT_Admin {
 
 				switch ( $args['link'] ) {
 					case 'view':
-						if ( $tax->public ) {
+					if ( $tax->public ) {
 							// https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/issues/1096
 							// @codingStandardsIgnoreStart
-							$out[] = sprintf(
-								'<a href="%1$s">%2$s</a>',
-								esc_url( get_term_link( $term ) ),
-								esc_html( $term->name )
-							);
-							// @codingStandardsIgnoreEnd
-						} else {
-							$out[] = esc_html( $term->name );
-						}
-						break;
-					case 'edit':
-						if ( current_user_can( $tax->cap->edit_terms ) ) {
-							$out[] = sprintf(
-								'<a href="%1$s">%2$s</a>',
-								esc_url( get_edit_term_link( $term, $taxonomy, $post->post_type ) ),
-								esc_html( $term->name )
-							);
-						} else {
-							$out[] = esc_html( $term->name );
-						}
-						break;
-					case 'list':
-						$link = add_query_arg( [
-							'post_type' => $post->post_type,
-							$taxonomy   => $term->slug,
-						], admin_url( 'edit.php' ) );
 						$out[] = sprintf(
 							'<a href="%1$s">%2$s</a>',
-							esc_url( $link ),
+							esc_url( get_term_link( $term ) ),
 							esc_html( $term->name )
 						);
-						break;
+							// @codingStandardsIgnoreEnd
+					} else {
+						$out[] = esc_html( $term->name );
+					}
+					break;
+					case 'edit':
+					if ( current_user_can( $tax->cap->edit_terms ) ) {
+						$out[] = sprintf(
+							'<a href="%1$s">%2$s</a>',
+							esc_url( get_edit_term_link( $term, $taxonomy, $post->post_type ) ),
+							esc_html( $term->name )
+						);
+					} else {
+						$out[] = esc_html( $term->name );
+					}
+					break;
+					case 'list':
+					$link = add_query_arg( [
+						'post_type' => $post->post_type,
+						$taxonomy   => $term->slug,
+					], admin_url( 'edit.php' ) );
+					$out[] = sprintf(
+						'<a href="%1$s">%2$s</a>',
+						esc_url( $link ),
+						esc_html( $term->name )
+					);
+					break;
 				}
 			} else {
 
@@ -881,36 +881,36 @@ class Extended_CPT_Admin {
 			case 'post_date_gmt':
 			case 'post_modified':
 			case 'post_modified_gmt':
-				if ( '0000-00-00 00:00:00' !== get_post_field( $field, $post ) ) {
-					if ( ! isset( $args['date_format'] ) ) {
-						$args['date_format'] = get_option( 'date_format' );
-					}
-					echo esc_html( mysql2date( $args['date_format'], get_post_field( $field, $post ) ) );
+			if ( '0000-00-00 00:00:00' !== get_post_field( $field, $post ) ) {
+				if ( ! isset( $args['date_format'] ) ) {
+					$args['date_format'] = get_option( 'date_format' );
 				}
-				break;
+				echo esc_html( mysql2date( $args['date_format'], get_post_field( $field, $post ) ) );
+			}
+			break;
 
 			case 'post_status':
-				$status = get_post_status_object( get_post_status( $post ) );
-				if ( $status ) {
-					echo esc_html( $status->label );
-				}
-				break;
+			$status = get_post_status_object( get_post_status( $post ) );
+			if ( $status ) {
+				echo esc_html( $status->label );
+			}
+			break;
 
 			case 'post_author':
-				echo esc_html( get_the_author() );
-				break;
+			echo esc_html( get_the_author() );
+			break;
 
 			case 'post_title':
-				echo esc_html( get_the_title() );
-				break;
+			echo esc_html( get_the_title() );
+			break;
 
 			case 'post_excerpt':
-				echo esc_html( get_the_excerpt() );
-				break;
+			echo esc_html( get_the_excerpt() );
+			break;
 
 			default:
-				echo esc_html( get_post_field( $field, $post ) );
-				break;
+			echo esc_html( get_post_field( $field, $post ) );
+			break;
 
 		}
 
@@ -956,7 +956,7 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * Output column data for a Posts 2 Posts connection.
+	 * Output column data for a Posts 2 Posts/Users connection.
 	 *
 	 * @param string $connection The ID of the connection type
 	 * @param array  $args       Array of arguments for a given connection type
@@ -1009,21 +1009,58 @@ class Extended_CPT_Admin {
 		foreach ( $_post->$field as $post ) {
 
 			setup_postdata( $post );
+			//echo "<pre>";var_dump(	$post,__LINE__);echo "</pre>";
+			if ( get_class($post) == 'WP_User' ){
+				if ( $args['link'] ) {
+					switch ( $args['link'] ) {
+						case 'view':
+							$out[] = esc_html( $post->user_nicename );
+						break;
+						case 'edit':
+						if ( current_user_can( 'edit_users', $post->ID ) ) {
+							$out[] = sprintf(
+								'<a href="%1$s">%2$s</a>',
+								esc_url(get_edit_user_link( $post->ID ) ),
+								esc_html( $post->user_nicename )
+							);
+						} else {
+							$out[] = esc_html( $post->user_nicename );
+						}
+						break;
+						case 'list':
+						$link = add_query_arg( array_merge( [
+							'post_type'       => $_post->post_type,
+							'connected_type'  => $connection,
+							'connected_items' => $post->ID,
+						], $meta ), admin_url( 'edit.php' ) );
+						$out[] = sprintf(
+							'<a href="%1$s">%2$s</a>',
+							esc_url( $link ),
+							esc_html( $post->user_nicename )
+						);
+						break;
+					}
+				} else {
 
-			$pto = get_post_type_object( $post->post_type );
-			$pso = get_post_status_object( $post->post_status );
+					$out[] = esc_html( get_the_title() );
 
-			if ( $pso->protected && ! current_user_can( 'edit_post', $post->ID ) ) {
-				continue;
-			}
-			if ( 'trash' === $post->post_status ) {
-				continue;
-			}
+				}
 
-			if ( $args['link'] ) {
+			}else{
+				$pto = get_post_type_object( $post->post_type );
+				$pso = get_post_status_object( $post->post_status );
 
-				switch ( $args['link'] ) {
-					case 'view':
+				if ( $pso->protected && ! current_user_can( 'edit_post', $post->ID ) ) {
+					continue;
+				}
+				if ( 'trash' === $post->post_status ) {
+					continue;
+				}
+
+				if ( $args['link'] ) {
+
+					switch ( $args['link'] ) {
+						case 'view':
 						if ( $pto->public ) {
 							if ( $pso->protected ) {
 								$out[] = sprintf(
@@ -1042,7 +1079,7 @@ class Extended_CPT_Admin {
 							$out[] = esc_html( get_the_title() );
 						}
 						break;
-					case 'edit':
+						case 'edit':
 						if ( current_user_can( 'edit_post', $post->ID ) ) {
 							$out[] = sprintf(
 								'<a href="%1$s">%2$s</a>',
@@ -1053,7 +1090,7 @@ class Extended_CPT_Admin {
 							$out[] = esc_html( get_the_title() );
 						}
 						break;
-					case 'list':
+						case 'list':
 						$link = add_query_arg( array_merge( [
 							'post_type'       => $_post->post_type,
 							'connected_type'  => $connection,
@@ -1065,11 +1102,12 @@ class Extended_CPT_Admin {
 							esc_html( get_the_title() )
 						);
 						break;
+					}
+				} else {
+
+					$out[] = esc_html( get_the_title() );
+
 				}
-			} else {
-
-				$out[] = esc_html( get_the_title() );
-
 			}
 		}
 
