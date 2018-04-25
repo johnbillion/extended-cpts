@@ -51,5 +51,4 @@ abstract class Extended_CPT_Test_Admin extends Extended_CPT_Test {
 		// reset
 		set_current_screen( 'front' );
 	}
-
 }
