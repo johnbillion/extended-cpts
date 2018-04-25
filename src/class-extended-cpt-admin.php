@@ -1215,9 +1215,10 @@ class Extended_CPT_Admin {
 
 
     /**
-     * @param $options
+     * Parses filter options into value => label pairs.
      *
-     * @return array
+     * @param array $options Filter options.
+     * @return array Filter options single dimension array.
      */
     public function parse_filter_options($options): array
     {
