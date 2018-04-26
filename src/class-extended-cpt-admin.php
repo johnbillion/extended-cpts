@@ -270,9 +270,9 @@ class Extended_CPT_Admin {
 
 				$selected = wp_unslash( get_query_var( $filter_key ) );
 
-                $filter['options'] = $this->parse_filter_options($filter['options']);
+				$filter['options'] = $this->parse_filter_options( $filter['options'] );
 
-                # Output the dropdown:
+				# Output the dropdown:
 				?>
 				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
 					<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
@@ -1214,33 +1214,32 @@ class Extended_CPT_Admin {
 	}
 
 
-    /**
-     * Parses filter options into value => label pairs.
-     *
-     * @param array $options Filter options.
-     * @return array Filter options single dimension array.
-     */
-    public function parse_filter_options($options): array
-    {
-        $result = [];
+	/**
+	 * Parses filter options into value => label pairs.
+	 *
+	 * @param array $options Filter options.
+	 *
+	 * @return array Filter options single dimension array.
+	 */
+	public function parse_filter_options( $options ) {
+		$result = [];
 
-        foreach ( $options as $k => $v ) {
-            // Check if $v is an array of key, and value properties
-            if ( is_array($v) ) {
-                $value = $v['value'] ?? ($v['label'] ?? null);
-                $label = $v['label'] ?? $value;
+		foreach ( $options as $k => $v ) {
+			// Check if $v is an array of key, and value properties
+			if ( is_array( $v ) ) {
+				$value = $v['value'] ?? ( $v['label'] ?? null );
+				$label = $v['label'] ?? $value;
 
-                if ( ! is_null($value) ) {
-                    $result[$value] = $label;
-                }
-            } else {
-                $key = !is_numeric($k) ? $k : $v;
-                $result[$key] = $v;
-            }
+				if ( ! is_null( $value ) ) {
+					$result[ $value ] = $label;
+				}
+			} else {
+				$key            = ! is_numeric( $k ) ? $k : $v;
+				$result[ $key ] = $v;
+			}
+		}
 
-        }
-
-        return $result;
-    }
+		return $result;
+	}
 
 }
