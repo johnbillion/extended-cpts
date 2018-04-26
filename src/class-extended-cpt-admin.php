@@ -270,22 +270,14 @@ class Extended_CPT_Admin {
 
 				$selected = wp_unslash( get_query_var( $filter_key ) );
 
-				$use_key = false;
-
-				foreach ( $filter['options'] as $k => $v ) {
-					if ( ! is_numeric( $k ) ) {
-						$use_key = true;
-						break;
-					}
-				}
+				$filter['options'] = $this->parse_filter_options( $filter['options'] );
 
 				# Output the dropdown:
 				?>
 				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
 					<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
 					<?php
-					foreach ( $filter['options'] as $k => $v ) {
-						$key = ( $use_key ? $k : $v );
+					foreach ( $filter['options'] as $key => $v ) {
 					?>
 						<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $selected, $key ); ?>><?php echo esc_html( $v ); ?></option>
 					<?php } ?>
@@ -1219,6 +1211,35 @@ class Extended_CPT_Admin {
 			$this->connection_exists[ $connection ] = p2p_connection_exists( $connection );
 		}
 		return $this->connection_exists[ $connection ];
+	}
+
+
+	/**
+	 * Parses filter options into value => label pairs.
+	 *
+	 * @param array $options Filter options.
+	 *
+	 * @return array Filter options single dimension array.
+	 */
+	public function parse_filter_options( $options ) {
+		$result = [];
+
+		foreach ( $options as $k => $v ) {
+			// Check if $v is an array of key, and value properties
+			if ( is_array( $v ) ) {
+				$value = $v['value'] ?? ( $v['label'] ?? null );
+				$label = $v['label'] ?? $value;
+
+				if ( ! is_null( $value ) ) {
+					$result[ $value ] = $label;
+				}
+			} else {
+				$key            = ! is_numeric( $k ) ? $k : $v;
+				$result[ $key ] = $v;
+			}
+		}
+
+		return $result;
 	}
 
 }
