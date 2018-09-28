@@ -2,7 +2,7 @@
 declare( strict_types=1 );
 
 /**
- * Register an Extended Post Type.
+ * Registers a custom post type.
  *
  * The `$args` parameter accepts all the standard arguments for `register_post_type()` in addition to several custom
  * arguments that provide extended functionality. Some of the default arguments differ from the defaults in
@@ -52,7 +52,7 @@ function register_extended_post_type( string $post_type, array $args = [], array
 }
 
 /**
- * Register an extended custom taxonomy.
+ * Registers a custom taxonomy.
  *
  * The `$args` parameter accepts all the standard arguments for `register_taxonomy()` in addition to several custom
  * arguments that provide extended functionality. Some of the default arguments differ from the defaults in
@@ -71,6 +71,7 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *         'slug'   => 'tales',
  *     ] );
  *
+ * @link https://github.com/johnbillion/extended-cpts/wiki/Basic-usage
  * @see register_taxonomy() for default arguments.
  *
  * @param string       $taxonomy    The taxonomy name.
