@@ -38,7 +38,7 @@ class Walker_ExtendedTaxonomyDropdown extends Walker {
 	 * @param array  $args              Optional arguments.
 	 * @param int    $current_object_id Current object ID.
 	 */
-	public function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
+	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {
 
 		$pad = str_repeat( '&nbsp;', $depth * 3 );
 		$tax = get_taxonomy( $args['taxonomy'] );

@@ -36,7 +36,7 @@ class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 	 * @param int    $depth  Depth of term in reference to parents.
 	 * @param array  $args   Optional arguments.
 	 */
-	public function start_lvl( &$output, $depth = 0, $args = array() ) {
+	public function start_lvl( &$output, $depth = 0, $args = [] ) {
 		$indent = str_repeat( "\t", $depth );
 		$output .= "$indent<ul class='children'>\n";
 	}
@@ -48,7 +48,7 @@ class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 	 * @param int    $depth  Depth of term in reference to parents.
 	 * @param array  $args   Optional arguments.
 	 */
-	public function end_lvl( &$output, $depth = 0, $args = array() ) {
+	public function end_lvl( &$output, $depth = 0, $args = [] ) {
 		$indent = str_repeat( "\t", $depth );
 		$output .= "$indent</ul>\n";
 	}
@@ -62,7 +62,7 @@ class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 	 * @param array  $args              Optional arguments.
 	 * @param int    $current_object_id Current object ID.
 	 */
-	public function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
+	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {
 
 		$tax = get_taxonomy( $args['taxonomy'] );
 
@@ -96,7 +96,7 @@ class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 	 * @param int    $depth  Depth of term in reference to parents.
 	 * @param array $args Optional arguments.
 	 */
-	public function end_el( &$output, $object, $depth = 0, $args = array() ) {
+	public function end_el( &$output, $object, $depth = 0, $args = [] ) {
 		$output .= "</li>\n";
 	}
 
