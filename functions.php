@@ -66,7 +66,7 @@ function register_extended_post_type( string $post_type, array $args = [], array
  * The singular name, plural name, and slug are generated from the taxonomy name. These can be overridden with the
  * `$names` parameter if necessary. Example:
  *
- *     register_extended_taxonomy( 'story', 'post' [], [
+ *     register_extended_taxonomy( 'story', 'post', [], [
  *         'plural' => 'Stories',
  *         'slug'   => 'tales',
  *     ] );
