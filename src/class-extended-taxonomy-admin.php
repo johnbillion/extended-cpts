@@ -1,25 +1,5 @@
 <?php
-declare(strict_types=1);
-
-/**
- * Extended custom post types for WordPress.
- *
- * @package   ExtendedCPTs
- * @author    John Blackbourn <https://johnblackbourn.com>
- * @link      https://github.com/johnbillion/extended-cpts
- * @copyright 2012-2017 John Blackbourn
- * @license   GPL v2 or later
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- */
+declare( strict_types=1 );
 
 class Extended_Taxonomy_Admin {
 
@@ -156,12 +136,12 @@ class Extended_Taxonomy_Admin {
 		}
 
 		$new_cols = [];
-		$keep = array(
+		$keep = [
 			'cb',
 			'name',
 			'description',
 			'slug',
-		);
+		];
 
 		# Add existing columns we want to keep:
 		foreach ( $cols as $id => $title ) {
@@ -363,7 +343,7 @@ class Extended_Taxonomy_Admin {
 	public function meta_box_radio( WP_Post $post, array $meta_box ) {
 		require_once __DIR__ . '/class-walker-extendedtaxonomyradios.php';
 
-		$walker = new Walker_ExtendedTaxonomyRadios;
+		$walker = new Walker_ExtendedTaxonomyRadios();
 		$this->do_meta_box( $post, $walker, true, 'checklist' );
 
 	}
@@ -380,7 +360,7 @@ class Extended_Taxonomy_Admin {
 	public function meta_box_dropdown( WP_Post $post, array $meta_box ) {
 		require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
 
-		$walker = new Walker_ExtendedTaxonomyDropdown;
+		$walker = new Walker_ExtendedTaxonomyDropdown();
 		$this->do_meta_box( $post, $walker, true, 'dropdown' );
 
 	}
@@ -444,7 +424,7 @@ class Extended_Taxonomy_Admin {
 			switch ( $type ) {
 
 				case 'dropdown':
-					wp_dropdown_categories( array(
+					wp_dropdown_categories( [
 						'option_none_value' => ( is_taxonomy_hierarchical( $taxonomy ) ? '-1' : '' ),
 						'show_option_none'  => $none,
 						'hide_empty'        => false,
@@ -457,7 +437,7 @@ class Extended_Taxonomy_Admin {
 						'taxonomy'          => $taxonomy,
 						'walker'            => $walker,
 						'required'          => $this->args['required'],
-					) );
+					] );
 					break;
 				case 'checklist':
 				default:
@@ -480,35 +460,35 @@ class Extended_Taxonomy_Admin {
 						# Standard WP Walker_Category_Checklist does not cut it
 						if ( ! $walker ) {
 							require_once __DIR__ . '/class-walker-extendedtaxonomycheckboxes.php';
-							$walker = new Walker_ExtendedTaxonomyCheckboxes;
+							$walker = new Walker_ExtendedTaxonomyCheckboxes();
 						}
 
 						# Output the terms:
-						wp_terms_checklist( $post->ID, array(
+						wp_terms_checklist( $post->ID, [
 							'taxonomy'      => $taxonomy,
 							'walker'        => $walker,
 							'selected_cats' => $selected,
 							'checked_ontop' => $this->args['checked_ontop'],
-						) );
+						] );
 
 						# Output the 'none' item:
 						if ( $show_none ) {
 							$output = '';
-							$o = (object) array(
+							$o = (object) [
 								'term_id' => 0,
 								'name'    => $none,
 								'slug'    => 'none',
-							);
+							];
 							if ( empty( $selected ) ) {
 								$_selected = [ 0 ];
 							} else {
 								$_selected = $selected;
 							}
-							$args = array(
+							$args = [
 								'taxonomy'      => $taxonomy,
 								'selected_cats' => $_selected,
 								'disabled'      => false,
-							);
+							];
 							$walker->start_el( $output, $o, 1, $args );
 							$walker->end_el( $output, $o, 1, $args );
 							echo $output; // WPCS: XSS ok.
@@ -523,7 +503,7 @@ class Extended_Taxonomy_Admin {
 
 			}
 
-		?>
+			?>
 
 		</div>
 		<?php
@@ -594,14 +574,14 @@ class Extended_Taxonomy_Admin {
 	 */
 	public function term_updated_messages( array $messages ) {
 
-		$messages[ $this->taxo->taxonomy ] = array(
+		$messages[ $this->taxo->taxonomy ] = [
 			1 => esc_html( sprintf( '%s added.', $this->taxo->tax_singular ) ),
 			2 => esc_html( sprintf( '%s deleted.', $this->taxo->tax_singular ) ),
 			3 => esc_html( sprintf( '%s updated.', $this->taxo->tax_singular ) ),
 			4 => esc_html( sprintf( '%s not added.', $this->taxo->tax_singular ) ),
 			5 => esc_html( sprintf( '%s not updated.', $this->taxo->tax_singular ) ),
 			6 => esc_html( sprintf( '%s deleted.', $this->taxo->tax_plural ) ),
-		);
+		];
 
 		return $messages;
 

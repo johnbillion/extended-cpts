@@ -1,14 +1,24 @@
 <?xml version="1.0"?>
 <ruleset name="Extended CPTs">
 
-	<config name="installed_paths" value="../../slevomat/coding-standard,../../wp-coding-standards/wpcs" />
+	<config name="installed_paths" value="../../slevomat/coding-standard,../../wp-coding-standards/wpcs,../../wimg/php-compatibility,../../automattic/phpcs-neutron-standard" />
+	<config name="testVersion" value="7.0-"/>
 
 	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 
-	<rule ref="WordPress-VIP">
-		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
+	<!-- Include the PHP version compatibility standard. -->
+	<rule ref="PHPCompatibility"/>
+
+	<!-- Include the Neutron standard. -->
+	<rule ref="NeutronStandard">
+		<exclude name="NeutronStandard.Globals.DisallowGlobalFunctions.GlobalFunctions"/>
+		<exclude name="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma"/>
+		<exclude name="NeutronStandard.Functions.DisallowCallUserFunc.CallUserFunc"/>
 	</rule>
+
+	<!-- Include the WordPress-Extra standard. -->
+	<rule ref="WordPress-Extra"/>
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>
@@ -22,12 +32,6 @@
 		</properties>
 	</rule>
 
-	<rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
-		<properties>
-			<property name="newlinesCountBetweenOpenTagAndDeclare" type="string" value="1"/>
-			<property name="spacesCountAroundEqualsSign" type="string" value="0"/>
-		</properties>
-	</rule>
 	<rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements"/>
 	<rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
 	<rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace"/>

@@ -1,25 +1,5 @@
 <?php
-declare(strict_types=1);
-
-/**
- * Extended custom post types for WordPress.
- *
- * @package   ExtendedCPTs
- * @author    John Blackbourn <https://johnblackbourn.com>
- * @link      https://github.com/johnbillion/extended-cpts
- * @copyright 2012-2017 John Blackbourn
- * @license   GPL v2 or later
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- */
+declare( strict_types=1 );
 
 class Extended_CPT {
 
@@ -245,7 +225,7 @@ class Extended_CPT {
 			return;
 		}
 
-		$vars = Extended_CPT::get_filter_vars( $wp_query->query, $this->args['site_filters'] );
+		$vars = self::get_filter_vars( $wp_query->query, $this->args['site_filters'] );
 
 		if ( empty( $vars ) ) {
 			return;
@@ -289,7 +269,7 @@ class Extended_CPT {
 			}
 		}
 
-		$sort = Extended_CPT::get_sort_field_vars( $wp_query->query, $this->args['site_sortables'] );
+		$sort = self::get_sort_field_vars( $wp_query->query, $this->args['site_sortables'] );
 
 		if ( empty( $sort ) ) {
 			return;
@@ -314,7 +294,7 @@ class Extended_CPT {
 			return $clauses;
 		}
 
-		$sort = Extended_CPT::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->args['site_sortables'] );
+		$sort = self::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->args['site_sortables'] );
 
 		if ( empty( $sort ) ) {
 			return $clauses;

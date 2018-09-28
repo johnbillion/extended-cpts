@@ -1,25 +1,5 @@
 <?php
-declare(strict_types=1);
-
-/**
- * Extended custom post types for WordPress.
- *
- * @package   ExtendedCPTs
- * @author    John Blackbourn <https://johnblackbourn.com>
- * @link      https://github.com/johnbillion/extended-cpts
- * @copyright 2012-2017 John Blackbourn
- * @license   GPL v2 or later
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- */
+declare( strict_types=1 );
 
 class Extended_Taxonomy {
 
@@ -29,14 +9,14 @@ class Extended_Taxonomy {
 	 *
 	 * @var array
 	 */
-	protected $defaults = array(
+	protected $defaults = [
 		'public'            => true,
 		'show_ui'           => true,
 		'hierarchical'      => true,
 		'query_var'         => true,
 		'exclusive'         => false, # Custom arg
 		'allow_hierarchy'   => false, # Custom arg
-	);
+	];
 
 	/**
 	 * Some other member variables you don't need to worry about:
@@ -117,7 +97,7 @@ class Extended_Taxonomy {
 		}
 
 		# Build our labels:
-		$this->defaults['labels'] = array(
+		$this->defaults['labels'] = [
 			'menu_name'                  => $this->tax_plural,
 			'name'                       => $this->tax_plural,
 			'singular_name'              => $this->tax_singular,
@@ -141,17 +121,17 @@ class Extended_Taxonomy {
 			'most_used'                  => 'Most Used',
 			'back_to_items'              => sprintf( '&larr; Back to %s', $this->tax_plural ),
 			'no_item'                    => sprintf( 'No %s', $this->tax_singular_low ), # Custom label
-		);
+		];
 
 		# Only set rewrites if we need them
 		if ( isset( $args['public'] ) && ! $args['public'] ) {
 			$this->defaults['rewrite'] = false;
 		} else {
-			$this->defaults['rewrite'] = array(
+			$this->defaults['rewrite'] = [
 				'slug'         => $this->tax_slug,
 				'with_front'   => false,
 				'hierarchical' => isset( $args['allow_hierarchy'] ) ? $args['allow_hierarchy'] : $this->defaults['allow_hierarchy'],
-			);
+			];
 		}
 
 		# Merge our args with the defaults:
