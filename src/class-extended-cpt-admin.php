@@ -441,7 +441,7 @@ class Extended_CPT_Admin {
 		$url = add_query_arg( [
 			'post_type' => $this->cpt->post_type,
 		], admin_url( 'edit.php' ) );
-		$text = '<a href="' . esc_url( $url ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
+		$text = '<a href="' . esc_url( $url ) . '" class="cpt-' . esc_attr( $this->cpt->post_type ) . '-count">' . esc_html( $num . ' ' . $text ) . '</a>';
 
 		# Go!
 		$items[] = $text;

@@ -548,7 +548,7 @@ class Extended_Taxonomy_Admin {
 			'taxonomy'  => $this->taxo->taxonomy,
 			'post_type' => reset( $taxonomy->object_type ),
 		], admin_url( 'edit-tags.php' ) );
-		$text = '<a href="' . esc_url( $url ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
+		$text = '<a href="' . esc_url( $url ) . '" class="taxo-' . esc_attr( $this->taxo->taxonomy ) . '-count">' . esc_html( $num . ' ' . $text ) . '</a>';
 
 		# Go!
 		$items[] = $text;
