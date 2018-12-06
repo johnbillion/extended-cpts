@@ -163,6 +163,11 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 			'filter_items_list'     => 'Filter plural list',
 			'items_list_navigation' => 'Plural list navigation',
 			'items_list'            => 'Plural list',
+			'item_published_privately' => 'Singular published.',
+			'item_published_privately' => 'Singular published privately.',
+			'item_reverted_to_draft'   => 'Singular reverted to draft.',
+			'item_scheduled'           => 'Singular scheduled.',
+			'item_updated'             => 'Singular updated.',
 		), $bar->labels );
 
 		$this->assertEquals( (object) array(
@@ -192,6 +197,11 @@ class Extended_CPT_Test_Setup extends Extended_CPT_Test {
 			'filter_items_list'     => 'Filter FAQs list',
 			'items_list_navigation' => 'FAQs list navigation',
 			'items_list'            => 'FAQs list',
+			'item_published_privately' => 'FAQ published.',
+			'item_published_privately' => 'FAQ published privately.',
+			'item_reverted_to_draft'   => 'FAQ reverted to draft.',
+			'item_scheduled'           => 'FAQ scheduled.',
+			'item_updated'             => 'FAQ updated.',
 		), $faq->labels );
 
 		$post = get_post_type_object( 'post' );
