@@ -746,6 +746,12 @@ class Extended_CPT_Admin {
 					$echo[] = mysql2date( $args['date_format'], $val );
 				}
 			}
+		} elseif ( isset( $args['meta_format'] ) ) {
+				foreach ( $vals as $val ) {
+					if ( ! empty( $val ) || ( '0' === $val ) ) {
+						$echo[] = call_user_func( $args['meta_format'], $val );
+					}
+				}
 		} else {
 
 			foreach ( $vals as $val ) {
