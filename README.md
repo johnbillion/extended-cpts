@@ -1,7 +1,8 @@
 [![Build Status](https://travis-ci.org/johnbillion/extended-cpts.svg?branch=master)](https://travis-ci.org/johnbillion/extended-cpts)
 [![Stable Release](https://img.shields.io/packagist/v/johnbillion/extended-cpts.svg)](https://packagist.org/packages/johnbillion/extended-cpts)
 [![License](https://img.shields.io/badge/license-GPL_v2%2B-blue.svg)](https://github.com/johnbillion/extended-cpts/blob/master/LICENSE)
-![PHP 7](https://img.shields.io/badge/php-7-blue.svg)
+[![PHP 7](https://img.shields.io/badge/php-7-blue.svg)](https://wordpress.org/support/update-php/)
+[![Documentation](https://img.shields.io/badge/documentation-wiki-blue.svg)](https://github.com/johnbillion/extended-cpts/wiki)
 
 # Extended CPTs #
 
@@ -9,38 +10,35 @@ Extended CPTs is a library which provides extended functionality to WordPress cu
 
 [See the wiki for full documentation.](https://github.com/johnbillion/extended-cpts/wiki)
 
-**Note that *Extended Taxonomies* is now part of this library. There's no need to use the separate *Extended Taxonomies* library.**
-
 ## Improved Defaults for Post Types ##
 
- * Automatically generated labels and post updated messages
- * Public post type with admin UI enabled
+ * Automatically generated labels and post updated messages (in English)
+ * Public post type with admin UI and post thumbnails enabled
  * Hierarchical with `page` capability type
- * Support for post thumbnails
  * Optimal admin menu placement
 
 ## Improved Defaults for Taxonomies ##
 
- * Automatically generated labels and term updated messages
+ * Automatically generated labels and term updated messages (in English)
  * Hierarchical public taxonomy with admin UI enabled
 
 ## Extended Admin Features ##
 
  * Ridiculously easy custom columns on the post type listing screen:
-   * Columns for post meta, taxonomy terms, featured images, post fields, [Posts 2 Posts](https://wordpress.org/plugins/posts-to-posts/) connections, and callback functions
+   * Columns for post meta, taxonomy terms, featured images, post fields, [Posts 2 Posts](https://wordpress.org/plugins/posts-to-posts/) connections, and custom functions
    * Sortable columns for post meta, taxonomy terms, and post fields
    * User capability restrictions
    * Default sort column and sort order
- * Ridiculously easy custom columns on the term listing screen:
-   * Columns available for term meta and callback functions
+ * Ridiculously easy custom columns on the taxonomy term listing screen:
+   * Columns available for term meta and custom functions
    * User capability restrictions
- * Filter controls on the post type listing screen to enable filtering by post meta and taxonomy terms
+ * Filter controls on the post type listing screen to enable filtering posts by post meta and taxonomy terms
  * Override the 'Featured Image' and 'Enter title here' text
  * Several custom meta boxes available for taxonomies on the post editing screen:
-   * A simplified list of checkboxes
-   * Radio inputs
-   * A dropdown menu
-   * Or a callback function
+   * Simplified list of checkboxes
+   * Radio buttons
+   * Dropdown menu
+   * Custom function
  * Post types and taxonomies automatically added to the 'At a Glance' section on the dashboard
 
 ## Extended Front-end Features for Post Types ##
@@ -74,6 +72,8 @@ Or you can download the library and include it manually:
 require_once 'extended-cpts/extended-cpts.php';
 ```
 
+Note that *Extended Taxonomies* is part of this library since version 4.0, so there's no need to include the separate *Extended Taxonomies* library.
+
 ## Usage ##
 
 Need a simple post type with no frills? You can register a post type with a single parameter:
@@ -88,7 +88,7 @@ And you can register a taxonomy with just two parameters:
 
 ```php
 add_action( 'init', function() {
-	register_extended_taxonomy( 'location', 'post' );
+	register_extended_taxonomy( 'location', 'article' );
 } );
 ```
 
