@@ -986,7 +986,7 @@ class Extended_CPT_Admin {
 			}
 		}
 
-		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		foreach ( $_post->$field as $post ) {
 
 			setup_postdata( $post );

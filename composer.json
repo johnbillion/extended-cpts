@@ -14,11 +14,11 @@
 	},
 	"require-dev": {
 		"automattic/phpcs-neutron-standard": "^1.5",
-		"johnbillion/php-docs-standards": "^1.2",
-		"phpunit/phpunit": "^5.7",
-		"slevomat/coding-standard": "^4.0",
-		"wimg/php-compatibility": "^8",
-		"wp-coding-standards/wpcs": "1.0"
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.5",
+		"johnbillion/php-docs-standards": "^1",
+		"phpcompatibility/php-compatibility": "^9",
+		"phpunit/phpunit": "^6",
+		"wp-coding-standards/wpcs": "^2"
 	},
 	"autoload": {
 		"files": [

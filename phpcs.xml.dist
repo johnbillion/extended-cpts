@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="Extended CPTs">
 
-	<config name="installed_paths" value="../../slevomat/coding-standard,../../wp-coding-standards/wpcs,../../wimg/php-compatibility,../../automattic/phpcs-neutron-standard" />
 	<config name="testVersion" value="7.0-"/>
 
 	<exclude-pattern>*/tests/*</exclude-pattern>
@@ -18,7 +17,9 @@
 	</rule>
 
 	<!-- Include the WordPress-Extra standard. -->
-	<rule ref="WordPress-Extra"/>
+	<rule ref="WordPress-Extra">
+		<exclude name="PEAR.Functions.FunctionCallSignature"/>
+	</rule>
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>
@@ -31,13 +32,5 @@
 			<property name="minimum_supported_version" value="4.8"/>
 		</properties>
 	</rule>
-
-	<rule ref="SlevomatCodingStandard.Classes.UnusedPrivateElements"/>
-	<rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
-	<rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace"/>
-	<rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
-	<rule ref="SlevomatCodingStandard.ControlStructures.LanguageConstructWithParentheses"/>
-	<rule ref="SlevomatCodingStandard.TypeHints.LongTypeHints"/>
-	<rule ref="SlevomatCodingStandard.Commenting.InlineDocCommentDeclaration"/>
 
 </ruleset>
