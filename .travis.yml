@@ -6,8 +6,9 @@ language: php
 cache:
     apt: true
     directories:
-      - node_modules
-      - vendor
+        - $HOME/.npm
+        - vendor
+        - $HOME/.composer/cache
 
 notifications:
     email:
