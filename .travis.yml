@@ -20,6 +20,8 @@ php:
     - 7.0
 
 env:
+    # WP pre-Gutenberg:
+    - WP_VERSION=4.9
     # WP latest stable:
     - WP_VERSION=*
     # WP nightly:
