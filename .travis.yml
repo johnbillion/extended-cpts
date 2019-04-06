@@ -27,9 +27,6 @@ env:
 
 matrix:
     fast_finish: true
-    allow_failures:
-        # allow failures on nightlies:
-        - env: WP_VERSION=nightly
 
 install:
     - composer install --no-interaction
