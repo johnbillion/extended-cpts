@@ -33,7 +33,7 @@
 	},
 	"scripts": {
 		"test:setup": [
-			"vendor/bin/wp db query \"CREATE DATABASE IF NOT EXISTS wordpress_test DEFAULT CHARSET utf8\" --path=tests/wordpress"
+			"vendor/bin/wp db reset --yes --path=tests/wordpress"
 		],
 		"test:cs": [
 			"vendor/bin/phpcs -nps --colors --report-code --report-summary --report-width=80 ."
