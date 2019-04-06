@@ -8,23 +8,16 @@
 	beStrictAboutTestsThatDoNotTestAnything="true"
 	beStrictAboutOutputDuringTests="true"
 	>
+	<php>
+		<env name="WP_PHPUNIT__TESTS_CONFIG" value="tests/wp-tests-config.php" />
+	</php>
 	<testsuites>
 		<testsuite>
 			<directory prefix="test-" suffix=".php">./tests/phpunit/</directory>
 		</testsuite>
 	</testsuites>
-	<filter>
-		<whitelist addUncoveredFilesFromWhitelist="true">
-			<directory suffix=".php">./</directory>
-			<exclude>
-				<directory>./bin</directory>
-				<directory>./tests</directory>
-				<directory>./vendor</directory>
-			</exclude>
-		</whitelist>
-	</filter>
 	<listeners>
-		<listener class="SpeedTrapListener" file="tests/phpunit/includes/SpeedTrapListener.php">
+		<listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener">
 			<arguments>
 				<array>
 					<element key="slowThreshold">

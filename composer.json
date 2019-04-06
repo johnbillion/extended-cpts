@@ -9,6 +9,12 @@
 			"homepage": "https://johnblackbourn.com/"
 		}
 	],
+	"config": {
+		"preferred-install": "dist"
+	},
+	"extra": {
+		"wordpress-install-dir": "tests/wordpress"
+	},
 	"require": {
 		"php": "^7.0"
 	},
@@ -16,9 +22,31 @@
 		"automattic/phpcs-neutron-standard": "^1.5",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.5",
 		"johnbillion/php-docs-standards": "^1",
-		"phpcompatibility/php-compatibility": "^9",
+		"johnkary/phpunit-speedtrap": "^2",
+		"phpcompatibility/phpcompatibility-wp": "^2",
 		"phpunit/phpunit": "^6",
-		"wp-coding-standards/wpcs": "^2"
+		"roots/wordpress": "*",
+		"vlucas/phpdotenv": "^3",
+		"wp-cli/wp-cli-bundle": "^2.1",
+		"wp-coding-standards/wpcs": "^2",
+		"wp-phpunit/wp-phpunit": "*"
+	},
+	"scripts": {
+		"test:setup": [
+			"vendor/bin/wp db query \"CREATE DATABASE IF NOT EXISTS wordpress_test DEFAULT CHARSET utf8\" --path=tests/wordpress"
+		],
+		"test:cs": [
+			"vendor/bin/phpcs -nps --colors --report-code --report-summary --report-width=80 ."
+		],
+		"test:ut": [
+			"export WP_MULTISITE=0 && vendor/bin/phpunit --verbose --colors=always --exclude-group=ms-required",
+			"export WP_MULTISITE=1 && vendor/bin/phpunit --verbose --colors=always --exclude-group=ms-excluded"
+		],
+		"test": [
+			"@test:setup",
+			"@test:cs",
+			"@test:ut"
+		]
 	},
 	"autoload": {
 		"files": [
