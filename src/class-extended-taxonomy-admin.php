@@ -424,6 +424,11 @@ class Extended_Taxonomy_Admin {
 			switch ( $type ) {
 
 				case 'dropdown':
+					printf(
+						'<label for="%1$s" class="screen-reader-text">%2$s</label>',
+						esc_attr( "{$taxonomy}dropdown" ),
+						esc_html( $tax->labels->singular_name )
+					);
 					wp_dropdown_categories( [
 						'option_none_value' => ( is_taxonomy_hierarchical( $taxonomy ) ? '-1' : '' ),
 						'show_option_none'  => $none,

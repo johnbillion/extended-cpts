@@ -121,6 +121,7 @@ class Extended_Taxonomy {
 			'most_used'                  => 'Most Used',
 			'back_to_items'              => sprintf( '&larr; Back to %s', $this->tax_plural ),
 			'no_item'                    => sprintf( 'No %s', $this->tax_singular_low ), # Custom label
+			'filter_by'                  => sprintf( 'Filter by %s', $this->tax_singular_low ), # Custom label
 		];
 
 		# Only set rewrites if we need them
