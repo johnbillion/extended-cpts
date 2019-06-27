@@ -22,7 +22,6 @@
 		"automattic/phpcs-neutron-standard": "^1.5",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.5",
 		"johnbillion/php-docs-standards": "^1",
-		"johnkary/phpunit-speedtrap": "^2",
 		"phpcompatibility/phpcompatibility-wp": "^2",
 		"phpunit/phpunit": "^6",
 		"roots/wordpress": "*",
