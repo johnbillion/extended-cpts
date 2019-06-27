@@ -204,7 +204,7 @@ class Extended_CPT_Admin {
 				printf(
 					'<label for="%1$s" class="screen-reader-text">%2$s</label>',
 					esc_attr( $id ),
-					esc_html( $tax->labels->filter_by )
+					esc_html( $tax->labels->filter_by ?? $tax->labels->singular_name )
 				);
 
 				# Output the dropdown:
