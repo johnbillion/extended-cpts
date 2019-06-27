@@ -24,13 +24,13 @@ Extended CPTs is a library which provides extended functionality to WordPress cu
 
 ## Extended Admin Features ##
 
- * Ridiculously easy custom columns on the post type listing screen:
+ * Declarative creation of table columns on the post type listing screen:
    * Columns for post meta, taxonomy terms, featured images, post fields, [Posts 2 Posts](https://wordpress.org/plugins/posts-to-posts/) connections, and custom functions
    * Sortable columns for post meta, taxonomy terms, and post fields
    * User capability restrictions
    * Default sort column and sort order
- * Ridiculously easy custom columns on the taxonomy term listing screen:
-   * Columns available for term meta and custom functions
+ * Declarative creation of table columns on the taxonomy term listing screen:
+   * Columns for term meta and custom functions
    * User capability restrictions
  * Filter controls on the post type listing screen to enable filtering posts by post meta and taxonomy terms
  * Override the 'Featured Image' and 'Enter title here' text
@@ -49,7 +49,7 @@ Extended CPTs is a library which provides extended functionality to WordPress cu
    * Automatic integration with the [Rewrite Rule Testing](https://wordpress.org/plugins/rewrite-testing/) plugin
  * Specify public query vars which enable filtering by post meta
  * Specify public query vars which enable sorting by post meta, taxonomy terms, and post fields
- * Override public or private query vars such as `posts_per_page`, `orderby`, `order`, and `nopaging`
+ * Override default public or private query vars such as `posts_per_page`, `orderby`, `order`, and `nopaging`
  * Add the post type to the site's main RSS feed
 
 ## Minimum Requirements ##
@@ -166,7 +166,7 @@ Bam, we now have:
 * A 'Stories' post type, with correctly generated labels and post updated messages, three custom columns in the admin area (two of which are sortable), stories added to the main RSS feed, and all stories displayed on the post type archive.
 * A 'Genre' taxonomy attached to the 'Stories' post type, with correctly generated labels and term updated messages, and a custom column in the admin area.
 
-The `register_extended_post_type()` and  `register_extended_taxonomy()` functions are ultimately wrappers for the `register_post_type()` and `register_taxonomy()` functions in WordPress core, so any of the parameters from those functions can be used.
+The `register_extended_post_type()` and `register_extended_taxonomy()` functions are ultimately wrappers for the `register_post_type()` and `register_taxonomy()` functions in WordPress core, so any of the parameters from those functions can be used.
 
 There's quite a bit more you can do. [See the wiki for full documentation.](https://github.com/johnbillion/extended-cpts/wiki)
 
