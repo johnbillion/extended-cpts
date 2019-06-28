@@ -1,6 +1,10 @@
 <?php
 
-class Extended_CPT_Test_Admin_Requests extends Extended_CPT_Test_Admin {
+namespace ExtCPTs\Tests\Admin;
+
+use ExtCPTs\Tests\Admin;
+
+class Requests extends Admin {
 
 	public function testDefaultPostTypeListingRequestIsCorrect() {
 

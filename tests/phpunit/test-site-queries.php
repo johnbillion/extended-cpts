@@ -1,6 +1,11 @@
 <?php
 
-class Extended_CPT_Test_Site_Queries extends Extended_CPT_Test_Site {
+namespace ExtCPTs\Tests\Sites;
+
+use ExtCPTs\Tests\Site;
+use WP_Query;
+
+class Queries extends Site {
 
 	public function testDefaultPostTypeQueryNotAffected() {
 

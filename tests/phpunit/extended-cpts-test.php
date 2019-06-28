@@ -1,6 +1,8 @@
 <?php
 
-abstract class Extended_CPT_Test extends WP_UnitTestCase {
+namespace ExtCPTs;
+
+abstract class Test extends \WP_UnitTestCase {
 
 	public $cpts  = array();
 	public $taxos = array();

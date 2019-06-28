@@ -1,6 +1,10 @@
 <?php
 
-class Extended_CPT_Test_Setup extends Extended_CPT_Test {
+namespace ExtCPTs\Tests;
+
+use ExtCPTs\Test;
+
+class Setup extends Test {
 
 	public function setUp() {
 		parent::setUp();

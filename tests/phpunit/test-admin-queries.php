@@ -1,6 +1,11 @@
 <?php
 
-class Extended_CPT_Test_Admin_Queries extends Extended_CPT_Test_Admin {
+namespace ExtCPTs\Tests\Admin;
+
+use ExtCPTs\Tests\Admin;
+use WP_Query;
+
+class Queries extends Admin {
 
 	public function testDefaultPostTypeQueryNotAffected() {
 
