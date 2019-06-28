@@ -1,6 +1,8 @@
 <?php
 
-class Extended_CPT_Test_Docs extends \Johnbillion\DocsStandards\TestCase {
+namespace ExtCPTs\Tests;
+
+class Docs extends \Johnbillion\DocsStandards\TestCase {
 
 	protected function getTestFunctions() {
 		return array(
