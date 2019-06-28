@@ -21,7 +21,4 @@ tests_add_filter( 'muplugins_loaded', function() use ( $_root_dir ) {
 
 require_once $_tests_dir . '/includes/bootstrap.php';
 
-require_once $_root_dir . '/vendor/autoload.php';
-require_once dirname( __DIR__ ) . '/extended-cpts-test.php';
-require_once dirname( __DIR__ ) . '/extended-cpts-test-site.php';
-require_once dirname( __DIR__ ) . '/extended-cpts-test-admin.php';
+require_once dirname( __DIR__ ) . '/Test.php';

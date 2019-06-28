@@ -45,6 +45,9 @@
 		]
 	},
 	"autoload": {
+		"psr-4": {
+			"ExtCPTs\\Tests\\": "tests/phpunit"
+		},
 		"files": [
 			"extended-cpts.php"
 		]
