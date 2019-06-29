@@ -4,6 +4,8 @@ namespace ExtCPTs;
 
 abstract class Test extends \WP_UnitTestCase {
 
+	use \FalseyAssertEqualsDetector\Test;
+
 	public $cpts  = array();
 	public $taxos = array();
 	public $posts = array();

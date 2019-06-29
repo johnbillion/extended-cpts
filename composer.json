@@ -28,6 +28,7 @@
 		"vlucas/phpdotenv": "^3",
 		"wp-cli/wp-cli-bundle": "^2.1",
 		"wp-coding-standards/wpcs": "^2",
+		"johnbillion/falsey-assertequals-detector": "^2",
 		"wp-phpunit/wp-phpunit": "*"
 	},
 	"scripts": {
