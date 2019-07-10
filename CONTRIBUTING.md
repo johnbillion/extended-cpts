@@ -1,7 +1,38 @@
+[![Build Status](https://img.shields.io/travis/johnbillion/extended-cpts/develop.svg?style=flat-square&label=develop%20build)](https://travis-ci.org/johnbillion/extended-cpts)
+
 # Contributing to Extended CPTs
 
-Code contributions are very welcome, as are bug reports in the form of GitHub issues. Development happens in the `develop` branch, and any pull requests should be made to that branch please.
+Code contributions and bug reports are very welcome. These should be submitted through [the GitHub repository](https://github.com/johnbillion/extended-cpts). Development happens in the `develop` branch, and any pull requests should be made against that branch please.
 
-Please see [the tests readme](tests/README.md) for information on running the unit test suite.
+* [Setting up Locally](#setting-up-locally)
+* [Running the Tests](#running-the-tests)
 
-If you want to get in touch, [details are here](https://johnblackbourn.com/about).
+## Setting up Locally
+
+If you want to contribute to Extended CPTs, you should install the developer dependencies in order to run the tests.
+
+### Prerequisites
+
+* [Composer](https://getcomposer.org/)
+
+### Setup
+
+1. Install the PHP dependencies:
+
+       composer install
+
+2. Check the MySQL database credentials in the `tests/.env.example` file. If your database details differ, copy this file to `tests/.env` and amend them as necessary.
+
+## Running the Tests
+
+To run the whole test suite which includes PHPUnit and linting:
+
+	composer test
+
+To run just the PHPUnit tests:
+
+	composer test:ut
+
+To run just the code sniffer:
+
+	composer test:cs

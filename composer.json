@@ -9,18 +9,46 @@
 			"homepage": "https://johnblackbourn.com/"
 		}
 	],
+	"config": {
+		"preferred-install": "dist"
+	},
+	"extra": {
+		"wordpress-install-dir": "tests/wordpress"
+	},
 	"require": {
 		"php": "^7.0"
 	},
 	"require-dev": {
 		"automattic/phpcs-neutron-standard": "^1.5",
-		"johnbillion/php-docs-standards": "^1.2",
-		"phpunit/phpunit": "^5.7",
-		"slevomat/coding-standard": "^4.0",
-		"wimg/php-compatibility": "^8",
-		"wp-coding-standards/wpcs": "1.0"
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.5",
+		"johnbillion/php-docs-standards": "^1",
+		"phpcompatibility/phpcompatibility-wp": "^2",
+		"phpunit/phpunit": "^6",
+		"roots/wordpress": "*",
+		"vlucas/phpdotenv": "^3",
+		"wp-cli/wp-cli-bundle": "^2.1",
+		"wp-coding-standards/wpcs": "^2",
+		"johnbillion/falsey-assertequals-detector": "^2",
+		"wp-phpunit/wp-phpunit": "*"
+	},
+	"scripts": {
+		"test:cs": [
+			"vendor/bin/phpcs -nps --colors --report-code --report-summary --report-width=80 ."
+		],
+		"test:ut": [
+			"vendor/bin/wp db reset --yes --path=tests/wordpress #",
+			"export WP_MULTISITE=0 && vendor/bin/phpunit --verbose --colors=always --exclude-group=ms-required",
+			"export WP_MULTISITE=1 && vendor/bin/phpunit --verbose --colors=always --exclude-group=ms-excluded"
+		],
+		"test": [
+			"@test:cs",
+			"@test:ut"
+		]
 	},
 	"autoload": {
+		"psr-4": {
+			"ExtCPTs\\Tests\\": "tests/phpunit"
+		},
 		"files": [
 			"extended-cpts.php"
 		]

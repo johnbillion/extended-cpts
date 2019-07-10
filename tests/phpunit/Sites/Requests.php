@@ -1,6 +1,10 @@
 <?php
 
-class Extended_CPT_Test_Site_Requests extends Extended_CPT_Test_Site {
+namespace ExtCPTs\Tests\Sites;
+
+use ExtCPTs\Tests\Site;
+
+class Requests extends Site {
 
 	public function testSiteFilterQueryVarsRegistered() {
 

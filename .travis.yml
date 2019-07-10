@@ -6,8 +6,9 @@ language: php
 cache:
     apt: true
     directories:
-      - node_modules
-      - vendor
+        - $HOME/.npm
+        - vendor
+        - $HOME/.composer/cache
 
 notifications:
     email:
@@ -15,34 +16,29 @@ notifications:
         on_failure: always
 
 php:
-    - 7.2
-    - 7.1
+    - 7.3
     - 7.0
 
 env:
-    # latest:
-    - WP_VERSION=latest
-    # nightly:
-    - WP_VERSION=nightly
+    # WP pre-Gutenberg:
+    - WP_VERSION=4.9
+    # WP latest stable:
+    - WP_VERSION=*
+    # WP nightly:
+    - WP_VERSION=dev-nightly
 
 matrix:
     fast_finish: true
-    allow_failures:
-        # allow failures on nightlies:
-        - env: WP_VERSION=nightly
+
+before_install:
+  - |
+    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
+      phpenv config-rm xdebug.ini
+    fi
 
 install:
-    - composer install --no-interaction
-
-before_script:
-    - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+  - travis_retry composer install --no-suggest
+  - travis_retry composer require --dev --update-with-dependencies --no-suggest roots/wordpress="${WP_VERSION} || *" wp-phpunit/wp-phpunit="${WP_VERSION} || *"
 
 script:
-    - |
-      export WP_MULTISITE=0
-      ./vendor/bin/phpunit -v --exclude-group=ms-required
-    - |
-      export WP_MULTISITE=1
-      ./vendor/bin/phpunit -v --exclude-group=ms-excluded
-    - |
-      ./vendor/bin/phpcs -n -p -s --colors .
+  - composer test

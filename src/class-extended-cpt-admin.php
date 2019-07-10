@@ -180,6 +180,8 @@ class Extended_CPT_Admin {
 				continue;
 			}
 
+			$id = 'filter_' . $filter_key;
+
 			if ( isset( $filter['taxonomy'] ) ) {
 
 				$tax = get_taxonomy( $filter['taxonomy'] );
@@ -199,6 +201,12 @@ class Extended_CPT_Admin {
 					$filter['title'] = $tax->labels->all_items;
 				}
 
+				printf(
+					'<label for="%1$s" class="screen-reader-text">%2$s</label>',
+					esc_attr( $id ),
+					esc_html( $tax->labels->filter_by ?? $tax->labels->singular_name )
+				);
+
 				# Output the dropdown:
 				wp_dropdown_categories( [
 					'show_option_all' => $filter['title'],
@@ -208,7 +216,7 @@ class Extended_CPT_Admin {
 					'show_count'      => false,
 					'orderby'         => 'name',
 					'selected_cats'   => get_query_var( $tax->query_var ),
-					'id'              => 'filter_' . $filter_key,
+					'id'              => $id,
 					'name'            => $tax->query_var,
 					'taxonomy'        => $filter['taxonomy'],
 					'walker'          => $walker,
@@ -224,6 +232,16 @@ class Extended_CPT_Admin {
 					], ' ', $filter['meta_key'] );
 					$filter['title'] = ucwords( $filter['title'] ) . 's';
 					$filter['title'] = sprintf( 'All %s', $filter['title'] );
+				}
+
+				# If we haven't specified a label, generate one from the meta key:
+				if ( ! isset( $filter['label'] ) ) {
+					$filter['label'] = str_replace( [
+						'-',
+						'_',
+					], ' ', $filter['meta_key'] );
+					$filter['label'] = ucwords( $filter['label'] );
+					$filter['label'] = sprintf( 'Filter by %s', $filter['label'] );
 				}
 
 				if ( ! isset( $filter['options'] ) ) {
@@ -259,9 +277,15 @@ class Extended_CPT_Admin {
 					}
 				}
 
+				printf(
+					'<label for="%1$s" class="screen-reader-text">%2$s</label>',
+					esc_attr( $id ),
+					esc_html( $filter['label'] )
+				);
+
 				# Output the dropdown:
 				?>
-				<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
+				<select name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>">
 					<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
 					<?php
 					foreach ( $filter['options'] as $k => $v ) {
@@ -287,7 +311,7 @@ class Extended_CPT_Admin {
 
 				# Output the search box:
 				?>
-				<label><?php printf( '%s:', esc_html( $filter['title'] ) ); ?>&nbsp;<input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $value ); ?>" /></label>
+				<label for="<?php echo esc_attr( $id ); ?>"><?php printf( '%s:', esc_html( $filter['title'] ) ); ?></label>&nbsp;<input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $value ); ?>" />
 				<?php
 
 			} elseif ( isset( $filter['meta_exists'] ) ) {
@@ -304,14 +328,24 @@ class Extended_CPT_Admin {
 					# Output a checkbox:
 					foreach ( $filter['meta_exists'] as $v => $t ) {
 						?>
-						<label><input type="checkbox" name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $v ); ?>" <?php checked( $selected, $v ); ?>>&nbsp;<?php echo esc_html( $t ); ?></label>
+						<input type="checkbox" name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $v ); ?>" <?php checked( $selected, $v ); ?>><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $t ); ?></label>
 						<?php
 					}
 				} else {
 
+					if ( ! isset( $filter['label'] ) ) {
+						$filter['label'] = $pto->labels->name;
+					}
+
+					printf(
+						'<label for="%1$s" class="screen-reader-text">%2$s</label>',
+						esc_attr( $id ),
+						esc_html( $filter['label'] )
+					);
+
 					# Output a dropdown:
 					?>
-					<select name="<?php echo esc_attr( $filter_key ); ?>" id="filter_<?php echo esc_attr( $filter_key ); ?>">
+					<select name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>">
 						<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
 						<?php foreach ( $filter['meta_exists'] as $v => $t ) { ?>
 							<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $t ); ?></option>
@@ -986,7 +1020,7 @@ class Extended_CPT_Admin {
 			}
 		}
 
-		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.OverrideProhibited
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		foreach ( $_post->$field as $post ) {
 
 			setup_postdata( $post );

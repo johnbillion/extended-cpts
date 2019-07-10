@@ -1,6 +1,10 @@
 <?php
 
-abstract class Extended_CPT_Test_Admin extends Extended_CPT_Test {
+namespace ExtCPTs\Tests;
+
+use ExtCPTs\Test;
+
+abstract class Admin extends Test {
 
 	public function setUp() {
 		parent::setUp();
@@ -40,9 +44,19 @@ abstract class Extended_CPT_Test_Admin extends Extended_CPT_Test {
 	}
 
 	protected function default_listing_vars() {
-		return array(
+		$vars = array(
 			'posts_per_page' => 20,
 		);
+
+		// https://core.trac.wordpress.org/changeset/44338
+		if ( version_compare( $GLOBALS['wp_version'], '5.0.2', '>=' ) ) {
+			$vars['order']       = '';
+			$vars['orderby']     = '';
+			$vars['perm']        = '';
+			$vars['post_status'] = '';
+		}
+
+		return $vars;
 	}
 
 	public function tearDown() {

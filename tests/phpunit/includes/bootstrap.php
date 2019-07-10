@@ -1,18 +1,24 @@
 <?php
 
-$_tests_dir = getenv('WP_TESTS_DIR');
-if ( !$_tests_dir ) $_tests_dir = '/tmp/wordpress-tests-lib';
+$_root_dir = getcwd();
+
+require_once $_root_dir . '/vendor/autoload.php';
+
+$_env_dir = dirname( dirname( __DIR__ ) );
+
+if ( is_readable( $_env_dir . '/.env' ) ) {
+	$dotenv = Dotenv\Dotenv::create( $_env_dir );
+	$dotenv->load();
+}
+
+$_tests_dir = getenv( 'WP_PHPUNIT__DIR' );
 
 require_once $_tests_dir . '/includes/functions.php';
 
-function _manually_load_plugin() {
-	require dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) . '/extended-cpts.php';
-}
-tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
+tests_add_filter( 'muplugins_loaded', function() use ( $_root_dir ) {
+	require_once $_root_dir . '/extended-cpts.php';
+} );
 
-require $_tests_dir . '/includes/bootstrap.php';
+require_once $_tests_dir . '/includes/bootstrap.php';
 
-require dirname( dirname( dirname( __DIR__ ) ) ) . '/vendor/autoload.php';
-require dirname( dirname( __FILE__ ) ) . '/extended-cpts-test.php';
-require dirname( dirname( __FILE__ ) ) . '/extended-cpts-test-site.php';
-require dirname( dirname( __FILE__ ) ) . '/extended-cpts-test-admin.php';
+require_once dirname( __DIR__ ) . '/Test.php';
