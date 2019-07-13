@@ -1,5 +1,6 @@
 /composer.lock
 /phpcs.xml
 /phpunit.xml
+/tests/.env
 /tests/wordpress
 /vendor

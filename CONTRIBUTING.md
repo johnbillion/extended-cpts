@@ -21,7 +21,7 @@ If you want to contribute to Extended CPTs, you should install the developer dep
 
        composer install
 
-2. Check the MySQL database credentials in the `tests/.env.example` file. If your database details differ, copy this file to `tests/.env` and amend them as necessary.
+2. Check the MySQL database credentials in the `tests/.env` file and amend them if necessary.
 
 ## Running the Tests
 
