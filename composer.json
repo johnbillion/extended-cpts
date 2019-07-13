@@ -10,6 +10,7 @@
 		}
 	],
 	"config": {
+		"sort-packages": true,
 		"preferred-install": "dist"
 	},
 	"extra": {
@@ -21,6 +22,7 @@
 	"require-dev": {
 		"automattic/phpcs-neutron-standard": "^1.5",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.5",
+		"johnbillion/falsey-assertequals-detector": "^2",
 		"johnbillion/php-docs-standards": "^1",
 		"phpcompatibility/phpcompatibility-wp": "^2",
 		"phpunit/phpunit": "^6",
@@ -28,7 +30,6 @@
 		"vlucas/phpdotenv": "^3",
 		"wp-cli/wp-cli-bundle": "^2.1",
 		"wp-coding-standards/wpcs": "^2",
-		"johnbillion/falsey-assertequals-detector": "^2",
 		"wp-phpunit/wp-phpunit": "*"
 	},
 	"scripts": {
