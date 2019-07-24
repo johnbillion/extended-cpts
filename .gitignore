@@ -2,5 +2,6 @@
 /phpcs.xml
 /phpunit.xml
 /tests/.env
+/tests/cache
 /tests/wordpress
 /vendor
