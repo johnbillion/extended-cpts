@@ -4,32 +4,32 @@ sudo: false
 language: php
 
 cache:
-    apt: true
-    directories:
-        - $HOME/.npm
-        - vendor
-        - $HOME/.composer/cache
-        - tests/cache
+  apt: true
+  directories:
+    - $HOME/.npm
+    - vendor
+    - $HOME/.composer/cache
+    - tests/cache
 
 notifications:
-    email:
-        on_success: change
-        on_failure: always
+  email:
+    on_success: change
+    on_failure: always
 
 php:
-    - 7.3
-    - 7.0
+  - 7.3
+  - 7.0
 
 env:
-    # WP pre-Gutenberg:
-    - WP_VERSION=4.9
-    # WP latest stable:
-    - WP_VERSION=*
-    # WP nightly:
-    - WP_VERSION=dev-nightly
+  # WP pre-Gutenberg:
+  - WP_VERSION=4.9
+  # WP latest stable:
+  - WP_VERSION=*
+  # WP nightly:
+  - WP_VERSION=dev-nightly
 
 matrix:
-    fast_finish: true
+  fast_finish: true
 
 before_install:
   - |
