@@ -32,7 +32,7 @@ Extended CPTs is a library which provides extended functionality to WordPress cu
  * Declarative creation of table columns on the taxonomy term listing screen:
    * Columns for term meta and custom functions
    * User capability restrictions
- * Filter controls on the post type listing screen to enable filtering posts by post meta, taxonomy terms, and post dates
+ * Filter controls on the post type listing screen to enable filtering posts by post meta, taxonomy terms, post author, and post dates
  * Override the 'Featured Image' and 'Enter title here' text
  * Several custom meta boxes available for taxonomies on the post editing screen:
    * Simplified list of checkboxes

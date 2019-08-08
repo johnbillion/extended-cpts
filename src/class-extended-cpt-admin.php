@@ -370,6 +370,37 @@ class Extended_CPT_Admin {
 				<label for="<?php echo esc_attr( $id ); ?>"><?php printf( '%s:', esc_html( $filter['title'] ) ); ?></label>&nbsp;
 				<input type="date" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $value ); ?>" size="12" placeholder="yyyy-mm-dd" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
 				<?php
+			} elseif ( isset( $filter['post_author'] ) ) {
+				$value = wp_unslash( get_query_var( 'author' ) );
+
+				if ( ! isset( $filter['title'] ) ) {
+					$filter['title'] = __( 'All Authors', 'extended-cpts' );
+				}
+
+				if ( ! isset( $filter['label'] ) ) {
+					$filter['label'] = __( 'Author', 'extended-cpts' );
+				}
+
+				printf(
+					'<label for="%1$s" class="screen-reader-text">%2$s</label>',
+					esc_attr( $id ),
+					esc_html( $filter['label'] )
+				);
+
+				$include = $wpdb->get_col( $wpdb->prepare( "
+					SELECT DISTINCT post_author
+					FROM {$wpdb->posts}
+					WHERE post_type = %s
+				", $this->cpt->post_type ) );
+
+				# Output a dropdown:
+				wp_dropdown_users( [
+					'id'               => $id,
+					'include'          => $include,
+					'name'             => 'author',
+					'selected'         => $value,
+					'show_option_none' => $filter['title'],
+				] );
 			}
 		}
 
