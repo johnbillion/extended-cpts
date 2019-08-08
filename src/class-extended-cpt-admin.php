@@ -545,7 +545,7 @@ class Extended_CPT_Admin {
 			8 => sprintf(
 				( $pto->publicly_queryable ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ),
 				esc_html( $this->cpt->post_singular ),
-				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post ) ) ),
+				esc_url( get_preview_post_link( $post ) ),
 				esc_html( $this->cpt->post_singular_low )
 			),
 			9 => sprintf(
@@ -558,7 +558,7 @@ class Extended_CPT_Admin {
 			10 => sprintf(
 				( $pto->publicly_queryable ? '%1$s draft updated. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s draft updated.' ),
 				esc_html( $this->cpt->post_singular ),
-				esc_url( add_query_arg( 'preview', 'true', get_permalink( $post ) ) ),
+				esc_url( get_preview_post_link( $post ) ),
 				esc_html( $this->cpt->post_singular_low )
 			),
 		];
