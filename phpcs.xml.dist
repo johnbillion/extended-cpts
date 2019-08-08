@@ -15,6 +15,7 @@
 		<exclude name="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma"/>
 		<exclude name="NeutronStandard.Functions.DisallowCallUserFunc.CallUserFunc"/>
 		<exclude name="NeutronStandard.AssignAlign.DisallowAssignAlign.Aligned"/>
+		<exclude name="NeutronStandard.Functions.LongFunction.LongFunction"/>
 	</rule>
 
 	<!-- Include the WordPress-Extra standard. -->
@@ -31,6 +32,12 @@
 	<rule ref="WordPress.WP.DeprecatedFunctions">
 		<properties>
 			<property name="minimum_supported_version" value="4.8"/>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.ValidHookName">
+		<properties>
+			<property name="additionalWordDelimiters" value="-/"/>
 		</properties>
 	</rule>
 
