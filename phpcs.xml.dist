@@ -14,6 +14,7 @@
 		<exclude name="NeutronStandard.Globals.DisallowGlobalFunctions.GlobalFunctions"/>
 		<exclude name="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma"/>
 		<exclude name="NeutronStandard.Functions.DisallowCallUserFunc.CallUserFunc"/>
+		<exclude name="NeutronStandard.AssignAlign.DisallowAssignAlign.Aligned"/>
 	</rule>
 
 	<!-- Include the WordPress-Extra standard. -->
