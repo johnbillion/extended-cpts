@@ -50,7 +50,12 @@ abstract class Test extends \WP_UnitTestCase {
 				),
 				'test_site_filters_post_meta_exists' => array(
 					'meta_exists' => array(
-						'test_meta_key',
+						'test_meta_key' => 'Test',
+					),
+				),
+				'test_site_filters_post_meta_key_exists' => array(
+					'meta_key_exists' => array(
+						'test_meta_key' => 'Test',
 					),
 				),
 				'test_site_filters_with_cap' => array(

@@ -342,6 +342,11 @@ class Extended_CPT {
 					'value'   => wp_unslash( $query[ $filter_key ] ),
 					'compare' => 'LIKE',
 				];
+			} elseif ( isset( $filter['meta_key_exists'] ) ) {
+				$meta_query = [
+					'key'     => wp_unslash( $query[ $filter_key ] ),
+					'compare' => 'EXISTS',
+				];
 			} elseif ( isset( $filter['meta_exists'] ) ) {
 				$meta_query = [
 					'key'     => wp_unslash( $query[ $filter_key ] ),

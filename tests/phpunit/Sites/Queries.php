@@ -257,6 +257,30 @@ class Queries extends Site {
 
 	}
 
+	public function testQueryFilteredByPostMetaKeyExists() {
+
+		$query = $this->get_query( array(
+			'post_type'                              => 'hello',
+			'test_site_filters_post_meta_key_exists' => 'test_meta_key',
+		) );
+
+		$meta_query = $query->get( 'meta_query' );
+
+		$this->assertEquals( 3, $query->found_posts );
+
+		$this->assertSame( '',                $query->get( 'meta_key' ) );
+		$this->assertSame( '',                $query->get( 'meta_value' ) );
+		$this->assertEquals( 'test_meta_key', $meta_query[0]['key'] );
+		$this->assertEquals( 'EXISTS',        $meta_query[0]['compare'] );
+
+		$this->assertEquals( array(
+			$this->posts['hello'][0],
+			$this->posts['hello'][1],
+			$this->posts['hello'][2],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
 	public function testQueryNotFilteredWithoutRequiredCap() {
 
 		$query = $this->get_query( array(

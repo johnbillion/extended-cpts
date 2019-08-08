@@ -314,7 +314,7 @@ class Extended_CPT_Admin {
 				<label for="<?php echo esc_attr( $id ); ?>"><?php printf( '%s:', esc_html( $filter['title'] ) ); ?></label>&nbsp;<input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $value ); ?>" />
 				<?php
 
-			} elseif ( isset( $filter['meta_exists'] ) ) {
+			} elseif ( isset( $filter['meta_exists'] ) || isset( $filter['meta_key_exists'] ) ) {
 
 				# If we haven't specified a title, use the all_items label from the post type:
 				if ( ! isset( $filter['title'] ) ) {
@@ -322,11 +322,12 @@ class Extended_CPT_Admin {
 				}
 
 				$selected = wp_unslash( get_query_var( $filter_key ) );
+				$fields   = $filter['meta_exists'] ?? $filter['meta_key_exists'];
 
-				if ( 1 === count( $filter['meta_exists'] ) ) {
+				if ( 1 === count( $fields ) ) {
 
 					# Output a checkbox:
-					foreach ( $filter['meta_exists'] as $v => $t ) {
+					foreach ( $fields as $v => $t ) {
 						?>
 						<input type="checkbox" name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $v ); ?>" <?php checked( $selected, $v ); ?>><label for="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $t ); ?></label>
 						<?php
@@ -347,7 +348,7 @@ class Extended_CPT_Admin {
 					?>
 					<select name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>">
 						<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
-						<?php foreach ( $filter['meta_exists'] as $v => $t ) { ?>
+						<?php foreach ( $fields as $v => $t ) { ?>
 							<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $t ); ?></option>
 						<?php } ?>
 					</select>
