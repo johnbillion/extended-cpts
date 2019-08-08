@@ -146,7 +146,7 @@ class Queries extends Site {
 
 		$query = $this->get_query( array(
 			'post_type'                       => 'hello',
-			'test_site_filters_post_meta_key' => 'Alpha',
+			'test_site_filters_post_meta_key' => '0',
 		) );
 
 		$meta_query = $query->get( 'meta_query' );
@@ -156,7 +156,7 @@ class Queries extends Site {
 		$this->assertSame( '',              $query->get( 'meta_key' ) );
 		$this->assertSame( '',              $query->get( 'meta_value' ) );
 		$this->assertSame( 'test_meta_key', $meta_query[0]['key'] );
-		$this->assertSame( 'Alpha',         $meta_query[0]['value'] );
+		$this->assertSame( '0',             $meta_query[0]['value'] );
 
 		$this->assertEquals( array(
 			$this->posts['hello'][1],
@@ -241,18 +241,17 @@ class Queries extends Site {
 
 		$meta_query = $query->get( 'meta_query' );
 
-		$this->assertEquals( 3, $query->found_posts );
+		$this->assertEquals( 2, $query->found_posts );
 
-		$this->assertSame( '',              $query->get( 'meta_key' ) );
-		$this->assertSame( '',              $query->get( 'meta_value' ) );
-		$this->assertSame( 'test_meta_key', $meta_query[0]['key'] );
-		$this->assertSame( 'NOT IN',        $meta_query[0]['compare'] );
+		$this->assertSame( '',                $query->get( 'meta_key' ) );
+		$this->assertSame( '',                $query->get( 'meta_value' ) );
+		$this->assertEquals( 'test_meta_key', $meta_query[0]['key'] );
+		$this->assertEquals( 'NOT IN',        $meta_query[0]['compare'] );
 
 		$this->assertEquals( array( '', '0', 'false', 'null' ), $meta_query[0]['value'] );
 
 		$this->assertEquals( array(
 			$this->posts['hello'][0],
-			$this->posts['hello'][1],
 			$this->posts['hello'][2],
 		), wp_list_pluck( $query->posts, 'ID' ) );
 

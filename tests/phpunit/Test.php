@@ -189,7 +189,7 @@ abstract class Test extends \WP_UnitTestCase {
 			'post_name' => 'Delta',
 			'post_date' => '1984-02-25 00:03:00'
 		) );
-		add_post_meta( $this->posts['hello'][1], 'test_meta_key', 'Alpha' );
+		add_post_meta( $this->posts['hello'][1], 'test_meta_key', '0' );
 
 		// Hello 2
 		$this->posts['hello'][2] = $this->factory->post->create( array(
