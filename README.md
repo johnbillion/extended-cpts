@@ -32,7 +32,7 @@ Extended CPTs is a library which provides extended functionality to WordPress cu
  * Declarative creation of table columns on the taxonomy term listing screen:
    * Columns for term meta and custom functions
    * User capability restrictions
- * Filter controls on the post type listing screen to enable filtering posts by post meta and taxonomy terms
+ * Filter controls on the post type listing screen to enable filtering posts by post meta, taxonomy terms, and post dates
  * Override the 'Featured Image' and 'Enter title here' text
  * Several custom meta boxes available for taxonomies on the post editing screen:
    * Simplified list of checkboxes
@@ -47,7 +47,7 @@ Extended CPTs is a library which provides extended functionality to WordPress cu
    * For example `reviews/%year%/%month%/%review%`
    * Supports all relevant rewrite tags including dates and custom taxonomies
    * Automatic integration with the [Rewrite Rule Testing](https://wordpress.org/plugins/rewrite-testing/) plugin
- * Specify public query vars which enable filtering by post meta
+ * Specify public query vars which enable filtering by post meta and post dates
  * Specify public query vars which enable sorting by post meta, taxonomy terms, and post fields
  * Override default public or private query vars such as `posts_per_page`, `orderby`, `order`, and `nopaging`
  * Add the post type to the site's main RSS feed

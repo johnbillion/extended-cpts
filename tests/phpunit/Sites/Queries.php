@@ -281,6 +281,19 @@ class Queries extends Site {
 
 	}
 
+	public function testQueryFilteredByPostDate() {
+		$query = $this->get_query( array(
+			'post_type'                   => 'hello',
+			'test_site_filters_date_from' => '2019-08-05',
+			'test_site_filters_date_to'   => '2019-08-08',
+		) );
+
+		$date_query = $query->get( 'date_query' );
+
+		$this->assertEquals( '2019-08-05', $date_query[0]['after'] );
+		$this->assertEquals( '2019-08-08', $date_query[1]['before'] );
+	}
+
 	public function testQueryNotFilteredWithoutRequiredCap() {
 
 		$query = $this->get_query( array(

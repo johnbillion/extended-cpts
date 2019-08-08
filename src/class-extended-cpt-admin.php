@@ -359,6 +359,17 @@ class Extended_CPT_Admin {
 					<?php
 
 				}
+			} elseif ( isset( $filter['post_date'] ) ) {
+				$value = wp_unslash( get_query_var( $filter_key ) );
+
+				if ( ! isset( $filter['title'] ) ) {
+					$filter['title'] = ucwords( $filter['post_date'] );
+				}
+
+				?>
+				<label for="<?php echo esc_attr( $id ); ?>"><?php printf( '%s:', esc_html( $filter['title'] ) ); ?></label>&nbsp;
+				<input type="date" id="<?php echo esc_attr( $id ); ?>" name="<?php echo esc_attr( $filter_key ); ?>" value="<?php echo esc_attr( $value ); ?>" size="12" placeholder="yyyy-mm-dd" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
+				<?php
 			}
 		}
 

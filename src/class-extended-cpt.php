@@ -323,6 +323,9 @@ class Extended_CPT {
 		$return = [];
 
 		foreach ( $filters as $filter_key => $filter ) {
+			$meta_query = [];
+			$date_query = [];
+
 			if ( isset( $filter['default'] ) && ! isset( $query[ $filter_key ] ) ) {
 				$query[ $filter_key ] = $filter['default'];
 			}
@@ -356,6 +359,11 @@ class Extended_CPT {
 					'compare' => 'NOT IN',
 					'value'   => [ '', '0', 'false', 'null' ],
 				];
+			} elseif ( isset( $filter['post_date'] ) ) {
+				$date_query = [
+					$filter['post_date'] => wp_unslash( $query[ $filter_key ] ),
+					'inclusive'          => true,
+				];
 			} else {
 				continue;
 			}
@@ -364,8 +372,16 @@ class Extended_CPT {
 				$meta_query = array_merge( $meta_query, $filter['meta_query'] );
 			}
 
+			if ( isset( $filter['date_query'] ) ) {
+				$date_query = array_merge( $date_query, $filter['date_query'] );
+			}
+
 			if ( ! empty( $meta_query ) ) {
 				$return['meta_query'][] = $meta_query;
+			}
+
+			if ( ! empty( $date_query ) ) {
+				$return['date_query'][] = $date_query;
 			}
 		}
 

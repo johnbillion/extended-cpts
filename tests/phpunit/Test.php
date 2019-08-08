@@ -76,6 +76,12 @@ abstract class Test extends \WP_UnitTestCase {
 					'meta_value'   => 'B',
 					'meta_type'    => 'CHAR',
 				),
+				'test_site_filters_date_from' => array(
+					'post_date' => 'after',
+				),
+				'test_site_filters_date_to' => array(
+					'post_date' => 'before',
+				),
 				'test_site_filters_invalid' => array(
 					'meta_query' => array(
 						'key'     => 'foo',
