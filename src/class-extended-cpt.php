@@ -323,6 +323,9 @@ class Extended_CPT {
 		$return = [];
 
 		foreach ( $filters as $filter_key => $filter ) {
+			if ( isset( $filter['default'] ) && ! isset( $query[ $filter_key ] ) ) {
+				$query[ $filter_key ] = $filter['default'];
+			}
 
 			if ( ! isset( $query[ $filter_key ] ) || ( '' === $query[ $filter_key ] ) ) {
 				continue;

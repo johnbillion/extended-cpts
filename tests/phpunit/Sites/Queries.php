@@ -321,6 +321,23 @@ class Queries extends Site {
 
 	}
 
+	public function testQueryWithDefaultFilter() {
+
+		$query = $this->get_query( array(
+			'post_type' => 'filterable',
+		) );
+
+		$this->assertEquals( 1, $query->found_posts );
+
+		$this->assertEquals( 'test_meta_key', $query->get( 'meta_query' )[0]['key'] );
+		$this->assertEquals( 'Alpha',         $query->get( 'meta_query' )[0]['value'] );
+
+		$this->assertEquals( array(
+			$this->posts['filterable'][0],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
 	protected function get_query( array $args ) {
 		$args = array_merge( array(
 			'nopaging' => true,

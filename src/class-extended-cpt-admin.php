@@ -286,7 +286,9 @@ class Extended_CPT_Admin {
 				# Output the dropdown:
 				?>
 				<select name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>">
-					<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
+					<?php if ( ! isset( $filter['default'] ) ) { ?>
+						<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
+					<?php } ?>
 					<?php
 					foreach ( $filter['options'] as $k => $v ) {
 						$key = ( $use_key ? $k : $v );
@@ -347,7 +349,9 @@ class Extended_CPT_Admin {
 					# Output a dropdown:
 					?>
 					<select name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>">
-						<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
+						<?php if ( ! isset( $filter['default'] ) ) { ?>
+							<option value=""><?php echo esc_html( $filter['title'] ); ?></option>
+						<?php } ?>
 						<?php foreach ( $fields as $v => $t ) { ?>
 							<option value="<?php echo esc_attr( $v ); ?>" <?php selected( $selected, $v ); ?>><?php echo esc_html( $t ); ?></option>
 						<?php } ?>

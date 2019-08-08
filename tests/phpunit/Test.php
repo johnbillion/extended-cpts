@@ -163,9 +163,18 @@ abstract class Test extends \WP_UnitTestCase {
 			'slug'     => 'faqs',
 		) );
 
+		$this->cpts['filterable'] = register_extended_post_type( 'filterable', array(
+			'site_filters' => array(
+				'test_site_filters_post_meta_key' => array(
+					'meta_key' => 'test_meta_key',
+					'default'  => 'Alpha',
+				),
+			),
+		) );
+
 		$wp_rewrite->flush_rules();
 
-		foreach ( array( 'Alpha', 'Beta', 'Gamma', 'Delta' ) as $slug ) {
+		foreach ( array( '0', 'Alpha', 'Beta', 'Gamma', 'Delta' ) as $slug ) {
 			wp_insert_term( $slug, 'hello_category' );
 			wp_insert_term( $slug, 'foo_category' );
 		}
@@ -248,6 +257,17 @@ abstract class Test extends \WP_UnitTestCase {
 			'post_type'   => 'baz',
 		) );
 
+		$this->posts['filterable'][0] = $this->factory->post->create( array(
+			'guid'        => 'guid',
+			'post_type'   => 'filterable',
+		) );
+		add_post_meta( $this->posts['filterable'][0], 'test_meta_key', 'Alpha' );
+
+		$this->posts['filterable'][1] = $this->factory->post->create( array(
+			'guid'        => 'guid',
+			'post_type'   => 'filterable',
+		) );
+		add_post_meta( $this->posts['filterable'][1], 'test_meta_key', 'Beta' );
 	}
 
 	protected static function get_minimum_version( string $type, string $filename ) {
