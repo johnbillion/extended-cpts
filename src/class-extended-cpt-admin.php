@@ -391,11 +391,12 @@ class Extended_CPT_Admin {
 
 				# Output a dropdown:
 				wp_dropdown_users( [
-					'id'               => $id,
-					'include'          => $include,
-					'name'             => 'author',
-					'selected'         => $value,
-					'show_option_none' => $filter['title'],
+					'id'                => $id,
+					'include'           => $include,
+					'name'              => 'author',
+					'option_none_value' => '',
+					'selected'          => $value,
+					'show_option_none'  => $filter['title'],
 				] );
 			}
 		}
