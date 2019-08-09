@@ -40,8 +40,7 @@ class Extended_Taxonomy {
 	 * @param array        $args        Optional. The taxonomy arguments.
 	 * @param string[]     $names       Optional. An associative array of the plural, singular, and slug names.
 	 */
-	public function __construct( $taxonomy, $object_type, array $args = [], array $names = [] ) {
-
+	public function __construct( string $taxonomy, $object_type, array $args = [], array $names = [] ) {
 		/**
 		 * Filter the arguments for this taxonomy.
 		 *
@@ -170,7 +169,7 @@ class Extended_Taxonomy {
 	 * @param array $tests The existing rewrite rule tests.
 	 * @return array Updated rewrite rule tests.
 	 */
-	public function rewrite_testing_tests( array $tests ) {
+	public function rewrite_testing_tests( array $tests ) : array {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
 		require_once __DIR__ . '/class-extended-taxonomy-rewrite-testing.php';
 
