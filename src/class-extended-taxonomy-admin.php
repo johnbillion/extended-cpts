@@ -172,10 +172,22 @@ class Extended_Taxonomy_Admin {
 				if ( isset( $col['cap'] ) && ! current_user_can( $col['cap'] ) ) {
 					continue;
 				}
-				if ( ! isset( $col['title'] ) ) {
-					$col['title'] = $this->get_item_title( $col );
+
+				if ( isset( $col['title_cb'] ) ) {
+					$new_cols[ $id ] = call_user_func( $col['title_cb'], $col );
+				} else {
+					$title = esc_html( $col['title'] ?? $this->get_item_title( $col ) ?? $id );
+
+					if ( isset( $col['title_icon'] ) ) {
+						$title = sprintf(
+							'<span class="dashicons %s" aria-hidden="true"></span><span class="screen-reader-text">%s</span>',
+							esc_attr( $col['title_icon'] ),
+							$title
+						);
+					}
+
+					$new_cols[ $id ] = $title;
 				}
-				$new_cols[ $id ] = esc_html( $col['title'] );
 			}
 		}
 
