@@ -124,8 +124,7 @@ class Extended_Taxonomy_Admin {
 	 * @param  array $cols Associative array of columns
 	 * @return array       Updated array of columns
 	 */
-	public function cols( array $cols ) {
-
+	public function cols( array $cols ) : array {
 		// This function gets called multiple times, so let's cache it for efficiency:
 		if ( isset( $this->the_cols ) ) {
 			return $this->the_cols;
@@ -180,8 +179,7 @@ class Extended_Taxonomy_Admin {
 	 * @param string $col     Name of the column.
 	 * @param int    $term_id Term ID.
 	 */
-	public function col( $string, $col, $term_id ) {
-
+	public function col( string $string, string $col, int $term_id ) {
 		# Shorthand:
 		$c = $this->args['admin_cols'];
 
@@ -206,8 +204,7 @@ class Extended_Taxonomy_Admin {
 	 * @param array  $args     Array of arguments for this field
 	 * @param int    $term_id  Term ID.
 	 */
-	public function col_term_meta( $meta_key, array $args, $term_id ) {
-
+	public function col_term_meta( string $meta_key, array $args, int $term_id ) {
 		$vals = get_term_meta( $term_id, $meta_key, false );
 		$echo = [];
 
@@ -246,8 +243,7 @@ class Extended_Taxonomy_Admin {
 	 * @param array $item An array of arguments
 	 * @return string The item title
 	 */
-	protected function get_item_title( array $item ) {
-
+	protected function get_item_title( array $item ) : string {
 		if ( isset( $item['meta_key'] ) ) {
 			return ucwords( trim( str_replace( [ '_', '-' ], ' ', $item['meta_key'] ) ) );
 		} else {
@@ -261,8 +257,7 @@ class Extended_Taxonomy_Admin {
 	 * @param string $object_type The object type (eg. the post type)
 	 * @param mixed  $object      The object (eg. a WP_Post object)
 	 */
-	public function meta_boxes( $object_type, $object ) {
-
+	public function meta_boxes( string $object_type, $object ) {
 		if ( ! is_a( $object, 'WP_Post' ) ) {
 			return;
 		}
@@ -362,8 +357,7 @@ class Extended_Taxonomy_Admin {
 	 * @param bool    $show_none Optional. Whether to include a 'none' item in the term list. Default false.
 	 * @param string  $type      Optional. The taxonomy list type (checklist or dropdown). Default 'checklist'.
 	 */
-	protected function do_meta_box( WP_Post $post, Walker $walker = null, $show_none = false, $type = 'checklist' ) {
-
+	protected function do_meta_box( WP_Post $post, Walker $walker = null, bool $show_none = false, string $type = 'checklist' ) {
 		$taxonomy = $this->taxo->taxonomy;
 		$tax      = get_taxonomy( $taxonomy );
 		$selected = wp_get_object_terms( $post->ID, $taxonomy, [
@@ -507,8 +501,7 @@ class Extended_Taxonomy_Admin {
 	 * @param string[] $items Array of items to display on the widget.
 	 * @return string[] Updated array of items.
 	 */
-	public function glance_items( array $items ) {
-
+	public function glance_items( array $items ) : array {
 		$taxonomy = get_taxonomy( $this->taxo->taxonomy );
 
 		if ( ! current_user_can( $taxonomy->cap->manage_terms ) ) {
@@ -551,8 +544,7 @@ class Extended_Taxonomy_Admin {
 	 * @param array[] $messages An array of term updated message arrays keyed by taxonomy name.
 	 * @return array[] Updated array of term updated messages.
 	 */
-	public function term_updated_messages( array $messages ) {
-
+	public function term_updated_messages( array $messages ) : array {
 		$messages[ $this->taxo->taxonomy ] = [
 			1 => esc_html( sprintf( '%s added.', $this->taxo->tax_singular ) ),
 			2 => esc_html( sprintf( '%s deleted.', $this->taxo->tax_singular ) ),

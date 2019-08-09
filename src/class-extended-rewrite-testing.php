@@ -6,7 +6,7 @@ declare( strict_types=1 );
  */
 abstract class Extended_Rewrite_Testing {
 
-	abstract public function get_tests();
+	abstract public function get_tests() : array;
 
 	public function get_rewrites( array $struct, array $additional ) : array {
 
