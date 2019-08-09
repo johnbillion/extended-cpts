@@ -10,6 +10,8 @@ Extended CPTs is a library which provides extended functionality to WordPress cu
 
 [See the wiki for full documentation.](https://github.com/johnbillion/extended-cpts/wiki)
 
+Not your first time here? See [Recent Changes for Developers](https://github.com/johnbillion/extended-cpts/wiki/Recent-Changes-for-Developers) to see what features are new in recent versions of Extended CPTs.
+
 ## Improved Defaults for Post Types ##
 
  * Automatically generated labels and post updated messages (in English)
