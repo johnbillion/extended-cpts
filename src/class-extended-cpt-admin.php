@@ -734,10 +734,12 @@ class Extended_CPT_Admin {
 				if ( isset( $col['connection'] ) && ! function_exists( 'p2p_type' ) ) {
 					continue;
 				}
-				if ( ! isset( $col['title'] ) ) {
-					$col['title'] = $this->get_item_title( $col ) ?? $id;
+
+				if ( isset( $col['title_cb'] ) ) {
+					$new_cols[ $id ] = call_user_func( $col['title_cb'], $col );
+				} else {
+					$new_cols[ $id ] = esc_html( $col['title'] ?? $this->get_item_title( $col ) ?? $id );
 				}
-				$new_cols[ $id ] = esc_html( $col['title'] );
 			}
 		}
 
