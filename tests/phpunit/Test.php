@@ -70,12 +70,6 @@ abstract class Test extends \WP_UnitTestCase {
 						'type'    => 'CHAR',
 					),
 				),
-				'test_site_filters_post_meta_query_deprecated' => array(
-					'meta_key'     => 'test_meta_key',
-					'meta_compare' => '>=',
-					'meta_value'   => 'B',
-					'meta_type'    => 'CHAR',
-				),
 				'test_site_filters_date_from' => array(
 					'post_date' => 'after',
 				),
