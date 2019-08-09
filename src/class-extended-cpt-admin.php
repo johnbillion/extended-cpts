@@ -738,7 +738,17 @@ class Extended_CPT_Admin {
 				if ( isset( $col['title_cb'] ) ) {
 					$new_cols[ $id ] = call_user_func( $col['title_cb'], $col );
 				} else {
-					$new_cols[ $id ] = esc_html( $col['title'] ?? $this->get_item_title( $col ) ?? $id );
+					$title = esc_html( $col['title'] ?? $this->get_item_title( $col ) ?? $id );
+
+					if ( isset( $col['title_icon'] ) ) {
+						$title = sprintf(
+							'<span class="dashicons %s" aria-hidden="true"></span><span class="screen-reader-text">%s</span>',
+							esc_attr( $col['title_icon'] ),
+							$title
+						);
+					}
+
+					$new_cols[ $id ] = $title;
 				}
 			}
 		}
