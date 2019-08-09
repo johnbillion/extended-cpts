@@ -423,7 +423,7 @@ class Extended_CPT_Admin {
 			return;
 		}
 
-		$vars = Extended_CPT::get_filter_vars( $wp_query->query, $this->cpt->args['admin_filters'] );
+		$vars = Extended_CPT::get_filter_vars( $wp_query->query, $this->cpt->args['admin_filters'], $this->cpt->post_type );
 
 		if ( empty( $vars ) ) {
 			return;

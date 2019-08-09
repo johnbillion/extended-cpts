@@ -252,7 +252,7 @@ class Extended_CPT {
 			return;
 		}
 
-		$vars = self::get_filter_vars( $wp_query->query, $this->args['site_filters'] );
+		$vars = self::get_filter_vars( $wp_query->query, $this->args['site_filters'], $this->post_type );
 
 		if ( empty( $vars ) ) {
 			return;
@@ -330,12 +330,13 @@ class Extended_CPT {
 	 * Get the array of private query vars for the given filters, to apply to the current query in order to filter it by the
 	 * given public query vars.
 	 *
-	 * @param array $query   The public query vars, usually from `$wp_query->query`.
-	 * @param array $filters The filters valid for this query (usually the value of the `admin_filters` or
-	 *                       `site_filters` argument when registering an extended post type).
+	 * @param array  $query     The public query vars, usually from `$wp_query->query`.
+	 * @param array  $filters   The filters valid for this query (usually the value of the `admin_filters` or
+	 *                          `site_filters` argument when registering an extended post type).
+	 * @param string $post_type The post type name.
 	 * @return array The list of private query vars to apply to the query.
 	 */
-	public static function get_filter_vars( array $query, array $filters ) : array {
+	public static function get_filter_vars( array $query, array $filters, string $post_type ) : array {
 		$return = [];
 
 		foreach ( $filters as $filter_key => $filter ) {
