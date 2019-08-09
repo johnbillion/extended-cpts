@@ -216,7 +216,6 @@ class Extended_CPT {
 		 * @param Extended_CPT $instance The extended post type instance.
 		 */
 		do_action( "ext-cpts/{$post_type}/instance", $this );
-
 	}
 
 	/**
@@ -225,7 +224,6 @@ class Extended_CPT {
 	 * @param WP_Query $wp_query The current WP_Query object.
 	 */
 	public function maybe_filter( WP_Query $wp_query ) {
-
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
@@ -246,7 +244,6 @@ class Extended_CPT {
 			}
 			$wp_query->set( $key, $value );
 		}
-
 	}
 
 	/**
@@ -255,7 +252,6 @@ class Extended_CPT {
 	 * @param WP_Query $wp_query The current WP_Query object.
 	 */
 	public function maybe_sort_by_fields( WP_Query $wp_query ) {
-
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
@@ -283,18 +279,16 @@ class Extended_CPT {
 		foreach ( $sort as $key => $value ) {
 			$wp_query->set( $key, $value );
 		}
-
 	}
 
 	/**
 	 * Filter the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
-	 * @param  array    $clauses  The current query's SQL clauses.
-	 * @param  WP_Query $wp_query The current `WP_Query` object.
-	 * @return array              The updated SQL clauses.
+	 * @param string[] $clauses  Array of the current query's SQL clauses.
+	 * @param WP_Query $wp_query The current `WP_Query` object.
+	 * @return string[] Array of SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) : array {
-
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return $clauses;
 		}
@@ -306,20 +300,18 @@ class Extended_CPT {
 		}
 
 		return array_merge( $clauses, $sort );
-
 	}
 
 	/**
 	 * Get the array of private query vars for the given filters, to apply to the current query in order to filter it by the
 	 * given public query vars.
 	 *
-	 * @param  array $query   The public query vars, usually from `$wp_query->query`.
-	 * @param  array $filters The filters valid for this query (usually the value of the `admin_filters` or
-	 *                        `site_filters` argument when registering an extended post type).
-	 * @return array          The list of private query vars to apply to the query.
+	 * @param array $query   The public query vars, usually from `$wp_query->query`.
+	 * @param array $filters The filters valid for this query (usually the value of the `admin_filters` or
+	 *                       `site_filters` argument when registering an extended post type).
+	 * @return array The list of private query vars to apply to the query.
 	 */
 	public static function get_filter_vars( array $query, array $filters ) : array {
-
 		$return = [];
 
 		foreach ( $filters as $filter_key => $filter ) {
@@ -386,20 +378,18 @@ class Extended_CPT {
 		}
 
 		return $return;
-
 	}
 
 	/**
 	 * Get the array of private and public query vars for the given sortables, to apply to the current query in order to
 	 * sort it by the requested orderby field.
 	 *
-	 * @param  array $vars      The public query vars, usually from `$wp_query->query`.
-	 * @param  array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
-	 *                          `site_sortables` argument when registering an extended post type.
-	 * @return array            The list of private and public query vars to apply to the query.
+	 * @param array $vars      The public query vars, usually from `$wp_query->query`.
+	 * @param array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
+	 *                         `site_sortables` argument when registering an extended post type.
+	 * @return array The list of private and public query vars to apply to the query.
 	 */
 	public static function get_sort_field_vars( array $vars, array $sortables ) : array {
-
 		if ( ! isset( $vars['orderby'] ) ) {
 			return [];
 		}
@@ -435,21 +425,19 @@ class Extended_CPT {
 		}
 
 		return $return;
-
 	}
 
 	/**
 	 * Get the array of SQL clauses for the given sortables, to apply to the current query in order to
 	 * sort it by the requested orderby field.
 	 *
-	 * @param  array $clauses   The query's SQL clauses.
-	 * @param  array $vars      The public query vars, usually from `$wp_query->query`.
-	 * @param  array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
-	 *                          `site_sortables` argument when registering an extended post type).
-	 * @return array            The list of SQL clauses to apply to the query.
+	 * @param array $clauses   The query's SQL clauses.
+	 * @param array $vars      The public query vars, usually from `$wp_query->query`.
+	 * @param array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
+	 *                         `site_sortables` argument when registering an extended post type).
+	 * @return array The list of SQL clauses to apply to the query.
 	 */
 	public static function get_sort_taxonomy_clauses( array $clauses, array $vars, array $sortables ) : array {
-
 		global $wpdb;
 
 		if ( ! isset( $vars['orderby'] ) ) {
@@ -489,31 +477,27 @@ class Extended_CPT {
 		$clauses['orderby'] .= ( isset( $vars['order'] ) && ( 'ASC' === strtoupper( $vars['order'] ) ) ) ? 'ASC' : 'DESC';
 
 		return $clauses;
-
 	}
 
 	/**
 	 * Add our filter names to the public query vars.
 	 *
-	 * @param  array $vars Public query variables.
-	 * @return array       Updated public query variables.
+	 * @param string[] $vars Public query variables.
+	 * @return string[] Updated public query variables.
 	 */
 	public function add_query_vars( array $vars ) : array {
-
 		$filters = array_keys( $this->args['site_filters'] );
 
 		return array_merge( $vars, $filters );
-
 	}
 
 	/**
 	 * Add our post type to the feed.
 	 *
-	 * @param  array $vars Request parameters.
-	 * @return array       Updated request parameters.
+	 * @param array $vars Request parameters.
+	 * @return array Updated request parameters.
 	 */
 	public function add_to_feed( array $vars ) : array {
-
 		# If it's not a feed, we're not interested:
 		if ( ! isset( $vars['feed'] ) ) {
 			return $vars;
@@ -529,17 +513,15 @@ class Extended_CPT {
 		}
 
 		return $vars;
-
 	}
 
 	/**
 	 * Add to or override our post type archive's private query vars.
 	 *
-	 * @param  WP $wp The WP request object.
-	 * @return WP     Updated WP request object.
+	 * @param WP $wp The WP request object.
+	 * @return WP Updated WP request object.
 	 */
 	public function override_private_query_vars( WP $wp ) : WP {
-
 		# If it's not our post type, bail out:
 		if ( ! isset( $wp->query_vars['post_type'] ) || ( $this->post_type !== $wp->query_vars['post_type'] ) ) {
 			return $wp;
@@ -556,7 +538,6 @@ class Extended_CPT {
 		}
 
 		return $wp;
-
 	}
 
 	/**
@@ -569,22 +550,23 @@ class Extended_CPT {
 		if ( $post_type !== $this->post_type ) {
 			return;
 		}
+
 		$struct = str_replace( "%{$this->post_type}_slug%", $this->post_slug, $post_type_object->rewrite['permastruct'] );
 		$struct = str_replace( '%postname%', "%{$this->post_type}%", $struct );
+
 		add_permastruct( $this->post_type, $struct, $post_type_object->rewrite );
 	}
 
 	/**
 	 * Filter the post type permalink in order to populate its rewrite tags.
 	 *
-	 * @param  string  $post_link The post's permalink.
-	 * @param  WP_Post $post      The post in question.
-	 * @param  bool    $leavename Whether to keep the post name.
-	 * @param  bool    $sample    Is it a sample permalink.
-	 * @return string             The post's permalink.
+	 * @param string  $post_link The post's permalink.
+	 * @param WP_Post $post      The post in question.
+	 * @param bool    $leavename Whether to keep the post name.
+	 * @param bool    $sample    Is it a sample permalink.
+	 * @return string The post's permalink.
 	 */
 	public function post_type_link( string $post_link, WP_Post $post, bool $leavename, bool $sample ) : string {
-
 		# If it's not our post type, bail out:
 		if ( $this->post_type !== $post->post_type ) {
 			return $post_link;
@@ -636,6 +618,7 @@ class Extended_CPT {
 				 * @param WP_Post $post The post in question.
 				 */
 				$default_term_name = apply_filters( "default_{$tax}", get_option( "default_{$tax}", '' ), $post );
+
 				if ( $default_term_name ) {
 					$default_term = get_term( $default_term_name, $tax );
 					if ( ! is_wp_error( $default_term ) ) {
@@ -651,7 +634,6 @@ class Extended_CPT {
 		$post_link = str_replace( array_keys( $replacements ), $replacements, $post_link );
 
 		return $post_link;
-
 	}
 
 	/**
@@ -659,8 +641,8 @@ class Extended_CPT {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param  array $tests The existing rewrite rule tests.
-	 * @return array        Updated rewrite rule tests.
+	 * @param array $tests The existing rewrite rule tests.
+	 * @return array Updated rewrite rule tests.
 	 */
 	public function rewrite_testing_tests( array $tests ) : array {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
@@ -669,7 +651,6 @@ class Extended_CPT {
 		$extended = new Extended_CPT_Rewrite_Testing( $this );
 
 		return array_merge( $tests, $extended->get_tests() );
-
 	}
 
 	/**
@@ -680,14 +661,13 @@ class Extended_CPT {
 	 *
 	 */
 	public function register_post_type() {
-
 		if ( ! isset( $this->args['query_var'] ) || ( true === $this->args['query_var'] ) ) {
 			$query_var = $this->post_type;
 		} else {
 			$query_var = $this->args['query_var'];
 		}
 
-		$existing = get_post_type_object( $this->post_type );
+		$existing   = get_post_type_object( $this->post_type );
 		$taxonomies = get_taxonomies( [
 			'query_var' => $query_var,
 		], 'objects' );
@@ -706,20 +686,16 @@ class Extended_CPT {
 		}
 
 		if ( empty( $existing ) ) {
-
 			$cpt = register_post_type( $this->post_type, $this->args );
 
 			if ( is_wp_error( $cpt ) ) {
 				trigger_error( esc_html( $cpt->get_error_message() ), E_USER_ERROR );
 			}
 		} else {
-
 			# This allows us to call `register_extended_post_type()` on an existing post type to add custom functionality
 			# to the post type.
 			$this->extend( $existing );
-
 		}
-
 	}
 
 	/**
@@ -728,12 +704,10 @@ class Extended_CPT {
 	 * @param WP_Post_Type $pto A post type object.
 	 */
 	public function extend( WP_Post_Type $pto ) {
-
 		# Merge core with overridden labels
 		$this->args['labels'] = array_merge( (array) get_post_type_labels( $pto ), $this->args['labels'] );
 
 		$GLOBALS['wp_post_types'][ $pto->name ]->labels = (object) $this->args['labels'];
-
 	}
 
 	/**
@@ -746,13 +720,12 @@ class Extended_CPT {
 	 *     $events   = register_extended_post_type( 'event' );
 	 *     $location = $events->add_taxonomy( 'location' );
 	 *
-	 * @param  string $taxonomy The taxonomy name.
-	 * @param  array  $args     Optional. The taxonomy arguments.
-	 * @param  array  $names    Optional. An associative array of the plural, singular, and slug names.
-	 * @return WP_Taxonomy      Taxonomy object.
+	 * @param string $taxonomy The taxonomy name.
+	 * @param array  $args     Optional. The taxonomy arguments.
+	 * @param array  $names    Optional. An associative array of the plural, singular, and slug names.
+	 * @return WP_Taxonomy Taxonomy object.
 	 */
 	public function add_taxonomy( string $taxonomy, array $args = [], array $names = [] ) : WP_Taxonomy {
-
 		if ( taxonomy_exists( $taxonomy ) ) {
 			register_taxonomy_for_object_type( $taxonomy, $this->post_type );
 		} else {
@@ -760,7 +733,6 @@ class Extended_CPT {
 		}
 
 		return get_taxonomy( $taxonomy );
-
 	}
 
 }

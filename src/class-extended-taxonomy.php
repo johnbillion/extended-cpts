@@ -10,12 +10,12 @@ class Extended_Taxonomy {
 	 * @var array
 	 */
 	protected $defaults = [
-		'public'            => true,
-		'show_ui'           => true,
-		'hierarchical'      => true,
-		'query_var'         => true,
-		'exclusive'         => false, # Custom arg
-		'allow_hierarchy'   => false, # Custom arg
+		'public'          => true,
+		'show_ui'         => true,
+		'hierarchical'    => true,
+		'query_var'       => true,
+		'exclusive'       => false, # Custom arg
+		'allow_hierarchy' => false, # Custom arg
 	];
 
 	/**
@@ -50,6 +50,7 @@ class Extended_Taxonomy {
 		 * @param array $args The taxonomy arguments.
 		 */
 		$args  = apply_filters( "ext-taxos/{$taxonomy}/args", $args );
+
 		/**
 		 * Filter the names for this taxonomy.
 		 *
@@ -159,7 +160,6 @@ class Extended_Taxonomy {
 		 * @param Extended_Taxonomy $instance The extended taxonomy instance.
 		 */
 		do_action( "ext-taxos/{$taxonomy}/instance", $this );
-
 	}
 
 	/**
@@ -167,8 +167,8 @@ class Extended_Taxonomy {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param  array $tests The existing rewrite rule tests.
-	 * @return array        Updated rewrite rule tests.
+	 * @param array $tests The existing rewrite rule tests.
+	 * @return array Updated rewrite rule tests.
 	 */
 	public function rewrite_testing_tests( array $tests ) {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
@@ -177,16 +177,12 @@ class Extended_Taxonomy {
 		$extended = new Extended_Taxonomy_Rewrite_Testing( $this );
 
 		return array_merge( $tests, $extended->get_tests() );
-
 	}
 
 	/**
 	 * Registers our taxonomy.
-	 *
-	 * @return null
 	 */
 	public function register_taxonomy() {
-
 		if ( true === $this->args['query_var'] ) {
 			$query_var = $this->taxonomy;
 		} else {
@@ -212,7 +208,6 @@ class Extended_Taxonomy {
 		} else {
 			register_taxonomy( $this->taxonomy, $this->object_type, $this->args );
 		}
-
 	}
 
 }
