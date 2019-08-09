@@ -176,8 +176,6 @@ There's quite a bit more you can do. [See the wiki for full documentation.](http
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for information on contributing.
 
-Please see [the tests readme](tests/README.md) for information on running the unit test suite.
-
 ## License: GPLv2 or later ##
 
 This program is free software; you can redistribute it and/or modify
