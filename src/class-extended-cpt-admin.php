@@ -11,6 +11,7 @@ class Extended_CPT_Admin {
 	protected $defaults = [
 		'quick_edit'       => true, # Custom arg
 		'dashboard_glance' => true, # Custom arg
+		'dashboard_activity' => false, # Custom arg
 		'admin_cols'       => null, # Custom arg
 		'admin_filters'    => null, # Custom arg
 		'enter_title_here' => null, # Custom arg
@@ -91,6 +92,11 @@ class Extended_CPT_Admin {
 		# 'At a Glance' dashboard panels:
 		if ( $this->args['dashboard_glance'] ) {
 			add_filter( 'dashboard_glance_items', [ $this, 'glance_items' ], $this->cpt->args['menu_position'] );
+		}
+
+		# 'Recently Published' dashboard section:
+		if ( $this->args['dashboard_activity'] ) {
+			add_filter( 'dashboard_recent_posts_query_args', [ $this, 'dashboard_activity' ] );
 		}
 
 		# Post updated messages:
@@ -531,6 +537,20 @@ class Extended_CPT_Admin {
 		$items[] = $text;
 
 		return $items;
+	}
+
+	/**
+	 * Adds our post type to the 'Recently Published' section on the dashboard.
+	 *
+	 * @param array $query_args Array of query args for the widget.
+	 * @return array Updated array of query args.
+	 */
+	public function dashboard_activity( array $query_args ) : array {
+		$query_args['post_type'] = (array) $query_args['post_type'];
+
+		$query_args['post_type'][] = $this->cpt->post_type;
+
+		return $query_args;
 	}
 
 	/**

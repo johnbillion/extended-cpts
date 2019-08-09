@@ -42,6 +42,7 @@ Not your first time here? See [Recent Changes for Developers](https://github.com
    * Dropdown menu
    * Custom function
  * Post types and taxonomies automatically added to the 'At a Glance' section on the dashboard
+ * Post types optionally added to the 'Recently Published' section on the dashboard
 
 ## Extended Front-end Features for Post Types ##
 
