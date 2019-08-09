@@ -9,12 +9,12 @@ class Extended_CPT_Admin {
 	 * @var array
 	 */
 	protected $defaults = [
-		'quick_edit'       => true, # Custom arg
-		'dashboard_glance' => true, # Custom arg
+		'quick_edit'         => true, # Custom arg
+		'dashboard_glance'   => true, # Custom arg
 		'dashboard_activity' => false, # Custom arg
-		'admin_cols'       => null, # Custom arg
-		'admin_filters'    => null, # Custom arg
-		'enter_title_here' => null, # Custom arg
+		'admin_cols'         => null, # Custom arg
+		'admin_filters'      => null, # Custom arg
+		'enter_title_here'   => null, # Custom arg
 	];
 
 	/**
@@ -427,8 +427,8 @@ class Extended_CPT_Admin {
 	/**
 	 * Adds our filter names to the public query vars.
 	 *
-	 * @param  array $vars Public query variables
-	 * @return array       Updated public query variables
+	 * @param array $vars Public query variables
+	 * @return array Updated public query variables
 	 */
 	public function add_query_vars( array $vars ) : array {
 		$filters = array_keys( $this->args['admin_filters'] );
@@ -488,9 +488,9 @@ class Extended_CPT_Admin {
 	/**
 	 * Filters the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
-	 * @param  array    $clauses  The current query's SQL clauses.
-	 * @param  WP_Query $wp_query The current `WP_Query` object.
-	 * @return array              The updated SQL clauses.
+	 * @param array    $clauses  The current query's SQL clauses.
+	 * @param WP_Query $wp_query The current `WP_Query` object.
+	 * @return array The updated SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) : array {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
@@ -509,8 +509,8 @@ class Extended_CPT_Admin {
 	/**
 	 * Adds our post type to the 'At a Glance' widget on the dashboard.
 	 *
-	 * @param  array $items Array of items to display on the widget.
-	 * @return array        Updated array of items.
+	 * @param array $items Array of items to display on the widget.
+	 * @return array Updated array of items.
 	 */
 	public function glance_items( array $items ) : array {
 		$pto = get_post_type_object( $this->cpt->post_type );
@@ -569,8 +569,8 @@ class Extended_CPT_Admin {
 	 *   9 => "Post scheduled for: [date]. {Preview post}"
 	 *  10 => "Post draft updated. {Preview post}"
 	 *
-	 * @param  array[] $messages An array of post updated message arrays keyed by post type.
-	 * @return array[]           Updated array of post updated messages.
+	 * @param array[] $messages An array of post updated message arrays keyed by post type.
+	 * @return array[] Updated array of post updated messages.
 	 */
 	public function post_updated_messages( array $messages ) : array {
 		global $post;
@@ -1198,10 +1198,10 @@ class Extended_CPT_Admin {
 	/**
 	 * A non-localised version of _n()
 	 *
-	 * @param  string $single The text that will be used if $number is 1
-	 * @param  string $plural The text that will be used if $number is not 1
-	 * @param  int    $number The number to compare against to use either `$single` or `$plural`
-	 * @return string         Either `$single` or `$plural` text
+	 * @param string $single The text that will be used if $number is 1
+	 * @param string $plural The text that will be used if $number is not 1
+	 * @param int    $number The number to compare against to use either `$single` or `$plural`
+	 * @return string Either `$single` or `$plural` text
 	 */
 	protected static function n( string $single, string $plural, int $number ) : string {
 		return ( 1 === intval( $number ) ) ? $single : $plural;
