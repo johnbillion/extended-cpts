@@ -117,7 +117,7 @@ add_action( 'init', function() {
 				'featured_image' => 'thumbnail'
 			],
 			'story_published' => [
-				'title'       => 'Published',
+				'title_icon'  => 'dashicons-calendar-alt',
 				'meta_key'    => 'published_date',
 				'date_format' => 'd/m/Y'
 			],
@@ -153,7 +153,9 @@ add_action( 'init', function() {
 		# Add a custom column to the admin screen:
 		'admin_cols' => [
 			'updated' => [
-				'title'       => 'Updated',
+				'title_cb'    => function() {
+					return '<em>Last</em> Updated';
+				},
 				'meta_key'    => 'updated_date',
 				'date_format' => 'd/m/Y'
 			],
