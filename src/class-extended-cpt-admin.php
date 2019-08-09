@@ -189,6 +189,22 @@ class Extended_CPT_Admin {
 
 			$id = 'filter_' . $filter_key;
 
+			$hook = "ext-cpts/{$this->cpt->post_type}/filter-output/{$filter_key}";
+
+			if ( has_action( $hook ) ) {
+				/**
+				 * Allows a filter's output to be overridden.
+				 *
+				 * @since 4.3.0
+				 *
+				 * @param Extended_CPT_Admin $this   The post type admin controller instance.
+				 * @param array              $filter The filter arguments.
+				 * @param string             $id     The filter's `id` attribute value.
+				 */
+				do_action( $hook, $this, $filter, $id );
+				continue;
+			}
+
 			if ( isset( $filter['taxonomy'] ) ) {
 				$tax = get_taxonomy( $filter['taxonomy'] );
 

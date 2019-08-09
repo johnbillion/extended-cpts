@@ -354,6 +354,22 @@ class Extended_CPT {
 				continue;
 			}
 
+			$hook = "ext-cpts/{$post_type}/filter-query/{$filter_key}";
+
+			if ( has_filter( $hook ) ) {
+				/**
+				 * Allows a filter's private query vars to be overridden.
+				 *
+				 * @since 4.3.0
+				 *
+				 * @param array $return The private query vars.
+				 * @param array $query  The public query vars.
+				 * @param array $filter The filter arguments.
+				 */
+				$return = apply_filters( $hook, $return, $query, $filter );
+				continue;
+			}
+
 			if ( isset( $filter['meta_key'] ) ) {
 				$meta_query = [
 					'key'   => $filter['meta_key'],
