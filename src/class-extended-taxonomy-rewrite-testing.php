@@ -3,6 +3,9 @@ declare( strict_types=1 );
 
 class Extended_Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
 
+	/**
+	 * @var Extended_Taxonomy
+	 */
 	public $taxo;
 
 	public function __construct( Extended_Taxonomy $taxo ) {

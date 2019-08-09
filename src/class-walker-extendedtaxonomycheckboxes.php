@@ -9,13 +9,21 @@ declare( strict_types=1 );
 class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 
 	/**
-	 * Some member variables you don't need to worry too much about:
+	 * @var string
 	 */
 	public $tree_type = 'category';
+
+	/**
+	 * @var array
+	 */
 	public $db_fields = [
 		'parent' => 'parent',
 		'id'     => 'term_id',
 	];
+
+	/**
+	 * @var string
+	 */
 	public $field = null;
 
 	/**

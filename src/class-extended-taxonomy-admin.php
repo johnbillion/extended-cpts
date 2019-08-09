@@ -16,9 +16,24 @@ class Extended_Taxonomy_Admin {
 		'required'         => false, # Custom arg
 	];
 
+	/**
+	 * @var Extended_Taxonomy
+	 */
 	public $taxo;
+
+	/**
+	 * @var array
+	 */
 	public $args;
+
+	/**
+	 * @var array
+	 */
 	protected $_cols;
+
+	/**
+	 * @var array
+	 */
 	protected $the_cols = null;
 
 	/**

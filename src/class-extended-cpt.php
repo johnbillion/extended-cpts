@@ -28,14 +28,38 @@ class Extended_CPT {
 	];
 
 	/**
-	 * Some other member variables you don't need to worry about:
+	 * @var string
 	 */
 	public $post_type;
+
+	/**
+	 * @var string
+	 */
 	public $post_slug;
+
+	/**
+	 * @var string
+	 */
 	public $post_singular;
+
+	/**
+	 * @var string
+	 */
 	public $post_plural;
+
+	/**
+	 * @var string
+	 */
 	public $post_singular_low;
+
+	/**
+	 * @var string
+	 */
 	public $post_plural_low;
+
+	/**
+	 * @var array
+	 */
 	public $args;
 
 	/**
@@ -48,7 +72,6 @@ class Extended_CPT {
 	 * @param string[] $names     Optional. The plural, singular, and slug names.
 	 */
 	public function __construct( string $post_type, array $args = [], array $names = [] ) {
-
 		/**
 		 * Filter the arguments for this post type.
 		 *
@@ -57,6 +80,7 @@ class Extended_CPT {
 		 * @param array $args The post type arguments.
 		 */
 		$args  = apply_filters( "ext-cpts/{$post_type}/args", $args );
+
 		/**
 		 * Filter the names for this post type.
 		 *

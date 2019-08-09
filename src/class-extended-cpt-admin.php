@@ -15,10 +15,30 @@ class Extended_CPT_Admin {
 		'admin_filters'    => null, # Custom arg
 		'enter_title_here' => null, # Custom arg
 	];
+
+	/**
+	 * @var Extended_CPT
+	 */
 	public $cpt;
+
+	/**
+	 * @var array
+	 */
 	public $args;
+
+	/**
+	 * @var array
+	 */
 	protected $_cols;
+
+	/**
+	 * @var array
+	 */
 	protected $the_cols = null;
+
+	/**
+	 * @var array
+	 */
 	protected $connection_exists = [];
 
 	/**

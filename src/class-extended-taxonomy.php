@@ -19,15 +19,43 @@ class Extended_Taxonomy {
 	];
 
 	/**
-	 * Some other member variables you don't need to worry about:
+	 * @var string
 	 */
 	public $taxonomy;
+
+	/**
+	 * @var array
+	 */
 	public $object_type;
+
+	/**
+	 * @var string
+	 */
 	public $tax_slug;
+
+	/**
+	 * @var string
+	 */
 	public $tax_singular;
+
+	/**
+	 * @var string
+	 */
 	public $tax_plural;
+
+	/**
+	 * @var string
+	 */
 	public $tax_singular_low;
+
+	/**
+	 * @var string
+	 */
 	public $tax_plural_low;
+
+	/**
+	 * @var array
+	 */
 	public $args;
 
 	/**
