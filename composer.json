@@ -58,6 +58,7 @@
 		]
 	},
 	"suggest": {
+		"seravo/wp-custom-bulk-actions": "Custom Bulk Actions",
 		"wpackagist-plugin/rewrite-testing": "Rewrite Rule Testing"
 	}
 }
