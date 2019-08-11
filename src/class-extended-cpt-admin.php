@@ -916,7 +916,7 @@ class Extended_CPT_Admin {
 						if ( current_user_can( $tax->cap->edit_terms ) ) {
 							$out[] = sprintf(
 								'<a href="%1$s">%2$s</a>',
-								esc_url( get_edit_term_link( $term, $taxonomy, $post->post_type ) ),
+								esc_url( get_edit_term_link( $term->term_id, $taxonomy, $post->post_type ) ),
 								esc_html( $term->name )
 							);
 						} else {
@@ -1269,6 +1269,7 @@ class Extended_CPT_Admin {
 			}
 			return $item['connection'];
 		}
+		return null;
 	}
 
 	/**

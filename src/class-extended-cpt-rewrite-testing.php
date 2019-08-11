@@ -19,6 +19,8 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 
 		global $wp_rewrite;
 
+		/** @var \WP_Rewrite $wp_rewrite */
+
 		if ( ! $wp_rewrite->using_permalinks() ) {
 			return [];
 		}
