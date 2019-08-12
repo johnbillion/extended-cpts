@@ -9,7 +9,6 @@ abstract class Extended_Rewrite_Testing {
 	abstract public function get_tests() : array;
 
 	public function get_rewrites( array $struct, array $additional ) : array {
-
 		global $wp_rewrite;
 
 		if ( ! $wp_rewrite->using_permalinks() ) {
@@ -60,7 +59,6 @@ abstract class Extended_Rewrite_Testing {
 		}
 
 		return $new;
-
 	}
 
 }

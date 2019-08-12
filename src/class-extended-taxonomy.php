@@ -118,6 +118,7 @@ class Extended_Taxonomy {
 		} else {
 			$this->tax_singular_low = $this->tax_singular;
 		}
+
 		if ( ! preg_match( '/[A-Z]{2,}/', $this->tax_plural ) ) {
 			$this->tax_plural_low = strtolower( $this->tax_plural );
 		} else {

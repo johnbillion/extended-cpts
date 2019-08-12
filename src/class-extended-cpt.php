@@ -123,6 +123,7 @@ class Extended_CPT {
 		} else {
 			$this->post_singular_low = $this->post_singular;
 		}
+
 		if ( ! preg_match( '/[A-Z]{2,}/', $this->post_plural ) ) {
 			$this->post_plural_low = strtolower( $this->post_plural );
 		} else {
@@ -282,7 +283,6 @@ class Extended_CPT {
 
 		// If we've not specified an order:
 		if ( empty( $wp_query->query['orderby'] ) ) {
-
 			// Loop over our sortables to find the default sort field (if there is one):
 			foreach ( $this->args['site_sortables'] as $id => $col ) {
 				if ( is_array( $col ) && isset( $col['default'] ) ) {
@@ -350,6 +350,7 @@ class Extended_CPT {
 			if ( ! isset( $query[ $filter_key ] ) || ( '' === $query[ $filter_key ] ) ) {
 				continue;
 			}
+
 			if ( isset( $filter['cap'] ) && ! current_user_can( $filter['cap'] ) ) {
 				continue;
 			}
@@ -434,9 +435,11 @@ class Extended_CPT {
 		if ( ! isset( $vars['orderby'] ) ) {
 			return [];
 		}
+
 		if ( ! is_string( $vars['orderby'] ) ) {
 			return [];
 		}
+
 		if ( ! isset( $sortables[ $vars['orderby'] ] ) ) {
 			return [];
 		}
@@ -446,6 +449,7 @@ class Extended_CPT {
 		if ( ! is_array( $orderby ) ) {
 			return [];
 		}
+
 		if ( isset( $orderby['sortable'] ) && ! $orderby['sortable'] ) {
 			return [];
 		}
@@ -484,9 +488,11 @@ class Extended_CPT {
 		if ( ! isset( $vars['orderby'] ) ) {
 			return [];
 		}
+
 		if ( ! is_string( $vars['orderby'] ) ) {
 			return [];
 		}
+
 		if ( ! isset( $sortables[ $vars['orderby'] ] ) ) {
 			return [];
 		}
@@ -496,9 +502,11 @@ class Extended_CPT {
 		if ( ! is_array( $orderby ) ) {
 			return [];
 		}
+
 		if ( isset( $orderby['sortable'] ) && ! $orderby['sortable'] ) {
 			return [];
 		}
+
 		if ( ! isset( $orderby['taxonomy'] ) ) {
 			return [];
 		}
@@ -634,8 +642,8 @@ class Extended_CPT {
 			}
 
 			$terms = get_the_terms( $post, $tax );
-			if ( $terms ) {
 
+			if ( $terms ) {
 				/**
 				 * Filter the term that gets used in the `$tax` permalink token.
 				 * @TODO make this more betterer ^
@@ -669,7 +677,6 @@ class Extended_CPT {
 			}
 
 			$replacements[ "%{$tax}%" ] = $term;
-
 		}
 
 		$post_link = str_replace( array_keys( $replacements ), $replacements, $post_link );

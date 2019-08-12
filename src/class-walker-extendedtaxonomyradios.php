@@ -71,7 +71,6 @@ class Walker_ExtendedTaxonomyRadios extends Walker {
 	 * @param int    $current_object_id Current object ID.
 	 */
 	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {
-
 		$tax = get_taxonomy( $args['taxonomy'] );
 
 		if ( $this->field ) {
@@ -93,7 +92,6 @@ class Walker_ExtendedTaxonomyRadios extends Walker {
 			' /> ' .
 			esc_html( apply_filters( 'the_category', $object->name ) ) .
 			'</label>';
-
 	}
 
 	/**
