@@ -425,16 +425,25 @@ class Extended_CPT_Admin {
 					esc_html( $filter['label'] )
 				);
 
-				$include = $wpdb->get_col( $wpdb->prepare( "
-					SELECT DISTINCT post_author
-					FROM {$wpdb->posts}
-					WHERE post_type = %s
-				", $this->cpt->post_type ) );
+				if ( ! isset( $filter['options'] ) ) {
+					# Fetch all the values for our meta key:
+					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
+						SELECT DISTINCT post_author
+						FROM {$wpdb->posts}
+						WHERE post_type = %s
+					", $this->cpt->post_type ) );
+				} elseif ( is_callable( $filter['options'] ) ) {
+					$filter['options'] = call_user_func( $filter['options'] );
+				}
+
+				if ( empty( $filter['options'] ) ) {
+					continue;
+				}
 
 				# Output a dropdown:
 				wp_dropdown_users( [
 					'id'                => $id,
-					'include'           => $include,
+					'include'           => $filter['options'],
 					'name'              => 'author',
 					'option_none_value' => '',
 					'selected'          => $value,
