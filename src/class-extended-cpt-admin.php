@@ -67,6 +67,7 @@ class Extended_CPT_Admin {
 
 		# Admin filters:
 		if ( $this->args['admin_filters'] ) {
+			add_action( 'load-edit.php',         [ $this, 'default_filter' ] );
 			add_filter( 'pre_get_posts',         [ $this, 'maybe_filter' ] );
 			add_filter( 'query_vars',            [ $this, 'add_query_vars' ] );
 			add_action( 'restrict_manage_posts', [ $this, 'filters' ] );
@@ -142,6 +143,27 @@ class Extended_CPT_Admin {
 				$_GET['orderby'] = $id;
 				$_GET['order']   = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
 				break;
+			}
+		}
+	}
+
+	/**
+	 * Sets the default sort field and sort order on our post type admin screen.
+	 */
+	public function default_filter() {
+		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
+			return;
+		}
+
+		# Loop over our filters to find the default filter (if there is one):
+		foreach ( $this->args['admin_filters'] as $id => $filter ) {
+			if ( isset( $_GET[ $id ] ) && '' !== $_GET[ $id ] ) {
+				continue;
+			}
+
+			if ( is_array( $filter ) && isset( $filter['default'] ) ) {
+				$_GET[ $id ] = $filter['default'];
+				return;
 			}
 		}
 	}

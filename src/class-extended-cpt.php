@@ -343,10 +343,6 @@ class Extended_CPT {
 			$meta_query = [];
 			$date_query = [];
 
-			if ( isset( $filter['default'] ) && ! isset( $query[ $filter_key ] ) ) {
-				$query[ $filter_key ] = $filter['default'];
-			}
-
 			if ( ! isset( $query[ $filter_key ] ) || ( '' === $query[ $filter_key ] ) ) {
 				continue;
 			}
