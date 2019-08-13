@@ -294,7 +294,6 @@ class Extended_CPT_Admin {
 
 				if ( ! isset( $filter['options'] ) ) {
 					# Fetch all the values for our meta key:
-					// @codingStandardsIgnoreStart
 					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
 						SELECT DISTINCT meta_value
 						FROM {$wpdb->postmeta} as m
@@ -304,7 +303,6 @@ class Extended_CPT_Admin {
 						AND p.post_type = %s
 						ORDER BY m.meta_value ASC
 					", $filter['meta_key'], $this->cpt->post_type ) );
-					// @codingStandardsIgnoreEnd
 				} elseif ( is_callable( $filter['options'] ) ) {
 					$filter['options'] = call_user_func( $filter['options'] );
 				}
