@@ -445,7 +445,7 @@ class Extended_CPT_Admin {
 					'id'                => $id,
 					'include'           => $filter['options'],
 					'name'              => 'author',
-					'option_none_value' => '',
+					'option_none_value' => '0',
 					'selected'          => $value,
 					'show_option_none'  => $filter['title'],
 				] );
