@@ -426,7 +426,7 @@ class Extended_CPT_Admin {
 				);
 
 				if ( ! isset( $filter['options'] ) ) {
-					# Fetch all the values for our meta key:
+					# Fetch all the values for our field:
 					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
 						SELECT DISTINCT post_author
 						FROM {$wpdb->posts}
