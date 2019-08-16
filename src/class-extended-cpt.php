@@ -629,7 +629,7 @@ class Extended_CPT {
 		];
 
 		if ( false !== strpos( $post_link, '%author%' ) ) {
-			$replacements['%author%'] = get_userdata( $post->post_author )->user_nicename;
+			$replacements['%author%'] = get_userdata( (int) $post->post_author )->user_nicename;
 		}
 
 		foreach ( get_object_taxonomies( $post ) as $tax ) {
