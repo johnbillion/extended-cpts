@@ -80,7 +80,7 @@ class Extended_CPT_Admin {
 
 		# Hide month filter:
 		if ( isset( $this->args['admin_filters']['m'] ) && ! $this->args['admin_filters']['m'] ) {
-			add_action( 'admin_head-edit.php', [ $this, 'admin_head' ] );
+			add_filter( 'disable_months_dropdown', [ $this, 'filter_disable_months_dropdown' ], 10, 2 );
 		}
 
 		# Quick Edit:
@@ -106,22 +106,18 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * Adds some CSS to the post listing screen. Used to hide various screen elements.
+	 * Removes the default 'Months' drop-down from the post list table.
+	 *
+	 * @param bool   $disable   Whether to disable the drop-down.
+	 * @param string $post_type The post type.
+	 * @return bool Whether to disable the drop-down.
 	 */
-	public function admin_head() {
-		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
-			return;
+	public function filter_disable_months_dropdown( bool $disable, string $post_type ) : bool {
+		if ( $post_type === $this->cpt->post_type ) {
+			return true;
 		}
 
-		if ( isset( $this->args['admin_filters']['m'] ) && ! $this->args['admin_filters']['m'] ) {
-			?>
-			<style type="text/css">
-				#posts-filter select[name="m"] {
-					display: none;
-				}
-			</style>
-			<?php
-		}
+		return $disable;
 	}
 
 	/**
