@@ -81,8 +81,7 @@ class Extended_CPT_Admin {
 
 		# Block editor filter:
 		if ( ! is_null( $this->args['block_editor'] ) && is_bool( $this->args['block_editor'] ) ) {
-			$callback = $this->args['block_editor'] ? 'enable_block_editor' : 'disable_block_editor';
-			add_filter( 'use_block_editor_for_post_type', [ $this, $callback ], 101, 2 );
+			add_filter( 'use_block_editor_for_post_type', [ $this, 'block_editor' ], 101, 2 );
 		}
 
 		# Hide month filter:
@@ -187,29 +186,15 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * Disables the block editor if it matches this custom post type
+	 * Enable or disable the block editor if it matches this custom post type
 	 *
 	 * @param boolean $current_status The current status for the given post type.
 	 * @param string $post_type  The current post type.
 	 * @return boolean The updated current status.
 	 */
-	public function disable_block_editor( bool $current_status, string $post_type ) : bool {
+	public function block_editor( bool $current_status, string $post_type ) : bool {
 		if ( $post_type === $this->cpt->post_type ) {
-			return false;
-		}
-		return $current_status;
-	}
-
-	/**
-	 * Enable the block editor if it matches this custom post type
-	 *
-	 * @param boolean $current_status The current status for the given post type.
-	 * @param string $post_type  The current post type.
-	 * @return boolean The updated current status.
-	 */
-	public function enable_block_editor( bool $current_status, string $post_type ) : bool {
-		if ( $post_type === $this->cpt->post_type ) {
-			return true;
+			return $this->args['block_editor'];
 		}
 		return $current_status;
 	}
