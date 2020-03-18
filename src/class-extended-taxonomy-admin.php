@@ -325,13 +325,19 @@ class Extended_Taxonomy_Admin {
 
 				# Add the meta box, using the plural or singular taxonomy label where relevant:
 				if ( $this->taxo->args['exclusive'] ) {
-					add_meta_box( "{$this->taxo->taxonomy}div", $tax->labels->singular_name, $this->args['meta_box'], $post_type, 'side' );
+					add_meta_box( "{$this->taxo->taxonomy}div", $tax->labels->singular_name, $this->args['meta_box'], $post_type, 'side', 'default', [
+						'__back_compat_meta_box' => true,
+					] );
 				} else {
-					add_meta_box( "{$this->taxo->taxonomy}div", $tax->labels->name, $this->args['meta_box'], $post_type, 'side' );
+					add_meta_box( "{$this->taxo->taxonomy}div", $tax->labels->name, $this->args['meta_box'], $post_type, 'side', 'default', [
+						'__back_compat_meta_box' => true,
+					] );
 				}
 			} elseif ( false !== $this->args['meta_box'] ) {
 				# This must be an 'exclusive' taxonomy. Add the radio meta box:
-				add_meta_box( "{$this->taxo->taxonomy}div", $tax->labels->singular_name, [ $this, 'meta_box_radio' ], $post_type, 'side' );
+				add_meta_box( "{$this->taxo->taxonomy}div", $tax->labels->singular_name, [ $this, 'meta_box_radio' ], $post_type, 'side', 'default', [
+					'__back_compat_meta_box' => true,
+				] );
 			}
 		}
 	}
@@ -597,3 +603,4 @@ class Extended_Taxonomy_Admin {
 	}
 
 }
+
