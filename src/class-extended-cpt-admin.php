@@ -59,7 +59,7 @@ class Extended_CPT_Admin {
 			add_filter( 'manage_pages_columns',                                 [ $this, '_log_default_cols' ], 0 );
 			add_filter( "manage_edit-{$this->cpt->post_type}_sortable_columns", [ $this, 'sortables' ] );
 			add_filter( "manage_{$this->cpt->post_type}_posts_columns",         [ $this, 'cols' ] );
-			add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   [ $this, 'col' ] );
+			add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   [ $this, 'col' ], 10, 2 );
 			add_action( 'load-edit.php',                                        [ $this, 'default_sort' ] );
 			add_filter( 'pre_get_posts',                                        [ $this, 'maybe_sort_by_fields' ] );
 			add_filter( 'posts_clauses',                                        [ $this, 'maybe_sort_by_taxonomy' ], 10, 2 );
@@ -811,7 +811,7 @@ class Extended_CPT_Admin {
 	 *
 	 * @param string $col The column name
 	 */
-	public function col( string $col ) {
+	public function col( string $col, int $post_id ) {
 		# Shorthand:
 		$c = $this->args['admin_cols'];
 
@@ -831,7 +831,7 @@ class Extended_CPT_Admin {
 		}
 
 		if ( isset( $c[ $col ]['function'] ) ) {
-			call_user_func( $c[ $col ]['function'] );
+			call_user_func( $c[ $col ]['function'], $post_id );
 		} elseif ( isset( $c[ $col ]['meta_key'] ) ) {
 			$this->col_post_meta( $c[ $col ]['meta_key'], $c[ $col ] );
 		} elseif ( isset( $c[ $col ]['taxonomy'] ) ) {
