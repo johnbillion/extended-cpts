@@ -553,10 +553,34 @@ class Extended_CPT_Admin {
 		$num   = number_format_i18n( $count->publish );
 
 		# This is absolutely not localisable. WordPress 3.8 didn't add a new post type label.
-		$url  = add_query_arg( [
+		$url   = add_query_arg( [
 			'post_type' => $this->cpt->post_type,
 		], admin_url( 'edit.php' ) );
-		$text = '<a href="' . esc_url( $url ) . '" class="cpt-' . esc_attr( $this->cpt->post_type ) . '-count">' . esc_html( $num . ' ' . $text ) . '</a>';
+		$class = 'cpt-' . $this->cpt->post_type . '-count';
+		$text  = '<a href="' . esc_url( $url ) . '" class="' . esc_attr( $class ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
+		$css   = <<<'ICONCSS'
+<style>
+#dashboard_right_now li a.%1$s:before {
+	content: '\%2$s';
+}
+</style>
+ICONCSS;
+
+		// Add styling to display the dashicon. This isn't possible without additional CSS rules.
+		// https://core.trac.wordpress.org/ticket/33714
+		// https://github.com/WordPress/dashicons/blob/master/codepoints.json
+		if ( is_string( $pto->menu_icon ) && 0 === strpos( $pto->menu_icon, 'dashicons-' ) ) {
+			$codepoints = json_decode( file_get_contents( __DIR__ . '/dashicons-codepoints.json' ), true );
+			$unprefixed = str_replace( 'dashicons-', '', $pto->menu_icon );
+
+			if ( isset( $codepoints[ $unprefixed ] ) ) {
+				$text .= sprintf(
+					$css,
+					esc_html( $class ),
+					esc_html( dechex( $codepoints[ $unprefixed ] ) )
+				);
+			}
+		}
 
 		# Go!
 		$items[] = $text;
