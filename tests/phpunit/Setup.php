@@ -136,6 +136,7 @@ class Setup extends Test {
 	}
 
 	public function testPostTypeLabelsAreCorrect() {
+		global $wp_version;
 
 		$bar = get_post_type_object( 'bar' );
 		$faq = get_post_type_object( 'faq' );
@@ -174,6 +175,8 @@ class Setup extends Test {
 			'item_updated'             => 'Singular updated.',
 		), $bar->labels );
 
+		$featured_image = version_compare( $wp_version, '5.4', '>=' ) ? 'Featured image' : 'Featured Image';
+
 		$this->assertEquals( (object) array(
 			'name'                     => 'FAQs',
 			'singular_name'            => 'FAQ',
@@ -194,7 +197,7 @@ class Setup extends Test {
 			'attributes'               => 'FAQ Attributes',
 			'insert_into_item'         => 'Insert into FAQ',
 			'uploaded_to_this_item'    => 'Uploaded to this FAQ',
-			'featured_image'           => 'Featured Image',
+			'featured_image'           => $featured_image,
 			'set_featured_image'       => 'Set featured image',
 			'remove_featured_image'    => 'Remove featured image',
 			'use_featured_image'       => 'Use as featured image',
@@ -210,7 +213,7 @@ class Setup extends Test {
 
 		$post = get_post_type_object( 'post' );
 
-		$this->assertEquals( 'Featured Image', $post->labels->featured_image );
+		$this->assertEquals( $featured_image, $post->labels->featured_image );
 		$this->assertEquals( 'Remove!', $post->labels->remove_featured_image );
 
 	}
