@@ -8,7 +8,7 @@ declare( strict_types=1 );
  * arguments that provide extended functionality. Some of the default arguments differ from the defaults in
  * `register_post_type()`.
  *
- * @link https://github.com/johnbillion/extended-cpts/wiki/Basic-usage
+ * @link https://github.com/johnbillion/extended-cpts/wiki/Registering-Post-Types
  * @see register_post_type() for default arguments.
  *
  * @param string   $post_type The post type name.
@@ -73,12 +73,12 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *         'slug'   => 'tales',
  *     ] );
  *
- * @link https://github.com/johnbillion/extended-cpts/wiki/Basic-usage
+ * @link https://github.com/johnbillion/extended-cpts/wiki/Registering-taxonomies
  * @see register_taxonomy() for default arguments.
  *
- * @param string       $taxonomy    The taxonomy name.
- * @param array|string $object_type Name(s) of the object type(s) for the taxonomy.
- * @param array        $args {
+ * @param string          $taxonomy    The taxonomy name.
+ * @param string|string[] $object_type Name(s) of the object type(s) for the taxonomy.
+ * @param array           $args {
  *     Optional. The taxonomy arguments.
  *
  *     @type string $meta_box         The name of the custom meta box to use on the post editing screen for this
@@ -103,7 +103,7 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *     @type bool   $allow_hierarchy  All this does currently is disable hierarchy in the taxonomy's rewrite rules.
  *                                    Default false.
  * }
- * @param string[]     $names {
+ * @param string[]        $names {
  *     Optional. The plural, singular, and slug names.
  *
  *     @type string $plural   The plural form of the taxonomy name.
