@@ -1,4 +1,4 @@
-[![Build Status](https://img.shields.io/travis/johnbillion/extended-cpts/develop.svg?style=flat-square&label=develop%20build)](https://travis-ci.org/johnbillion/extended-cpts)
+[![Build Status](https://img.shields.io/github/workflow/status/johnbillion/extended-cpts/Test/develop?style=flat-square)](https://github.com/johnbillion/extended-cpts/actions)
 
 # Contributing to Extended CPTs
 
