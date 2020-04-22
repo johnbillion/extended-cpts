@@ -1,9 +1,12 @@
 * text=auto
 
+# Directories
+/.github export-ignore
 /tests export-ignore
+
+# Files
 /.editorconfig export-ignore
 /.gitattributes export-ignore
-/.github export-ignore
 /.gitignore export-ignore
 /CONTRIBUTING.md export-ignore
 /phpcs.xml.dist export-ignore
