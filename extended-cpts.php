@@ -7,9 +7,9 @@ declare( strict_types=1 );
  * @package   ExtendedCPTs
  * @author    John Blackbourn <https://johnblackbourn.com>
  * @link      https://github.com/johnbillion/extended-cpts
- * @copyright 2012-2019 John Blackbourn
+ * @copyright 2012-2020 John Blackbourn
  * @license   GPL v2 or later
- * @version   4.3.2
+ * @version   4.3.3
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
