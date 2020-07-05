@@ -20,7 +20,7 @@
 		"php": "^7.0"
 	},
 	"require-dev": {
-		"automattic/phpcs-neutron-standard": "^1.5",
+		"automattic/phpcs-neutron-standard": "1.5.4",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.5",
 		"johnbillion/falsey-assertequals-detector": "^2",
 		"johnbillion/php-docs-standards": "^1",
@@ -29,7 +29,7 @@
 		"roots/wordpress": "*",
 		"vlucas/phpdotenv": "^3",
 		"wp-cli/wp-cli-bundle": "^2.1",
-		"wp-coding-standards/wpcs": "~2.1.0",
+		"wp-coding-standards/wpcs": "2.1.1",
 		"wp-phpunit/wp-phpunit": "*"
 	},
 	"scripts": {
