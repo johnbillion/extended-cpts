@@ -296,12 +296,21 @@ class Extended_Taxonomy_Admin {
 		if ( in_array( $this->taxo->taxonomy, $taxos, true ) ) {
 			$tax = get_taxonomy( $this->taxo->taxonomy );
 
-			# Remove default meta box:
+			# Remove default meta box from classic editor:
 			if ( $this->taxo->args['hierarchical'] ) {
 				remove_meta_box( "{$this->taxo->taxonomy}div", $post_type, 'side' );
 			} else {
 				remove_meta_box( "tagsdiv-{$this->taxo->taxonomy}", $post_type, 'side' );
 			}
+
+			# Remove default meta box from block editor:
+			wp_add_inline_script(
+				'wp-edit-post',
+				sprintf(
+					'wp.data.dispatch( "core/edit-post" ).removeEditorPanel( "taxonomy-panel-%s" );',
+					$this->taxo->taxonomy
+				)
+			);
 
 			if ( ! current_user_can( $tax->cap->assign_terms ) ) {
 				return;
