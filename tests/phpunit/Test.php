@@ -156,6 +156,13 @@ abstract class Test extends \WP_UnitTestCase {
 			),
 		) );
 
+		$this->cpts['rewrite-false'] = register_extended_post_type( 'rewrite-false', array(
+			'public' => false,
+			'rewrite' => [
+				'slug' => 'rewrite-false',
+			]
+		) );
+
 		$this->cpts['faq'] = register_extended_post_type( 'faq', array(
 		), array(
 			'plural'   => 'FAQs',

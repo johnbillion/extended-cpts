@@ -187,7 +187,7 @@ class Extended_CPT {
 
 		# This allows the 'labels' and 'rewrite' args to contain all, some, or no values:
 		foreach ( [ 'labels', 'rewrite' ] as $arg ) {
-			if ( isset( $args[ $arg ] ) && is_array( $args[ $arg ] ) ) {
+			if ( isset( $args[ $arg ] ) && is_array( $args[ $arg ] ) && is_array( $this->defaults[ $arg ] ) ) {
 				$this->args[ $arg ] = array_merge( $this->defaults[ $arg ], $args[ $arg ] );
 			}
 		}
