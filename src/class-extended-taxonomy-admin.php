@@ -443,7 +443,7 @@ class Extended_Taxonomy_Admin {
 						'orderby'           => 'name',
 						'selected'          => reset( $selected ),
 						'id'                => "{$taxonomy}dropdown",
-						'name'              => "tax_input[{$taxonomy}]",
+						'name'              => is_taxonomy_hierarchical( $taxonomy ) ? "tax_input[{$taxonomy}][]" : "tax_input[{$taxonomy}]",
 						'taxonomy'          => $taxonomy,
 						'walker'            => $walker,
 						'required'          => $this->args['required'],
