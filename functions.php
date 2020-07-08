@@ -18,6 +18,10 @@ declare( strict_types=1 );
  *     @type array  $admin_cols           Associative array of admin screen columns to show for this post type.
  *     @type array  $admin_filters        Associative array of admin screen filters to show for this post type.
  *     @type array  $archive              Associative array of query vars to override on this post type's archive.
+ *     @type bool   $block_editor         Force the use of the block editor for this post type. Must be used in
+ *                                        combination with the `show_in_rest` argument. The primary use of this argument
+ *                                        is to prevent the block editor from being used by setting it to false when
+ *                                        `show_in_rest` is set to true.
  *     @type bool   $dashboard_glance     Whether to show this post type on the 'At a Glance' section of the admin
  *                                        dashboard. Default true.
  *     @type bool   $dashboard_activity   Whether to show this post type on the 'Recently Published' section of the
