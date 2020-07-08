@@ -17,7 +17,7 @@
 		"wordpress-install-dir": "tests/wordpress"
 	},
 	"require": {
-		"php": "^7.0"
+		"php": "^7.1"
 	},
 	"require-dev": {
 		"automattic/phpcs-neutron-standard": "^1.5",
@@ -27,6 +27,7 @@
 		"phpcompatibility/phpcompatibility-wp": "^2",
 		"phpunit/phpunit": "^6",
 		"roots/wordpress": "*",
+		"szepeviktor/phpstan-wordpress": "^0.6.1",
 		"vlucas/phpdotenv": "^3",
 		"wp-cli/wp-cli-bundle": "^2.1",
 		"wp-coding-standards/wpcs": "^2",
@@ -39,6 +40,9 @@
 		"test:cs": [
 			"vendor/bin/phpcs -nps --colors --report-code --report-summary --report-width=80 --cache=tests/cache/phpcs ."
 		],
+		"test:analyze": [
+			"vendor/bin/phpstan analyze"
+		],
 		"test:ut": [
 			"vendor/bin/wp db reset --yes --path=tests/wordpress #",
 			"export WP_MULTISITE=0 && vendor/bin/phpunit --verbose --colors=always --exclude-group=ms-required",
@@ -46,6 +50,7 @@
 		],
 		"test": [
 			"@test:cs",
+			"@test:analyze",
 			"@test:ut"
 		]
 	},

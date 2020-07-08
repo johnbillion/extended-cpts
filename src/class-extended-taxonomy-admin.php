@@ -32,7 +32,7 @@ class Extended_Taxonomy_Admin {
 	protected $_cols;
 
 	/**
-	 * @var array
+	 * @var array|null
 	 */
 	protected $the_cols = null;
 
@@ -268,13 +268,13 @@ class Extended_Taxonomy_Admin {
 	 * Returns a sensible title for the current item (usually the arguments array for a column)
 	 *
 	 * @param array $item An array of arguments
-	 * @return string The item title
+	 * @return string|null The item title
 	 */
-	protected function get_item_title( array $item ) : string {
+	protected function get_item_title( array $item ) : ?string {
 		if ( isset( $item['meta_key'] ) ) {
 			return ucwords( trim( str_replace( [ '_', '-' ], ' ', $item['meta_key'] ) ) );
 		} else {
-			return '';
+			return null;
 		}
 	}
 

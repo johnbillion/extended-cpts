@@ -33,7 +33,7 @@ class Extended_CPT_Admin {
 	protected $_cols;
 
 	/**
-	 * @var array
+	 * @var array|null
 	 */
 	protected $the_cols = null;
 

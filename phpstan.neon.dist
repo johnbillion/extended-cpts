@@ -1,25 +1,19 @@
-#$ composer require --dev phpstan/phpstan-shim szepeviktor/phpstan-wordpress
-#$ vendor/bin/phpstan analyze
-
 includes:
     - phar://phpstan.phar/conf/bleedingEdge.neon
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
-# TODO   level: max
+    # Please raise level.
     level: 5
     inferPrivatePropertyTypeFromConstructor: true
     paths:
-        - %currentWorkingDirectory%/functions.php
-        - %currentWorkingDirectory%/src/
-    autoload_files:
-        - %currentWorkingDirectory%/functions.php
-    autoload_directories:
-        - %currentWorkingDirectory%/src/
+        - functions.php
+        - src/
+    scanFiles:
+        - functions.php
+    scanDirectories:
+        - src/
     ignoreErrors:
         # Uses func_get_args()
         - '#^Function apply_filters invoked with [34567] parameters, 2 required\.$#'
-        - '#^Function do_action invoked with [3456] parameters, 1-2 required\.$#'
-        - '#^Function current_user_can invoked with 2 parameters, 1 required\.$#'
-        - '#^Function add_query_arg invoked with [123] parameters?, 0 required\.$#'
         # p2p plugin
         - '#^Function (p2p_type|p2p_connection_exists) not found\.$#'
