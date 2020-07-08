@@ -186,16 +186,17 @@ class Extended_CPT_Admin {
 	}
 
 	/**
-	 * Enable or disable the block editor if it matches this custom post type
+	 * Enable or disable the block editor if it matches this custom post type.
 	 *
-	 * @param boolean $current_status The current status for the given post type.
-	 * @param string $post_type  The current post type.
-	 * @return boolean The updated current status.
+	 * @param bool   $current_status The current status for the given post type.
+	 * @param string $post_type      The current post type.
+	 * @return bool The updated status.
 	 */
 	public function block_editor( bool $current_status, string $post_type ) : bool {
 		if ( $post_type === $this->cpt->post_type ) {
 			return $this->args['block_editor'];
 		}
+
 		return $current_status;
 	}
 

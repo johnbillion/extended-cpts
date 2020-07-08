@@ -15,23 +15,23 @@ declare( strict_types=1 );
  * @param array    $args {
  *     Optional. The post type arguments.
  *
- *     @type array  $admin_cols           Associative array of admin screen columns to show for this post type.
- *     @type array  $admin_filters        Associative array of admin screen filters to show for this post type.
- *     @type array  $archive              Associative array of query vars to override on this post type's archive.
- *     @type bool   $block_editor         Force the use of the block editor for this post type. Must be used in
- *                                        combination with the `show_in_rest` argument. The primary use of this argument
- *                                        is to prevent the block editor from being used by setting it to false when
- *                                        `show_in_rest` is set to true.
- *     @type bool   $dashboard_glance     Whether to show this post type on the 'At a Glance' section of the admin
- *                                        dashboard. Default true.
- *     @type bool   $dashboard_activity   Whether to show this post type on the 'Recently Published' section of the
- *                                        admin dashboard. Default false.
- *     @type string $enter_title_here     Placeholder text which appears in the title field for this post type.
- *     @type string $featured_image       Text which replaces the 'Featured Image' phrase for this post type.
- *     @type bool   $quick_edit           Whether to show Quick Edit links for this post type. Default true.
- *     @type bool   $show_in_feed         Whether to include this post type in the site's main feed. Default false.
- *     @type array  $site_filters         Associative array of query vars and their parameters for front end filtering.
- *     @type array  $site_sortables       Associative array of query vars and their parameters for front end sorting.
+ *     @type array  $admin_cols         Associative array of admin screen columns to show for this post type.
+ *     @type array  $admin_filters      Associative array of admin screen filters to show for this post type.
+ *     @type array  $archive            Associative array of query vars to override on this post type's archive.
+ *     @type bool   $block_editor       Force the use of the block editor for this post type. Must be used in
+ *                                      combination with the `show_in_rest` argument. The primary use of this argument
+ *                                      is to prevent the block editor from being used by setting it to false when
+ *                                      `show_in_rest` is set to true.
+ *     @type bool   $dashboard_glance   Whether to show this post type on the 'At a Glance' section of the admin
+ *                                      dashboard. Default true.
+ *     @type bool   $dashboard_activity Whether to show this post type on the 'Recently Published' section of the
+ *                                      admin dashboard. Default false.
+ *     @type string $enter_title_here   Placeholder text which appears in the title field for this post type.
+ *     @type string $featured_image     Text which replaces the 'Featured Image' phrase for this post type.
+ *     @type bool   $quick_edit         Whether to show Quick Edit links for this post type. Default true.
+ *     @type bool   $show_in_feed       Whether to include this post type in the site's main feed. Default false.
+ *     @type array  $site_filters       Associative array of query vars and their parameters for front end filtering.
+ *     @type array  $site_sortables     Associative array of query vars and their parameters for front end sorting.
  * }
  * @param string[] $names {
  *     Optional. The plural, singular, and slug names.
@@ -54,7 +54,6 @@ function register_extended_post_type( string $post_type, array $args = [], array
 	}
 
 	return $cpt;
-
 }
 
 /**
@@ -63,19 +62,6 @@ function register_extended_post_type( string $post_type, array $args = [], array
  * The `$args` parameter accepts all the standard arguments for `register_taxonomy()` in addition to several custom
  * arguments that provide extended functionality. Some of the default arguments differ from the defaults in
  * `register_taxonomy()`.
- *
- * The `$taxonomy` parameter is used as the taxonomy name and to build the taxonomy labels. This means you can create
- * a taxonomy with just two parameters and all labels and term updated messages will be generated for you. Example:
- *
- *     register_extended_taxonomy( 'location', 'post' );
- *
- * The singular name, plural name, and slug are generated from the taxonomy name. These can be overridden with the
- * `$names` parameter if necessary. Example:
- *
- *     register_extended_taxonomy( 'story', 'post', [], [
- *         'plural' => 'Stories',
- *         'slug'   => 'tales',
- *     ] );
  *
  * @link https://github.com/johnbillion/extended-cpts/wiki/Registering-taxonomies
  * @see register_taxonomy() for default arguments.
@@ -128,5 +114,4 @@ function register_extended_taxonomy( string $taxonomy, $object_type, array $args
 	}
 
 	return $taxo;
-
 }
