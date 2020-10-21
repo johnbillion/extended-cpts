@@ -28,7 +28,7 @@
 		"phpunit/phpunit": "^6",
 		"roots/wordpress": "*",
 		"vlucas/phpdotenv": "^3",
-		"wp-cli/wp-cli-bundle": "^2.1",
+		"wp-cli/db-command": "^2.0",
 		"wp-coding-standards/wpcs": "2.3.0",
 		"wp-phpunit/wp-phpunit": "*"
 	},
