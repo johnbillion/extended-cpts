@@ -38,10 +38,10 @@ jobs:
         cache-name: phpcs
       with:
         path: tests/cache
-        # This uses the hash of user-switching.php in its cache key because Actions doesn't support
+        # This uses the hash of extended-cpts.php in its cache key because Actions doesn't support
         # always pulling in a cache file and simultaneously always updating it, unlike Travis.
         # This way we always pull in a cache file and refresh it with each new version of the plugin.
-        key: ${{ matrix.php }}-${{ env.cache-name }}-${{ hashFiles('user-switching.php') }}
+        key: ${{ matrix.php }}-${{ env.cache-name }}-${{ hashFiles('extended-cpts.php') }}
 
     - name: Install PHP
       uses: shivammathur/setup-php@2.1.3
