@@ -89,6 +89,16 @@ class Extended_Taxonomy {
 		$args  = apply_filters( "ext-taxos/{$taxonomy}/args", $args );
 
 		/**
+		 * Filter the names for all taxonomies.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param string[] $names The plural, singular, and slug names (if any were specified).
+		 * @param string $taxonomy The taxonomy name.
+		 */
+		$names = apply_filters( 'ext-taxos/names', $names, $taxonomy );
+
+		/**
 		 * Filter the names for this taxonomy.
 		 *
 		 * @since 2.0.0
