@@ -70,6 +70,16 @@ class Extended_Taxonomy {
 	 */
 	public function __construct( string $taxonomy, $object_type, array $args = [], array $names = [] ) {
 		/**
+		 * Filter the arguments for all taxonomies.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param array $args The taxonomy arguments.
+		 * @param string $taxonomy The taxonomy name.
+		 */
+		$args  = apply_filters( 'ext-taxos/args', $args, $taxonomy );
+
+		/**
 		 * Filter the arguments for this taxonomy.
 		 *
 		 * @since 2.0.0
