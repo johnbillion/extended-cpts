@@ -92,6 +92,16 @@ class Extended_CPT {
 		$args  = apply_filters( "ext-cpts/{$post_type}/args", $args );
 
 		/**
+		 * Filter the names for all post types.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param string[] $names The plural, singular, and slug names (if any were specified).
+		 * @param string $post_type The post type name.
+		 */
+		$names = apply_filters( 'ext-cpts/names', $names, $post_type );
+
+		/**
 		 * Filter the names for this post type.
 		 *
 		 * @since 2.4.0
