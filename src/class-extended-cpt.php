@@ -73,6 +73,16 @@ class Extended_CPT {
 	 */
 	public function __construct( string $post_type, array $args = [], array $names = [] ) {
 		/**
+		 * Filter the arguments for all post types.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param array $args The post type arguments.
+		 * @param string $post_type The post type name.
+		 */
+		$args  = apply_filters( 'ext-cpts/args', $args, $post_type );
+
+		/**
 		 * Filter the arguments for this post type.
 		 *
 		 * @since 2.4.0
