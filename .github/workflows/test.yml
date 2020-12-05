@@ -49,7 +49,6 @@ jobs:
         php-version: ${{ matrix.php }}
         extensions: mysqli, xmlwriter
         coverage: none
-        tools: composer:v1
 
     - name: Debugging
       run: |
