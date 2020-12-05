@@ -70,14 +70,14 @@ class Extended_Taxonomy {
 	 */
 	public function __construct( string $taxonomy, $object_type, array $args = [], array $names = [] ) {
 		/**
-		 * Filter the arguments for all taxonomies.
+		 * Filter the arguments for a taxonomy.
 		 *
-		 * @since 5.0.0
+		 * @since 4.4.1
 		 *
-		 * @param array $args The taxonomy arguments.
+		 * @param array  $args     The taxonomy arguments.
 		 * @param string $taxonomy The taxonomy name.
 		 */
-		$args  = apply_filters( 'ext-taxos/args', $args, $taxonomy );
+		$args = apply_filters( 'ext-taxos/args', $args, $taxonomy );
 
 		/**
 		 * Filter the arguments for this taxonomy.
@@ -86,20 +86,20 @@ class Extended_Taxonomy {
 		 *
 		 * @param array $args The taxonomy arguments.
 		 */
-		$args  = apply_filters( "ext-taxos/{$taxonomy}/args", $args );
+		$args = apply_filters( "ext-taxos/{$taxonomy}/args", $args );
 
 		/**
-		 * Filter the names for all taxonomies.
+		 * Filter the plural, singular, and slug for a taxonomy.
 		 *
-		 * @since 5.0.0
+		 * @since 4.4.1
 		 *
-		 * @param string[] $names The plural, singular, and slug names (if any were specified).
-		 * @param string $taxonomy The taxonomy name.
+		 * @param string[] $names    The plural, singular, and slug names (if any were specified).
+		 * @param string   $taxonomy The taxonomy name.
 		 */
 		$names = apply_filters( 'ext-taxos/names', $names, $taxonomy );
 
 		/**
-		 * Filter the names for this taxonomy.
+		 * Filter the plural, singular, and slug for this taxonomy.
 		 *
 		 * @since 2.0.0
 		 *
