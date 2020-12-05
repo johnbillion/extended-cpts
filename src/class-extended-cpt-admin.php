@@ -62,14 +62,14 @@ class Extended_CPT_Admin {
 			add_filter( "manage_{$this->cpt->post_type}_posts_columns",         [ $this, 'cols' ] );
 			add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   [ $this, 'col' ] );
 			add_action( 'load-edit.php',                                        [ $this, 'default_sort' ] );
-			add_filter( 'pre_get_posts',                                        [ $this, 'maybe_sort_by_fields' ] );
+			add_action( 'pre_get_posts',                                        [ $this, 'maybe_sort_by_fields' ] );
 			add_filter( 'posts_clauses',                                        [ $this, 'maybe_sort_by_taxonomy' ], 10, 2 );
 		}
 
 		# Admin filters:
 		if ( $this->args['admin_filters'] ) {
 			add_action( 'load-edit.php',         [ $this, 'default_filter' ] );
-			add_filter( 'pre_get_posts',         [ $this, 'maybe_filter' ] );
+			add_action( 'pre_get_posts',         [ $this, 'maybe_filter' ] );
 			add_filter( 'query_vars',            [ $this, 'add_query_vars' ] );
 			add_action( 'restrict_manage_posts', [ $this, 'filters' ] );
 		}
