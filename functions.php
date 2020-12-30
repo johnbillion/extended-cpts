@@ -42,7 +42,6 @@ declare( strict_types=1 );
  * }
  * @return Extended_CPT
  */
-
 if ( !function_exists( 'register_extended_post_type' ) ) {
 	function register_extended_post_type( string $post_type, array $args = [], array $names = [] ): Extended_CPT {
 		if ( ! did_action( 'init' ) ) {
@@ -105,8 +104,8 @@ if ( !function_exists( 'register_extended_post_type' ) ) {
  * }
  * @return Extended_Taxonomy
  */
-if ( !function_exists( 'register_extended_taxonomy' ) ) {
-	function register_extended_taxonomy( string $taxonomy, $object_type, array $args = [], array $names = [] ): Extended_Taxonomy {
+if ( ! function_exists( 'register_extended_taxonomy' ) ) {
+	function register_extended_taxonomy( string $taxonomy, $object_type, array $args = [], array $names = [] ) : Extended_Taxonomy {
 		if ( ! did_action( 'init' ) ) {
 			trigger_error( esc_html__( 'Taxonomies must be registered on the "init" hook.', 'extended-cpts' ), E_USER_WARNING );
 		}
