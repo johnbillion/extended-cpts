@@ -1,7 +1,7 @@
 [![Build Status](https://img.shields.io/github/workflow/status/johnbillion/extended-cpts/Test/develop?style=flat-square)](https://github.com/johnbillion/extended-cpts/actions)
 [![Stable Release](https://img.shields.io/packagist/v/johnbillion/extended-cpts.svg)](https://packagist.org/packages/johnbillion/extended-cpts)
 [![License](https://img.shields.io/badge/license-GPL_v2%2B-blue.svg)](https://github.com/johnbillion/extended-cpts/blob/master/LICENSE)
-[![PHP 7](https://img.shields.io/badge/php-7-blue.svg)](https://wordpress.org/support/update-php/)
+[![PHP 7](https://img.shields.io/badge/php-7%20/%208-blue.svg)](https://wordpress.org/support/update-php/)
 [![Documentation](https://img.shields.io/badge/documentation-wiki-blue.svg)](https://github.com/johnbillion/extended-cpts/wiki)
 
 # Extended CPTs #
@@ -59,20 +59,23 @@ Not your first time here? See [Recent Changes for Developers](https://github.com
 
 ## Minimum Requirements ##
 
-**PHP:** 7.0  
-**WordPress:** 4.8  
+* **PHP:** 7.0  
+  - PHP 7.4+ is recommended
+  - PHP 8 is supported
+* **WordPress:** 4.8  
+  - Tested up to WP 5.6
 
 ## Installation ##
 
-Extended CPTs is a developer library, not a plugin, which means you need to include it somewhere in your own project. Install it using Composer:
+Extended CPTs is a developer library, not a plugin, which means you need to include it as a dependency in your project. Install it using Composer:
 
 ```bash
 composer require johnbillion/extended-cpts
 ```
 
-Any other means of installation or usage, particularly bundling within a plugin, is not officially supported and done at your own risk.
+Other means of installation or usage, particularly bundling within a plugin, is not officially supported and done at your own risk.
 
-Note that *Extended Taxonomies* is part of this library since version 4.0, so there's no need to include the separate *Extended Taxonomies* library.
+Note that *Extended Taxonomies* is part of this library since version 4.0, so there's no need to require that too.
 
 ## Usage ##
 
