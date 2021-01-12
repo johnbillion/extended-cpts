@@ -64,18 +64,13 @@ Not your first time here? See [Recent Changes for Developers](https://github.com
 
 ## Installation ##
 
-Extended CPTs is a developer library, not a plugin, which means you need to include it somewhere in your own project.
-You can use Composer:
+Extended CPTs is a developer library, not a plugin, which means you need to include it somewhere in your own project. Install it using Composer:
 
 ```bash
 composer require johnbillion/extended-cpts
 ```
 
-Or you can download the library and include it manually:
-
-```php
-require_once 'extended-cpts/extended-cpts.php';
-```
+Any other means of installation or usage, particularly bundling within a plugin, is not officially supported and done at your own risk.
 
 Note that *Extended Taxonomies* is part of this library since version 4.0, so there's no need to include the separate *Extended Taxonomies* library.
 
