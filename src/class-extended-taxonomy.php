@@ -218,7 +218,7 @@ class Extended_Taxonomy {
 	 * @param array $tests The existing rewrite rule tests.
 	 * @return array Updated rewrite rule tests.
 	 */
-	public function rewrite_testing_tests( array $tests ) : array {
+	public function rewrite_testing_tests( array $tests ): array {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
 		require_once __DIR__ . '/class-extended-taxonomy-rewrite-testing.php';
 

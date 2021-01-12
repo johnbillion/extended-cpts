@@ -118,7 +118,7 @@ class Extended_CPT_Admin {
 	 * @param string $post_type The post type.
 	 * @return bool Whether to disable the drop-down.
 	 */
-	public function filter_disable_months_dropdown( bool $disable, string $post_type ) : bool {
+	public function filter_disable_months_dropdown( bool $disable, string $post_type ): bool {
 		if ( $post_type === $this->cpt->post_type ) {
 			return true;
 		}
@@ -177,7 +177,7 @@ class Extended_CPT_Admin {
 	 * @param WP_Post $post  The current post.
 	 * @return string The updated placeholder text.
 	 */
-	public function enter_title_here( string $title, WP_Post $post ) : string {
+	public function enter_title_here( string $title, WP_Post $post ): string {
 		if ( $this->cpt->post_type !== $post->post_type ) {
 			return $title;
 		}
@@ -192,7 +192,7 @@ class Extended_CPT_Admin {
 	 * @param string $post_type      The current post type.
 	 * @return bool The updated status.
 	 */
-	public function block_editor( bool $current_status, string $post_type ) : bool {
+	public function block_editor( bool $current_status, string $post_type ): bool {
 		if ( $post_type === $this->cpt->post_type ) {
 			return $this->args['block_editor'];
 		}
@@ -205,7 +205,7 @@ class Extended_CPT_Admin {
 	 *
 	 * @return string The post type name.
 	 */
-	protected static function get_current_post_type() : string {
+	protected static function get_current_post_type(): string {
 		if ( function_exists( 'get_current_screen' ) && is_object( get_current_screen() ) && 'edit' === get_current_screen()->base ) {
 			return get_current_screen()->post_type;
 		} else {
@@ -476,7 +476,7 @@ class Extended_CPT_Admin {
 	 * @param array $vars Public query variables
 	 * @return array Updated public query variables
 	 */
-	public function add_query_vars( array $vars ) : array {
+	public function add_query_vars( array $vars ): array {
 		$filters = array_keys( $this->args['admin_filters'] );
 
 		return array_merge( $vars, $filters );
@@ -538,7 +538,7 @@ class Extended_CPT_Admin {
 	 * @param WP_Query $wp_query The current `WP_Query` object.
 	 * @return array The updated SQL clauses.
 	 */
-	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) : array {
+	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return $clauses;
 		}
@@ -558,7 +558,7 @@ class Extended_CPT_Admin {
 	 * @param array $items Array of items to display on the widget.
 	 * @return array Updated array of items.
 	 */
-	public function glance_items( array $items ) : array {
+	public function glance_items( array $items ): array {
 		$pto = get_post_type_object( $this->cpt->post_type );
 
 		if ( ! current_user_can( $pto->cap->edit_posts ) ) {
@@ -615,7 +615,7 @@ ICONCSS;
 	 * @param array $query_args Array of query args for the widget.
 	 * @return array Updated array of query args.
 	 */
-	public function dashboard_activity( array $query_args ) : array {
+	public function dashboard_activity( array $query_args ): array {
 		$query_args['post_type'] = (array) $query_args['post_type'];
 
 		$query_args['post_type'][] = $this->cpt->post_type;
@@ -642,7 +642,7 @@ ICONCSS;
 	 * @param array[] $messages An array of post updated message arrays keyed by post type.
 	 * @return array[] Updated array of post updated messages.
 	 */
-	public function post_updated_messages( array $messages ) : array {
+	public function post_updated_messages( array $messages ): array {
 		global $post;
 
 		$pto = get_post_type_object( $this->cpt->post_type );
@@ -714,7 +714,7 @@ ICONCSS;
 	 * @param int[]   $counts   An array of counts for each key in `$messages`.
 	 * @return array Updated array of bulk post updated messages.
 	 */
-	public function bulk_post_updated_messages( array $messages, array $counts ) : array {
+	public function bulk_post_updated_messages( array $messages, array $counts ): array {
 		$messages[ $this->cpt->post_type ] = [
 			'updated'   => sprintf(
 				self::n( '%2$s updated.', '%1$s %3$s updated.', $counts['updated'] ),
@@ -757,7 +757,7 @@ ICONCSS;
 	 * @param array $cols Array of sortable columns keyed by the column ID.
 	 * @return array Updated array of sortable columns.
 	 */
-	public function sortables( array $cols ) : array {
+	public function sortables( array $cols ): array {
 		foreach ( $this->args['admin_cols'] as $id => $col ) {
 			if ( ! is_array( $col ) ) {
 				continue;
@@ -781,7 +781,7 @@ ICONCSS;
 	 * @param array $cols Associative array of columns
 	 * @return array Updated array of columns
 	 */
-	public function cols( array $cols ) : array {
+	public function cols( array $cols ): array {
 		// This function gets called multiple times, so let's cache it for efficiency:
 		if ( isset( $this->the_cols ) ) {
 			return $this->the_cols;
@@ -1234,7 +1234,7 @@ ICONCSS;
 	 * @param WP_Post  $post    The current post object
 	 * @return string[] Array of updated post actions
 	 */
-	public function remove_quick_edit_action( array $actions, WP_Post $post ) : array {
+	public function remove_quick_edit_action( array $actions, WP_Post $post ): array {
 		if ( $this->cpt->post_type !== $post->post_type ) {
 			return $actions;
 		}
@@ -1250,7 +1250,7 @@ ICONCSS;
 	 * @param string[] $actions Array of bulk actions
 	 * @return string[] Array of updated bulk actions
 	 */
-	public function remove_quick_edit_menu( array $actions ) : array {
+	public function remove_quick_edit_menu( array $actions ): array {
 		unset( $actions['edit'] );
 
 		return $actions;
@@ -1262,7 +1262,7 @@ ICONCSS;
 	 * @param array $cols The default columns for this post type screen
 	 * @return array The default columns for this post type screen
 	 */
-	public function _log_default_cols( array $cols ) : array {
+	public function _log_default_cols( array $cols ): array {
 		$this->_cols = $cols;
 
 		return $this->_cols;
@@ -1276,7 +1276,7 @@ ICONCSS;
 	 * @param int    $number The number to compare against to use either `$single` or `$plural`
 	 * @return string Either `$single` or `$plural` text
 	 */
-	protected static function n( string $single, string $plural, int $number ) : string {
+	protected static function n( string $single, string $plural, int $number ): string {
 		return ( 1 === intval( $number ) ) ? $single : $plural;
 	}
 
@@ -1354,7 +1354,7 @@ ICONCSS;
 	 * @param string $connection A connection type.
 	 * @return bool Whether the connection exists.
 	 */
-	protected function p2p_connection_exists( string $connection ) : bool {
+	protected function p2p_connection_exists( string $connection ): bool {
 		if ( ! isset( $this->connection_exists[ $connection ] ) ) {
 			$this->connection_exists[ $connection ] = p2p_connection_exists( $connection );
 		}

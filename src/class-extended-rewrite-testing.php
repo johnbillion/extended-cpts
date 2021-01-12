@@ -6,9 +6,9 @@ declare( strict_types=1 );
  */
 abstract class Extended_Rewrite_Testing {
 
-	abstract public function get_tests() : array;
+	abstract public function get_tests(): array;
 
-	public function get_rewrites( array $struct, array $additional ) : array {
+	public function get_rewrites( array $struct, array $additional ): array {
 		global $wp_rewrite;
 
 		if ( ! $wp_rewrite->using_permalinks() ) {

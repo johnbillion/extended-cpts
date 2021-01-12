@@ -139,7 +139,7 @@ class Extended_Taxonomy_Admin {
 	 * @param  array $cols Associative array of columns
 	 * @return array       Updated array of columns
 	 */
-	public function cols( array $cols ) : array {
+	public function cols( array $cols ): array {
 		// This function gets called multiple times, so let's cache it for efficiency:
 		if ( isset( $this->the_cols ) ) {
 			return $this->the_cols;
@@ -270,7 +270,7 @@ class Extended_Taxonomy_Admin {
 	 * @param array $item An array of arguments
 	 * @return string The item title
 	 */
-	protected function get_item_title( array $item ) : string {
+	protected function get_item_title( array $item ): string {
 		if ( isset( $item['meta_key'] ) ) {
 			return ucwords( trim( str_replace( [ '_', '-' ], ' ', $item['meta_key'] ) ) );
 		} else {
@@ -539,7 +539,7 @@ class Extended_Taxonomy_Admin {
 	 * @param string[] $items Array of items to display on the widget.
 	 * @return string[] Updated array of items.
 	 */
-	public function glance_items( array $items ) : array {
+	public function glance_items( array $items ): array {
 		$taxonomy = get_taxonomy( $this->taxo->taxonomy );
 
 		if ( ! current_user_can( $taxonomy->cap->manage_terms ) ) {
@@ -582,7 +582,7 @@ class Extended_Taxonomy_Admin {
 	 * @param array[] $messages An array of term updated message arrays keyed by taxonomy name.
 	 * @return array[] Updated array of term updated messages.
 	 */
-	public function term_updated_messages( array $messages ) : array {
+	public function term_updated_messages( array $messages ): array {
 		$messages[ $this->taxo->taxonomy ] = [
 			1 => esc_html( sprintf( '%s added.', $this->taxo->tax_singular ) ),
 			2 => esc_html( sprintf( '%s deleted.', $this->taxo->tax_singular ) ),
