@@ -23,7 +23,6 @@
 		"automattic/phpcs-neutron-standard": "1.5.4",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
 		"johnbillion/falsey-assertequals-detector": "^2",
-		"johnbillion/php-docs-standards": "^1",
 		"phpcompatibility/phpcompatibility-wp": "^2",
 		"phpunit/phpunit": "^6",
 		"roots/wordpress": "*",
