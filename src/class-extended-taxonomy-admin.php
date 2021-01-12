@@ -502,7 +502,9 @@ class Extended_Taxonomy_Admin {
 							];
 							$walker->start_el( $output, $o, 1, $args );
 							$walker->end_el( $output, $o, 1, $args );
-							echo $output; // WPCS: XSS ok.
+
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							echo $output;
 						}
 
 						?>

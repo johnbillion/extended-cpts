@@ -1012,7 +1012,8 @@ ICONCSS;
 			}
 		}
 
-		echo implode( ', ', $out ); // WPCS: XSS ok.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo implode( ', ', $out );
 	}
 
 	/**
@@ -1219,9 +1220,11 @@ ICONCSS;
 			}
 		}
 
-		$post = $_post; // WPCS: override ok.
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$post = $_post;
 
-		echo implode( ', ', $out ); // WPCS: XSS ok.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo implode( ', ', $out );
 	}
 
 	/**
