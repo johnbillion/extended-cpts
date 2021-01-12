@@ -6,7 +6,7 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     strategy:
       matrix:
-        php: ['7.3', '7.0']
+        php: ['7.4', '7.0']
         wp: ['4.9', '*', 'dev-nightly']
       fail-fast: false
     name: WP ${{ matrix.wp }} / PHP ${{ matrix.php }}
