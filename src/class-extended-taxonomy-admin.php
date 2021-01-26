@@ -70,7 +70,7 @@ class Extended_Taxonomy_Admin {
 		if ( $this->args['admin_cols'] ) {
 			add_filter( "manage_edit-{$this->taxo->taxonomy}_columns",  [ $this, '_log_default_cols' ], 0 );
 			add_filter( "manage_edit-{$this->taxo->taxonomy}_columns",  [ $this, 'cols' ] );
-			add_action( "manage_{$this->taxo->taxonomy}_custom_column", [ $this, 'col' ], 10, 3 );
+			add_filter( "manage_{$this->taxo->taxonomy}_custom_column", [ $this, 'col' ], 10, 3 );
 		}
 	}
 
@@ -205,8 +205,9 @@ class Extended_Taxonomy_Admin {
 	 * @param string $string  Blank string.
 	 * @param string $col     Name of the column.
 	 * @param int    $term_id Term ID.
+	 * @return string Blank string.
 	 */
-	public function col( string $string, string $col, int $term_id ) {
+	public function col( string $string, string $col, int $term_id ): string {
 		# Shorthand:
 		$c = $this->args['admin_cols'];
 
@@ -214,7 +215,7 @@ class Extended_Taxonomy_Admin {
 		$custom_cols = array_filter( array_keys( $c ) );
 
 		if ( ! in_array( $col, $custom_cols, true ) ) {
-			return;
+			return $string;
 		}
 
 		if ( isset( $c[ $col ]['function'] ) ) {
@@ -222,6 +223,8 @@ class Extended_Taxonomy_Admin {
 		} elseif ( isset( $c[ $col ]['meta_key'] ) ) {
 			$this->col_term_meta( $c[ $col ]['meta_key'], $c[ $col ], $term_id );
 		}
+
+		return $string;
 	}
 
 	/**
