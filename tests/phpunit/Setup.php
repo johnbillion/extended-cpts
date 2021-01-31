@@ -218,6 +218,38 @@ class Setup extends Test {
 
 	}
 
+	public function testTaxonomyLabelsAreCorrect() {
+		$foo = get_taxonomy( 'foo_category' );
+
+		$this->assertEquals( (object) array(
+			'menu_name'                  => 'Foo Categorys',
+			'name'                       => 'Foo Categorys',
+			'singular_name'              => 'Foo Category',
+			'search_items'               => 'Search Foo Categorys',
+			'popular_items'              => 'Popular Foo Categorys',
+			'all_items'                  => 'All Foo Categorys',
+			'parent_item'                => 'Parent Foo Category',
+			'parent_item_colon'          => 'Parent Foo Category:',
+			'edit_item'                  => 'Edit Foo Category',
+			'view_item'                  => 'View Foo Category',
+			'update_item'                => 'Update Foo Category',
+			'add_new_item'               => 'Add New Foo Category',
+			'new_item_name'              => 'New Foo Category Name',
+			'separate_items_with_commas' => 'Separate foo categorys with commas',
+			'add_or_remove_items'        => 'Add or remove foo categorys',
+			'choose_from_most_used'      => 'Choose from most used foo categorys',
+			'not_found'                  => 'No foo categorys found',
+			'no_terms'                   => 'No foo categorys',
+			'items_list_navigation'      => 'Foo Categorys list navigation',
+			'items_list'                 => 'Foo Categorys list',
+			'most_used'                  => 'Most Used',
+			'back_to_items'              => '&larr; Back to Foo Categorys',
+			'no_item'                    => 'No foo category',
+			'filter_by'                  => 'Filter by foo category',
+			'name_admin_bar'             => 'Foo Category',
+			'archives'                   => 'Foo Categorys Archives',
+		), $foo->labels );
+	}
 	public function testArchiveLinksAreCorrect() {
 
 		$link = get_post_type_archive_link( $this->cpts['hello']->post_type );
