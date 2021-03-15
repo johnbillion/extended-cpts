@@ -58,9 +58,16 @@ class Extended_CPT_Admin {
 		if ( $this->args['admin_cols'] ) {
 			add_filter( 'manage_posts_columns',                                 [ $this, '_log_default_cols' ], 0 );
 			add_filter( 'manage_pages_columns',                                 [ $this, '_log_default_cols' ], 0 );
-			add_filter( "manage_edit-{$this->cpt->post_type}_sortable_columns", [ $this, 'sortables' ] );
-			add_filter( "manage_{$this->cpt->post_type}_posts_columns",         [ $this, 'cols' ] );
-			add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   [ $this, 'col' ] );
+			add_filter( 'manage_media_columns',                                 [ $this, '_log_default_cols' ], 0 );
+			if ( 'attachment' === $this->cpt->post_type ) {
+				add_filter( 'manage_upload_sortable_columns', [ $this, 'sortables' ] );
+				add_filter( 'manage_media_columns',         [ $this, 'cols' ] );
+				add_action( 'manage_media_custom_column',   [ $this, 'col' ] );
+			} else {
+				add_filter( "manage_edit-{$this->cpt->post_type}_sortable_columns", [ $this, 'sortables' ] );
+				add_filter( "manage_{$this->cpt->post_type}_posts_columns",         [ $this, 'cols' ] );
+				add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   [ $this, 'col' ] );
+			}
 			add_action( 'load-edit.php',                                        [ $this, 'default_sort' ] );
 			add_action( 'pre_get_posts',                                        [ $this, 'maybe_sort_by_fields' ] );
 			add_filter( 'posts_clauses',                                        [ $this, 'maybe_sort_by_taxonomy' ], 10, 2 );
@@ -206,7 +213,7 @@ class Extended_CPT_Admin {
 	 * @return string The post type name.
 	 */
 	protected static function get_current_post_type(): string {
-		if ( function_exists( 'get_current_screen' ) && is_object( get_current_screen() ) && 'edit' === get_current_screen()->base ) {
+		if ( function_exists( 'get_current_screen' ) && is_object( get_current_screen() ) && in_array( get_current_screen()->base, [ 'edit', 'upload' ], true ) ) {
 			return get_current_screen()->post_type;
 		} else {
 			return '';
@@ -788,7 +795,7 @@ ICONCSS;
 		}
 
 		$new_cols = [];
-		$keep = [
+		$keep     = [
 			'cb',
 			'title',
 		];
@@ -995,7 +1002,7 @@ ICONCSS;
 						break;
 
 					case 'list':
-						$link = add_query_arg( [
+						$link  = add_query_arg( [
 							'post_type' => $post->post_type,
 							$taxonomy   => $term->slug,
 						], admin_url( 'edit.php' ) );
@@ -1130,7 +1137,7 @@ ICONCSS;
 		$field = 'connected_' . $connection;
 
 		if ( isset( $args['field'] ) && isset( $args['value'] ) ) {
-			$meta = [
+			$meta   = [
 				'connected_meta' => [
 					$args['field'] => $args['value'],
 				],
@@ -1202,7 +1209,7 @@ ICONCSS;
 						break;
 
 					case 'list':
-						$link = add_query_arg( array_merge( [
+						$link  = add_query_arg( array_merge( [
 							'post_type'       => $_post->post_type,
 							'connected_type'  => $connection,
 							'connected_items' => $post->ID,
