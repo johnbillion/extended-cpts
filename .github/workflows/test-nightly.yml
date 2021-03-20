@@ -3,6 +3,7 @@ on:
   # Once weekly on Wednesdays at 02:00 UTC.
   schedule:
     - cron: '0 2 * * 3'
+  workflow_dispatch:
 
 jobs:
   build:
