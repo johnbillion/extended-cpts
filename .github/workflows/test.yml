@@ -2,13 +2,10 @@ name: Test
 on:
   push:
   pull_request:
-  # Once weekly On Wednesdays at 02:00 UTC.
-  schedule:
-    - cron: '0 2 * * 3'
 
 jobs:
   build:
-    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name != github.repository
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     strategy:
       matrix:
         php: ['7.4', '7.0']
@@ -60,15 +57,6 @@ jobs:
       run: |
         sudo systemctl start mysql.service
         composer install --prefer-dist
-
-    - name: Update dependencies for nightly
-      if: ${{ matrix.wp == 'nightly' }}
-      run: |
-        composer require --dev --update-with-dependencies --prefer-dist roots/wordpress="dev-nightly" wp-phpunit/wp-phpunit="dev-master"
-
-    - name: Update dependencies for stable
-      if: ${{ matrix.wp != 'nightly' }}
-      run: |
         composer require --dev --update-with-dependencies --prefer-dist roots/wordpress="^${{ matrix.wp }}.0" wp-phpunit/wp-phpunit="^${{ matrix.wp }}.0"
 
     - name: Run the tests
