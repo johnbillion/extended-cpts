@@ -11,15 +11,6 @@ jobs:
       fail-fast: false
     name: WP ${{ matrix.wp }} / PHP ${{ matrix.php }}
     runs-on: ubuntu-18.04
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_DATABASE: wordpress
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
     - name: Checkout repository
       uses: actions/checkout@v1
@@ -55,13 +46,16 @@ jobs:
         php --version
         php -m
         composer --version
+        mysql --version
 
     - name: Install dependencies
       run: |
+        sudo systemctl start mysql.service
         composer install --prefer-dist --no-suggest
         composer require --dev --update-with-dependencies --no-suggest --prefer-dist roots/wordpress="${{ matrix.wp }} || *" wp-phpunit/wp-phpunit="${{ matrix.wp }} || *"
 
     - name: Run the tests
       run: composer test
       env:
-        WP_TESTS_DB_HOST: 127.0.0.1:${{ job.services.mysql.ports['3306'] }}
+        MYSQL_DATABASE: wordpress
+        WP_TESTS_DB_PASS: root
