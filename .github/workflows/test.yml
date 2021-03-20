@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         php: ['7.4', '7.0']
-        wp: ['^4.9.0', '^5.7.0', 'dev-nightly']
+        wp: ['4.9', '5.7', 'nightly']
       fail-fast: false
     name: WP ${{ matrix.wp }} / PHP ${{ matrix.php }}
     runs-on: ubuntu-18.04
@@ -56,8 +56,17 @@ jobs:
     - name: Install dependencies
       run: |
         sudo systemctl start mysql.service
-        composer install --prefer-dist --no-suggest
-        composer require --dev --update-with-dependencies --no-suggest --prefer-dist roots/wordpress="${{ matrix.wp }}" wp-phpunit/wp-phpunit="${{ matrix.wp }} || *"
+        composer install --prefer-dist
+
+    - name: Update dependencies for nightly
+      if: ${{ matrix.wp == 'nightly' }}
+      run: |
+        composer require --dev --update-with-dependencies --prefer-dist roots/wordpress="dev-nightly" wp-phpunit/wp-phpunit="dev-master"
+
+    - name: Update dependencies for stable
+      if: ${{ matrix.wp != 'nightly' }}
+      run: |
+        composer require --dev --update-with-dependencies --prefer-dist roots/wordpress="^${{ matrix.wp }}.0" wp-phpunit/wp-phpunit="^${{ matrix.wp }}.0"
 
     - name: Run the tests
       run: composer test
