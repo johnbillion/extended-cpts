@@ -9,11 +9,12 @@ jobs:
     strategy:
       matrix:
         php: ['7.4', '7.0']
+        wp: ['5.7']
         include:
           - php: '7.2'
             wp: '4.9'
       fail-fast: false
-    name: PHP ${{ matrix.php }}
+    name: WP ${{ matrix.wp }} / PHP ${{ matrix.php }}
     runs-on: ubuntu-18.04
     steps:
     - name: Checkout repository
