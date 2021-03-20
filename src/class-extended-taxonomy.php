@@ -167,6 +167,7 @@ class Extended_Taxonomy {
 			'choose_from_most_used'      => sprintf( 'Choose from most used %s', $this->tax_plural_low ),
 			'not_found'                  => sprintf( 'No %s found', $this->tax_plural_low ),
 			'no_terms'                   => sprintf( 'No %s', $this->tax_plural_low ),
+			'filter_by_item'             => sprintf( 'Filter by %s', $this->tax_singular_low ),
 			'items_list_navigation'      => sprintf( '%s list navigation', $this->tax_plural ),
 			'items_list'                 => sprintf( '%s list', $this->tax_plural ),
 			'most_used'                  => 'Most Used',

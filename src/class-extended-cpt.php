@@ -174,6 +174,7 @@ class Extended_CPT {
 			'insert_into_item'         => sprintf( 'Insert into %s', $this->post_singular_low ),
 			'uploaded_to_this_item'    => sprintf( 'Uploaded to this %s', $this->post_singular_low ),
 			'filter_items_list'        => sprintf( 'Filter %s list', $this->post_plural_low ),
+			'filter_by_date'           => 'Filter by date',
 			'items_list_navigation'    => sprintf( '%s list navigation', $this->post_plural ),
 			'items_list'               => sprintf( '%s list', $this->post_plural ),
 			'item_published'           => sprintf( '%s published.', $this->post_singular ),
