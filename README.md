@@ -1,7 +1,7 @@
 [![Build Status](https://img.shields.io/github/workflow/status/johnbillion/extended-cpts/Test/develop?style=flat-square)](https://github.com/johnbillion/extended-cpts/actions)
 [![Stable Release](https://img.shields.io/packagist/v/johnbillion/extended-cpts.svg)](https://packagist.org/packages/johnbillion/extended-cpts)
 [![License](https://img.shields.io/badge/license-GPL_v2%2B-blue.svg)](https://github.com/johnbillion/extended-cpts/blob/master/LICENSE)
-[![PHP 7](https://img.shields.io/badge/php-7%20/%208-blue.svg)](https://wordpress.org/support/update-php/)
+[![PHP 7 and 8](https://img.shields.io/badge/php-7%20/%208-blue.svg)](https://wordpress.org/support/update-php/)
 [![Documentation](https://img.shields.io/badge/documentation-wiki-blue.svg)](https://github.com/johnbillion/extended-cpts/wiki)
 
 # Extended CPTs #
@@ -63,7 +63,7 @@ Not your first time here? See [Recent Changes for Developers](https://github.com
   - PHP 7.4+ is recommended
   - PHP 8 is supported
 * **WordPress:** 4.8  
-  - Tested up to WP 5.6
+  - Tested up to WP 5.7
 
 ## Installation ##
 
