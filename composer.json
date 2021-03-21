@@ -25,11 +25,11 @@
 		"johnbillion/falsey-assertequals-detector": "^2",
 		"phpcompatibility/phpcompatibility-wp": "^2",
 		"phpunit/phpunit": "^6",
-		"roots/wordpress": "*",
+		"roots/wordpress": "^5.7.0",
 		"vlucas/phpdotenv": "^3",
 		"wp-cli/db-command": "^2.0",
 		"wp-coding-standards/wpcs": "2.3.0",
-		"wp-phpunit/wp-phpunit": "*"
+		"wp-phpunit/wp-phpunit": "^5.7.0"
 	},
 	"scripts": {
 		"post-update-cmd": [

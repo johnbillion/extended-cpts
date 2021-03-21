@@ -174,6 +174,7 @@ class Extended_CPT {
 			'insert_into_item'         => sprintf( 'Insert into %s', $this->post_singular_low ),
 			'uploaded_to_this_item'    => sprintf( 'Uploaded to this %s', $this->post_singular_low ),
 			'filter_items_list'        => sprintf( 'Filter %s list', $this->post_plural_low ),
+			'filter_by_date'           => 'Filter by date',
 			'items_list_navigation'    => sprintf( '%s list navigation', $this->post_plural ),
 			'items_list'               => sprintf( '%s list', $this->post_plural ),
 			'item_published'           => sprintf( '%s published.', $this->post_singular ),
@@ -181,6 +182,8 @@ class Extended_CPT {
 			'item_reverted_to_draft'   => sprintf( '%s reverted to draft.', $this->post_singular ),
 			'item_scheduled'           => sprintf( '%s scheduled.', $this->post_singular ),
 			'item_updated'             => sprintf( '%s updated.', $this->post_singular ),
+			'item_link'                => sprintf( '%s Link', $this->post_singular ),
+			'item_link_description'    => sprintf( 'A link to a %s.', $this->post_singular_low ),
 		];
 
 		# Build the featured image labels:

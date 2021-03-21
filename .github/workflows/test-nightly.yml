@@ -1,0 +1,37 @@
+name: Test Nightly
+on:
+  # Once weekly on Wednesdays at 02:00 UTC.
+  schedule:
+    - cron: '0 2 * * 3'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        php: ['7.4', '7.0']
+      fail-fast: false
+    name: WP nightly / PHP ${{ matrix.php }}
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v1
+
+    - name: Install PHP
+      uses: shivammathur/setup-php@2.7.0
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: mysqli, xmlwriter
+        coverage: none
+
+    - name: Install dependencies
+      run: |
+        sudo systemctl start mysql.service
+        composer install --prefer-dist
+        composer require --dev --update-with-dependencies --prefer-dist roots/wordpress="dev-nightly" wp-phpunit/wp-phpunit="dev-master"
+
+    - name: Run the tests
+      run: composer test
+      env:
+        MYSQL_DATABASE: wordpress
+        WP_TESTS_DB_PASS: root
