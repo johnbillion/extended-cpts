@@ -172,6 +172,8 @@ class Extended_Taxonomy {
 			'items_list'                 => sprintf( '%s list', $this->tax_plural ),
 			'most_used'                  => 'Most Used',
 			'back_to_items'              => sprintf( '&larr; Back to %s', $this->tax_plural ),
+			'item_link'                  => sprintf( '%s Link', $this->tax_singular ),
+			'item_link_description'      => sprintf( 'A link to a %s.', $this->tax_singular_low ),
 			'no_item'                    => sprintf( 'No %s', $this->tax_singular_low ), # Custom label
 			'filter_by'                  => sprintf( 'Filter by %s', $this->tax_singular_low ), # Custom label
 		];

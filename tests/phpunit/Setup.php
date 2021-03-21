@@ -174,6 +174,8 @@ class Setup extends Test {
 			'item_reverted_to_draft'   => 'Singular reverted to draft.',
 			'item_scheduled'           => 'Singular scheduled.',
 			'item_updated'             => 'Singular updated.',
+			'item_link'                => 'Singular Link',
+			'item_link_description'    => 'A link to a singular.',
 		), $bar->labels );
 
 		$featured_image = version_compare( $wp_version, '5.4', '>=' ) ? 'Featured image' : 'Featured Image';
@@ -211,6 +213,8 @@ class Setup extends Test {
 			'item_reverted_to_draft'   => 'FAQ reverted to draft.',
 			'item_scheduled'           => 'FAQ scheduled.',
 			'item_updated'             => 'FAQ updated.',
+			'item_link'                => 'FAQ Link',
+			'item_link_description'    => 'A link to a FAQ.',
 		), $faq->labels );
 
 		$post = get_post_type_object( 'post' );
@@ -251,8 +255,11 @@ class Setup extends Test {
 			'filter_by'                  => 'Filter by foo category',
 			'name_admin_bar'             => 'Foo Category',
 			'archives'                   => 'Foo Categorys Archives',
+			'item_link'                  => 'Foo Category Link',
+			'item_link_description'      => 'A link to a foo category.',
 		), $foo->labels );
 	}
+
 	public function testArchiveLinksAreCorrect() {
 
 		$link = get_post_type_archive_link( $this->cpts['hello']->post_type );

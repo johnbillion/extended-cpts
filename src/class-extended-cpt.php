@@ -182,6 +182,8 @@ class Extended_CPT {
 			'item_reverted_to_draft'   => sprintf( '%s reverted to draft.', $this->post_singular ),
 			'item_scheduled'           => sprintf( '%s scheduled.', $this->post_singular ),
 			'item_updated'             => sprintf( '%s updated.', $this->post_singular ),
+			'item_link'                => sprintf( '%s Link', $this->post_singular ),
+			'item_link_description'    => sprintf( 'A link to a %s.', $this->post_singular_low ),
 		];
 
 		# Build the featured image labels:
