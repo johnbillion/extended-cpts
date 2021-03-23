@@ -199,8 +199,14 @@ class Extended_Taxonomy {
 			add_filter( 'rewrite_testing_tests', [ $this, 'rewrite_testing_tests' ], 1 );
 		}
 
-		# Register taxonomy:
-		$this->register_taxonomy();
+		$existing = get_taxonomy( $this->taxonomy );
+
+		if ( empty( $existing ) ) {
+			# Register taxonomy:
+			$this->register_taxonomy();
+		} else {
+			$this->extend( $existing );
+		}
 
 		/**
 		 * Fired when the extended taxonomy instance is set up.
@@ -210,6 +216,18 @@ class Extended_Taxonomy {
 		 * @param Extended_Taxonomy $instance The extended taxonomy instance.
 		 */
 		do_action( "ext-taxos/{$taxonomy}/instance", $this );
+	}
+
+	/**
+	 * Extends an existing taxonomy object. Currently only handles labels.
+	 *
+	 * @param WP_Taxonomy $taxonomy A taxonomy object.
+	 */
+	public function extend( WP_Taxonomy $taxonomy ) {
+		# Merge core with overridden labels
+		$this->args['labels'] = array_merge( (array) get_taxonomy_labels( $taxonomy ), $this->args['labels'] );
+
+		$GLOBALS['wp_taxonomies'][ $taxonomy->name ]->labels = (object) $this->args['labels'];
 	}
 
 	/**
