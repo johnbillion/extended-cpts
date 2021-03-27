@@ -17,7 +17,7 @@
 		"wordpress-install-dir": "tests/wordpress"
 	},
 	"require": {
-		"php": "^7 | ^8"
+		"php": "^7.2 | ^8"
 	},
 	"require-dev": {
 		"automattic/phpcs-neutron-standard": "1.6.0",
