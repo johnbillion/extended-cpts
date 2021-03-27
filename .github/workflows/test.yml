@@ -1,11 +1,15 @@
 name: Test
 on:
   push:
+    branches:
+      - 'develop'
+      - 'trunk'
   pull_request:
+    branches:
+      - '**'
 
 jobs:
   build:
-    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
     strategy:
       matrix:
         php: ['7.4', '7.0']
