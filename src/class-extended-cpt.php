@@ -73,16 +73,36 @@ class Extended_CPT {
 	 */
 	public function __construct( string $post_type, array $args = [], array $names = [] ) {
 		/**
+		 * Filter the arguments for a post type.
+		 *
+		 * @since 4.4.1
+		 *
+		 * @param array  $args      The post type arguments.
+		 * @param string $post_type The post type name.
+		 */
+		$args = apply_filters( 'ext-cpts/args', $args, $post_type );
+
+		/**
 		 * Filter the arguments for this post type.
 		 *
 		 * @since 2.4.0
 		 *
 		 * @param array $args The post type arguments.
 		 */
-		$args  = apply_filters( "ext-cpts/{$post_type}/args", $args );
+		$args = apply_filters( "ext-cpts/{$post_type}/args", $args );
 
 		/**
-		 * Filter the names for this post type.
+		 * Filter the plural, singular, and slug names for a post type.
+		 *
+		 * @since 4.4.1
+		 *
+		 * @param string[] $names     The plural, singular, and slug names (if any were specified).
+		 * @param string   $post_type The post type name.
+		 */
+		$names = apply_filters( 'ext-cpts/names', $names, $post_type );
+
+		/**
+		 * Filter the plural, singular, and slug names for this post type.
 		 *
 		 * @since 2.4.0
 		 *
@@ -154,6 +174,7 @@ class Extended_CPT {
 			'insert_into_item'         => sprintf( 'Insert into %s', $this->post_singular_low ),
 			'uploaded_to_this_item'    => sprintf( 'Uploaded to this %s', $this->post_singular_low ),
 			'filter_items_list'        => sprintf( 'Filter %s list', $this->post_plural_low ),
+			'filter_by_date'           => 'Filter by date',
 			'items_list_navigation'    => sprintf( '%s list navigation', $this->post_plural ),
 			'items_list'               => sprintf( '%s list', $this->post_plural ),
 			'item_published'           => sprintf( '%s published.', $this->post_singular ),
@@ -161,6 +182,8 @@ class Extended_CPT {
 			'item_reverted_to_draft'   => sprintf( '%s reverted to draft.', $this->post_singular ),
 			'item_scheduled'           => sprintf( '%s scheduled.', $this->post_singular ),
 			'item_updated'             => sprintf( '%s updated.', $this->post_singular ),
+			'item_link'                => sprintf( '%s Link', $this->post_singular ),
+			'item_link_description'    => sprintf( 'A link to a %s.', $this->post_singular_low ),
 		];
 
 		# Build the featured image labels:
@@ -312,7 +335,7 @@ class Extended_CPT {
 	 * @param WP_Query $wp_query The current `WP_Query` object.
 	 * @return string[] Array of SQL clauses.
 	 */
-	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ) : array {
+	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return $clauses;
 		}
@@ -336,7 +359,7 @@ class Extended_CPT {
 	 * @param string $post_type The post type name.
 	 * @return array The list of private query vars to apply to the query.
 	 */
-	public static function get_filter_vars( array $query, array $filters, string $post_type ) : array {
+	public static function get_filter_vars( array $query, array $filters, string $post_type ): array {
 		$return = [];
 
 		foreach ( $filters as $filter_key => $filter ) {
@@ -427,7 +450,7 @@ class Extended_CPT {
 	 *                         `site_sortables` argument when registering an extended post type.
 	 * @return array The list of private and public query vars to apply to the query.
 	 */
-	public static function get_sort_field_vars( array $vars, array $sortables ) : array {
+	public static function get_sort_field_vars( array $vars, array $sortables ): array {
 		if ( ! isset( $vars['orderby'] ) ) {
 			return [];
 		}
@@ -478,7 +501,7 @@ class Extended_CPT {
 	 *                         `site_sortables` argument when registering an extended post type).
 	 * @return array The list of SQL clauses to apply to the query.
 	 */
-	public static function get_sort_taxonomy_clauses( array $clauses, array $vars, array $sortables ) : array {
+	public static function get_sort_taxonomy_clauses( array $clauses, array $vars, array $sortables ): array {
 		global $wpdb;
 
 		if ( ! isset( $vars['orderby'] ) ) {
@@ -530,7 +553,7 @@ class Extended_CPT {
 	 * @param string[] $vars Public query variables.
 	 * @return string[] Updated public query variables.
 	 */
-	public function add_query_vars( array $vars ) : array {
+	public function add_query_vars( array $vars ): array {
 		$filters = array_keys( $this->args['site_filters'] );
 
 		return array_merge( $vars, $filters );
@@ -542,7 +565,7 @@ class Extended_CPT {
 	 * @param array $vars Request parameters.
 	 * @return array Updated request parameters.
 	 */
-	public function add_to_feed( array $vars ) : array {
+	public function add_to_feed( array $vars ): array {
 		# If it's not a feed, we're not interested:
 		if ( ! isset( $vars['feed'] ) ) {
 			return $vars;
@@ -566,7 +589,7 @@ class Extended_CPT {
 	 * @param WP $wp The WP request object.
 	 * @return WP Updated WP request object.
 	 */
-	public function override_private_query_vars( WP $wp ) : WP {
+	public function override_private_query_vars( WP $wp ): WP {
 		# If it's not our post type, bail out:
 		if ( ! isset( $wp->query_vars['post_type'] ) || ( $this->post_type !== $wp->query_vars['post_type'] ) ) {
 			return $wp;
@@ -611,7 +634,7 @@ class Extended_CPT {
 	 * @param bool    $sample    Is it a sample permalink.
 	 * @return string The post's permalink.
 	 */
-	public function post_type_link( string $post_link, WP_Post $post, bool $leavename, bool $sample ) : string {
+	public function post_type_link( string $post_link, WP_Post $post, bool $leavename, bool $sample ): string {
 		# If it's not our post type, bail out:
 		if ( $this->post_type !== $post->post_type ) {
 			return $post_link;
@@ -688,7 +711,7 @@ class Extended_CPT {
 	 * @param array $tests The existing rewrite rule tests.
 	 * @return array Updated rewrite rule tests.
 	 */
-	public function rewrite_testing_tests( array $tests ) : array {
+	public function rewrite_testing_tests( array $tests ): array {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
 		require_once __DIR__ . '/class-extended-cpt-rewrite-testing.php';
 
@@ -769,7 +792,7 @@ class Extended_CPT {
 	 * @param array  $names    Optional. An associative array of the plural, singular, and slug names.
 	 * @return WP_Taxonomy Taxonomy object.
 	 */
-	public function add_taxonomy( string $taxonomy, array $args = [], array $names = [] ) : WP_Taxonomy {
+	public function add_taxonomy( string $taxonomy, array $args = [], array $names = [] ): WP_Taxonomy {
 		if ( taxonomy_exists( $taxonomy ) ) {
 			register_taxonomy_for_object_type( $taxonomy, $this->post_type );
 		} else {

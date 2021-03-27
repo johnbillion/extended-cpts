@@ -70,7 +70,7 @@ class Extended_Taxonomy_Admin {
 		if ( $this->args['admin_cols'] ) {
 			add_filter( "manage_edit-{$this->taxo->taxonomy}_columns",  [ $this, '_log_default_cols' ], 0 );
 			add_filter( "manage_edit-{$this->taxo->taxonomy}_columns",  [ $this, 'cols' ] );
-			add_action( "manage_{$this->taxo->taxonomy}_custom_column", [ $this, 'col' ], 10, 3 );
+			add_filter( "manage_{$this->taxo->taxonomy}_custom_column", [ $this, 'col' ], 10, 3 );
 		}
 	}
 
@@ -139,7 +139,7 @@ class Extended_Taxonomy_Admin {
 	 * @param  array $cols Associative array of columns
 	 * @return array       Updated array of columns
 	 */
-	public function cols( array $cols ) : array {
+	public function cols( array $cols ): array {
 		// This function gets called multiple times, so let's cache it for efficiency:
 		if ( isset( $this->the_cols ) ) {
 			return $this->the_cols;
@@ -205,8 +205,9 @@ class Extended_Taxonomy_Admin {
 	 * @param string $string  Blank string.
 	 * @param string $col     Name of the column.
 	 * @param int    $term_id Term ID.
+	 * @return string Blank string.
 	 */
-	public function col( string $string, string $col, int $term_id ) {
+	public function col( string $string, string $col, int $term_id ): string {
 		# Shorthand:
 		$c = $this->args['admin_cols'];
 
@@ -214,7 +215,7 @@ class Extended_Taxonomy_Admin {
 		$custom_cols = array_filter( array_keys( $c ) );
 
 		if ( ! in_array( $col, $custom_cols, true ) ) {
-			return;
+			return $string;
 		}
 
 		if ( isset( $c[ $col ]['function'] ) ) {
@@ -222,6 +223,8 @@ class Extended_Taxonomy_Admin {
 		} elseif ( isset( $c[ $col ]['meta_key'] ) ) {
 			$this->col_term_meta( $c[ $col ]['meta_key'], $c[ $col ], $term_id );
 		}
+
+		return $string;
 	}
 
 	/**
@@ -270,7 +273,7 @@ class Extended_Taxonomy_Admin {
 	 * @param array $item An array of arguments
 	 * @return string The item title
 	 */
-	protected function get_item_title( array $item ) : string {
+	protected function get_item_title( array $item ): string {
 		if ( isset( $item['meta_key'] ) ) {
 			return ucwords( trim( str_replace( [ '_', '-' ], ' ', $item['meta_key'] ) ) );
 		} else {
@@ -502,7 +505,9 @@ class Extended_Taxonomy_Admin {
 							];
 							$walker->start_el( $output, $o, 1, $args );
 							$walker->end_el( $output, $o, 1, $args );
-							echo $output; // WPCS: XSS ok.
+
+							// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+							echo $output;
 						}
 
 						?>
@@ -537,7 +542,7 @@ class Extended_Taxonomy_Admin {
 	 * @param string[] $items Array of items to display on the widget.
 	 * @return string[] Updated array of items.
 	 */
-	public function glance_items( array $items ) : array {
+	public function glance_items( array $items ): array {
 		$taxonomy = get_taxonomy( $this->taxo->taxonomy );
 
 		if ( ! current_user_can( $taxonomy->cap->manage_terms ) ) {
@@ -580,7 +585,7 @@ class Extended_Taxonomy_Admin {
 	 * @param array[] $messages An array of term updated message arrays keyed by taxonomy name.
 	 * @return array[] Updated array of term updated messages.
 	 */
-	public function term_updated_messages( array $messages ) : array {
+	public function term_updated_messages( array $messages ): array {
 		$messages[ $this->taxo->taxonomy ] = [
 			1 => esc_html( sprintf( '%s added.', $this->taxo->tax_singular ) ),
 			2 => esc_html( sprintf( '%s deleted.', $this->taxo->tax_singular ) ),

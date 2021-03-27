@@ -70,16 +70,36 @@ class Extended_Taxonomy {
 	 */
 	public function __construct( string $taxonomy, $object_type, array $args = [], array $names = [] ) {
 		/**
+		 * Filter the arguments for a taxonomy.
+		 *
+		 * @since 4.4.1
+		 *
+		 * @param array  $args     The taxonomy arguments.
+		 * @param string $taxonomy The taxonomy name.
+		 */
+		$args = apply_filters( 'ext-taxos/args', $args, $taxonomy );
+
+		/**
 		 * Filter the arguments for this taxonomy.
 		 *
 		 * @since 2.0.0
 		 *
 		 * @param array $args The taxonomy arguments.
 		 */
-		$args  = apply_filters( "ext-taxos/{$taxonomy}/args", $args );
+		$args = apply_filters( "ext-taxos/{$taxonomy}/args", $args );
 
 		/**
-		 * Filter the names for this taxonomy.
+		 * Filter the plural, singular, and slug for a taxonomy.
+		 *
+		 * @since 4.4.1
+		 *
+		 * @param string[] $names    The plural, singular, and slug names (if any were specified).
+		 * @param string   $taxonomy The taxonomy name.
+		 */
+		$names = apply_filters( 'ext-taxos/names', $names, $taxonomy );
+
+		/**
+		 * Filter the plural, singular, and slug for this taxonomy.
 		 *
 		 * @since 2.0.0
 		 *
@@ -130,9 +150,11 @@ class Extended_Taxonomy {
 			'menu_name'                  => $this->tax_plural,
 			'name'                       => $this->tax_plural,
 			'singular_name'              => $this->tax_singular,
+			'name_admin_bar'             => $this->tax_singular,
 			'search_items'               => sprintf( 'Search %s', $this->tax_plural ),
 			'popular_items'              => sprintf( 'Popular %s', $this->tax_plural ),
 			'all_items'                  => sprintf( 'All %s', $this->tax_plural ),
+			'archives'                   => sprintf( '%s Archives', $this->tax_plural ),
 			'parent_item'                => sprintf( 'Parent %s', $this->tax_singular ),
 			'parent_item_colon'          => sprintf( 'Parent %s:', $this->tax_singular ),
 			'edit_item'                  => sprintf( 'Edit %s', $this->tax_singular ),
@@ -145,10 +167,13 @@ class Extended_Taxonomy {
 			'choose_from_most_used'      => sprintf( 'Choose from most used %s', $this->tax_plural_low ),
 			'not_found'                  => sprintf( 'No %s found', $this->tax_plural_low ),
 			'no_terms'                   => sprintf( 'No %s', $this->tax_plural_low ),
+			'filter_by_item'             => sprintf( 'Filter by %s', $this->tax_singular_low ),
 			'items_list_navigation'      => sprintf( '%s list navigation', $this->tax_plural ),
 			'items_list'                 => sprintf( '%s list', $this->tax_plural ),
 			'most_used'                  => 'Most Used',
 			'back_to_items'              => sprintf( '&larr; Back to %s', $this->tax_plural ),
+			'item_link'                  => sprintf( '%s Link', $this->tax_singular ),
+			'item_link_description'      => sprintf( 'A link to a %s.', $this->tax_singular_low ),
 			'no_item'                    => sprintf( 'No %s', $this->tax_singular_low ), # Custom label
 			'filter_by'                  => sprintf( 'Filter by %s', $this->tax_singular_low ), # Custom label
 		];
@@ -198,7 +223,7 @@ class Extended_Taxonomy {
 	 * @param array $tests The existing rewrite rule tests.
 	 * @return array Updated rewrite rule tests.
 	 */
-	public function rewrite_testing_tests( array $tests ) : array {
+	public function rewrite_testing_tests( array $tests ): array {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
 		require_once __DIR__ . '/class-extended-taxonomy-rewrite-testing.php';
 

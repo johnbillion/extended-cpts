@@ -15,7 +15,7 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 		$this->cpt = $cpt;
 	}
 
-	public function get_tests() : array {
+	public function get_tests(): array {
 		global $wp_rewrite;
 
 		/** @var \WP_Rewrite $wp_rewrite */

@@ -27,6 +27,9 @@ abstract class Admin extends Test {
 
 		wp_set_current_user( 1 ); // @TODO change
 
+		$GLOBALS['wp_the_query'] = new \WP_Query( $args );
+		$GLOBALS['wp_query']     = $GLOBALS['wp_the_query'];
+
 		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 
 		$this->assertSame( 'edit', get_current_screen()->base );

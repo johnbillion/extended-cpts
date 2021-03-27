@@ -12,7 +12,7 @@ class Extended_Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
 		$this->taxo = $taxo;
 	}
 
-	public function get_tests() : array {
+	public function get_tests(): array {
 		global $wp_rewrite;
 
 		if ( ! $wp_rewrite->using_permalinks() ) {

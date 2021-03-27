@@ -166,6 +166,7 @@ class Setup extends Test {
 			'remove_featured_image'    => 'Remove icon',
 			'use_featured_image'       => 'Use as icon',
 			'filter_items_list'        => 'Filter plural list',
+			'filter_by_date'           => 'Filter by date',
 			'items_list_navigation'    => 'Plural list navigation',
 			'items_list'               => 'Plural list',
 			'item_published'           => 'Singular published.',
@@ -173,6 +174,8 @@ class Setup extends Test {
 			'item_reverted_to_draft'   => 'Singular reverted to draft.',
 			'item_scheduled'           => 'Singular scheduled.',
 			'item_updated'             => 'Singular updated.',
+			'item_link'                => 'Singular Link',
+			'item_link_description'    => 'A link to a singular.',
 		), $bar->labels );
 
 		$featured_image = version_compare( $wp_version, '5.4', '>=' ) ? 'Featured image' : 'Featured Image';
@@ -202,6 +205,7 @@ class Setup extends Test {
 			'remove_featured_image'    => 'Remove featured image',
 			'use_featured_image'       => 'Use as featured image',
 			'filter_items_list'        => 'Filter FAQs list',
+			'filter_by_date'           => 'Filter by date',
 			'items_list_navigation'    => 'FAQs list navigation',
 			'items_list'               => 'FAQs list',
 			'item_published'           => 'FAQ published.',
@@ -209,6 +213,8 @@ class Setup extends Test {
 			'item_reverted_to_draft'   => 'FAQ reverted to draft.',
 			'item_scheduled'           => 'FAQ scheduled.',
 			'item_updated'             => 'FAQ updated.',
+			'item_link'                => 'FAQ Link',
+			'item_link_description'    => 'A link to a FAQ.',
 		), $faq->labels );
 
 		$post = get_post_type_object( 'post' );
@@ -216,6 +222,42 @@ class Setup extends Test {
 		$this->assertEquals( $featured_image, $post->labels->featured_image );
 		$this->assertEquals( 'Remove!', $post->labels->remove_featured_image );
 
+	}
+
+	public function testTaxonomyLabelsAreCorrect() {
+		$foo = get_taxonomy( 'foo_category' );
+
+		$this->assertEquals( (object) array(
+			'menu_name'                  => 'Foo Categorys',
+			'name'                       => 'Foo Categorys',
+			'singular_name'              => 'Foo Category',
+			'search_items'               => 'Search Foo Categorys',
+			'popular_items'              => 'Popular Foo Categorys',
+			'all_items'                  => 'All Foo Categorys',
+			'parent_item'                => 'Parent Foo Category',
+			'parent_item_colon'          => 'Parent Foo Category:',
+			'edit_item'                  => 'Edit Foo Category',
+			'view_item'                  => 'View Foo Category',
+			'update_item'                => 'Update Foo Category',
+			'add_new_item'               => 'Add New Foo Category',
+			'new_item_name'              => 'New Foo Category Name',
+			'separate_items_with_commas' => 'Separate foo categorys with commas',
+			'add_or_remove_items'        => 'Add or remove foo categorys',
+			'choose_from_most_used'      => 'Choose from most used foo categorys',
+			'not_found'                  => 'No foo categorys found',
+			'no_terms'                   => 'No foo categorys',
+			'filter_by_item'             => 'Filter by foo category',
+			'items_list_navigation'      => 'Foo Categorys list navigation',
+			'items_list'                 => 'Foo Categorys list',
+			'most_used'                  => 'Most Used',
+			'back_to_items'              => '&larr; Back to Foo Categorys',
+			'no_item'                    => 'No foo category',
+			'filter_by'                  => 'Filter by foo category',
+			'name_admin_bar'             => 'Foo Category',
+			'archives'                   => 'Foo Categorys Archives',
+			'item_link'                  => 'Foo Category Link',
+			'item_link_description'      => 'A link to a foo category.',
+		), $foo->labels );
 	}
 
 	public function testArchiveLinksAreCorrect() {
