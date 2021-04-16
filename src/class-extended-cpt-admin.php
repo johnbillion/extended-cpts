@@ -116,6 +116,15 @@ class Extended_CPT_Admin {
 		# Post updated messages:
 		add_filter( 'post_updated_messages',      [ $this, 'post_updated_messages' ], 1 );
 		add_filter( 'bulk_post_updated_messages', [ $this, 'bulk_post_updated_messages' ], 1, 2 );
+
+		/**
+		 * Fired when the extended post type admin instance is set up.
+		 *
+		 * @todo Add @since tag when version is bumped.
+		 *
+		 * @param Extended_CPT_Admin $instance The extended post type admin instance.
+		 */
+		do_action( "ext-cpts-admin/{$this->cpt->post_type}/instance", $this );
 	}
 
 	/**
