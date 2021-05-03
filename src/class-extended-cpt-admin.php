@@ -565,7 +565,7 @@ class Extended_CPT_Admin {
 	 * @param array $items Array of items to display on the widget.
 	 * @return array Updated array of items.
 	 */
-	public function glance_items( array $items ): array {
+	public function glance_items( $items ): array {
 		$pto = get_post_type_object( $this->cpt->post_type );
 
 		if ( ! current_user_can( $pto->cap->edit_posts ) ) {
