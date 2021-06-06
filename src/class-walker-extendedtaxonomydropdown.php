@@ -1,16 +1,12 @@
 <?php
 declare( strict_types=1 );
 
-namespace ExtCPTs;
-
-use Walker;
+namespace ExtCPTs\Walker;
 
 /**
  * A term walker class for a dropdown menu.
- *
- * @uses Walker
  */
-class Walker_ExtendedTaxonomyDropdown extends Walker {
+class Dropdown extends \Walker {
 
 	/**
 	 * @var string

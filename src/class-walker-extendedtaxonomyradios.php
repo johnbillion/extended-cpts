@@ -1,16 +1,12 @@
 <?php
 declare( strict_types=1 );
 
-namespace ExtCPTs;
-
-use Walker;
+namespace ExtCPTs\Walker;
 
 /**
  * A term walker class for radio buttons.
- *
- * @uses Walker
  */
-class Walker_ExtendedTaxonomyRadios extends Walker {
+class Radios extends \Walker {
 
 	/**
 	 * @var string

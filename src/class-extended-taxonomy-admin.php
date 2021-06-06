@@ -4,7 +4,6 @@ declare( strict_types=1 );
 namespace ExtCPTs;
 
 use WP_Post;
-use Walker;
 
 class Taxonomy_Admin {
 
@@ -356,7 +355,7 @@ class Taxonomy_Admin {
 	/**
 	 * Displays the 'radio' meta box on the post editing screen.
 	 *
-	 * Uses the Walker_ExtendedTaxonomyRadios class for the walker.
+	 * Uses the Walker\Radios class for the walker.
 	 *
 	 * @param WP_Post $post     The post object.
 	 * @param array   $meta_box The meta box arguments.
@@ -364,14 +363,14 @@ class Taxonomy_Admin {
 	public function meta_box_radio( WP_Post $post, array $meta_box ) {
 		require_once __DIR__ . '/class-walker-extendedtaxonomyradios.php';
 
-		$walker = new Walker_ExtendedTaxonomyRadios();
+		$walker = new Walker\Radios();
 		$this->do_meta_box( $post, $walker, true, 'checklist' );
 	}
 
 	/**
 	 * Displays the 'dropdown' meta box on the post editing screen.
 	 *
-	 * Uses the Walker_ExtendedTaxonomyDropdown class for the walker.
+	 * Uses the Walker\Dropdown class for the walker.
 	 *
 	 * @param WP_Post $post     The post object.
 	 * @param array   $meta_box The meta box arguments.
@@ -379,7 +378,7 @@ class Taxonomy_Admin {
 	public function meta_box_dropdown( WP_Post $post, array $meta_box ) {
 		require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
 
-		$walker = new Walker_ExtendedTaxonomyDropdown();
+		$walker = new Walker\Dropdown();
 		$this->do_meta_box( $post, $walker, true, 'dropdown' );
 	}
 
@@ -401,7 +400,7 @@ class Taxonomy_Admin {
 	 * @param bool    $show_none Optional. Whether to include a 'none' item in the term list. Default false.
 	 * @param string  $type      Optional. The taxonomy list type (checklist or dropdown). Default 'checklist'.
 	 */
-	protected function do_meta_box( WP_Post $post, Walker $walker = null, bool $show_none = false, string $type = 'checklist' ) {
+	protected function do_meta_box( WP_Post $post, \Walker $walker = null, bool $show_none = false, string $type = 'checklist' ) {
 		$taxonomy = $this->taxo->taxonomy;
 		$tax      = get_taxonomy( $taxonomy );
 		$selected = wp_get_object_terms( $post->ID, $taxonomy, [
@@ -479,7 +478,7 @@ class Taxonomy_Admin {
 						# Standard WP Walker_Category_Checklist does not cut it
 						if ( ! $walker ) {
 							require_once __DIR__ . '/class-walker-extendedtaxonomycheckboxes.php';
-							$walker = new Walker_ExtendedTaxonomyCheckboxes();
+							$walker = new Walker\Checkboxes();
 						}
 
 						# Output the terms:

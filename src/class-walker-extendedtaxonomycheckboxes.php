@@ -1,16 +1,12 @@
 <?php
 declare( strict_types=1 );
 
-namespace ExtCPTs;
-
-use Walker;
+namespace ExtCPTs\Walker;
 
 /**
  * Walker to output an unordered list of category checkbox <input> elements properly.
- *
- * @uses Walker
  */
-class Walker_ExtendedTaxonomyCheckboxes extends Walker {
+class Checkboxes extends \Walker {
 
 	/**
 	 * @var string

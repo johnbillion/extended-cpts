@@ -274,7 +274,7 @@ class Post_Type_Admin {
 
 				require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
 
-				$walker = new Walker_ExtendedTaxonomyDropdown( [
+				$walker = new Walker\Dropdown( [
 					'field' => 'slug',
 				] );
 
