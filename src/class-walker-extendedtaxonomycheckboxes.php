@@ -1,6 +1,10 @@
 <?php
 declare( strict_types=1 );
 
+namespace ExtCPTs;
+
+use Walker;
+
 /**
  * Walker to output an unordered list of category checkbox <input> elements properly.
  *

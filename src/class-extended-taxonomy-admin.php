@@ -1,7 +1,12 @@
 <?php
 declare( strict_types=1 );
 
-class Extended_Taxonomy_Admin {
+namespace ExtCPTs;
+
+use WP_Post;
+use Walker;
+
+class Taxonomy_Admin {
 
 	/**
 	 * Default arguments for custom taxonomies.
@@ -17,7 +22,7 @@ class Extended_Taxonomy_Admin {
 	];
 
 	/**
-	 * @var Extended_Taxonomy
+	 * @var Taxonomy
 	 */
 	public $taxo;
 
@@ -39,10 +44,10 @@ class Extended_Taxonomy_Admin {
 	/**
 	* Class constructor.
 	*
-	* @param Extended_Taxonomy $taxo An extended taxonomy object.
+	* @param Taxonomy $taxo An extended taxonomy object.
 	* @param array             $args Optional. The admin arguments.
 	*/
-	public function __construct( Extended_Taxonomy $taxo, array $args = [] ) {
+	public function __construct( Taxonomy $taxo, array $args = [] ) {
 		$this->taxo = $taxo;
 
 		# Merge our args with the defaults:

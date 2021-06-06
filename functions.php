@@ -1,6 +1,11 @@
 <?php
 declare( strict_types=1 );
 
+use ExtCPTs\Post_Type;
+use ExtCPTs\Post_Type_Admin;
+use ExtCPTs\Taxonomy;
+use ExtCPTs\Taxonomy_Admin;
+
 /**
  * Registers a custom post type.
  *
@@ -40,17 +45,17 @@ declare( strict_types=1 );
  *     @type string $singular The singular form of the post type name.
  *     @type string $slug     The slug used in the permalinks for this post type.
  * }
- * @return Extended_CPT
+ * @return Post_Type
  */
-function register_extended_post_type( string $post_type, array $args = [], array $names = [] ): Extended_CPT {
+function register_extended_post_type( string $post_type, array $args = [], array $names = [] ): Post_Type {
 	if ( ! did_action( 'init' ) ) {
 		trigger_error( esc_html__( 'Post types must be registered on the "init" hook.', 'extended-cpts' ), E_USER_WARNING );
 	}
 
-	$cpt = new Extended_CPT( $post_type, $args, $names );
+	$cpt = new Post_Type( $post_type, $args, $names );
 
 	if ( is_admin() ) {
-		new Extended_CPT_Admin( $cpt, $cpt->args );
+		new Post_Type_Admin( $cpt, $cpt->args );
 	}
 
 	return $cpt;
@@ -83,7 +88,7 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *     @type bool   $dashboard_glance Whether to show this taxonomy on the 'At a Glance' section of the admin dashboard.
  *                                    Default false.
  *     @type array  $admin_cols       Associative array of admin screen columns to show for this taxonomy. See the
- *                                    `Extended_Taxonomy_Admin::cols()` method for more information.
+ *                                    `Taxonomy_Admin::cols()` method for more information.
  *     @type bool   $exclusive        This parameter isn't feature complete. All it does currently is set the meta box
  *                                    to the 'radio' meta box, thus meaning any given post can only have one term
  *                                    associated with it for that taxonomy. 'exclusive' isn't really the right name for
@@ -100,17 +105,17 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *     @type string $singular The singular form of the taxonomy name.
  *     @type string $slug     The slug used in the term permalinks for this taxonomy.
  * }
- * @return Extended_Taxonomy
+ * @return Taxonomy
  */
-function register_extended_taxonomy( string $taxonomy, $object_type, array $args = [], array $names = [] ): Extended_Taxonomy {
+function register_extended_taxonomy( string $taxonomy, $object_type, array $args = [], array $names = [] ): Taxonomy {
 	if ( ! did_action( 'init' ) ) {
 		trigger_error( esc_html__( 'Taxonomies must be registered on the "init" hook.', 'extended-cpts' ), E_USER_WARNING );
 	}
 
-	$taxo = new Extended_Taxonomy( $taxonomy, $object_type, $args, $names );
+	$taxo = new Taxonomy( $taxonomy, $object_type, $args, $names );
 
 	if ( is_admin() ) {
-		new Extended_Taxonomy_Admin( $taxo, $taxo->args );
+		new Taxonomy_Admin( $taxo, $taxo->args );
 	}
 
 	return $taxo;

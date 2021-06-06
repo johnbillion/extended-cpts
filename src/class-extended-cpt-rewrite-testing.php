@@ -1,17 +1,19 @@
 <?php
 declare( strict_types=1 );
 
+namespace ExtCPTs;
+
 /**
  * @codeCoverageIgnore
  */
-class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
+class Post_Type_Rewrite_Testing extends Extended_Rewrite_Testing {
 
 	/**
-	 * @var Extended_CPT
+	 * @var Post_Type
 	 */
 	public $cpt;
 
-	public function __construct( Extended_CPT $cpt ) {
+	public function __construct( Post_Type $cpt ) {
 		$this->cpt = $cpt;
 	}
 

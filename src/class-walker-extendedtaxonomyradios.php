@@ -1,6 +1,10 @@
 <?php
 declare( strict_types=1 );
 
+namespace ExtCPTs;
+
+use Walker;
+
 /**
  * A term walker class for radio buttons.
  *

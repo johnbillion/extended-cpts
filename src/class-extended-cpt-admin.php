@@ -1,7 +1,15 @@
 <?php
 declare( strict_types=1 );
 
-class Extended_CPT_Admin {
+namespace ExtCPTs;
+
+use WP_Post;
+use WP_Query;
+
+use function p2p_connection_exists;
+use function p2p_type;
+
+class Post_Type_Admin {
 
 	/**
 	 * Default arguments for custom post types.
@@ -19,7 +27,7 @@ class Extended_CPT_Admin {
 	];
 
 	/**
-	 * @var Extended_CPT
+	 * @var Post_Type
 	 */
 	public $cpt;
 
@@ -46,10 +54,10 @@ class Extended_CPT_Admin {
 	/**
 	 * Class constructor.
 	 *
-	 * @param Extended_CPT $cpt  An extended post type object.
+	 * @param Post_Type $cpt  An extended post type object.
 	 * @param array        $args Optional. The post type arguments.
 	 */
-	public function __construct( Extended_CPT $cpt, array $args = [] ) {
+	public function __construct( Post_Type $cpt, array $args = [] ) {
 		$this->cpt = $cpt;
 		# Merge our args with the defaults:
 		$this->args = array_merge( $this->defaults, $args );
@@ -249,7 +257,7 @@ class Extended_CPT_Admin {
 				 *
 				 * @since 4.3.0
 				 *
-				 * @param Extended_CPT_Admin $this   The post type admin controller instance.
+				 * @param Post_Type_Admin $this   The post type admin controller instance.
 				 * @param array              $filter The filter arguments.
 				 * @param string             $id     The filter's `id` attribute value.
 				 */
@@ -499,7 +507,7 @@ class Extended_CPT_Admin {
 			return;
 		}
 
-		$vars = Extended_CPT::get_filter_vars( $wp_query->query, $this->cpt->args['admin_filters'], $this->cpt->post_type );
+		$vars = Post_Type::get_filter_vars( $wp_query->query, $this->cpt->args['admin_filters'], $this->cpt->post_type );
 
 		if ( empty( $vars ) ) {
 			return;
@@ -527,7 +535,7 @@ class Extended_CPT_Admin {
 			return;
 		}
 
-		$sort = Extended_CPT::get_sort_field_vars( $wp_query->query, $this->cpt->args['admin_cols'] );
+		$sort = Post_Type::get_sort_field_vars( $wp_query->query, $this->cpt->args['admin_cols'] );
 
 		if ( empty( $sort ) ) {
 			return;
@@ -550,7 +558,7 @@ class Extended_CPT_Admin {
 			return $clauses;
 		}
 
-		$sort = Extended_CPT::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->cpt->args['admin_cols'] );
+		$sort = Post_Type::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->cpt->args['admin_cols'] );
 
 		if ( empty( $sort ) ) {
 			return $clauses;

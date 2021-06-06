@@ -1,14 +1,16 @@
 <?php
 declare( strict_types=1 );
 
-class Extended_Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
+namespace ExtCPTs;
+
+class Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
 
 	/**
-	 * @var Extended_Taxonomy
+	 * @var Taxonomy
 	 */
 	public $taxo;
 
-	public function __construct( Extended_Taxonomy $taxo ) {
+	public function __construct( Taxonomy $taxo ) {
 		$this->taxo = $taxo;
 	}
 

@@ -1,7 +1,15 @@
 <?php
 declare( strict_types=1 );
 
-class Extended_CPT {
+namespace ExtCPTs;
+
+use WP_Post_Type;
+use WP_Post;
+use WP_Query;
+use WP_Taxonomy;
+use WP;
+
+class Post_Type {
 
 	/**
 	 * Default arguments for custom post types.
@@ -261,7 +269,7 @@ class Extended_CPT {
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param Extended_CPT $instance The extended post type instance.
+		 * @param Post_Type $instance The extended post type instance.
 		 */
 		do_action( "ext-cpts/{$post_type}/instance", $this );
 	}
@@ -609,7 +617,7 @@ class Extended_CPT {
 	}
 
 	/**
-	 * Action fired after a CPT is registered in order to set up the custom permalink structure for the post type.
+	 * Action fired after a Post_Type is registered in order to set up the custom permalink structure for the post type.
 	 *
 	 * @param string       $post_type        Post type name.
 	 * @param WP_Post_Type $post_type_object Post type object.
@@ -715,7 +723,7 @@ class Extended_CPT {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
 		require_once __DIR__ . '/class-extended-cpt-rewrite-testing.php';
 
-		$extended = new Extended_CPT_Rewrite_Testing( $this );
+		$extended = new Post_Type_Rewrite_Testing( $this );
 
 		return array_merge( $tests, $extended->get_tests() );
 	}

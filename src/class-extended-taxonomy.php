@@ -1,7 +1,9 @@
 <?php
 declare( strict_types=1 );
 
-class Extended_Taxonomy {
+namespace ExtCPTs;
+
+class Taxonomy {
 
 	/**
 	 * Default arguments for custom taxonomies.
@@ -210,7 +212,7 @@ class Extended_Taxonomy {
 		 *
 		 * @since 4.0.0
 		 *
-		 * @param Extended_Taxonomy $instance The extended taxonomy instance.
+		 * @param Taxonomy $instance The extended taxonomy instance.
 		 */
 		do_action( "ext-taxos/{$taxonomy}/instance", $this );
 	}
@@ -227,7 +229,7 @@ class Extended_Taxonomy {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
 		require_once __DIR__ . '/class-extended-taxonomy-rewrite-testing.php';
 
-		$extended = new Extended_Taxonomy_Rewrite_Testing( $this );
+		$extended = new Taxonomy_Rewrite_Testing( $this );
 
 		return array_merge( $tests, $extended->get_tests() );
 	}
