@@ -380,7 +380,7 @@ class Extended_CPT_Admin {
 
 				# Output the search box:
 				?>
-				<label for="<?php echo esc_attr( $id ); ?>"><?php printf( '%s:', esc_html( $filter['title'] ) ); ?></label>&nbsp;<input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $value ); ?>" />
+				<label for="<?php echo esc_attr( $id ); ?>" class="screen-reader-text"><?php printf( '%s:', esc_html( $filter['title'] ) ); ?>&nbsp;</label><input type="text" name="<?php echo esc_attr( $filter_key ); ?>" id="<?php echo esc_attr( $id ); ?>" value="<?php echo esc_attr( $value ); ?>" placeholder="<?php echo esc_html( $filter['title'] ) ?>" />
 				<?php
 			} elseif ( isset( $filter['meta_exists'] ) || isset( $filter['meta_key_exists'] ) ) {
 				# If we haven't specified a title, use the all_items label from the post type:
