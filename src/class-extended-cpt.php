@@ -132,6 +132,12 @@ class Extended_CPT {
 		} else {
 			$this->post_plural = $this->post_singular . 's';
 		}
+		
+		if ( isset( $names['menu_name'] ) ) {
+			$this->menu_name = $names['menu_name'];
+		} else {
+			$this->menu_name = $this->post_plural;
+		}
 
 		$this->post_type = strtolower( $post_type );
 		$this->post_slug = strtolower( $this->post_slug );
@@ -156,7 +162,7 @@ class Extended_CPT {
 		$this->defaults['labels'] = [
 			'name'                     => $this->post_plural,
 			'singular_name'            => $this->post_singular,
-			'menu_name'                => $this->post_plural,
+			'menu_name'                => $this->menu_name,
 			'name_admin_bar'           => $this->post_singular,
 			'add_new'                  => 'Add New',
 			'add_new_item'             => sprintf( 'Add New %s', $this->post_singular ),
