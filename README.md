@@ -76,8 +76,6 @@ composer require johnbillion/extended-cpts
 
 Other means of installation or usage, particularly bundling within a plugin, is not officially supported and done at your own risk.
 
-Note that *Extended Taxonomies* is part of this library since version 4.0, so there's no need to require that too.
-
 ## Usage ##
 
 Need a simple post type with no frills? You can register a post type with a single parameter:
