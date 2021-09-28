@@ -20,7 +20,7 @@
 		"php": "^7.4 | ^8"
 	},
 	"require-dev": {
-		"automattic/phpcs-neutron-standard": "1.6.0",
+		"automattic/phpcs-neutron-standard": "1.7.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
 		"johnbillion/falsey-assertequals-detector": "^2",
 		"phpcompatibility/phpcompatibility-wp": "^2",
