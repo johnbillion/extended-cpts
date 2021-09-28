@@ -13,10 +13,7 @@ jobs:
     strategy:
       matrix:
         php: ['7.4']
-        wp: ['5.8']
-        include:
-          - php: '7.2'
-            wp: '4.9'
+        wp: ['5.8','5.6']
       fail-fast: false
     name: WP ${{ matrix.wp }} / PHP ${{ matrix.php }}
     runs-on: ubuntu-18.04

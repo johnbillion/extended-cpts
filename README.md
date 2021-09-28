@@ -61,8 +61,10 @@ Not your first time here? See [Recent Changes for Developers](https://github.com
 
 * **PHP:** 7.4  
   - PHP 8 is supported
-* **WordPress:** 4.8  
+* **WordPress:** 5.6  
   - Tested up to WP 5.8
+
+Extended CPTs should work with versions of WordPress back to 4.9 but these versions are not tested and not officially supported.
 
 ## Installation ##
 
