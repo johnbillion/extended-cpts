@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         php: ['7.4', '7.0']
-        wp: ['5.7']
+        wp: ['5.8']
         include:
           - php: '7.2'
             wp: '4.9'
