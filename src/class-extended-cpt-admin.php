@@ -901,7 +901,8 @@ ICONCSS;
 	/**
 	 * Output the column data for our custom columns.
 	 *
-	 * @param string $col The column name
+	 * @param string $col     The column name
+	 * @param int    $post_id The post ID
 	 */
 	public function col( string $col, int $post_id ) {
 		# Shorthand:
