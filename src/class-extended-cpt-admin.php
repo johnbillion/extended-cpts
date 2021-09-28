@@ -274,9 +274,11 @@ class Post_Type_Admin {
 
 				require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
 
-				$walker = new Walker\Dropdown( [
-					'field' => 'slug',
-				] );
+				$walker = new Walker\Dropdown(
+					[
+						'field' => 'slug',
+					]
+				);
 
 				# If we haven't specified a title, use the all_items label from the taxonomy:
 				if ( ! isset( $filter['title'] ) ) {
@@ -290,51 +292,67 @@ class Post_Type_Admin {
 				);
 
 				# Output the dropdown:
-				wp_dropdown_categories( [
-					'show_option_all' => $filter['title'],
-					'hide_empty'      => false,
-					'hide_if_empty'   => true,
-					'hierarchical'    => true,
-					'show_count'      => false,
-					'orderby'         => 'name',
-					'selected_cats'   => get_query_var( $tax->query_var ),
-					'id'              => $id,
-					'name'            => $tax->query_var,
-					'taxonomy'        => $filter['taxonomy'],
-					'walker'          => $walker,
-				] );
+				wp_dropdown_categories(
+					[
+						'show_option_all' => $filter['title'],
+						'hide_empty'      => false,
+						'hide_if_empty'   => true,
+						'hierarchical'    => true,
+						'show_count'      => false,
+						'orderby'         => 'name',
+						'selected_cats'   => get_query_var( $tax->query_var ),
+						'id'              => $id,
+						'name'            => $tax->query_var,
+						'taxonomy'        => $filter['taxonomy'],
+						'walker'          => $walker,
+					]
+				);
 			} elseif ( isset( $filter['meta_key'] ) ) {
 				# If we haven't specified a title, generate one from the meta key:
 				if ( ! isset( $filter['title'] ) ) {
-					$filter['title'] = str_replace( [
-						'-',
-						'_',
-					], ' ', $filter['meta_key'] );
+					$filter['title'] = str_replace(
+						[
+							'-',
+							'_',
+						],
+						' ',
+						$filter['meta_key']
+					);
 					$filter['title'] = ucwords( $filter['title'] ) . 's';
 					$filter['title'] = sprintf( 'All %s', $filter['title'] );
 				}
 
 				# If we haven't specified a label, generate one from the meta key:
 				if ( ! isset( $filter['label'] ) ) {
-					$filter['label'] = str_replace( [
-						'-',
-						'_',
-					], ' ', $filter['meta_key'] );
+					$filter['label'] = str_replace(
+						[
+							'-',
+							'_',
+						],
+						' ',
+						$filter['meta_key']
+					);
 					$filter['label'] = ucwords( $filter['label'] );
 					$filter['label'] = sprintf( 'Filter by %s', $filter['label'] );
 				}
 
 				if ( ! isset( $filter['options'] ) ) {
 					# Fetch all the values for our meta key:
-					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
-						SELECT DISTINCT meta_value
-						FROM {$wpdb->postmeta} as m
-						JOIN {$wpdb->posts} as p ON ( p.ID = m.post_id )
-						WHERE m.meta_key = %s
-						AND m.meta_value != ''
-						AND p.post_type = %s
-						ORDER BY m.meta_value ASC
-					", $filter['meta_key'], $this->cpt->post_type ) );
+					$filter['options'] = $wpdb->get_col(
+						$wpdb->prepare(
+							"
+								SELECT DISTINCT meta_value
+								FROM {$wpdb->postmeta} as m
+								JOIN {$wpdb->posts} as p ON ( p.ID = m.post_id )
+								WHERE m.meta_key = %s
+								AND m.meta_value != ''
+								AND p.post_type = %s
+								ORDER BY m.meta_value ASC
+							",
+							$filter['meta_key'],
+							$this->cpt->post_type
+						)
+					);
 				} elseif ( is_callable( $filter['options'] ) ) {
 					$filter['options'] = call_user_func( $filter['options'] );
 				}
@@ -377,10 +395,14 @@ class Post_Type_Admin {
 			} elseif ( isset( $filter['meta_search_key'] ) ) {
 				# If we haven't specified a title, generate one from the meta key:
 				if ( ! isset( $filter['title'] ) ) {
-					$filter['title'] = str_replace( [
-						'-',
-						'_',
-					], ' ', $filter['meta_search_key'] );
+					$filter['title'] = str_replace(
+						[
+							'-',
+							'_',
+						],
+						' ',
+						$filter['meta_search_key']
+					);
 					$filter['title'] = ucwords( $filter['title'] );
 				}
 
@@ -459,11 +481,16 @@ class Post_Type_Admin {
 
 				if ( ! isset( $filter['options'] ) ) {
 					# Fetch all the values for our field:
-					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
-						SELECT DISTINCT post_author
-						FROM {$wpdb->posts}
-						WHERE post_type = %s
-					", $this->cpt->post_type ) );
+					$filter['options'] = $wpdb->get_col(
+						$wpdb->prepare(
+							"
+								SELECT DISTINCT post_author
+								FROM {$wpdb->posts}
+								WHERE post_type = %s
+							",
+							$this->cpt->post_type
+						)
+					);
 				} elseif ( is_callable( $filter['options'] ) ) {
 					$filter['options'] = call_user_func( $filter['options'] );
 				}
@@ -473,14 +500,16 @@ class Post_Type_Admin {
 				}
 
 				# Output a dropdown:
-				wp_dropdown_users( [
-					'id'                => $id,
-					'include'           => $filter['options'],
-					'name'              => 'author',
-					'option_none_value' => '0',
-					'selected'          => $value,
-					'show_option_none'  => $filter['title'],
-				] );
+				wp_dropdown_users(
+					[
+						'id'                => $id,
+						'include'           => $filter['options'],
+						'name'              => 'author',
+						'option_none_value' => '0',
+						'selected'          => $value,
+						'show_option_none'  => $filter['title'],
+					]
+				);
 			}
 		}
 	}
@@ -589,9 +618,12 @@ class Post_Type_Admin {
 		$num   = number_format_i18n( $count->publish );
 
 		# This is absolutely not localisable. WordPress 3.8 didn't add a new post type label.
-		$url   = add_query_arg( [
-			'post_type' => $this->cpt->post_type,
-		], admin_url( 'edit.php' ) );
+		$url   = add_query_arg(
+			[
+				'post_type' => $this->cpt->post_type,
+			],
+			admin_url( 'edit.php' )
+		);
 		$class = 'cpt-' . $this->cpt->post_type . '-count';
 		$text  = '<a href="' . esc_url( $url ) . '" class="' . esc_attr( $class ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
 		$css   = <<<'ICONCSS'
@@ -1010,10 +1042,13 @@ ICONCSS;
 						break;
 
 					case 'list':
-						$link  = add_query_arg( [
-							'post_type' => $post->post_type,
-							$taxonomy   => $term->slug,
-						], admin_url( 'edit.php' ) );
+						$link  = add_query_arg(
+							[
+								'post_type' => $post->post_type,
+								$taxonomy   => $term->slug,
+							],
+							admin_url( 'edit.php' )
+						);
 						$out[] = sprintf(
 							'<a href="%1$s">%2$s</a>',
 							esc_url( $link ),
@@ -1104,11 +1139,13 @@ ICONCSS;
 		}
 
 		$image_atts = [
-			'style' => esc_attr( sprintf(
-				'width:%1$s;height:%2$s',
-				$width,
-				$height
-			) ),
+			'style' => esc_attr(
+				sprintf(
+					'width:%1$s;height:%2$s',
+					$width,
+					$height
+				)
+			),
 			'title' => '',
 		];
 
@@ -1131,11 +1168,13 @@ ICONCSS;
 		}
 
 		if ( ! $this->p2p_connection_exists( $connection ) ) {
-			echo esc_html( sprintf(
-				/* translators: %s: The ID of the Posts 2 Posts connection type */
-				__( 'Invalid connection type: %s', 'extended-cpts' ),
-				$connection
-			) );
+			echo esc_html(
+				sprintf(
+					/* translators: %s: The ID of the Posts 2 Posts connection type */
+					__( 'Invalid connection type: %s', 'extended-cpts' ),
+					$connection
+				)
+			);
 			return;
 		}
 
@@ -1158,11 +1197,13 @@ ICONCSS;
 			if ( $type ) {
 				$type->each_connected( [ $_post ], $meta, $field );
 			} else {
-				echo esc_html( sprintf(
-					/* translators: %s: The ID of the Posts 2 Posts connection type */
-					__( 'Invalid connection type: %s', 'extended-cpts' ),
-					$connection
-				) );
+				echo esc_html(
+					sprintf(
+						/* translators: %s: The ID of the Posts 2 Posts connection type */
+						__( 'Invalid connection type: %s', 'extended-cpts' ),
+						$connection
+					)
+				);
 				return;
 			}
 		}
@@ -1217,11 +1258,17 @@ ICONCSS;
 						break;
 
 					case 'list':
-						$link  = add_query_arg( array_merge( [
-							'post_type'       => $_post->post_type,
-							'connected_type'  => $connection,
-							'connected_items' => $post->ID,
-						], $meta ), admin_url( 'edit.php' ) );
+						$link  = add_query_arg(
+							array_merge(
+								[
+									'post_type'       => $_post->post_type,
+									'connected_type'  => $connection,
+									'connected_items' => $post->ID,
+								],
+								$meta
+							),
+							admin_url( 'edit.php' )
+						);
 						$out[] = sprintf(
 							'<a href="%1$s">%2$s</a>',
 							esc_url( $link ),
@@ -1314,20 +1361,44 @@ ICONCSS;
 				return $item['taxonomy'];
 			}
 		} elseif ( isset( $item['post_field'] ) ) {
-			return ucwords( trim( str_replace( [
-				'post_',
-				'_',
-			], ' ', $item['post_field'] ) ) );
+			return ucwords(
+				trim(
+					str_replace(
+						[
+							'post_',
+							'_',
+						],
+						' ',
+						$item['post_field']
+					)
+				)
+			);
 		} elseif ( isset( $item['meta_key'] ) ) {
-			return ucwords( trim( str_replace( [
-				'_',
-				'-',
-			], ' ', $item['meta_key'] ) ) );
+			return ucwords(
+				trim(
+					str_replace(
+						[
+							'_',
+							'-',
+						],
+						' ',
+						$item['meta_key']
+					)
+				)
+			);
 		} elseif ( isset( $item['connection'] ) && isset( $item['field'] ) && isset( $item['value'] ) ) {
-			$fallback = ucwords( trim( str_replace( [
-				'_',
-				'-',
-			], ' ', $item['value'] ) ) );
+			$fallback = ucwords(
+				trim(
+					str_replace(
+						[
+							'_',
+							'-',
+						],
+						' ',
+						$item['value']
+					)
+				)
+			);
 
 			if ( ! function_exists( 'p2p_type' ) || ! $this->p2p_connection_exists( $item['connection'] ) ) {
 				return $fallback;

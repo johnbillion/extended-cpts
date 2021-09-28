@@ -121,10 +121,16 @@ class Post_Type {
 		if ( isset( $names['singular'] ) ) {
 			$this->post_singular = $names['singular'];
 		} else {
-			$this->post_singular = ucwords( str_replace( [
-				'-',
-				'_',
-			], ' ', $post_type ) );
+			$this->post_singular = ucwords(
+				str_replace(
+					[
+						'-',
+						'_',
+					],
+					' ',
+					$post_type
+				)
+			);
 		}
 
 		if ( isset( $names['slug'] ) ) {
@@ -743,19 +749,27 @@ class Post_Type {
 		}
 
 		$existing   = get_post_type_object( $this->post_type );
-		$taxonomies = get_taxonomies( [
-			'query_var' => $query_var,
-		], 'objects' );
+		$taxonomies = get_taxonomies(
+			[
+				'query_var' => $query_var,
+			],
+			'objects'
+		);
 
 		if ( $query_var && count( $taxonomies ) ) {
 			// https://core.trac.wordpress.org/ticket/35089
 			foreach ( $taxonomies as $tax ) {
 				if ( $tax->query_var === $query_var ) {
-					trigger_error( esc_html( sprintf(
-						/* translators: %s: Post type query variable name */
-						__( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'extended-cpts' ),
-						$query_var
-					) ), E_USER_ERROR );
+					trigger_error(
+						esc_html(
+							sprintf(
+								/* translators: %s: Post type query variable name */
+								__( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'extended-cpts' ),
+								$query_var
+							)
+						),
+						E_USER_ERROR
+					);
 				}
 			}
 		}

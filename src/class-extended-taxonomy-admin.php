@@ -403,9 +403,13 @@ class Taxonomy_Admin {
 	protected function do_meta_box( WP_Post $post, \Walker $walker = null, bool $show_none = false, string $type = 'checklist' ) {
 		$taxonomy = $this->taxo->taxonomy;
 		$tax      = get_taxonomy( $taxonomy );
-		$selected = wp_get_object_terms( $post->ID, $taxonomy, [
-			'fields' => 'ids',
-		] );
+		$selected = wp_get_object_terms(
+			$post->ID,
+			$taxonomy,
+			[
+				'fields' => 'ids',
+			]
+		);
 
 		if ( $show_none ) {
 			if ( isset( $tax->labels->no_item ) ) {
@@ -441,20 +445,22 @@ class Taxonomy_Admin {
 						esc_attr( "{$taxonomy}dropdown" ),
 						esc_html( $tax->labels->singular_name )
 					);
-					wp_dropdown_categories( [
-						'option_none_value' => ( is_taxonomy_hierarchical( $taxonomy ) ? '-1' : '' ),
-						'show_option_none'  => $none,
-						'hide_empty'        => false,
-						'hierarchical'      => true,
-						'show_count'        => false,
-						'orderby'           => 'name',
-						'selected'          => reset( $selected ),
-						'id'                => "{$taxonomy}dropdown",
-						'name'              => is_taxonomy_hierarchical( $taxonomy ) ? "tax_input[{$taxonomy}][]" : "tax_input[{$taxonomy}]",
-						'taxonomy'          => $taxonomy,
-						'walker'            => $walker,
-						'required'          => $this->args['required'],
-					] );
+					wp_dropdown_categories(
+						[
+							'option_none_value' => ( is_taxonomy_hierarchical( $taxonomy ) ? '-1' : '' ),
+							'show_option_none'  => $none,
+							'hide_empty'        => false,
+							'hierarchical'      => true,
+							'show_count'        => false,
+							'orderby'           => 'name',
+							'selected'          => reset( $selected ),
+							'id'                => "{$taxonomy}dropdown",
+							'name'              => is_taxonomy_hierarchical( $taxonomy ) ? "tax_input[{$taxonomy}][]" : "tax_input[{$taxonomy}]",
+							'taxonomy'          => $taxonomy,
+							'walker'            => $walker,
+							'required'          => $this->args['required'],
+						]
+					);
 					break;
 
 				case 'checklist':
@@ -482,12 +488,15 @@ class Taxonomy_Admin {
 						}
 
 						# Output the terms:
-						wp_terms_checklist( $post->ID, [
-							'taxonomy'      => $taxonomy,
-							'walker'        => $walker,
-							'selected_cats' => $selected,
-							'checked_ontop' => $this->args['checked_ontop'],
-						] );
+						wp_terms_checklist(
+							$post->ID,
+							[
+								'taxonomy'      => $taxonomy,
+								'walker'        => $walker,
+								'selected_cats' => $selected,
+								'checked_ontop' => $this->args['checked_ontop'],
+							]
+						);
 
 						# Output the 'none' item:
 						if ( $show_none ) {
@@ -562,10 +571,13 @@ class Taxonomy_Admin {
 		$num   = number_format_i18n( $count );
 
 		# This is absolutely not localisable. WordPress 3.8 didn't add a new taxonomy label.
-		$url  = add_query_arg( [
-			'taxonomy'  => $this->taxo->taxonomy,
-			'post_type' => reset( $taxonomy->object_type ),
-		], admin_url( 'edit-tags.php' ) );
+		$url  = add_query_arg(
+			[
+				'taxonomy'  => $this->taxo->taxonomy,
+				'post_type' => reset( $taxonomy->object_type ),
+			],
+			admin_url( 'edit-tags.php' )
+		);
 		$text = '<a href="' . esc_url( $url ) . '" class="taxo-' . esc_attr( $this->taxo->taxonomy ) . '-count">' . esc_html( $num . ' ' . $text ) . '</a>';
 
 		# Go!
