@@ -9,10 +9,8 @@ class Taxonomy_Admin {
 
 	/**
 	 * Default arguments for custom taxonomies.
-	 *
-	 * @var array
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'meta_box'         => null,  # Custom arg
 		'dashboard_glance' => false, # Custom arg
 		'checked_ontop'    => null,  # Custom arg
@@ -20,25 +18,13 @@ class Taxonomy_Admin {
 		'required'         => false, # Custom arg
 	];
 
-	/**
-	 * @var Taxonomy
-	 */
-	public $taxo;
+	public Taxonomy $taxo;
 
-	/**
-	 * @var array
-	 */
-	public $args;
+	public array $args;
 
-	/**
-	 * @var array
-	 */
-	protected $_cols;
+	protected array $_cols;
 
-	/**
-	 * @var array
-	 */
-	protected $the_cols = null;
+	protected ?array $the_cols = null;
 
 	/**
 	* Class constructor.

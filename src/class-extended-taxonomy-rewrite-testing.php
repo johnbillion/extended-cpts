@@ -5,10 +5,7 @@ namespace ExtCPTs;
 
 class Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
 
-	/**
-	 * @var Taxonomy
-	 */
-	public $taxo;
+	public Taxonomy $taxo;
 
 	public function __construct( Taxonomy $taxo ) {
 		$this->taxo = $taxo;

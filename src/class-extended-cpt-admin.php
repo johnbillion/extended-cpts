@@ -13,10 +13,8 @@ class Post_Type_Admin {
 
 	/**
 	 * Default arguments for custom post types.
-	 *
-	 * @var array
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'quick_edit'         => true, # Custom arg
 		'dashboard_glance'   => true, # Custom arg
 		'dashboard_activity' => false, # Custom arg
@@ -26,30 +24,15 @@ class Post_Type_Admin {
 		'block_editor'       => null, # Custom arg
 	];
 
-	/**
-	 * @var Post_Type
-	 */
-	public $cpt;
+	public Post_Type $cpt;
 
-	/**
-	 * @var array
-	 */
-	public $args;
+	public array $args;
 
-	/**
-	 * @var array
-	 */
-	protected $_cols;
+	protected array $_cols;
 
-	/**
-	 * @var array
-	 */
-	protected $the_cols = null;
+	protected ?array $the_cols = null;
 
-	/**
-	 * @var array
-	 */
-	protected $connection_exists = [];
+	protected array $connection_exists = [];
 
 	/**
 	 * Class constructor.

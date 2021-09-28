@@ -8,8 +8,6 @@ class Taxonomy {
 	/**
 	 * Default arguments for custom taxonomies.
 	 * Several of these differ from the defaults in WordPress' register_taxonomy() function.
-	 *
-	 * @var array
 	 */
 	protected array $defaults = [
 		'public'          => true,
@@ -20,45 +18,21 @@ class Taxonomy {
 		'allow_hierarchy' => false, # Custom arg
 	];
 
-	/**
-	 * @var string
-	 */
-	public $taxonomy;
+	public string $taxonomy;
 
-	/**
-	 * @var array
-	 */
-	public $object_type;
+	public array $object_type;
 
-	/**
-	 * @var string
-	 */
-	public $tax_slug;
+	public string $tax_slug;
 
-	/**
-	 * @var string
-	 */
-	public $tax_singular;
+	public string $tax_singular;
 
-	/**
-	 * @var string
-	 */
-	public $tax_plural;
+	public string $tax_plural;
 
-	/**
-	 * @var string
-	 */
-	public $tax_singular_low;
+	public string $tax_singular_low;
 
-	/**
-	 * @var string
-	 */
-	public $tax_plural_low;
+	public string $tax_plural_low;
 
-	/**
-	 * @var array
-	 */
-	public $args;
+	public array $args;
 
 	/**
 	 * Class constructor.

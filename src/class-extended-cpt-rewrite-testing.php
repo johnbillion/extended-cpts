@@ -8,10 +8,7 @@ namespace ExtCPTs;
  */
 class Post_Type_Rewrite_Testing extends Extended_Rewrite_Testing {
 
-	/**
-	 * @var Post_Type
-	 */
-	public $cpt;
+	public Post_Type $cpt;
 
 	public function __construct( Post_Type $cpt ) {
 		$this->cpt = $cpt;

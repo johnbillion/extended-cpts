@@ -15,10 +15,8 @@ class Post_Type {
 	 * Default arguments for custom post types.
 	 *
 	 * The arguments listed are the ones which differ from the defaults in `register_post_type()`.
-	 *
-	 * @var array
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'public'          => true,
 		'menu_position'   => 6,
 		'capability_type' => 'page',
@@ -35,40 +33,19 @@ class Post_Type {
 		'featured_image'  => null,  # Custom arg
 	];
 
-	/**
-	 * @var string
-	 */
-	public $post_type;
+	public string $post_type;
 
-	/**
-	 * @var string
-	 */
-	public $post_slug;
+	public string $post_slug;
 
-	/**
-	 * @var string
-	 */
-	public $post_singular;
+	public string $post_singular;
 
-	/**
-	 * @var string
-	 */
-	public $post_plural;
+	public string $post_plural;
 
-	/**
-	 * @var string
-	 */
-	public $post_singular_low;
+	public string $post_singular_low;
 
-	/**
-	 * @var string
-	 */
-	public $post_plural_low;
+	public string $post_plural_low;
 
-	/**
-	 * @var array
-	 */
-	public $args;
+	public array $args;
 
 	/**
 	 * Class constructor.
