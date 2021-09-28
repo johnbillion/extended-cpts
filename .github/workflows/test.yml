@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         php: ['7.4']
-        wp: ['5.7']
+        wp: ['5.8']
         include:
           - php: '7.2'
             wp: '4.9'
@@ -61,6 +61,7 @@ jobs:
       run: |
         sudo systemctl start mysql.service
         composer install --prefer-dist
+        composer require --dev --update-with-dependencies --prefer-dist roots/wordpress="^${{ matrix.wp }}.0" wp-phpunit/wp-phpunit="^${{ matrix.wp }}.0"
 
     - name: Run the tests
       run: composer test

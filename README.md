@@ -62,7 +62,7 @@ Not your first time here? See [Recent Changes for Developers](https://github.com
 * **PHP:** 7.4  
   - PHP 8 is supported
 * **WordPress:** 4.8  
-  - Tested up to WP 5.7
+  - Tested up to WP 5.8
 
 ## Installation ##
 
