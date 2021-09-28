@@ -285,7 +285,7 @@ class Post_Type {
 	 *
 	 * @param WP_Query $wp_query The current WP_Query object.
 	 */
-	public function maybe_filter( WP_Query $wp_query ) {
+	public function maybe_filter( WP_Query $wp_query ): void {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
@@ -313,7 +313,7 @@ class Post_Type {
 	 *
 	 * @param WP_Query $wp_query The current WP_Query object.
 	 */
-	public function maybe_sort_by_fields( WP_Query $wp_query ) {
+	public function maybe_sort_by_fields( WP_Query $wp_query ): void {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
@@ -628,7 +628,7 @@ class Post_Type {
 	 * @param string       $post_type        Post type name.
 	 * @param WP_Post_Type $post_type_object Post type object.
 	 */
-	public function registered_post_type( string $post_type, WP_Post_Type $post_type_object ) {
+	public function registered_post_type( string $post_type, WP_Post_Type $post_type_object ): void {
 		if ( $post_type !== $this->post_type ) {
 			return;
 		}
@@ -741,7 +741,7 @@ class Post_Type {
 	 * `E_USER_ERROR` level if a `WP_Error` is returned.
 	 *
 	 */
-	public function register_post_type() {
+	public function register_post_type(): void {
 		if ( ! isset( $this->args['query_var'] ) || ( true === $this->args['query_var'] ) ) {
 			$query_var = $this->post_type;
 		} else {
@@ -792,7 +792,7 @@ class Post_Type {
 	 *
 	 * @param WP_Post_Type $pto A post type object.
 	 */
-	public function extend( WP_Post_Type $pto ) {
+	public function extend( WP_Post_Type $pto ): void {
 		# Merge core with overridden labels
 		$this->args['labels'] = array_merge( (array) get_post_type_labels( $pto ), $this->args['labels'] );
 

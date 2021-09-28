@@ -144,7 +144,7 @@ class Post_Type_Admin {
 	/**
 	 * Sets the default sort field and sort order on our post type admin screen.
 	 */
-	public function default_sort() {
+	public function default_sort(): void {
 		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
 			return;
 		}
@@ -167,7 +167,7 @@ class Post_Type_Admin {
 	/**
 	 * Sets the default sort field and sort order on our post type admin screen.
 	 */
-	public function default_filter() {
+	public function default_filter(): void {
 		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
 			return;
 		}
@@ -531,7 +531,7 @@ class Post_Type_Admin {
 	 *
 	 * @param WP_Query $wp_query A `WP_Query` object
 	 */
-	public function maybe_filter( WP_Query $wp_query ) {
+	public function maybe_filter( WP_Query $wp_query ): void {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
@@ -559,7 +559,7 @@ class Post_Type_Admin {
 	 *
 	 * @param WP_Query $wp_query The current `WP_Query` object.
 	 */
-	public function maybe_sort_by_fields( WP_Query $wp_query ) {
+	public function maybe_sort_by_fields( WP_Query $wp_query ): void {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
@@ -904,7 +904,7 @@ ICONCSS;
 	 * @param string $col     The column name
 	 * @param int    $post_id The post ID
 	 */
-	public function col( string $col, int $post_id ) {
+	public function col( string $col, int $post_id ): void {
 		# Shorthand:
 		$c = $this->args['admin_cols'];
 
@@ -944,7 +944,7 @@ ICONCSS;
 	 * @param string $meta_key The post meta key
 	 * @param array  $args     Array of arguments for this field
 	 */
-	public function col_post_meta( string $meta_key, array $args ) {
+	public function col_post_meta( string $meta_key, array $args ): void {
 		$vals = get_post_meta( get_the_ID(), $meta_key, false );
 		$echo = [];
 
@@ -990,7 +990,7 @@ ICONCSS;
 	 * @param string $taxonomy The taxonomy name
 	 * @param array  $args     Array of arguments for this field
 	 */
-	public function col_taxonomy( string $taxonomy, array $args ) {
+	public function col_taxonomy( string $taxonomy, array $args ): void {
 		global $post;
 
 		$terms = get_the_terms( $post, $taxonomy );
@@ -1073,7 +1073,7 @@ ICONCSS;
 	 * @param string $field The post field
 	 * @param array  $args  Array of arguments for this field
 	 */
-	public function col_post_field( string $field, array $args ) {
+	public function col_post_field( string $field, array $args ): void {
 		global $post;
 
 		switch ( $field ) {
@@ -1122,7 +1122,7 @@ ICONCSS;
 	 * @param string $image_size The image size
 	 * @param array  $args       Array of `width` and `height` attributes for the image
 	 */
-	public function col_featured_image( string $image_size, array $args ) {
+	public function col_featured_image( string $image_size, array $args ): void {
 		if ( ! function_exists( 'has_post_thumbnail' ) ) {
 			return;
 		}
@@ -1161,7 +1161,7 @@ ICONCSS;
 	 * @param string $connection The ID of the connection type
 	 * @param array  $args       Array of arguments for a given connection type
 	 */
-	public function col_connection( string $connection, array $args ) {
+	public function col_connection( string $connection, array $args ): void {
 		global $post, $wp_query;
 
 		if ( ! function_exists( 'p2p_type' ) ) {
@@ -1349,7 +1349,7 @@ ICONCSS;
 	 * @param array $item An array of arguments
 	 * @return string|null The item title
 	 */
-	protected function get_item_title( array $item ) {
+	protected function get_item_title( array $item ): ?string {
 		if ( isset( $item['taxonomy'] ) ) {
 			$tax = get_taxonomy( $item['taxonomy'] );
 			if ( $tax ) {

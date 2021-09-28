@@ -237,7 +237,7 @@ class Taxonomy {
 	/**
 	 * Registers our taxonomy.
 	 */
-	public function register_taxonomy() {
+	public function register_taxonomy(): void {
 		if ( true === $this->args['query_var'] ) {
 			$query_var = $this->taxonomy;
 		} else {

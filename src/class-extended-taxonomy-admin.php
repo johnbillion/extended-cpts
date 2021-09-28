@@ -84,7 +84,7 @@ class Taxonomy_Admin {
 	 * @param  array $cols The default columns for this taxonomy screen
 	 * @return array       The default columns for this taxonomy screen
 	 */
-	public function _log_default_cols( array $cols ) {
+	public function _log_default_cols( array $cols ): array {
 		$this->_cols = $cols;
 		return $this->_cols;
 	}
@@ -238,7 +238,7 @@ class Taxonomy_Admin {
 	 * @param array  $args     Array of arguments for this field
 	 * @param int    $term_id  Term ID.
 	 */
-	public function col_term_meta( string $meta_key, array $args, int $term_id ) {
+	public function col_term_meta( string $meta_key, array $args, int $term_id ): void {
 		$vals = get_term_meta( $term_id, $meta_key, false );
 		$echo = [];
 
@@ -291,7 +291,7 @@ class Taxonomy_Admin {
 	 * @param string $object_type The object type (eg. the post type)
 	 * @param mixed  $object      The object (eg. a WP_Post object)
 	 */
-	public function meta_boxes( string $object_type, $object ) {
+	public function meta_boxes( string $object_type, $object ): void {
 		if ( ! is_a( $object, 'WP_Post' ) ) {
 			return;
 		}
@@ -360,7 +360,7 @@ class Taxonomy_Admin {
 	 * @param WP_Post $post     The post object.
 	 * @param array   $meta_box The meta box arguments.
 	 */
-	public function meta_box_radio( WP_Post $post, array $meta_box ) {
+	public function meta_box_radio( WP_Post $post, array $meta_box ): void {
 		require_once __DIR__ . '/class-walker-extendedtaxonomyradios.php';
 
 		$walker = new Walker\Radios();
@@ -375,7 +375,7 @@ class Taxonomy_Admin {
 	 * @param WP_Post $post     The post object.
 	 * @param array   $meta_box The meta box arguments.
 	 */
-	public function meta_box_dropdown( WP_Post $post, array $meta_box ) {
+	public function meta_box_dropdown( WP_Post $post, array $meta_box ): void {
 		require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
 
 		$walker = new Walker\Dropdown();
@@ -388,7 +388,7 @@ class Taxonomy_Admin {
 	 * @param WP_Post $post     The post object.
 	 * @param array   $meta_box The meta box arguments.
 	 */
-	public function meta_box_simple( WP_Post $post, array $meta_box ) {
+	public function meta_box_simple( WP_Post $post, array $meta_box ): void {
 		$this->do_meta_box( $post );
 	}
 
@@ -400,7 +400,7 @@ class Taxonomy_Admin {
 	 * @param bool    $show_none Optional. Whether to include a 'none' item in the term list. Default false.
 	 * @param string  $type      Optional. The taxonomy list type (checklist or dropdown). Default 'checklist'.
 	 */
-	protected function do_meta_box( WP_Post $post, \Walker $walker = null, bool $show_none = false, string $type = 'checklist' ) {
+	protected function do_meta_box( WP_Post $post, \Walker $walker = null, bool $show_none = false, string $type = 'checklist' ): void {
 		$taxonomy = $this->taxo->taxonomy;
 		$tax      = get_taxonomy( $taxonomy );
 		$selected = wp_get_object_terms(
@@ -622,7 +622,7 @@ class Taxonomy_Admin {
 	 * @param int    $number The number to compare against to use either $single or $plural
 	 * @return string Either $single or $plural text
 	 */
-	public static function n( $single, $plural, $number ) {
+	public static function n( string $single, string $plural, int $number ): string {
 		return ( 1 === intval( $number ) ) ? $single : $plural;
 	}
 
