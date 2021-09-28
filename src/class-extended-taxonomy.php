@@ -11,7 +11,7 @@ class Taxonomy {
 	 *
 	 * @var array
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'public'          => true,
 		'show_ui'         => true,
 		'hierarchical'    => true,
@@ -66,11 +66,11 @@ class Taxonomy {
 	 * @see register_extended_taxonomy()
 	 *
 	 * @param string       $taxonomy    The taxonomy name.
-	 * @param array|string $object_type Name(s) of the object type(s) for the taxonomy.
+	 * @param string[]     $object_type Names of the object types for the taxonomy.
 	 * @param array        $args        Optional. The taxonomy arguments.
 	 * @param string[]     $names       Optional. An associative array of the plural, singular, and slug names.
 	 */
-	public function __construct( string $taxonomy, $object_type, array $args = [], array $names = [] ) {
+	public function __construct( string $taxonomy, array $object_type, array $args = [], array $names = [] ) {
 		/**
 		 * Filter the arguments for a taxonomy.
 		 *
@@ -129,7 +129,7 @@ class Taxonomy {
 			$this->tax_plural = ucwords( str_replace( [ '-', '_' ], ' ', $this->tax_slug ) );
 		}
 
-		$this->object_type = (array) $object_type;
+		$this->object_type = $object_type;
 		$this->taxonomy    = strtolower( $taxonomy );
 		$this->tax_slug    = strtolower( $this->tax_slug );
 

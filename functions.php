@@ -112,7 +112,7 @@ function register_extended_taxonomy( string $taxonomy, $object_type, array $args
 		trigger_error( esc_html__( 'Taxonomies must be registered on the "init" hook.', 'extended-cpts' ), E_USER_WARNING );
 	}
 
-	$taxo = new Taxonomy( $taxonomy, $object_type, $args, $names );
+	$taxo = new Taxonomy( $taxonomy, (array) $object_type, $args, $names );
 
 	if ( is_admin() ) {
 		new Taxonomy_Admin( $taxo, $taxo->args );
