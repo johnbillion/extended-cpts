@@ -70,11 +70,11 @@ class Post_Type_Admin {
 			if ( 'attachment' === $this->cpt->post_type ) {
 				add_filter( 'manage_upload_sortable_columns', [ $this, 'sortables' ] );
 				add_filter( 'manage_media_columns',         [ $this, 'cols' ] );
-				add_action( 'manage_media_custom_column',   [ $this, 'col' ] );
+				add_action( 'manage_media_custom_column',   [ $this, 'col' ], 10, 2 );
 			} else {
 				add_filter( "manage_edit-{$this->cpt->post_type}_sortable_columns", [ $this, 'sortables' ] );
 				add_filter( "manage_{$this->cpt->post_type}_posts_columns",         [ $this, 'cols' ] );
-				add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   [ $this, 'col' ] );
+				add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   [ $this, 'col' ], 10, 2 );
 			}
 			add_action( 'load-edit.php',                                        [ $this, 'default_sort' ] );
 			add_action( 'pre_get_posts',                                        [ $this, 'maybe_sort_by_fields' ] );
@@ -903,7 +903,7 @@ ICONCSS;
 	 *
 	 * @param string $col The column name
 	 */
-	public function col( string $col ) {
+	public function col( string $col, int $post_id ) {
 		# Shorthand:
 		$c = $this->args['admin_cols'];
 
@@ -923,7 +923,7 @@ ICONCSS;
 		}
 
 		if ( isset( $c[ $col ]['function'] ) ) {
-			call_user_func( $c[ $col ]['function'] );
+			call_user_func( $c[ $col ]['function'], $post_id );
 		} elseif ( isset( $c[ $col ]['meta_key'] ) ) {
 			$this->col_post_meta( $c[ $col ]['meta_key'], $c[ $col ] );
 		} elseif ( isset( $c[ $col ]['taxonomy'] ) ) {
