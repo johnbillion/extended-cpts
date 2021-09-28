@@ -59,8 +59,7 @@ Not your first time here? See [Recent Changes for Developers](https://github.com
 
 ## Minimum Requirements ##
 
-* **PHP:** 7.2  
-  - PHP 7.4+ is recommended
+* **PHP:** 7.4  
   - PHP 8 is supported
 * **WordPress:** 4.8  
   - Tested up to WP 5.7
