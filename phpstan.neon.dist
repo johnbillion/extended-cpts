@@ -1,8 +1,7 @@
 includes:
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
-    # Please raise level.
-    level: 5
+    level: 6
     inferPrivatePropertyTypeFromConstructor: true
     paths:
         - functions.php
