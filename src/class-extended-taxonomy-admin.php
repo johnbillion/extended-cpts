@@ -382,7 +382,7 @@ class Taxonomy_Admin {
 	 * Displays a meta box on the post editing screen.
 	 *
 	 * @param WP_Post $post      The post object.
-	 * @param Walker  $walker    Optional. A term walker.
+	 * @param \Walker $walker    Optional. A term walker.
 	 * @param bool    $show_none Optional. Whether to include a 'none' item in the term list. Default false.
 	 * @param string  $type      Optional. The taxonomy list type (checklist or dropdown). Default 'checklist'.
 	 */
@@ -553,8 +553,13 @@ class Taxonomy_Admin {
 
 		# Get the labels and format the counts:
 		$count = wp_count_terms( $this->taxo->taxonomy );
-		$text  = self::n( $taxonomy->labels->singular_name, $taxonomy->labels->name, $count );
-		$num   = number_format_i18n( $count );
+
+		if ( is_wp_error( $count ) ) {
+			return $items;
+		}
+
+		$text = self::n( $taxonomy->labels->singular_name, $taxonomy->labels->name, (int) $count );
+		$num  = number_format_i18n( (int) $count );
 
 		# This is absolutely not localisable. WordPress 3.8 didn't add a new taxonomy label.
 		$url  = add_query_arg(
