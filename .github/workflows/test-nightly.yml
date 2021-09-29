@@ -9,7 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
-        php: ['7.4', '7.0']
+        php: ['7.4']
       fail-fast: false
     name: WP nightly / PHP ${{ matrix.php }}
     runs-on: ubuntu-18.04
