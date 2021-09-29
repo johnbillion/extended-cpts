@@ -2,6 +2,7 @@
 <ruleset name="Extended CPTs">
 
 	<config name="testVersion" value="7.4-"/>
+	<arg name="extensions" value="php"/>
 
 	<exclude-pattern>*/tests/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
