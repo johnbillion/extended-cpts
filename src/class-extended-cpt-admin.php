@@ -216,7 +216,7 @@ class Post_Type_Admin {
 	 *
 	 * @link https://github.com/johnbillion/extended-cpts/wiki/Admin-filters
 	 */
-	public function filters() {
+	public function filters(): void {
 		global $wpdb;
 
 		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
