@@ -1,5 +1,4 @@
 includes:
-    - phar://phpstan.phar/conf/bleedingEdge.neon
     - vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
     # Please raise level.
@@ -16,4 +15,5 @@ parameters:
         # Uses func_get_args()
         - '#^Function apply_filters invoked with [34567] parameters, 2 required\.$#'
         # p2p plugin
+        - '#^Used function (p2p_type|p2p_connection_exists) not found\.$#'
         - '#^Function (p2p_type|p2p_connection_exists) not found\.$#'
