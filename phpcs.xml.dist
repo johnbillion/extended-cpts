@@ -25,6 +25,7 @@
 		<exclude name="WordPress.DateTime.RestrictedFunctions.date_date"/>
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
 		<exclude name="WordPress.PHP.DisallowShortTernary.Found"/>
+		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
 	</rule>
 
 	<rule ref="WordPress.WP.I18n">
