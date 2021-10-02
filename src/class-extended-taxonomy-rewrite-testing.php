@@ -11,6 +11,9 @@ class Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
 		$this->taxo = $taxo;
 	}
 
+	/**
+	 * @return array<string,array<string,string>>
+	 */
 	public function get_tests(): array {
 		global $wp_rewrite;
 

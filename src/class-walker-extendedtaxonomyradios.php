@@ -14,7 +14,7 @@ class Radios extends \Walker {
 	public $tree_type = 'category';
 
 	/**
-	 * @var array
+	 * @var array<string,string>
 	 */
 	public $db_fields = [
 		'parent' => 'parent',
@@ -29,7 +29,7 @@ class Radios extends \Walker {
 	/**
 	 * Class constructor.
 	 *
-	 * @param array $args Optional arguments.
+	 * @param array<string,mixed> $args Optional arguments.
 	 */
 	public function __construct( $args = null ) {
 		if ( $args && isset( $args['field'] ) ) {
@@ -42,7 +42,8 @@ class Radios extends \Walker {
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
 	 * @param int    $depth  Depth of term in reference to parents.
-	 * @param array  $args   Optional arguments.
+	 * @param array<string,mixed>  $args   Optional arguments.
+	 * @return void
 	 */
 	public function start_lvl( &$output, $depth = 0, $args = [] ) {
 		$indent = str_repeat( "\t", $depth );
@@ -54,7 +55,8 @@ class Radios extends \Walker {
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
 	 * @param int    $depth  Depth of term in reference to parents.
-	 * @param array  $args   Optional arguments.
+	 * @param array<string,mixed>  $args   Optional arguments.
+	 * @return void
 	 */
 	public function end_lvl( &$output, $depth = 0, $args = [] ) {
 		$indent = str_repeat( "\t", $depth );
@@ -67,8 +69,9 @@ class Radios extends \Walker {
 	 * @param string $output            Passed by reference. Used to append additional content.
 	 * @param object $object            Term data object.
 	 * @param int    $depth             Depth of term in reference to parents.
-	 * @param array  $args              Optional arguments.
+	 * @param array<string,mixed>  $args              Optional arguments.
 	 * @param int    $current_object_id Current object ID.
+	 * @return void
 	 */
 	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {
 		$tax = get_taxonomy( $args['taxonomy'] );
@@ -100,7 +103,8 @@ class Radios extends \Walker {
 	 * @param string $output Passed by reference. Used to append additional content.
 	 * @param object $object Term data object.
 	 * @param int    $depth  Depth of term in reference to parents.
-	 * @param array  $args   Optional arguments.
+	 * @param array<string,mixed>  $args   Optional arguments.
+	 * @return void
 	 */
 	public function end_el( &$output, $object, $depth = 0, $args = [] ) {
 		$output .= "</li>\n";

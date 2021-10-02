@@ -17,7 +17,7 @@ use ExtCPTs\Taxonomy_Admin;
  * @see register_post_type() for default arguments.
  *
  * @param string   $post_type The post type name.
- * @param array    $args {
+ * @param mixed[]  $args {
  *     Optional. The post type arguments.
  *
  *     @type array  $admin_cols         Associative array of admin screen columns to show for this post type.
@@ -73,7 +73,7 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *
  * @param string          $taxonomy    The taxonomy name.
  * @param string|string[] $object_type Name(s) of the object type(s) for the taxonomy.
- * @param array           $args {
+ * @param mixed[]         $args {
  *     Optional. The taxonomy arguments.
  *
  *     @type string $meta_box         The name of the custom meta box to use on the post editing screen for this

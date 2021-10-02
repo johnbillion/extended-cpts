@@ -9,6 +9,8 @@ class Taxonomy_Admin {
 
 	/**
 	 * Default arguments for custom taxonomies.
+	 *
+	 * @var array<string,mixed>
 	 */
 	protected array $defaults = [
 		'meta_box'         => null,  # Custom arg
@@ -20,17 +22,26 @@ class Taxonomy_Admin {
 
 	public Taxonomy $taxo;
 
+	/**
+	 * @var array<string,mixed>
+	 */
 	public array $args;
 
+	/**
+	 * @var array<string,string>
+	 */
 	protected array $_cols;
 
+	/**
+	 * @var array<string,string>
+	 */
 	protected ?array $the_cols = null;
 
 	/**
 	* Class constructor.
 	*
-	* @param Taxonomy $taxo An extended taxonomy object.
-	* @param array             $args Optional. The admin arguments.
+	* @param Taxonomy            $taxo An extended taxonomy object.
+	* @param array<string,mixed> $args Optional. The admin arguments.
 	*/
 	public function __construct( Taxonomy $taxo, array $args = [] ) {
 		$this->taxo = $taxo;
@@ -67,8 +78,8 @@ class Taxonomy_Admin {
 	/**
 	 * Logs the default columns so we don't remove any custom columns added by other plugins.
 	 *
-	 * @param  array $cols The default columns for this taxonomy screen
-	 * @return array       The default columns for this taxonomy screen
+	 * @param  array<string,string> $cols The default columns for this taxonomy screen
+	 * @return array<string,string>       The default columns for this taxonomy screen
 	 */
 	public function _log_default_cols( array $cols ): array {
 		$this->_cols = $cols;
@@ -126,8 +137,8 @@ class Taxonomy_Admin {
 	 *
 	 * Note that sortable admin columns are not yet supported.
 	 *
-	 * @param  array $cols Associative array of columns
-	 * @return array       Updated array of columns
+	 * @param  array<string,string> $cols Associative array of columns
+	 * @return array<string,string>       Updated array of columns
 	 */
 	public function cols( array $cols ): array {
 		// This function gets called multiple times, so let's cache it for efficiency:
@@ -220,9 +231,9 @@ class Taxonomy_Admin {
 	/**
 	 * Output column data for a term meta field.
 	 *
-	 * @param string $meta_key The term meta key
-	 * @param array  $args     Array of arguments for this field
-	 * @param int    $term_id  Term ID.
+	 * @param string              $meta_key The term meta key
+	 * @param array<string,mixed> $args     Array of arguments for this field
+	 * @param int                 $term_id  Term ID.
 	 */
 	public function col_term_meta( string $meta_key, array $args, int $term_id ): void {
 		$vals = get_term_meta( $term_id, $meta_key, false );
@@ -260,7 +271,7 @@ class Taxonomy_Admin {
 	/**
 	 * Returns a sensible title for the current item (usually the arguments array for a column)
 	 *
-	 * @param array $item An array of arguments
+	 * @param array<string,mixed> $item An array of arguments
 	 * @return string The item title
 	 */
 	protected function get_item_title( array $item ): string {
@@ -343,8 +354,8 @@ class Taxonomy_Admin {
 	 *
 	 * Uses the Walker\Radios class for the walker.
 	 *
-	 * @param WP_Post $post     The post object.
-	 * @param array   $meta_box The meta box arguments.
+	 * @param WP_Post             $post     The post object.
+	 * @param array<string,mixed> $meta_box The meta box arguments.
 	 */
 	public function meta_box_radio( WP_Post $post, array $meta_box ): void {
 		require_once __DIR__ . '/class-walker-extendedtaxonomyradios.php';
@@ -358,8 +369,8 @@ class Taxonomy_Admin {
 	 *
 	 * Uses the Walker\Dropdown class for the walker.
 	 *
-	 * @param WP_Post $post     The post object.
-	 * @param array   $meta_box The meta box arguments.
+	 * @param WP_Post             $post     The post object.
+	 * @param array<string,mixed> $meta_box The meta box arguments.
 	 */
 	public function meta_box_dropdown( WP_Post $post, array $meta_box ): void {
 		require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
@@ -371,8 +382,8 @@ class Taxonomy_Admin {
 	/**
 	 * Displays the 'simple' meta box on the post editing screen.
 	 *
-	 * @param WP_Post $post     The post object.
-	 * @param array   $meta_box The meta box arguments.
+	 * @param WP_Post             $post     The post object.
+	 * @param array<string,mixed> $meta_box The meta box arguments.
 	 */
 	public function meta_box_simple( WP_Post $post, array $meta_box ): void {
 		$this->do_meta_box( $post );

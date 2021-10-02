@@ -15,6 +15,8 @@ class Post_Type {
 	 * Default arguments for custom post types.
 	 *
 	 * The arguments listed are the ones which differ from the defaults in `register_post_type()`.
+	 *
+	 * @var array<string,mixed>
 	 */
 	protected array $defaults = [
 		'public'          => true,
@@ -45,6 +47,9 @@ class Post_Type {
 
 	public string $post_plural_low;
 
+	/**
+	 * @var array<string,mixed>
+	 */
 	public array $args;
 
 	/**
@@ -52,9 +57,9 @@ class Post_Type {
 	 *
 	 * @see register_extended_post_type()
 	 *
-	 * @param string   $post_type The post type name.
-	 * @param array    $args      Optional. The post type arguments.
-	 * @param string[] $names     Optional. The plural, singular, and slug names.
+	 * @param string               $post_type The post type name.
+	 * @param array<string,mixed>  $args      Optional. The post type arguments.
+	 * @param array<string,string> $names     Optional. The plural, singular, and slug names.
 	 */
 	public function __construct( string $post_type, array $args = [], array $names = [] ) {
 		/**
@@ -344,11 +349,11 @@ class Post_Type {
 	 * Get the array of private query vars for the given filters, to apply to the current query in order to filter it by the
 	 * given public query vars.
 	 *
-	 * @param array  $query     The public query vars, usually from `$wp_query->query`.
-	 * @param array  $filters   The filters valid for this query (usually the value of the `admin_filters` or
-	 *                          `site_filters` argument when registering an extended post type).
-	 * @param string $post_type The post type name.
-	 * @return array The list of private query vars to apply to the query.
+	 * @param array<string,mixed> $query     The public query vars, usually from `$wp_query->query`.
+	 * @param array<string,mixed> $filters   The filters valid for this query (usually the value of the `admin_filters` or
+	 *                                       `site_filters` argument when registering an extended post type).
+	 * @param string              $post_type The post type name.
+	 * @return array<string,mixed> The list of private query vars to apply to the query.
 	 */
 	public static function get_filter_vars( array $query, array $filters, string $post_type ): array {
 		$return = [];
@@ -436,10 +441,10 @@ class Post_Type {
 	 * Get the array of private and public query vars for the given sortables, to apply to the current query in order to
 	 * sort it by the requested orderby field.
 	 *
-	 * @param array $vars      The public query vars, usually from `$wp_query->query`.
-	 * @param array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
-	 *                         `site_sortables` argument when registering an extended post type.
-	 * @return array The list of private and public query vars to apply to the query.
+	 * @param array<string,mixed> $vars      The public query vars, usually from `$wp_query->query`.
+	 * @param array<string,mixed> $sortables The sortables valid for this query (usually the value of the `admin_cols` or
+	 *                                       `site_sortables` argument when registering an extended post type.
+	 * @return array<string,mixed> The list of private and public query vars to apply to the query.
 	 */
 	public static function get_sort_field_vars( array $vars, array $sortables ): array {
 		if ( ! isset( $vars['orderby'] ) ) {
@@ -486,11 +491,11 @@ class Post_Type {
 	 * Get the array of SQL clauses for the given sortables, to apply to the current query in order to
 	 * sort it by the requested orderby field.
 	 *
-	 * @param array $clauses   The query's SQL clauses.
-	 * @param array $vars      The public query vars, usually from `$wp_query->query`.
-	 * @param array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
+	 * @param array<string,string> $clauses   The query's SQL clauses.
+	 * @param array<string,mixed>  $vars      The public query vars, usually from `$wp_query->query`.
+	 * @param array<string,mixed> $sortables The sortables valid for this query (usually the value of the `admin_cols` or
 	 *                         `site_sortables` argument when registering an extended post type).
-	 * @return array The list of SQL clauses to apply to the query.
+	 * @return array<string,string> The list of SQL clauses to apply to the query.
 	 */
 	public static function get_sort_taxonomy_clauses( array $clauses, array $vars, array $sortables ): array {
 		global $wpdb;
@@ -553,8 +558,8 @@ class Post_Type {
 	/**
 	 * Add our post type to the feed.
 	 *
-	 * @param array $vars Request parameters.
-	 * @return array Updated request parameters.
+	 * @param array<string,mixed> $vars Request parameters.
+	 * @return array<string,mixed> Updated request parameters.
 	 */
 	public function add_to_feed( array $vars ): array {
 		# If it's not a feed, we're not interested:
@@ -699,8 +704,8 @@ class Post_Type {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param array $tests The existing rewrite rule tests.
-	 * @return array Updated rewrite rule tests.
+	 * @param array<string,array<string,string>> $tests The existing rewrite rule tests.
+	 * @return array<string,array<string,string>> Updated rewrite rule tests.
 	 */
 	public function rewrite_testing_tests( array $tests ): array {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
@@ -787,8 +792,8 @@ class Post_Type {
 	 *     $location = $events->add_taxonomy( 'location' );
 	 *
 	 * @param string $taxonomy The taxonomy name.
-	 * @param array  $args     Optional. The taxonomy arguments.
-	 * @param array  $names    Optional. An associative array of the plural, singular, and slug names.
+	 * @param array<string,mixed>  $args     Optional. The taxonomy arguments.
+	 * @param array<string,string>  $names    Optional. An associative array of the plural, singular, and slug names.
 	 * @return WP_Taxonomy Taxonomy object.
 	 */
 	public function add_taxonomy( string $taxonomy, array $args = [], array $names = [] ): WP_Taxonomy {

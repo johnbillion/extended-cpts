@@ -8,8 +8,16 @@ namespace ExtCPTs;
  */
 abstract class Extended_Rewrite_Testing {
 
+	/**
+	 * @return array<string,array<string,string>>
+	 */
 	abstract public function get_tests(): array;
 
+	/**
+	 * @param mixed[] $struct
+	 * @param mixed[] $additional
+	 * @return array<string,string>
+	 */
 	public function get_rewrites( array $struct, array $additional ): array {
 		global $wp_rewrite;
 

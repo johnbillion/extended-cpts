@@ -8,6 +8,8 @@ class Taxonomy {
 	/**
 	 * Default arguments for custom taxonomies.
 	 * Several of these differ from the defaults in WordPress' register_taxonomy() function.
+	 *
+	 * @var array<string,mixed>
 	 */
 	protected array $defaults = [
 		'public'          => true,
@@ -20,6 +22,9 @@ class Taxonomy {
 
 	public string $taxonomy;
 
+	/**
+	 * @var array<string,string>
+	 */
 	public array $object_type;
 
 	public string $tax_slug;
@@ -32,6 +37,9 @@ class Taxonomy {
 
 	public string $tax_plural_low;
 
+	/**
+	 * @var array<string,mixed>
+	 */
 	public array $args;
 
 	/**
@@ -41,7 +49,7 @@ class Taxonomy {
 	 *
 	 * @param string       $taxonomy    The taxonomy name.
 	 * @param string[]     $object_type Names of the object types for the taxonomy.
-	 * @param array        $args        Optional. The taxonomy arguments.
+	 * @param array<string,mixed>        $args        Optional. The taxonomy arguments.
 	 * @param string[]     $names       Optional. An associative array of the plural, singular, and slug names.
 	 */
 	public function __construct( string $taxonomy, array $object_type, array $args = [], array $names = [] ) {
@@ -196,8 +204,8 @@ class Taxonomy {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param array $tests The existing rewrite rule tests.
-	 * @return array Updated rewrite rule tests.
+	 * @param array<string,array<string,string>> $tests The existing rewrite rule tests.
+	 * @return array<string,array<string,string>> Updated rewrite rule tests.
 	 */
 	public function rewrite_testing_tests( array $tests ): array {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';

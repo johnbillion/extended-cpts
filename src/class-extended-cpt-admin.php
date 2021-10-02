@@ -13,6 +13,8 @@ class Post_Type_Admin {
 
 	/**
 	 * Default arguments for custom post types.
+	 *
+	 * @var array<string,mixed>
 	 */
 	protected array $defaults = [
 		'quick_edit'         => true, # Custom arg
@@ -26,19 +28,31 @@ class Post_Type_Admin {
 
 	public Post_Type $cpt;
 
+	/**
+	 * @var array<string,mixed>
+	 */
 	public array $args;
 
+	/**
+	 * @var array<string,string>
+	 */
 	protected array $_cols;
 
+	/**
+	 * @var array<string,mixed>
+	 */
 	protected ?array $the_cols = null;
 
+	/**
+	 * @var array<string,bool>
+	 */
 	protected array $connection_exists = [];
 
 	/**
 	 * Class constructor.
 	 *
 	 * @param Post_Type $cpt  An extended post type object.
-	 * @param array        $args Optional. The post type arguments.
+	 * @param mixed[]   $args Optional. The post type arguments.
 	 */
 	public function __construct( Post_Type $cpt, array $args = [] ) {
 		$this->cpt = $cpt;
@@ -500,8 +514,8 @@ class Post_Type_Admin {
 	/**
 	 * Adds our filter names to the public query vars.
 	 *
-	 * @param array $vars Public query variables
-	 * @return array Updated public query variables
+	 * @param array<string,mixed> $vars Public query variables
+	 * @return array<string,mixed> Updated public query variables
 	 */
 	public function add_query_vars( array $vars ): array {
 		$filters = array_keys( $this->args['admin_filters'] );
@@ -561,9 +575,9 @@ class Post_Type_Admin {
 	/**
 	 * Filters the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
-	 * @param array    $clauses  The current query's SQL clauses.
+	 * @param array<string,string>    $clauses  The current query's SQL clauses.
 	 * @param WP_Query $wp_query The current `WP_Query` object.
-	 * @return array The updated SQL clauses.
+	 * @return array<string,string> The updated SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
@@ -582,8 +596,8 @@ class Post_Type_Admin {
 	/**
 	 * Adds our post type to the 'At a Glance' widget on the dashboard.
 	 *
-	 * @param array $items Array of items to display on the widget.
-	 * @return array Updated array of items.
+	 * @param array<int,string> $items Array of items to display on the widget.
+	 * @return array<int,string> Updated array of items.
 	 */
 	public function glance_items( array $items ): array {
 		$pto = get_post_type_object( $this->cpt->post_type );
@@ -642,8 +656,8 @@ ICONCSS;
 	/**
 	 * Adds our post type to the 'Recently Published' section on the dashboard.
 	 *
-	 * @param array $query_args Array of query args for the widget.
-	 * @return array Updated array of query args.
+	 * @param array<string,mixed> $query_args Array of query args for the widget.
+	 * @return array<string,mixed> Updated array of query args.
 	 */
 	public function dashboard_activity( array $query_args ): array {
 		$query_args['post_type'] = (array) $query_args['post_type'];
@@ -742,7 +756,7 @@ ICONCSS;
 	 *
 	 * @param array[] $messages An array of bulk post updated message arrays keyed by post type.
 	 * @param int[]   $counts   An array of counts for each key in `$messages`.
-	 * @return array Updated array of bulk post updated messages.
+	 * @return array[] Updated array of bulk post updated messages.
 	 */
 	public function bulk_post_updated_messages( array $messages, array $counts ): array {
 		$messages[ $this->cpt->post_type ] = [
@@ -784,8 +798,8 @@ ICONCSS;
 	/**
 	 * Adds our custom columns to the list of sortable columns.
 	 *
-	 * @param array $cols Array of sortable columns keyed by the column ID.
-	 * @return array Updated array of sortable columns.
+	 * @param array<string,string> $cols Array of sortable columns keyed by the column ID.
+	 * @return array<string,string> Updated array of sortable columns.
 	 */
 	public function sortables( array $cols ): array {
 		foreach ( $this->args['admin_cols'] as $id => $col ) {
@@ -808,8 +822,8 @@ ICONCSS;
 	 *
 	 * @link https://github.com/johnbillion/extended-cpts/wiki/Admin-columns
 	 *
-	 * @param array $cols Associative array of columns
-	 * @return array Updated array of columns
+	 * @param array<string,string> $cols Associative array of columns
+	 * @return array<string,string> Updated array of columns
 	 */
 	public function cols( array $cols ): array {
 		// This function gets called multiple times, so let's cache it for efficiency:
@@ -925,7 +939,7 @@ ICONCSS;
 	 * Outputs column data for a post meta field.
 	 *
 	 * @param string $meta_key The post meta key
-	 * @param array  $args     Array of arguments for this field
+	 * @param array<string,mixed>  $args     Array of arguments for this field
 	 */
 	public function col_post_meta( string $meta_key, array $args ): void {
 		$vals = get_post_meta( get_the_ID(), $meta_key, false );
@@ -971,7 +985,7 @@ ICONCSS;
 	 * Outputs column data for a taxonomy's term names.
 	 *
 	 * @param string $taxonomy The taxonomy name
-	 * @param array  $args     Array of arguments for this field
+	 * @param array<string,mixed>  $args     Array of arguments for this field
 	 */
 	public function col_taxonomy( string $taxonomy, array $args ): void {
 		global $post;
@@ -1054,7 +1068,7 @@ ICONCSS;
 	 * Outputs column data for a post field.
 	 *
 	 * @param string $field The post field
-	 * @param array  $args  Array of arguments for this field
+	 * @param array<string,mixed>  $args  Array of arguments for this field
 	 */
 	public function col_post_field( string $field, array $args ): void {
 		global $post;
@@ -1103,7 +1117,7 @@ ICONCSS;
 	 * Outputs column data for a post's featured image.
 	 *
 	 * @param string $image_size The image size
-	 * @param array  $args       Array of `width` and `height` attributes for the image
+	 * @param array<string,string|int>  $args       Array of `width` and `height` attributes for the image
 	 */
 	public function col_featured_image( string $image_size, array $args ): void {
 		if ( ! function_exists( 'has_post_thumbnail' ) ) {
@@ -1142,7 +1156,7 @@ ICONCSS;
 	 * Outputs column data for a Posts 2 Posts connection.
 	 *
 	 * @param string $connection The ID of the connection type
-	 * @param array  $args       Array of arguments for a given connection type
+	 * @param array<string,mixed>  $args       Array of arguments for a given connection type
 	 */
 	public function col_connection( string $connection, array $args ): void {
 		global $post, $wp_query;
@@ -1305,8 +1319,8 @@ ICONCSS;
 	/**
 	 * Logs the default columns so we don't remove any custom columns added by other plugins.
 	 *
-	 * @param array $cols The default columns for this post type screen
-	 * @return array The default columns for this post type screen
+	 * @param array<string,string> $cols The default columns for this post type screen
+	 * @return array<string,string> The default columns for this post type screen
 	 */
 	public function _log_default_cols( array $cols ): array {
 		$this->_cols = $cols;
@@ -1329,7 +1343,7 @@ ICONCSS;
 	/**
 	 * Returns a sensible title for the current item (usually the arguments array for a column)
 	 *
-	 * @param array $item An array of arguments
+	 * @param array<string,mixed> $item An array of arguments
 	 * @return string|null The item title
 	 */
 	protected function get_item_title( array $item ): ?string {
