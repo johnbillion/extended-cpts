@@ -95,7 +95,7 @@ class Radios extends \Walker {
 		$output .= "\n<li id='{$args['taxonomy']}-{$object->term_id}'>" .
 			'<label class="selectit">' .
 			'<input value="' . esc_attr( $value ) . '" type="radio" name="tax_input[' . esc_attr( $args['taxonomy'] ) . '][]" ' .
-				'id="in-' . esc_attr( $args['taxonomy'] ) . '-' . esc_attr( $object->term_id ) . '"' .
+				'id="in-' . esc_attr( $args['taxonomy'] ) . '-' . esc_attr( (string) $object->term_id ) . '"' .
 				checked( in_array( $object->term_id, (array) $args['selected_cats'] ), true, false ) .
 				disabled( empty( $args['disabled'] ), false, false ) .
 			' /> ' .
