@@ -86,7 +86,7 @@ class Post_Type {
 		 *
 		 * @since 4.4.1
 		 *
-		 * @param string[] $names     The plural, singular, and slug names (if any were specified).
+		 * @param array<int,string> $names     The plural, singular, and slug names (if any were specified).
 		 * @param string   $post_type The post type name.
 		 */
 		$names = apply_filters( 'ext-cpts/names', $names, $post_type );
@@ -96,7 +96,7 @@ class Post_Type {
 		 *
 		 * @since 2.4.0
 		 *
-		 * @param string[] $names The plural, singular, and slug names (if any were specified).
+		 * @param array<int,string> $names The plural, singular, and slug names (if any were specified).
 		 */
 		$names = apply_filters( "ext-cpts/{$post_type}/names", $names );
 
@@ -327,9 +327,9 @@ class Post_Type {
 	/**
 	 * Filter the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
-	 * @param string[] $clauses  Array of the current query's SQL clauses.
+	 * @param array<int,string> $clauses  Array of the current query's SQL clauses.
 	 * @param WP_Query $wp_query The current `WP_Query` object.
-	 * @return string[] Array of SQL clauses.
+	 * @return array<int,string> Array of SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
@@ -546,8 +546,8 @@ class Post_Type {
 	/**
 	 * Add our filter names to the public query vars.
 	 *
-	 * @param string[] $vars Public query variables.
-	 * @return string[] Updated public query variables.
+	 * @param array<int,string> $vars Public query variables.
+	 * @return array<int,string> Updated public query variables.
 	 */
 	public function add_query_vars( array $vars ): array {
 		$filters = array_keys( $this->args['site_filters'] );

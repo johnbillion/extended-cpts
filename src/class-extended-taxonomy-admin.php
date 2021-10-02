@@ -552,8 +552,8 @@ class Taxonomy_Admin {
 	/**
 	 * Adds our taxonomy to the 'At a Glance' widget on the dashboard.
 	 *
-	 * @param string[] $items Array of items to display on the widget.
-	 * @return string[] Updated array of items.
+	 * @param array<int,string> $items Array of items to display on the widget.
+	 * @return array<int,string> Updated array of items.
 	 */
 	public function glance_items( array $items ): array {
 		/** @var WP_Taxonomy */

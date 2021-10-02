@@ -1305,9 +1305,9 @@ ICONCSS;
 	/**
 	 * Removes the Quick Edit link from the post row actions.
 	 *
-	 * @param string[] $actions Array of post actions
+	 * @param array<string,string> $actions Array of post actions
 	 * @param WP_Post  $post    The current post object
-	 * @return string[] Array of updated post actions
+	 * @return array<string,string> Array of updated post actions
 	 */
 	public function remove_quick_edit_action( array $actions, WP_Post $post ): array {
 		if ( $this->cpt->post_type !== $post->post_type ) {
@@ -1322,8 +1322,8 @@ ICONCSS;
 	/**
 	 * Removes the Quick Edit link from the bulk actions menu.
 	 *
-	 * @param string[] $actions Array of bulk actions
-	 * @return string[] Array of updated bulk actions
+	 * @param array<string,string> $actions Array of bulk actions
+	 * @return array<string,string> Array of updated bulk actions
 	 */
 	public function remove_quick_edit_menu( array $actions ): array {
 		unset( $actions['edit'] );
