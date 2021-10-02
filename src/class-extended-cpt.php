@@ -327,9 +327,9 @@ class Post_Type {
 	/**
 	 * Filter the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
-	 * @param array<int,string> $clauses  Array of the current query's SQL clauses.
+	 * @param array<string,string> $clauses  Array of the current query's SQL clauses.
 	 * @param WP_Query $wp_query The current `WP_Query` object.
-	 * @return array<int,string> Array of SQL clauses.
+	 * @return array<string,string> Array of SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {

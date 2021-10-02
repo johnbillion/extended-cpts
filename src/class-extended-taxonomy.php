@@ -23,7 +23,7 @@ class Taxonomy {
 	public string $taxonomy;
 
 	/**
-	 * @var array<string,string>
+	 * @var array<int,string>
 	 */
 	public array $object_type;
 
