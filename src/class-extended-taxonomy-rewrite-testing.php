@@ -26,6 +26,7 @@ class Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
 		}
 
 		$struct     = $wp_rewrite->extra_permastructs[ $this->taxo->taxonomy ];
+		/** @var WP_Taxonomy */
 		$tax        = get_taxonomy( $this->taxo->taxonomy );
 		$name       = sprintf( '%s (%s)', $tax->labels->name, $this->taxo->taxonomy );
 

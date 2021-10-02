@@ -24,6 +24,7 @@
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
 		<exclude name="WordPress.DateTime.RestrictedFunctions.date_date"/>
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+		<exclude name="WordPress.PHP.DisallowShortTernary.Found"/>
 	</rule>
 
 	<rule ref="WordPress.WP.I18n">

@@ -651,6 +651,7 @@ class Post_Type {
 			$replacements['%author%'] = get_userdata( (int) $post->post_author )->user_nicename;
 		}
 
+		/** @var string $tax */
 		foreach ( get_object_taxonomies( $post ) as $tax ) {
 			if ( false === strpos( $post_link, "%{$tax}%" ) ) {
 				continue;
@@ -803,7 +804,10 @@ class Post_Type {
 			register_extended_taxonomy( $taxonomy, $this->post_type, $args, $names );
 		}
 
-		return get_taxonomy( $taxonomy );
+		/** @var WP_Taxonomy */
+		$tax = get_taxonomy( $taxonomy );
+
+		return $tax;
 	}
 
 }

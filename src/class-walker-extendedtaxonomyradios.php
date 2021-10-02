@@ -3,6 +3,8 @@ declare( strict_types=1 );
 
 namespace ExtCPTs\Walker;
 
+use WP_Term;
+
 /**
  * A term walker class for radio buttons.
  */
@@ -67,7 +69,7 @@ class Radios extends \Walker {
 	 * Start the element output.
 	 *
 	 * @param string $output            Passed by reference. Used to append additional content.
-	 * @param object $object            Term data object.
+	 * @param WP_Term $object            Term data object.
 	 * @param int    $depth             Depth of term in reference to parents.
 	 * @param array<string,mixed>  $args              Optional arguments.
 	 * @param int    $current_object_id Current object ID.
@@ -75,6 +77,10 @@ class Radios extends \Walker {
 	 */
 	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {
 		$tax = get_taxonomy( $args['taxonomy'] );
+
+		if ( ! $tax ) {
+			return;
+		}
 
 		if ( $this->field ) {
 			$value = $object->{$this->field};
@@ -101,7 +107,7 @@ class Radios extends \Walker {
 	 * Ends the element output, if needed.
 	 *
 	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param object $object Term data object.
+	 * @param WP_Term $object Term data object.
 	 * @param int    $depth  Depth of term in reference to parents.
 	 * @param array<string,mixed>  $args   Optional arguments.
 	 * @return void

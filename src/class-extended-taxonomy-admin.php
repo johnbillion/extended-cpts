@@ -298,6 +298,7 @@ class Taxonomy_Admin {
 		$taxos     = get_post_taxonomies( $post );
 
 		if ( in_array( $this->taxo->taxonomy, $taxos, true ) ) {
+			/** @var WP_Taxonomy */
 			$tax = get_taxonomy( $this->taxo->taxonomy );
 
 			# Remove default meta box from classic editor:
@@ -399,6 +400,7 @@ class Taxonomy_Admin {
 	 */
 	protected function do_meta_box( WP_Post $post, \Walker $walker = null, bool $show_none = false, string $type = 'checklist' ): void {
 		$taxonomy = $this->taxo->taxonomy;
+		/** @var WP_Taxonomy */
 		$tax      = get_taxonomy( $taxonomy );
 		$selected = wp_get_object_terms(
 			$post->ID,
@@ -553,6 +555,7 @@ class Taxonomy_Admin {
 	 * @return string[] Updated array of items.
 	 */
 	public function glance_items( array $items ): array {
+		/** @var WP_Taxonomy */
 		$taxonomy = get_taxonomy( $this->taxo->taxonomy );
 
 		if ( ! current_user_can( $taxonomy->cap->manage_terms ) ) {

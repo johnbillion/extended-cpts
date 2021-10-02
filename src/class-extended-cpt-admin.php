@@ -297,7 +297,7 @@ class Post_Type_Admin {
 						'hierarchical'    => true,
 						'show_count'      => false,
 						'orderby'         => 'name',
-						'selected_cats'   => get_query_var( $tax->query_var ),
+						'selected_cats'   => $tax->query_var ? get_query_var( $tax->query_var ) : [],
 						'id'              => $id,
 						'name'            => $tax->query_var,
 						'taxonomy'        => $filter['taxonomy'],
@@ -514,10 +514,11 @@ class Post_Type_Admin {
 	/**
 	 * Adds our filter names to the public query vars.
 	 *
-	 * @param array<string,mixed> $vars Public query variables
-	 * @return array<string,mixed> Updated public query variables
+	 * @param array<int,string> $vars Public query variables
+	 * @return array<int,string> Updated public query variables
 	 */
 	public function add_query_vars( array $vars ): array {
+		/** @var array<int,string> */
 		$filters = array_keys( $this->args['admin_filters'] );
 
 		return array_merge( $vars, $filters );
@@ -610,6 +611,7 @@ class Post_Type_Admin {
 		}
 
 		# Get the labels and format the counts:
+		/** @var \stdClass */
 		$count = wp_count_posts( $this->cpt->post_type );
 		$text  = self::n( $pto->labels->singular_name, $pto->labels->name, (int) $count->publish );
 		$num   = number_format_i18n( $count->publish );
@@ -635,7 +637,8 @@ ICONCSS;
 		// https://core.trac.wordpress.org/ticket/33714
 		// https://github.com/WordPress/dashicons/blob/master/codepoints.json
 		if ( is_string( $pto->menu_icon ) && 0 === strpos( $pto->menu_icon, 'dashicons-' ) ) {
-			$codepoints = json_decode( file_get_contents( __DIR__ . '/dashicons-codepoints.json' ), true );
+			$contents   = file_get_contents( __DIR__ . '/dashicons-codepoints.json' );
+			$codepoints = json_decode( $contents ?: '', true );
 			$unprefixed = str_replace( 'dashicons-', '', $pto->menu_icon );
 
 			if ( isset( $codepoints[ $unprefixed ] ) ) {
@@ -802,7 +805,10 @@ ICONCSS;
 	 * @return array<string,string> Updated array of sortable columns.
 	 */
 	public function sortables( array $cols ): array {
-		foreach ( $this->args['admin_cols'] as $id => $col ) {
+		$admin_cols = $this->args['admin_cols'];
+
+		/** @var array<string,mixed> $admin_cols */
+		foreach ( $admin_cols as $id => $col ) {
 			if ( ! is_array( $col ) ) {
 				continue;
 			}
@@ -998,6 +1004,10 @@ ICONCSS;
 			return;
 		}
 
+		if ( ! $tax ) {
+			return;
+		}
+
 		if ( empty( $terms ) ) {
 			printf(
 				'<span aria-hidden="true">&#8212;</span><span class="screen-reader-text">%s</span>',
@@ -1072,6 +1082,10 @@ ICONCSS;
 	 */
 	public function col_post_field( string $field, array $args ): void {
 		global $post;
+
+		if ( ! $post ) {
+			return;
+		}
 
 		switch ( $field ) {
 
@@ -1211,6 +1225,7 @@ ICONCSS;
 			setup_postdata( $post );
 
 			$pto = get_post_type_object( $post->post_type );
+			/** @var \stdClass */
 			$pso = get_post_status_object( $post->post_status );
 
 			if ( $pso->protected && ! current_user_can( 'edit_post', $post->ID ) ) {
