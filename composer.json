@@ -24,7 +24,6 @@
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
 		"johnbillion/falsey-assertequals-detector": "^2",
 		"phpcompatibility/phpcompatibility-wp": "^2",
-		"phpstan/phpstan": "0.12.99",
 		"phpunit/phpunit": "^6",
 		"roots/wordpress": "^5.8.0",
 		"szepeviktor/phpstan-wordpress": "^0.7.7",
