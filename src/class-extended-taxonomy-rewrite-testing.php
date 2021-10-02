@@ -3,6 +3,8 @@ declare( strict_types=1 );
 
 namespace ExtCPTs;
 
+use WP_Taxonomy;
+
 class Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
 
 	public Taxonomy $taxo;

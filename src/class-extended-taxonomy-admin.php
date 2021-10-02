@@ -4,6 +4,7 @@ declare( strict_types=1 );
 namespace ExtCPTs;
 
 use WP_Post;
+use WP_Taxonomy;
 
 class Taxonomy_Admin {
 
