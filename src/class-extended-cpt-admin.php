@@ -925,33 +925,40 @@ ICONCSS;
 			return;
 		}
 
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			return;
+		}
+
 		if ( ! isset( $c[ $col ]['link'] ) ) {
 			$c[ $col ]['link'] = 'list';
 		}
 
 		if ( isset( $c[ $col ]['function'] ) ) {
-			call_user_func( $c[ $col ]['function'], $post_id );
+			call_user_func( $c[ $col ]['function'], $post );
 		} elseif ( isset( $c[ $col ]['meta_key'] ) ) {
-			$this->col_post_meta( $c[ $col ]['meta_key'], $c[ $col ] );
+			$this->col_post_meta( $post, $c[ $col ]['meta_key'], $c[ $col ] );
 		} elseif ( isset( $c[ $col ]['taxonomy'] ) ) {
-			$this->col_taxonomy( $c[ $col ]['taxonomy'], $c[ $col ] );
+			$this->col_taxonomy( $post, $c[ $col ]['taxonomy'], $c[ $col ] );
 		} elseif ( isset( $c[ $col ]['post_field'] ) ) {
-			$this->col_post_field( $c[ $col ]['post_field'], $c[ $col ] );
+			$this->col_post_field( $post, $c[ $col ]['post_field'], $c[ $col ] );
 		} elseif ( isset( $c[ $col ]['featured_image'] ) ) {
-			$this->col_featured_image( $c[ $col ]['featured_image'], $c[ $col ] );
+			$this->col_featured_image( $post, $c[ $col ]['featured_image'], $c[ $col ] );
 		} elseif ( isset( $c[ $col ]['connection'] ) ) {
-			$this->col_connection( $c[ $col ]['connection'], $c[ $col ] );
+			$this->col_connection( $post, $c[ $col ]['connection'], $c[ $col ] );
 		}
 	}
 
 	/**
 	 * Outputs column data for a post meta field.
 	 *
+	 * @param WP_Post    $post The post object.
 	 * @param string $meta_key The post meta key
 	 * @param array<string,mixed>  $args     Array of arguments for this field
 	 */
-	public function col_post_meta( string $meta_key, array $args ): void {
-		$vals = get_post_meta( get_the_ID(), $meta_key, false );
+	public function col_post_meta( WP_Post $post, string $meta_key, array $args ): void {
+		$vals = get_post_meta( $post->ID, $meta_key, false );
 		$echo = [];
 
 		sort( $vals );
@@ -993,12 +1000,11 @@ ICONCSS;
 	/**
 	 * Outputs column data for a taxonomy's term names.
 	 *
+	 * @param WP_Post    $post The post object.
 	 * @param string $taxonomy The taxonomy name
 	 * @param array<string,mixed>  $args     Array of arguments for this field
 	 */
-	public function col_taxonomy( string $taxonomy, array $args ): void {
-		global $post;
-
+	public function col_taxonomy( WP_Post $post, string $taxonomy, array $args ): void {
 		$terms = get_the_terms( $post, $taxonomy );
 		$tax   = get_taxonomy( $taxonomy );
 
@@ -1080,16 +1086,11 @@ ICONCSS;
 	/**
 	 * Outputs column data for a post field.
 	 *
+	 * @param WP_Post    $post The post object.
 	 * @param string $field The post field
 	 * @param array<string,mixed>  $args  Array of arguments for this field
 	 */
-	public function col_post_field( string $field, array $args ): void {
-		global $post;
-
-		if ( ! $post ) {
-			return;
-		}
-
+	public function col_post_field( WP_Post $post, string $field, array $args ): void {
 		switch ( $field ) {
 
 			case 'post_date':
@@ -1133,10 +1134,11 @@ ICONCSS;
 	/**
 	 * Outputs column data for a post's featured image.
 	 *
+	 * @param WP_Post    $post The post object.
 	 * @param string $image_size The image size
 	 * @param array<string,string|int>  $args       Array of `width` and `height` attributes for the image
 	 */
-	public function col_featured_image( string $image_size, array $args ): void {
+	public function col_featured_image( WP_Post $post, string $image_size, array $args ): void {
 		if ( ! function_exists( 'has_post_thumbnail' ) ) {
 			return;
 		}
@@ -1172,10 +1174,11 @@ ICONCSS;
 	/**
 	 * Outputs column data for a Posts 2 Posts connection.
 	 *
+	 * @param WP_Post    $post_object The post object.
 	 * @param string $connection The ID of the connection type
 	 * @param array<string,mixed>  $args       Array of arguments for a given connection type
 	 */
-	public function col_connection( string $connection, array $args ): void {
+	public function col_connection( WP_Post $post_object, string $connection, array $args ): void {
 		global $post, $wp_query;
 
 		if ( ! function_exists( 'p2p_type' ) ) {
@@ -1207,10 +1210,10 @@ ICONCSS;
 			$field .= sanitize_title( '_' . $args['field'] . '_' . $args['value'] );
 		}
 
-		if ( ! isset( $_post->$field ) ) {
+		if ( ! isset( $post_object->$field ) ) {
 			$type = p2p_type( $connection );
 			if ( $type ) {
-				$type->each_connected( [ $_post ], $meta, $field );
+				$type->each_connected( [ $post_object ], $meta, $field );
 			} else {
 				echo esc_html(
 					sprintf(
@@ -1224,7 +1227,7 @@ ICONCSS;
 		}
 
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		foreach ( $_post->$field as $post ) {
+		foreach ( $post_object->$field as $post ) {
 			setup_postdata( $post );
 
 			/** @var \WP_Post_Type */
