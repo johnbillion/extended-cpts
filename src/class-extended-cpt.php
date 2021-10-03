@@ -654,7 +654,12 @@ class Post_Type {
 		];
 
 		if ( false !== strpos( $post_link, '%author%' ) ) {
-			$replacements['%author%'] = get_userdata( (int) $post->post_author )->user_nicename;
+			$author = get_userdata( (int) $post->post_author );
+			if ( $author ) {
+				$replacements['%author%'] = $author->user_nicename;
+			} else {
+				$replacements['%author%'] = '-';
+			}
 		}
 
 		/** @var string $tax */

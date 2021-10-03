@@ -255,6 +255,13 @@ abstract class Test extends \WP_UnitTestCase {
 		) );
 		wp_add_object_terms( $this->posts['foo'][0], array( 'Gamma', 'Delta' ), 'foo_category' );
 
+		$this->posts['foo'][1] = $this->factory->post->create( array(
+			'guid'        => 'guid',
+			'post_type'   => 'foo',
+			'post_author' => 0,
+		) );
+		wp_add_object_terms( $this->posts['foo'][1], array( 'Gamma' ), 'foo_category' );
+
 		$this->posts['bar'][0] = $this->factory->post->create( array(
 			'guid'        => 'guid',
 			'post_type'   => 'bar',
