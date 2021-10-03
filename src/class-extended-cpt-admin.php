@@ -237,6 +237,7 @@ class Post_Type_Admin {
 			return;
 		}
 
+		/** @var \WP_Post_Type */
 		$pto = get_post_type_object( $this->cpt->post_type );
 
 		foreach ( $this->args['admin_filters'] as $filter_key => $filter ) {
@@ -601,6 +602,7 @@ class Post_Type_Admin {
 	 * @return array<int,string> Updated array of items.
 	 */
 	public function glance_items( array $items ): array {
+		/** @var \WP_Post_Type */
 		$pto = get_post_type_object( $this->cpt->post_type );
 
 		if ( ! current_user_can( $pto->cap->edit_posts ) ) {
@@ -692,6 +694,7 @@ ICONCSS;
 	public function post_updated_messages( array $messages ): array {
 		global $post;
 
+		/** @var \WP_Post_Type */
 		$pto = get_post_type_object( $this->cpt->post_type );
 
 		$messages[ $this->cpt->post_type ] = [
@@ -1224,6 +1227,7 @@ ICONCSS;
 		foreach ( $_post->$field as $post ) {
 			setup_postdata( $post );
 
+			/** @var \WP_Post_Type */
 			$pto = get_post_type_object( $post->post_type );
 			/** @var \stdClass */
 			$pso = get_post_status_object( $post->post_status );

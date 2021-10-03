@@ -31,6 +31,7 @@ class Post_Type_Rewrite_Testing extends Extended_Rewrite_Testing {
 		}
 
 		$struct     = $wp_rewrite->extra_permastructs[ $this->cpt->post_type ];
+		/** @var \WP_Post_Type */
 		$pto        = get_post_type_object( $this->cpt->post_type );
 		$name       = sprintf( '%s (%s)', $pto->labels->name, $this->cpt->post_type );
 		$additional = [];
