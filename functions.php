@@ -30,7 +30,7 @@ use ExtCPTs\Taxonomy_Admin;
  *     @type bool   $dashboard_glance   Whether to show this post type on the 'At a Glance' section of the admin
  *                                      dashboard. Default true.
  *     @type bool   $dashboard_activity Whether to show this post type on the 'Recently Published' section of the
- *                                      admin dashboard. Default false.
+ *                                      admin dashboard. Default true.
  *     @type string $enter_title_here   Placeholder text which appears in the title field for this post type.
  *     @type string $featured_image     Text which replaces the 'Featured Image' phrase for this post type.
  *     @type bool   $quick_edit         Whether to show Quick Edit links for this post type. Default true.

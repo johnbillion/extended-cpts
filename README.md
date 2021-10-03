@@ -110,9 +110,6 @@ add_action( 'init', function() {
 			'nopaging' => true,
 		],
 
-		# Add the post type to the 'Recently Published' section of the dashboard:
-		'dashboard_activity' => true,
-
 		# Add some custom columns to the admin screen:
 		'admin_cols' => [
 			'story_featured_image' => [

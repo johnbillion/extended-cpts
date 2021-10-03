@@ -19,7 +19,7 @@ class Post_Type_Admin {
 	protected array $defaults = [
 		'quick_edit'         => true, # Custom arg
 		'dashboard_glance'   => true, # Custom arg
-		'dashboard_activity' => false, # Custom arg
+		'dashboard_activity' => true, # Custom arg
 		'admin_cols'         => null, # Custom arg
 		'admin_filters'      => null, # Custom arg
 		'enter_title_here'   => null, # Custom arg
