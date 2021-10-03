@@ -52,7 +52,7 @@ class Post_Type_Admin {
 	 * Class constructor.
 	 *
 	 * @param Post_Type $cpt  An extended post type object.
-	 * @param mixed[]   $args Optional. The post type arguments.
+	 * @param array<string,mixed>   $args Optional. The post type arguments.
 	 */
 	public function __construct( Post_Type $cpt, array $args = [] ) {
 		$this->cpt = $cpt;
@@ -1106,14 +1106,19 @@ ICONCSS;
 				break;
 
 			case 'post_status':
-				$status = get_post_status_object( get_post_status( $post ) );
+				/** @var \stdClass|null */
+				$status = get_post_status_object( $post->post_status );
 				if ( $status ) {
 					echo esc_html( $status->label );
 				}
 				break;
 
 			case 'post_author':
-				echo esc_html( get_the_author() );
+				$author = get_the_author();
+
+				if ( $author ) {
+					echo esc_html( $author );
+				}
 				break;
 
 			case 'post_title':

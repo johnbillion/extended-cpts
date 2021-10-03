@@ -37,7 +37,7 @@ class Post_Type_Rewrite_Testing extends Extended_Rewrite_Testing {
 		$additional = [];
 
 		// Post type archive rewrites are generated separately. See the `has_archive` handling in `register_post_type()`.
-		if ( $pto->has_archive ) {
+		if ( $pto->has_archive && $pto->rewrite ) {
 			$archive_slug = ( true === $pto->has_archive ) ? $pto->rewrite['slug'] : $pto->has_archive;
 
 			if ( $pto->rewrite['with_front'] ) {

@@ -614,6 +614,12 @@ class Post_Type {
 		if ( $post_type !== $this->post_type ) {
 			return;
 		}
+		if ( ! $post_type_object->rewrite ) {
+			return;
+		}
+		if ( ! is_string( $post_type_object->rewrite['permastruct'] ) ) {
+			return;
+		}
 
 		$struct = str_replace( "%{$this->post_type}_slug%", $this->post_slug, $post_type_object->rewrite['permastruct'] );
 		$struct = str_replace( '%postname%', "%{$this->post_type}%", $struct );
