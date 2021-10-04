@@ -551,7 +551,9 @@ class Post_Type {
 	 * @return array<int,string> Updated public query variables.
 	 */
 	public function add_query_vars( array $vars ): array {
-		$filters = array_keys( $this->args['site_filters'] );
+		/** @var array<string,mixed[]> */
+		$site_filters = $this->args['site_filters'];
+		$filters = array_keys( $site_filters );
 
 		return array_merge( $vars, $filters );
 	}

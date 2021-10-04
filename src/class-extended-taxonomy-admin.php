@@ -162,8 +162,11 @@ class Taxonomy_Admin {
 			}
 		}
 
+		/** @var array<string,(string|mixed[])> */
+		$admin_cols = array_filter( $this->args['admin_cols'] );
+
 		# Add our custom columns:
-		foreach ( array_filter( $this->args['admin_cols'] ) as $id => $col ) {
+		foreach ( $admin_cols as $id => $col ) {
 			if ( is_string( $col ) && isset( $cols[ $col ] ) ) {
 				# Existing (ie. built-in) column with id as the value
 				$new_cols[ $col ] = $cols[ $col ];
