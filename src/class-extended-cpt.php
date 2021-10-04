@@ -7,6 +7,7 @@ use WP_Post_Type;
 use WP_Post;
 use WP_Query;
 use WP_Taxonomy;
+use WP_Term;
 use WP;
 
 class Post_Type {
@@ -675,7 +676,6 @@ class Post_Type {
 			if ( $terms ) {
 				/**
 				 * Filter the term that gets used in the `$tax` permalink token.
-				 * @TODO make this more betterer ^
 				 *
 				 * @param WP_Term   $term  The `$tax` term to use in the permalink.
 				 * @param WP_Term[] $terms Array of all `$tax` terms associated with the post.
@@ -683,23 +683,22 @@ class Post_Type {
 				 */
 				$term_object = apply_filters( "post_link_{$tax}", reset( $terms ), $terms, $post );
 
-				$term = get_term( $term_object, $tax )->slug;
+				$term = $term_object->slug;
 
 			} else {
 				$term = $post->post_type;
 
 				/**
-				 * Filter the default term name that gets used in the `$tax` permalink token.
-				 * @TODO make this more betterer ^
+				 * Filter the default term that gets used in the `$tax` permalink token.
 				 *
-				 * @param string  $term The `$tax` term name to use in the permalink.
+				 * @param int     $term The ID of the term to use in the permalink.
 				 * @param WP_Post $post The post in question.
 				 */
-				$default_term_name = apply_filters( "default_{$tax}", get_option( "default_{$tax}", '' ), $post );
+				$default_term_id = (int) apply_filters( "default_{$tax}", get_option( "default_{$tax}", 0 ), $post );
 
-				if ( $default_term_name ) {
-					$default_term = get_term( $default_term_name, $tax );
-					if ( ! is_wp_error( $default_term ) ) {
+				if ( $default_term_id ) {
+					$default_term = get_term( $default_term_id, $tax );
+					if ( $default_term instanceof WP_Term ) {
 						$term = $default_term->slug;
 					}
 				}
