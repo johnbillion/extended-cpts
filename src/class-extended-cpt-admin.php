@@ -971,12 +971,12 @@ ICONCSS;
 			foreach ( $vals as $val ) {
 				$val_time = strtotime( $val );
 
-				if ( $val_time ) {
+				if ( false !== $val_time ) {
 					$val = $val_time;
 				}
 
 				if ( is_numeric( $val ) ) {
-					$echo[] = date_i18n( $args['date_format'], $val );
+					$echo[] = date_i18n( $args['date_format'], (int) $val );
 				} elseif ( ! empty( $val ) ) {
 					$echo[] = mysql2date( $args['date_format'], $val );
 				}

@@ -249,7 +249,7 @@ class Taxonomy_Admin {
 
 			foreach ( $vals as $val ) {
 				if ( is_numeric( $val ) ) {
-					$echo[] = date( $args['date_format'], $val );
+					$echo[] = date( $args['date_format'], (int) $val );
 				} elseif ( ! empty( $val ) ) {
 					$echo[] = mysql2date( $args['date_format'], $val );
 				}

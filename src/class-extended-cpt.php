@@ -642,7 +642,9 @@ class Post_Type {
 			return $post_link;
 		}
 
-		$date = explode( ' ', mysql2date( 'Y m d H i s', $post->post_date ) );
+		/** @var string */
+		$date = mysql2date( 'Y m d H i s', $post->post_date );
+		$date = explode( ' ', $date );
 		$replacements = [
 			'%year%'     => $date[0],
 			'%monthnum%' => $date[1],
