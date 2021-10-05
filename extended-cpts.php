@@ -2,7 +2,7 @@
 declare( strict_types=1 );
 
 /**
- * Extended custom post types for WordPress.
+ * Extended custom post types and taxonomies for WordPress.
  *
  * @package   ExtendedCPTs
  * @author    John Blackbourn <https://johnblackbourn.com>
