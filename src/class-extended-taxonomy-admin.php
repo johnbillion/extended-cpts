@@ -54,7 +54,12 @@ class Taxonomy_Admin {
 		if ( null === $this->args['checked_ontop'] ) {
 			$this->args['checked_ontop'] = empty( $this->args['meta_box'] );
 		}
+	}
 
+	/**
+	 * Initialise the admin features of the taxonomy by adding the necessary actions and filters.
+	 */
+	public function init(): void {
 		# Meta boxes:
 		if ( $this->taxo->args['exclusive'] || isset( $this->args['meta_box'] ) ) {
 			add_action( 'add_meta_boxes', [ $this, 'meta_boxes' ], 10, 2 );

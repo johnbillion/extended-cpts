@@ -216,7 +216,12 @@ class Post_Type {
 		if ( ! isset( $this->args['has_archive'] ) ) {
 			$this->args['has_archive'] = $this->args['public'];
 		}
+	}
 
+	/**
+	 * Initialise the post type by adding the necessary actions and filters.
+	 */
+	public function init(): void {
 		# Front-end sortables:
 		if ( $this->args['site_sortables'] && ! is_admin() ) {
 			add_filter( 'pre_get_posts', [ $this, 'maybe_sort_by_fields' ] );
@@ -260,7 +265,7 @@ class Post_Type {
 		 *
 		 * @param Post_Type $instance The extended post type instance.
 		 */
-		do_action( "ext-cpts/{$post_type}/instance", $this );
+		do_action( "ext-cpts/{$this->post_type}/instance", $this );
 	}
 
 	/**

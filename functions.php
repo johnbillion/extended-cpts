@@ -53,9 +53,11 @@ function register_extended_post_type( string $post_type, array $args = [], array
 	}
 
 	$cpt = new Post_Type( $post_type, $args, $names );
+	$cpt->init();
 
 	if ( is_admin() ) {
-		new Post_Type_Admin( $cpt, $cpt->args );
+		$admin = new Post_Type_Admin( $cpt, $cpt->args );
+		$admin->init();
 	}
 
 	return $cpt;
@@ -113,9 +115,11 @@ function register_extended_taxonomy( string $taxonomy, $object_type, array $args
 	}
 
 	$taxo = new Taxonomy( $taxonomy, (array) $object_type, $args, $names );
+	$taxo->init();
 
 	if ( is_admin() ) {
-		new Taxonomy_Admin( $taxo, $taxo->args );
+		$admin = new Taxonomy_Admin( $taxo, $taxo->args );
+		$admin->init();
 	}
 
 	return $taxo;

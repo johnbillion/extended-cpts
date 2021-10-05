@@ -180,7 +180,12 @@ class Taxonomy {
 		if ( isset( $args['labels'] ) ) {
 			$this->args['labels'] = array_merge( $this->defaults['labels'], $args['labels'] );
 		}
+	}
 
+	/**
+	 * Initialise the taxonomy by adding the necessary actions and filters.
+	 */
+	public function init(): void {
 		# Rewrite testing:
 		if ( $this->args['rewrite'] ) {
 			add_filter( 'rewrite_testing_tests', [ $this, 'rewrite_testing_tests' ], 1 );
@@ -196,7 +201,7 @@ class Taxonomy {
 		 *
 		 * @param Taxonomy $instance The extended taxonomy instance.
 		 */
-		do_action( "ext-taxos/{$taxonomy}/instance", $this );
+		do_action( "ext-taxos/{$this->taxonomy}/instance", $this );
 	}
 
 	/**

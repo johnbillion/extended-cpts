@@ -58,7 +58,12 @@ class Post_Type_Admin {
 		$this->cpt = $cpt;
 		# Merge our args with the defaults:
 		$this->args = array_merge( $this->defaults, $args );
+	}
 
+	/**
+	 * Initialise the admin features of the post type by adding the necessary actions and filters.
+	 */
+	public function init(): void {
 		# Admin columns:
 		if ( $this->args['admin_cols'] ) {
 			add_filter( 'manage_posts_columns',                                 [ $this, '_log_default_cols' ], 0 );
