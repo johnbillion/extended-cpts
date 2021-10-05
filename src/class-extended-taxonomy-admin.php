@@ -79,6 +79,15 @@ class Taxonomy_Admin {
 			add_filter( "manage_edit-{$this->taxo->taxonomy}_columns",  [ $this, 'cols' ] );
 			add_filter( "manage_{$this->taxo->taxonomy}_custom_column", [ $this, 'col' ], 10, 3 );
 		}
+
+		/**
+		 * Fired when the extended taxonomy admin instance is set up.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param Taxonomy_Admin $instance The extended taxonomy admin instance.
+		 */
+		do_action( "ext-taxos/{$this->taxo->taxonomy}/admin-instance", $this );
 	}
 
 	/**

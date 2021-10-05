@@ -130,11 +130,11 @@ class Post_Type_Admin {
 		/**
 		 * Fired when the extended post type admin instance is set up.
 		 *
-		 * @todo Add @since tag when version is bumped.
+		 * @since 5.0.0
 		 *
-		 * @param Extended_CPT_Admin $instance The extended post type admin instance.
+		 * @param Post_Type_Admin $instance The extended post type admin instance.
 		 */
-		do_action( "ext-cpts-admin/{$this->cpt->post_type}/instance", $this );
+		do_action( "ext-cpts/{$this->cpt->post_type}/admin-instance", $this );
 	}
 
 	/**
