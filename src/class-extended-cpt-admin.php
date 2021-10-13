@@ -774,8 +774,8 @@ ICONCSS;
 	 *  - trashed   => "Post moved to the trash." | "[n] posts moved to the trash."
 	 *  - untrashed => "Post restored from the trash." | "[n] posts restored from the trash."
 	 *
-	 * @param array[] $messages An array of bulk post updated message arrays keyed by post type.
-	 * @param int[]   $counts   An array of counts for each key in `$messages`.
+	 * @param array[]           $messages An array of bulk post updated message arrays keyed by post type.
+	 * @param array<string,int> $counts   An array of counts for each key in `$messages`.
 	 * @return array[] Updated array of bulk post updated messages.
 	 */
 	public function bulk_post_updated_messages( array $messages, array $counts ): array {
