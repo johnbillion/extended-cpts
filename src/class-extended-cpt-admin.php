@@ -1201,7 +1201,7 @@ ICONCSS;
 	 * @param array<string,mixed> $args        Array of arguments for a given connection type.
 	 */
 	public function col_connection( WP_Post $post_object, string $connection, array $args ): void {
-		global $post, $wp_query;
+		global $post;
 
 		if ( ! function_exists( 'p2p_type' ) ) {
 			return;
