@@ -42,9 +42,9 @@ class Radios extends \Walker {
 	/**
 	 * Starts the list before the elements are added.
 	 *
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param int    $depth  Depth of term in reference to parents.
-	 * @param array<string,mixed>  $args   Optional arguments.
+	 * @param string              $output Passed by reference. Used to append additional content.
+	 * @param int                 $depth  Depth of term in reference to parents.
+	 * @param array<string,mixed> $args   Optional arguments.
 	 * @return void
 	 */
 	public function start_lvl( &$output, $depth = 0, $args = [] ) {
@@ -55,9 +55,9 @@ class Radios extends \Walker {
 	/**
 	 * Ends the list of after the elements are added.
 	 *
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param int    $depth  Depth of term in reference to parents.
-	 * @param array<string,mixed>  $args   Optional arguments.
+	 * @param string              $output Passed by reference. Used to append additional content.
+	 * @param int                 $depth  Depth of term in reference to parents.
+	 * @param array<string,mixed> $args   Optional arguments.
 	 * @return void
 	 */
 	public function end_lvl( &$output, $depth = 0, $args = [] ) {
@@ -68,11 +68,11 @@ class Radios extends \Walker {
 	/**
 	 * Start the element output.
 	 *
-	 * @param string $output            Passed by reference. Used to append additional content.
-	 * @param WP_Term $object            Term data object.
-	 * @param int    $depth             Depth of term in reference to parents.
-	 * @param array<string,mixed>  $args              Optional arguments.
-	 * @param int    $current_object_id Current object ID.
+	 * @param string              $output            Passed by reference. Used to append additional content.
+	 * @param WP_Term             $object            Term data object.
+	 * @param int                 $depth             Depth of term in reference to parents.
+	 * @param array<string,mixed> $args              Optional arguments.
+	 * @param int                 $current_object_id Current object ID.
 	 * @return void
 	 */
 	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {
@@ -106,10 +106,10 @@ class Radios extends \Walker {
 	/**
 	 * Ends the element output, if needed.
 	 *
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param WP_Term $object Term data object.
-	 * @param int    $depth  Depth of term in reference to parents.
-	 * @param array<string,mixed>  $args   Optional arguments.
+	 * @param string              $output Passed by reference. Used to append additional content.
+	 * @param WP_Term             $object Term data object.
+	 * @param int                 $depth  Depth of term in reference to parents.
+	 * @param array<string,mixed> $args   Optional arguments.
 	 * @return void
 	 */
 	public function end_el( &$output, $object, $depth = 0, $args = [] ) {

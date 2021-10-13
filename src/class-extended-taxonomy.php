@@ -47,10 +47,10 @@ class Taxonomy {
 	 *
 	 * @see register_extended_taxonomy()
 	 *
-	 * @param string       $taxonomy    The taxonomy name.
-	 * @param array<int,string>     $object_type Names of the object types for the taxonomy.
-	 * @param array<string,mixed>        $args        Optional. The taxonomy arguments.
-	 * @param string[]     $names       Optional. An associative array of the plural, singular, and slug names.
+	 * @param string              $taxonomy    The taxonomy name.
+	 * @param array<int,string>   $object_type Names of the object types for the taxonomy.
+	 * @param array<string,mixed> $args        Optional. The taxonomy arguments.
+	 * @param string[]            $names       Optional. An associative array of the plural, singular, and slug names.
 	 */
 	public function __construct( string $taxonomy, array $object_type, array $args = [], array $names = [] ) {
 		/**

@@ -591,8 +591,8 @@ class Post_Type_Admin {
 	/**
 	 * Filters the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
-	 * @param array<string,string>    $clauses  The current query's SQL clauses.
-	 * @param WP_Query $wp_query The current `WP_Query` object.
+	 * @param array<string,string> $clauses  The current query's SQL clauses.
+	 * @param WP_Query             $wp_query The current `WP_Query` object.
 	 * @return array<string,string> The updated SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
@@ -924,8 +924,8 @@ ICONCSS;
 	/**
 	 * Output the column data for our custom columns.
 	 *
-	 * @param string $col     The column name
-	 * @param int    $post_id The post ID
+	 * @param string $col     The column name.
+	 * @param int    $post_id The post ID.
 	 */
 	public function col( string $col, int $post_id ): void {
 		# Shorthand:
@@ -970,9 +970,9 @@ ICONCSS;
 	/**
 	 * Outputs column data for a post meta field.
 	 *
-	 * @param WP_Post    $post The post object.
-	 * @param string $meta_key The post meta key
-	 * @param array<string,mixed>  $args     Array of arguments for this field
+	 * @param WP_Post             $post     The post object.
+	 * @param string              $meta_key The post meta key.
+	 * @param array<string,mixed> $args     Array of arguments for this field.
 	 */
 	public function col_post_meta( WP_Post $post, string $meta_key, array $args ): void {
 		$vals = get_post_meta( $post->ID, $meta_key, false );
@@ -1017,9 +1017,9 @@ ICONCSS;
 	/**
 	 * Outputs column data for a taxonomy's term names.
 	 *
-	 * @param WP_Post    $post The post object.
-	 * @param string $taxonomy The taxonomy name
-	 * @param array<string,mixed>  $args     Array of arguments for this field
+	 * @param WP_Post             $post     The post object.
+	 * @param string              $taxonomy The taxonomy name.
+	 * @param array<string,mixed> $args     Array of arguments for this field.
 	 */
 	public function col_taxonomy( WP_Post $post, string $taxonomy, array $args ): void {
 		$terms = get_the_terms( $post, $taxonomy );
@@ -1103,9 +1103,9 @@ ICONCSS;
 	/**
 	 * Outputs column data for a post field.
 	 *
-	 * @param WP_Post    $post The post object.
-	 * @param string $field The post field
-	 * @param array<string,mixed>  $args  Array of arguments for this field
+	 * @param WP_Post             $post  The post object.
+	 * @param string              $field The post field.
+	 * @param array<string,mixed> $args  Array of arguments for this field.
 	 */
 	public function col_post_field( WP_Post $post, string $field, array $args ): void {
 		switch ( $field ) {
@@ -1156,9 +1156,9 @@ ICONCSS;
 	/**
 	 * Outputs column data for a post's featured image.
 	 *
-	 * @param WP_Post    $post The post object.
-	 * @param string $image_size The image size
-	 * @param array<string,string|int>  $args       Array of `width` and `height` attributes for the image
+	 * @param WP_Post                  $post       The post object.
+	 * @param string                   $image_size The image size.
+	 * @param array<string,string|int> $args       Array of `width` and `height` attributes for the image.
 	 */
 	public function col_featured_image( WP_Post $post, string $image_size, array $args ): void {
 		if ( ! function_exists( 'has_post_thumbnail' ) ) {
@@ -1196,9 +1196,9 @@ ICONCSS;
 	/**
 	 * Outputs column data for a Posts 2 Posts connection.
 	 *
-	 * @param WP_Post    $post_object The post object.
-	 * @param string $connection The ID of the connection type
-	 * @param array<string,mixed>  $args       Array of arguments for a given connection type
+	 * @param WP_Post             $post_object The post object.
+	 * @param string              $connection  The ID of the connection type.
+	 * @param array<string,mixed> $args        Array of arguments for a given connection type.
 	 */
 	public function col_connection( WP_Post $post_object, string $connection, array $args ): void {
 		global $post, $wp_query;
@@ -1334,9 +1334,9 @@ ICONCSS;
 	/**
 	 * Removes the Quick Edit link from the post row actions.
 	 *
-	 * @param array<string,string> $actions Array of post actions
-	 * @param WP_Post  $post    The current post object
-	 * @return array<string,string> Array of updated post actions
+	 * @param array<string,string> $actions Array of post actions.
+	 * @param WP_Post              $post    The current post object.
+	 * @return array<string,string> Array of updated post actions.
 	 */
 	public function remove_quick_edit_action( array $actions, WP_Post $post ): array {
 		if ( $this->cpt->post_type !== $post->post_type ) {
@@ -1351,8 +1351,8 @@ ICONCSS;
 	/**
 	 * Removes the Quick Edit link from the bulk actions menu.
 	 *
-	 * @param array<string,string> $actions Array of bulk actions
-	 * @return array<string,string> Array of updated bulk actions
+	 * @param array<string,string> $actions Array of bulk actions.
+	 * @return array<string,string> Array of updated bulk actions.
 	 */
 	public function remove_quick_edit_menu( array $actions ): array {
 		unset( $actions['edit'] );
@@ -1363,8 +1363,8 @@ ICONCSS;
 	/**
 	 * Logs the default columns so we don't remove any custom columns added by other plugins.
 	 *
-	 * @param array<string,string> $cols The default columns for this post type screen
-	 * @return array<string,string> The default columns for this post type screen
+	 * @param array<string,string> $cols The default columns for this post type screen.
+	 * @return array<string,string> The default columns for this post type screen.
 	 */
 	public function _log_default_cols( array $cols ): array {
 		$this->_cols = $cols;
@@ -1375,10 +1375,10 @@ ICONCSS;
 	/**
 	 * A non-localised version of _n()
 	 *
-	 * @param string $single The text that will be used if $number is 1
-	 * @param string $plural The text that will be used if $number is not 1
-	 * @param int    $number The number to compare against to use either `$single` or `$plural`
-	 * @return string Either `$single` or `$plural` text
+	 * @param string $single The text that will be used if $number is 1.
+	 * @param string $plural The text that will be used if $number is not 1.
+	 * @param int    $number The number to compare against to use either `$single` or `$plural`.
+	 * @return string Either `$single` or `$plural` text.
 	 */
 	protected static function n( string $single, string $plural, int $number ): string {
 		return ( 1 === intval( $number ) ) ? $single : $plural;
@@ -1387,8 +1387,8 @@ ICONCSS;
 	/**
 	 * Returns a sensible title for the current item (usually the arguments array for a column)
 	 *
-	 * @param array<string,mixed> $item An array of arguments
-	 * @return string|null The item title
+	 * @param array<string,mixed> $item An array of arguments.
+	 * @return string|null The item title.
 	 */
 	protected function get_item_title( array $item ): ?string {
 		if ( isset( $item['taxonomy'] ) ) {

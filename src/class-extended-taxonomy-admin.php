@@ -93,8 +93,8 @@ class Taxonomy_Admin {
 	/**
 	 * Logs the default columns so we don't remove any custom columns added by other plugins.
 	 *
-	 * @param  array<string,string> $cols The default columns for this taxonomy screen
-	 * @return array<string,string>       The default columns for this taxonomy screen
+	 * @param  array<string,string> $cols The default columns for this taxonomy screen.
+	 * @return array<string,string> The default columns for this taxonomy screen.
 	 */
 	public function _log_default_cols( array $cols ): array {
 		$this->_cols = $cols;
@@ -152,8 +152,8 @@ class Taxonomy_Admin {
 	 *
 	 * Note that sortable admin columns are not yet supported.
 	 *
-	 * @param  array<string,string> $cols Associative array of columns
-	 * @return array<string,string>       Updated array of columns
+	 * @param  array<string,string> $cols Associative array of columns.
+	 * @return array<string,string> Updated array of columns.
 	 */
 	public function cols( array $cols ): array {
 		// This function gets called multiple times, so let's cache it for efficiency:
@@ -249,8 +249,8 @@ class Taxonomy_Admin {
 	/**
 	 * Output column data for a term meta field.
 	 *
-	 * @param string              $meta_key The term meta key
-	 * @param array<string,mixed> $args     Array of arguments for this field
+	 * @param string              $meta_key The term meta key.
+	 * @param array<string,mixed> $args     Array of arguments for this field.
 	 * @param int                 $term_id  Term ID.
 	 */
 	public function col_term_meta( string $meta_key, array $args, int $term_id ): void {
@@ -287,10 +287,10 @@ class Taxonomy_Admin {
 	}
 
 	/**
-	 * Returns a sensible title for the current item (usually the arguments array for a column)
+	 * Returns a sensible title for the current item (usually the arguments array for a column).
 	 *
-	 * @param array<string,mixed> $item An array of arguments
-	 * @return string The item title
+	 * @param array<string,mixed> $item An array of arguments.
+	 * @return string The item title.
 	 */
 	protected function get_item_title( array $item ): string {
 		if ( isset( $item['meta_key'] ) ) {
@@ -303,8 +303,8 @@ class Taxonomy_Admin {
 	/**
 	 * Removes the default meta box from the post editing screen and adds our custom meta box.
 	 *
-	 * @param string $object_type The object type (eg. the post type)
-	 * @param mixed  $object      The object (eg. a WP_Post object)
+	 * @param string $object_type The object type (eg. the post type).
+	 * @param mixed  $object      The object (eg. a WP_Post object).
 	 */
 	public function meta_boxes( string $object_type, $object ): void {
 		if ( ! is_a( $object, 'WP_Post' ) ) {
@@ -640,10 +640,10 @@ class Taxonomy_Admin {
 	/**
 	 * A non-localised version of _n()
 	 *
-	 * @param string $single The text that will be used if $number is 1
-	 * @param string $plural The text that will be used if $number is not 1
-	 * @param int    $number The number to compare against to use either $single or $plural
-	 * @return string Either $single or $plural text
+	 * @param string $single The text that will be used if $number is 1.
+	 * @param string $plural The text that will be used if $number is not 1.
+	 * @param int    $number The number to compare against to use either $single or $plural.
+	 * @return string Either $single or $plural text.
 	 */
 	public static function n( string $single, string $plural, int $number ): string {
 		return ( 1 === intval( $number ) ) ? $single : $plural;

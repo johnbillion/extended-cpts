@@ -88,7 +88,7 @@ class Post_Type {
 		 * @since 4.4.1
 		 *
 		 * @param array<int,string> $names     The plural, singular, and slug names (if any were specified).
-		 * @param string   $post_type The post type name.
+		 * @param string            $post_type The post type name.
 		 */
 		$names = apply_filters( 'ext-cpts/names', $names, $post_type );
 
@@ -334,7 +334,7 @@ class Post_Type {
 	 * Filter the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
 	 * @param array<string,string> $clauses  Array of the current query's SQL clauses.
-	 * @param WP_Query $wp_query The current `WP_Query` object.
+	 * @param WP_Query             $wp_query The current `WP_Query` object.
 	 * @return array<string,string> Array of SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
@@ -499,8 +499,8 @@ class Post_Type {
 	 *
 	 * @param array<string,string> $clauses   The query's SQL clauses.
 	 * @param array<string,mixed>  $vars      The public query vars, usually from `$wp_query->query`.
-	 * @param array<string,mixed> $sortables The sortables valid for this query (usually the value of the `admin_cols` or
-	 *                         `site_sortables` argument when registering an extended post type).
+	 * @param array<string,mixed>  $sortables The sortables valid for this query (usually the value of the `admin_cols` or
+	 *                                        `site_sortables` argument when registering an extended post type).
 	 * @return array<string,string> The list of SQL clauses to apply to the query.
 	 */
 	public static function get_sort_taxonomy_clauses( array $clauses, array $vars, array $sortables ): array {
@@ -811,9 +811,9 @@ class Post_Type {
 	 *     $events   = register_extended_post_type( 'event' );
 	 *     $location = $events->add_taxonomy( 'location' );
 	 *
-	 * @param string $taxonomy The taxonomy name.
+	 * @param string               $taxonomy The taxonomy name.
 	 * @param array<string,mixed>  $args     Optional. The taxonomy arguments.
-	 * @param array<string,string>  $names    Optional. An associative array of the plural, singular, and slug names.
+	 * @param array<string,string> $names    Optional. An associative array of the plural, singular, and slug names.
 	 * @return WP_Taxonomy Taxonomy object.
 	 */
 	public function add_taxonomy( string $taxonomy, array $args = [], array $names = [] ): WP_Taxonomy {
