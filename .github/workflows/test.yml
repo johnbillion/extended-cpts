@@ -58,7 +58,7 @@ jobs:
       run: |
         sudo systemctl start mysql.service
         composer install --prefer-dist
-        composer require --dev --update-with-dependencies --prefer-dist roots/wordpress="^${{ matrix.wp }}.0" wp-phpunit/wp-phpunit="^${{ matrix.wp }}.0"
+        composer require --dev --update-with-dependencies --prefer-dist roots/wordpress="~${{ matrix.wp }}.0" wp-phpunit/wp-phpunit="~${{ matrix.wp }}.0"
 
     - name: Run the tests
       run: composer test
