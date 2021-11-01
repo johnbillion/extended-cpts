@@ -624,8 +624,8 @@ class Taxonomy_Admin {
 	 *   5 => "Term not updated."
 	 *   6 => "Terms deleted."
 	 *
-	 * @param array[] $messages An array of term updated message arrays keyed by taxonomy name.
-	 * @return array[] Updated array of term updated messages.
+	 * @param array<string, array<int, string>> $messages An array of term updated message arrays keyed by taxonomy name.
+	 * @return array<string, array<int, string>> Updated array of term updated messages.
 	 */
 	public function term_updated_messages( array $messages ): array {
 		$messages[ $this->taxo->taxonomy ] = [

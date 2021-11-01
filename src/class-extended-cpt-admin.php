@@ -702,8 +702,8 @@ ICONCSS;
 	 *   9 => "Post scheduled for: [date]. {Preview post}"
 	 *  10 => "Post draft updated. {Preview post}"
 	 *
-	 * @param array[] $messages An array of post updated message arrays keyed by post type.
-	 * @return array[] Updated array of post updated messages.
+	 * @param array<string, array<int, string|false>> $messages An array of post updated message arrays keyed by post type.
+	 * @return array<string, array<int, string|false>> Updated array of post updated messages.
 	 */
 	public function post_updated_messages( array $messages ): array {
 		global $post;
@@ -774,9 +774,9 @@ ICONCSS;
 	 *  - trashed   => "Post moved to the trash." | "[n] posts moved to the trash."
 	 *  - untrashed => "Post restored from the trash." | "[n] posts restored from the trash."
 	 *
-	 * @param array[]           $messages An array of bulk post updated message arrays keyed by post type.
-	 * @param array<string,int> $counts   An array of counts for each key in `$messages`.
-	 * @return array[] Updated array of bulk post updated messages.
+	 * @param array<string, array<string, string>> $messages An array of bulk post updated message arrays keyed by post type.
+	 * @param array<string,int>                    $counts   An array of counts for each key in `$messages`.
+	 * @return array<string, array<string, string>> Updated array of bulk post updated messages.
 	 */
 	public function bulk_post_updated_messages( array $messages, array $counts ): array {
 		$messages[ $this->cpt->post_type ] = [
