@@ -898,7 +898,7 @@ ICONCSS;
 				if ( isset( $col['title_cb'] ) ) {
 					$new_cols[ $id ] = call_user_func( $col['title_cb'], $col );
 				} else {
-					$title = esc_html( $col['title'] ?? $this->get_item_title( $col ) ?? $id );
+					$title = esc_html( $this->get_item_title( $col, $id ) );
 
 					if ( isset( $col['title_icon'] ) ) {
 						$title = sprintf(
@@ -1387,10 +1387,11 @@ ICONCSS;
 	/**
 	 * Returns a sensible title for the current item (usually the arguments array for a column)
 	 *
-	 * @param array<string,mixed> $item An array of arguments.
-	 * @return string|null The item title.
+	 * @param array<string,mixed> $item     An array of arguments.
+	 * @param string              $fallback Fallback item title.
+	 * @return string The item title.
 	 */
-	protected function get_item_title( array $item ): ?string {
+	protected function get_item_title( array $item, string $fallback = '' ): string {
 		if ( isset( $item['taxonomy'] ) ) {
 			$tax = get_taxonomy( $item['taxonomy'] );
 			if ( $tax ) {
@@ -1470,7 +1471,8 @@ ICONCSS;
 			}
 			return $item['connection'];
 		}
-		return null;
+
+		return $fallback;
 	}
 
 	/**

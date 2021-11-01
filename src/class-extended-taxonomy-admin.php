@@ -195,7 +195,7 @@ class Taxonomy_Admin {
 				if ( isset( $col['title_cb'] ) ) {
 					$new_cols[ $id ] = call_user_func( $col['title_cb'], $col );
 				} else {
-					$title = esc_html( $col['title'] ?? $this->get_item_title( $col ) ?? $id );
+					$title = esc_html( $this->get_item_title( $col, $id ) );
 
 					if ( isset( $col['title_icon'] ) ) {
 						$title = sprintf(
@@ -290,14 +290,17 @@ class Taxonomy_Admin {
 	 * Returns a sensible title for the current item (usually the arguments array for a column).
 	 *
 	 * @param array<string,mixed> $item An array of arguments.
+	 * @param string              $fallback Fallback item title.
 	 * @return string The item title.
 	 */
-	protected function get_item_title( array $item ): string {
-		if ( isset( $item['meta_key'] ) ) {
+	protected function get_item_title( array $item, string $fallback = '' ): string {
+		if ( isset( $item['title'] ) ) {
+			return $item['title'];
+		} elseif ( isset( $item['meta_key'] ) ) {
 			return ucwords( trim( str_replace( [ '_', '-' ], ' ', $item['meta_key'] ) ) );
-		} else {
-			return '';
 		}
+
+		return $fallback;
 	}
 
 	/**
