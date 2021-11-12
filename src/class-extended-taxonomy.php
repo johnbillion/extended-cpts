@@ -58,8 +58,8 @@ class Taxonomy {
 		 *
 		 * @since 4.4.1
 		 *
-		 * @param array  $args     The taxonomy arguments.
-		 * @param string $taxonomy The taxonomy name.
+		 * @param array<string,mixed> $args     The taxonomy arguments.
+		 * @param string              $taxonomy The taxonomy name.
 		 */
 		$args = apply_filters( 'ext-taxos/args', $args, $taxonomy );
 
@@ -68,7 +68,7 @@ class Taxonomy {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array $args The taxonomy arguments.
+		 * @param array<string,mixed> $args The taxonomy arguments.
 		 */
 		$args = apply_filters( "ext-taxos/{$taxonomy}/args", $args );
 
@@ -77,8 +77,8 @@ class Taxonomy {
 		 *
 		 * @since 4.4.1
 		 *
-		 * @param string[] $names    The plural, singular, and slug names (if any were specified).
-		 * @param string   $taxonomy The taxonomy name.
+		 * @param array<string,string> $names    The plural, singular, and slug names (if any were specified).
+		 * @param string               $taxonomy The taxonomy name.
 		 */
 		$names = apply_filters( 'ext-taxos/names', $names, $taxonomy );
 
@@ -87,7 +87,7 @@ class Taxonomy {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param string[] $names The plural, singular, and slug names (if any were specified).
+		 * @param array<string,string> $names The plural, singular, and slug names (if any were specified).
 		 */
 		$names = apply_filters( "ext-taxos/{$taxonomy}/names", $names );
 

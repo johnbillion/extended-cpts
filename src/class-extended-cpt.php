@@ -68,8 +68,8 @@ class Post_Type {
 		 *
 		 * @since 4.4.1
 		 *
-		 * @param array  $args      The post type arguments.
-		 * @param string $post_type The post type name.
+		 * @param array<string,mixed> $args      The post type arguments.
+		 * @param string              $post_type The post type name.
 		 */
 		$args = apply_filters( 'ext-cpts/args', $args, $post_type );
 
@@ -78,7 +78,7 @@ class Post_Type {
 		 *
 		 * @since 2.4.0
 		 *
-		 * @param array $args The post type arguments.
+		 * @param array<string,mixed> $args The post type arguments.
 		 */
 		$args = apply_filters( "ext-cpts/{$post_type}/args", $args );
 
@@ -87,8 +87,8 @@ class Post_Type {
 		 *
 		 * @since 4.4.1
 		 *
-		 * @param array<int,string> $names     The plural, singular, and slug names (if any were specified).
-		 * @param string            $post_type The post type name.
+		 * @param array<string,string> $names     The plural, singular, and slug names (if any were specified).
+		 * @param string               $post_type The post type name.
 		 */
 		$names = apply_filters( 'ext-cpts/names', $names, $post_type );
 
@@ -97,7 +97,7 @@ class Post_Type {
 		 *
 		 * @since 2.4.0
 		 *
-		 * @param array<int,string> $names The plural, singular, and slug names (if any were specified).
+		 * @param array<string,string> $names The plural, singular, and slug names (if any were specified).
 		 */
 		$names = apply_filters( "ext-cpts/{$post_type}/names", $names );
 
@@ -384,9 +384,9 @@ class Post_Type {
 				 *
 				 * @since 4.3.0
 				 *
-				 * @param array $return The private query vars.
-				 * @param array $query  The public query vars.
-				 * @param array $filter The filter arguments.
+				 * @param array<string,mixed> $return The private query vars.
+				 * @param array<string,mixed> $query  The public query vars.
+				 * @param array<string,mixed> $filter The filter arguments.
 				 */
 				$return = apply_filters( $hook, $return, $query, $filter );
 				continue;
