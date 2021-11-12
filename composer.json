@@ -34,7 +34,8 @@
 		"vlucas/phpdotenv": "^3",
 		"wp-cli/db-command": "^2.0",
 		"wp-coding-standards/wpcs": "2.3.0",
-		"wp-phpunit/wp-phpunit": "^5.8.0"
+		"wp-phpunit/wp-phpunit": "^5.8.0",
+		"yoast/phpunit-polyfills": "^1.0"
 	},
 	"scripts": {
 		"post-update-cmd": [
