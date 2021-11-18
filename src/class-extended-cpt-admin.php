@@ -269,9 +269,9 @@ class Post_Type_Admin {
 				 *
 				 * @since 4.3.0
 				 *
-				 * @param Post_Type_Admin $this   The post type admin controller instance.
-				 * @param array              $filter The filter arguments.
-				 * @param string             $id     The filter's `id` attribute value.
+				 * @param Post_Type_Admin $controller The post type admin controller instance.
+				 * @param array           $filter     The filter arguments.
+				 * @param string          $id         The filter's `id` attribute value.
 				 */
 				do_action( $hook, $this, $filter, $id );
 				continue;

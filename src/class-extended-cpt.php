@@ -680,7 +680,7 @@ class Post_Type {
 
 			$terms = get_the_terms( $post, $tax );
 
-			if ( $terms ) {
+			if ( $terms && ! is_wp_error( $terms ) ) {
 				/**
 				 * Filter the term that gets used in the `$tax` permalink token.
 				 *
