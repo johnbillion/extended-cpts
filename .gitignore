@@ -1,6 +1,8 @@
+/codeception.yml
 /composer.lock
 /phpcs.xml
-/phpunit.xml
+/tests/_output/
+/tests/_support/_generated
 /tests/.env
 /tests/cache
 /tests/wordpress

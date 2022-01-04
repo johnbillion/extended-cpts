@@ -30,6 +30,7 @@
 		"automattic/phpcs-neutron-standard": "1.7.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
 		"johnbillion/falsey-assertequals-detector": "*",
+		"lucatume/wp-browser": "^3.0",
 		"phpcompatibility/phpcompatibility-wp": "^2",
 		"phpstan/phpstan": "1.0.0",
 		"phpunit/phpunit": "^7",
@@ -37,9 +38,7 @@
 		"szepeviktor/phpstan-wordpress": "^1.0",
 		"vlucas/phpdotenv": "^3",
 		"wp-cli/db-command": "^2.0",
-		"wp-coding-standards/wpcs": "2.3.0",
-		"wp-phpunit/wp-phpunit": "^5.8.0",
-		"yoast/phpunit-polyfills": "^1.0"
+		"wp-coding-standards/wpcs": "2.3.0"
 	},
 	"scripts": {
 		"post-update-cmd": [
