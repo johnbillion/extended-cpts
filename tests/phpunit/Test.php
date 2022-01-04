@@ -307,7 +307,7 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 		return $matches['version'];
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 
 		parent::tearDown();
 

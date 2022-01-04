@@ -5,7 +5,7 @@ namespace ExtCPTs\Tests;
 
 class Setup extends Test {
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 		$this->register_post_types();
 	}

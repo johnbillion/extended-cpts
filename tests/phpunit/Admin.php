@@ -5,7 +5,7 @@ namespace ExtCPTs\Tests;
 
 abstract class Admin extends Test {
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		// lie about being in the admin area so is_admin() returns true
@@ -61,7 +61,7 @@ abstract class Admin extends Test {
 		return $vars;
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 
 		// reset
