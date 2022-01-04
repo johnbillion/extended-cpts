@@ -36,7 +36,6 @@
 		"phpunit/phpunit": "^9",
 		"roots/wordpress": "^5.8.0",
 		"szepeviktor/phpstan-wordpress": "^1.0",
-		"wp-cli/db-command": "^2.0",
 		"wp-coding-standards/wpcs": "2.3.0"
 	},
 	"scripts": {
@@ -50,9 +49,7 @@
 			"vendor/bin/phpstan analyze"
 		],
 		"test:ut": [
-			"vendor/bin/wp db reset --yes --path=tests/wordpress #",
-			"export WP_MULTISITE=0 && vendor/bin/phpunit --verbose --colors=always --exclude-group=ms-required",
-			"export WP_MULTISITE=1 && vendor/bin/phpunit --verbose --colors=always --exclude-group=ms-excluded"
+			"vendor/bin/codecept run phpunit"
 		],
 		"test": [
 			"@test:cs",
