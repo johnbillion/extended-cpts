@@ -32,6 +32,3 @@ jobs:
 
     - name: Run the tests
       run: composer test
-      env:
-        MYSQL_DATABASE: wordpress
-        WP_TESTS_DB_PASS: root
