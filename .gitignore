@@ -1,6 +1,7 @@
 /codeception.yml
 /composer.lock
 /phpcs.xml
+/phpstan.neon
 /tests/_output/
 /tests/_support/_generated
 /tests/.env
