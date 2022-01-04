@@ -30,7 +30,7 @@
 		"automattic/phpcs-neutron-standard": "1.7.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
 		"johnbillion/falsey-assertequals-detector": "*",
-		"lucatume/wp-browser": "^3.0",
+		"lucatume/wp-browser": "dev-master",
 		"phpcompatibility/phpcompatibility-wp": "^2",
 		"phpstan/phpstan": "1.0.0",
 		"phpunit/phpunit": "^9",
