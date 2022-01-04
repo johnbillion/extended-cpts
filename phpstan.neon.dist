@@ -2,7 +2,6 @@ includes:
 	- vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
 	level: 8
-	inferPrivatePropertyTypeFromConstructor: true
 	paths:
 		- functions.php
 		- src/
