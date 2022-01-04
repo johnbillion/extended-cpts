@@ -43,13 +43,13 @@
 			"@php -r \"! file_exists( 'tests/.env' ) && copy( 'tests/.env.dist', 'tests/.env' );\""
 		],
 		"test:cs": [
-			"vendor/bin/phpcs -nps --colors --report-code --report-summary --report-width=80 --cache=tests/cache/phpcs ."
+			"phpcs -nps --colors --report-code --report-summary --report-width=80 --cache=tests/cache/phpcs ."
 		],
 		"test:analyze": [
-			"vendor/bin/phpstan analyze"
+			"phpstan analyze"
 		],
 		"test:ut": [
-			"vendor/bin/codecept run phpunit"
+			"codecept run phpunit"
 		],
 		"test": [
 			"@test:cs",
