@@ -328,8 +328,8 @@ class Setup extends Test {
 		try {
 			register_extended_post_type( 'public_taxonomy' );
 			$this->fail( 'register_extended_post_type() should trigger an error when registering a post type which clashes with a taxonomy' );
-		} catch ( \PHPUnit\Framework\Error\Error $e ) {
-			$this->assertContains( 'public_taxonomy', $e->getMessage() );
+		} catch ( \PHPUnit\Framework\Exception $e ) {
+			$this->assertStringContainsString( 'public_taxonomy', $e->getMessage() );
 			$this->assertFalse( post_type_exists( 'public_taxonomy' ) );
 		}
 
@@ -366,8 +366,8 @@ class Setup extends Test {
 		try {
 			register_extended_post_type( $name );
 			$this->fail( 'register_extended_post_type() should trigger an error when registering a post type which causes an error' );
-		} catch ( \PHPUnit\Framework\Error\Error $e ) {
-			$this->assertContains( "$max_length", $e->getMessage() );
+		} catch ( \PHPUnit\Framework\Exception $e ) {
+			$this->assertStringContainsString( "$max_length", $e->getMessage() );
 		}
 
 		_unregister_post_type( $name );
