@@ -1,9 +1,9 @@
 <?php
 declare( strict_types=1 );
 
-namespace ExtCPTs;
+namespace ExtCPTs\Tests;
 
-abstract class Test extends \WP_UnitTestCase {
+abstract class Test extends \Codeception\TestCase\WPTestCase {
 
 	use \FalseyAssertEqualsDetector\Test;
 
@@ -11,6 +11,11 @@ abstract class Test extends \WP_UnitTestCase {
 	public $taxos = array();
 	public $posts = array();
 	public $args  = array();
+
+	/**
+	 * @var \WpunitTester
+	 */
+	protected $tester;
 
 	protected function register_post_types() {
 

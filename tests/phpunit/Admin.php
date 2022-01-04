@@ -3,8 +3,6 @@ declare( strict_types=1 );
 
 namespace ExtCPTs\Tests;
 
-use ExtCPTs\Test;
-
 abstract class Admin extends Test {
 
 	public function setUp() {
