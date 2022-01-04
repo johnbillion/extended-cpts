@@ -36,7 +36,6 @@
 		"phpunit/phpunit": "^7",
 		"roots/wordpress": "^5.8.0",
 		"szepeviktor/phpstan-wordpress": "^1.0",
-		"vlucas/phpdotenv": "^3",
 		"wp-cli/db-command": "^2.0",
 		"wp-coding-standards/wpcs": "2.3.0"
 	},
