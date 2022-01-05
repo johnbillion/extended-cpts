@@ -9,7 +9,7 @@ modules:
   config:
     WPLoader:
       wpRootFolder: "tests/wordpress"
-      configFile: "vendor/autoload.php"
+      configFile: "tests/integration/config.php"
       dbName: "%WP_TESTS_DB_NAME%"
       dbHost: "%WP_TESTS_DB_HOST%"
       dbUser: "%WP_TESTS_DB_USER%"
