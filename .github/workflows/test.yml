@@ -64,5 +64,10 @@ jobs:
         composer require --dev --update-with-dependencies --prefer-dist roots/wordpress="~${{ matrix.wp }}.0"
         mysqladmin -uroot -proot create wordpress_test
 
-    - name: Run the tests
-      run: composer test
+    - name: Run the integration tests
+      run: composer test:integration
+
+    - name: Run the code sniffers
+      run: |
+        composer test:cs
+        composer test:analyze
