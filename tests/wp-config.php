@@ -3,6 +3,8 @@
  * This is the configuration file that's used for WP-CLI commands.
  */
 
+mysqli_report( MYSQLI_REPORT_OFF );
+
 $_root_dir = dirname( __DIR__ );
 $_env_dir  = __DIR__;
 
@@ -34,7 +36,7 @@ define( 'DB_COLLATE', '' );
  * You can have multiple installations in one database if you give each
  * a unique prefix. Only numbers, letters, and underscores please!
  */
-$table_prefix = 'wp_';
+$table_prefix = 'wptests_';
 
 /** Sets up WordPress vars and included files. */
 require_once ABSPATH . 'wp-settings.php';
