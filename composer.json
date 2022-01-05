@@ -48,18 +48,18 @@
 		"test:analyze": [
 			"phpstan analyze"
 		],
-		"test:ut": [
-			"codecept run phpunit"
+		"test:integration": [
+			"codecept run integration"
 		],
 		"test": [
 			"@test:cs",
 			"@test:analyze",
-			"@test:ut"
+			"@test:integration"
 		]
 	},
 	"autoload": {
 		"psr-4": {
-			"ExtCPTs\\Tests\\": "tests/phpunit"
+			"ExtCPTs\\Tests\\": "tests/integration"
 		},
 		"files": [
 			"extended-cpts.php"
