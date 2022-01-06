@@ -311,19 +311,4 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 
 		return $matches['version'];
 	}
-
-	public function tearDown(): void {
-
-		parent::tearDown();
-
-		foreach ( $this->cpts as $cpt => $cpto ) {
-			$pto = get_post_type_object( $cpt );
-			if ( ! $pto->_builtin ) {
-				_unregister_post_type( $cpt );
-				_unregister_taxonomy( "{$cpt}_category" );
-			}
-		}
-
-	}
-
 }

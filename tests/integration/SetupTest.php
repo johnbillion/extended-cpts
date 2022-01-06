@@ -319,9 +319,6 @@ class Setup extends Test {
 			$this->assertStringContainsString( 'public_taxonomy', $e->getMessage() );
 			$this->assertFalse( post_type_exists( 'public_taxonomy' ) );
 		}
-
-		_unregister_taxonomy( 'public_taxonomy' );
-
 	}
 
 	public function testPrivateTaxonomyWithNoQueryVarDoesNotTriggerError() {
@@ -332,10 +329,6 @@ class Setup extends Test {
 
 		register_extended_post_type( 'private_taxonomy' );
 		$this->assertTrue( post_type_exists( 'private_taxonomy' ) );
-
-		_unregister_post_type( 'private_taxonomy' );
-		_unregister_taxonomy( 'private_taxonomy' );
-
 	}
 
 	/**
