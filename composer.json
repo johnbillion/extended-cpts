@@ -52,8 +52,6 @@
 			"phpstan analyze"
 		],
 		"test:integration": [
-			"wp --path=tests/wordpress db reset --yes",
-			"wp --path=tests/wordpress core install --title=\"Example\" --admin_user=\"admin\" --admin_password=\"admin\" --admin_email=\"admin@example.com\" --skip-email --url=http://example.org",
 			"codecept run integration"
 		],
 		"test": [
