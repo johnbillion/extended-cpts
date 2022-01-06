@@ -132,7 +132,7 @@ class PostTypeAdmin {
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param PostTypeAdmin $instance The extended post type admin instance.
+		 * @param \ExtCPTs\PostTypeAdmin $instance The extended post type admin instance.
 		 */
 		do_action( "ext-cpts/{$this->cpt->post_type}/admin-instance", $this );
 	}
@@ -269,7 +269,7 @@ class PostTypeAdmin {
 				 *
 				 * @since 4.3.0
 				 *
-				 * @param PostTypeAdmin $controller The post type admin controller instance.
+				 * @param \ExtCPTs\PostTypeAdmin $controller The post type admin controller instance.
 				 * @param array         $filter     The filter arguments.
 				 * @param string        $id         The filter's `id` attribute value.
 				 */

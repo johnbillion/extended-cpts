@@ -263,7 +263,7 @@ class PostType {
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param PostType $instance The extended post type instance.
+		 * @param \ExtCPTs\PostType $instance The extended post type instance.
 		 */
 		do_action( "ext-cpts/{$this->post_type}/instance", $this );
 	}

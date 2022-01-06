@@ -199,7 +199,7 @@ class Taxonomy {
 		 *
 		 * @since 4.0.0
 		 *
-		 * @param Taxonomy $instance The extended taxonomy instance.
+		 * @param \ExtCPTs\Taxonomy $instance The extended taxonomy instance.
 		 */
 		do_action( "ext-taxos/{$this->taxonomy}/instance", $this );
 	}

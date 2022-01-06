@@ -85,7 +85,7 @@ class TaxonomyAdmin {
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param TaxonomyAdmin $instance The extended taxonomy admin instance.
+		 * @param \ExtCPTs\TaxonomyAdmin $instance The extended taxonomy admin instance.
 		 */
 		do_action( "ext-taxos/{$this->taxo->taxonomy}/admin-instance", $this );
 	}
