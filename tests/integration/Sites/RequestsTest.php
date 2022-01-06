@@ -14,7 +14,7 @@ class Requests extends Site {
 
 		global $wp, $wp_query;
 
-		$filters = array_keys( $this->args['hello']['site_filters'] );
+		$filters = array_keys( $this->args['hello']->site_filters );
 		$found = array_intersect( $filters, $wp->public_query_vars );
 
 		$this->assertEquals( $filters, $found );
@@ -28,7 +28,7 @@ class Requests extends Site {
 
 		global $wp, $wp_query;
 
-		$filters = array_keys( $this->args['hello']['admin_cols'] );
+		$filters = array_keys( $this->args['hello']->admin_cols );
 		$found = array_intersect( $filters, $wp->public_query_vars );
 
 		$this->assertSame( array(), $found );
@@ -70,7 +70,7 @@ class Requests extends Site {
 
 		$this->assertEquals( array_merge( array(
 			'post_type' => 'hello',
-		), $this->args['hello']['archive'] ), $wp->query_vars );
+		), $this->args['hello']->archive ), $wp->query_vars );
 
 	}
 
@@ -85,7 +85,7 @@ class Requests extends Site {
 		$this->assertEquals( array_merge( array(
 			'post_type'                       => 'hello',
 			'test_site_filters_post_meta_key' => 'Alpha',
-		), $this->args['hello']['archive'] ), $wp->query_vars );
+		), $this->args['hello']->archive ), $wp->query_vars );
 
 	}
 
@@ -100,7 +100,7 @@ class Requests extends Site {
 		$this->assertEquals( array_merge( array(
 			'post_type' => 'hello',
 			'orderby'   => 'test_site_sortables_post_meta',
-		), $this->args['hello']['archive'] ), $wp->query_vars );
+		), $this->args['hello']->archive ), $wp->query_vars );
 
 	}
 

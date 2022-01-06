@@ -24,106 +24,111 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 		$wp_rewrite->init();
 		$wp_rewrite->set_permalink_structure( '/%year%/%monthnum%/%day%/%postname%/' );
 
-		$this->args['hello'] = array(
-			'site_sortables' => array(
-				'test_site_sortables_post_meta' => array(
-					'meta_key' => 'test_meta_key',
-				),
-				'test_site_sortables_post_field' => array(
-					'post_field' => 'name',
-				),
-				'test_site_sortables_taxonomy' => array(
-					'taxonomy' => 'hello_category',
-				),
+		$hello = new \ExtCPTs\Args\PostType;
+		$hello->site_sortables = array(
+			'test_site_sortables_post_meta' => array(
+				'meta_key' => 'test_meta_key',
 			),
-			'admin_cols' => array(
-				'test_admin_cols_post_meta' => array(
-					'meta_key' => 'test_meta_key',
-				),
-				'test_admin_cols_post_field' => array(
-					'post_field' => 'name',
-				),
-				'test_admin_cols_taxonomy' => array(
-					'taxonomy' => 'hello_category',
-				),
+			'test_site_sortables_post_field' => array(
+				'post_field' => 'name',
 			),
-			'site_filters' => array(
-				'test_site_filters_post_meta_key' => array(
-					'meta_key' => 'test_meta_key',
-				),
-				'test_site_filters_post_meta_search' => array(
-					'meta_search_key' => 'test_meta_key',
-				),
-				'test_site_filters_post_meta_exists' => array(
-					'meta_exists' => array(
-						'test_meta_key' => 'Test',
-					),
-				),
-				'test_site_filters_post_meta_key_exists' => array(
-					'meta_key_exists' => array(
-						'test_meta_key' => 'Test',
-					),
-				),
-				'test_site_filters_with_cap' => array(
-					'meta_key' => 'test_meta_key',
-					'cap'      => 'have_kittens',
-				),
-				'test_site_filters_post_meta_query' => array(
-					'meta_key'   => 'test_meta_key',
-					'meta_query' => array(
-						'compare' => '>=',
-						'value'   => 'B',
-						'type'    => 'CHAR',
-					),
-				),
-				'test_site_filters_date_from' => array(
-					'post_date' => 'after',
-				),
-				'test_site_filters_date_to' => array(
-					'post_date' => 'before',
-				),
-				'test_site_filters_invalid' => array(
-					'meta_query' => array(
-						'key'     => 'foo',
-						'value'   => 'bar',
-					),
-				),
+			'test_site_sortables_taxonomy' => array(
+				'taxonomy' => 'hello_category',
 			),
-			'archive' => array(
-				'orderby' => 'post_title',
-			),
-			'query_var' => 'hi',
 		);
+		$hello->admin_cols = array(
+			'test_admin_cols_post_meta' => array(
+				'meta_key' => 'test_meta_key',
+			),
+			'test_admin_cols_post_field' => array(
+				'post_field' => 'name',
+			),
+			'test_admin_cols_taxonomy' => array(
+				'taxonomy' => 'hello_category',
+			),
+		);
+		$hello->site_filters = array(
+			'test_site_filters_post_meta_key' => array(
+				'meta_key' => 'test_meta_key',
+			),
+			'test_site_filters_post_meta_search' => array(
+				'meta_search_key' => 'test_meta_key',
+			),
+			'test_site_filters_post_meta_exists' => array(
+				'meta_exists' => array(
+					'test_meta_key' => 'Test',
+				),
+			),
+			'test_site_filters_post_meta_key_exists' => array(
+				'meta_key_exists' => array(
+					'test_meta_key' => 'Test',
+				),
+			),
+			'test_site_filters_with_cap' => array(
+				'meta_key' => 'test_meta_key',
+				'cap'      => 'have_kittens',
+			),
+			'test_site_filters_post_meta_query' => array(
+				'meta_key'   => 'test_meta_key',
+				'meta_query' => array(
+					'compare' => '>=',
+					'value'   => 'B',
+					'type'    => 'CHAR',
+				),
+			),
+			'test_site_filters_date_from' => array(
+				'post_date' => 'after',
+			),
+			'test_site_filters_date_to' => array(
+				'post_date' => 'before',
+			),
+			'test_site_filters_invalid' => array(
+				'meta_query' => array(
+					'key'     => 'foo',
+					'value'   => 'bar',
+				),
+			),
+		);
+		$hello->archive = array(
+			'orderby' => 'post_title',
+		);
+		$hello->query_var = 'hi';
 
-		$this->cpts['hello'] = register_extended_post_type( 'hello', $this->args['hello'] );
+		$this->args['hello'] = $hello;
+
+		$this->cpts['hello'] = register_extended_post_type( 'hello', $hello->toArray() );
 		$this->cpts['hello']->add_taxonomy( 'hello_category' );
 
-		$this->cpts['person'] = register_extended_post_type( 'person', array(
-			'has_archive'    => 'team',
-			'show_in_feed'   => true,
-			'site_sortables' => array(
-				'test_site_sortables_post_name' => array(
-					'post_field' => 'post_name',
-					'default'    => 'asc',
-				),
+		$person = new \ExtCPTs\Args\PostType;
+
+		$person->has_archive = 'team';
+		$person->show_in_feed = true;
+		$person->site_sortables = array(
+			'test_site_sortables_post_name' => array(
+				'post_field' => 'post_name',
+				'default'    => 'asc',
 			),
-			'admin_cols' => array(
-				'test_admin_cols_post_name' => array(
-					'post_field' => 'post_name',
-					'default'    => 'asc',
-				),
-				'test_admin_cols_unsortable' => array(
-					'meta_key' => 'test_meta_key',
-					'sortable' => false,
-				),
-				'test_admin_cols_test_meta_key' => array(
-					'meta_key' => 'test_meta_key',
-				),
-				'test_admin_cols_person_category' => array(
-					'taxonomy' => 'person_category',
-				),
+		);
+		$person->admin_cols = array(
+			'test_admin_cols_post_name' => array(
+				'post_field' => 'post_name',
+				'default'    => 'asc',
 			),
-		), array(
+			'test_admin_cols_unsortable' => array(
+				'meta_key' => 'test_meta_key',
+				'sortable' => false,
+			),
+			'test_admin_cols_test_meta_key' => array(
+				'meta_key' => 'test_meta_key',
+			),
+			'test_admin_cols_person_category' => array(
+				'taxonomy' => 'person_category',
+			),
+		);
+
+		$this->args['person'] = $person;
+
+		$this->cpts['person'] = register_extended_post_type( 'person', $person->toArray(), array(
 			'plural' => 'People',
 		) );
 		$this->cpts['person']->add_taxonomy( 'person_category' );
