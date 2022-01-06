@@ -211,7 +211,7 @@ class TaxonomyAdmin {
 		}
 
 		# Re-add any custom columns:
-		$custom   = array_diff_key( $cols, $this->_cols );
+		$custom = array_diff_key( $cols, $this->_cols );
 		$new_cols = array_merge( $new_cols, $custom );
 
 		$this->the_cols = $new_cols;
@@ -315,8 +315,8 @@ class TaxonomyAdmin {
 		}
 
 		$post_type = $object_type;
-		$post      = $object;
-		$taxos     = get_post_taxonomies( $post );
+		$post = $object;
+		$taxos = get_post_taxonomies( $post );
 
 		if ( in_array( $this->taxo->taxonomy, $taxos, true ) ) {
 			/** @var WP_Taxonomy */
@@ -422,7 +422,7 @@ class TaxonomyAdmin {
 	protected function do_meta_box( WP_Post $post, \Walker $walker = null, bool $show_none = false, string $type = 'checklist' ): void {
 		$taxonomy = $this->taxo->taxonomy;
 		/** @var WP_Taxonomy */
-		$tax      = get_taxonomy( $taxonomy );
+		$tax = get_taxonomy( $taxonomy );
 		$selected = wp_get_object_terms(
 			$post->ID,
 			$taxonomy,
@@ -594,10 +594,10 @@ class TaxonomyAdmin {
 		}
 
 		$text = self::n( $taxonomy->labels->singular_name, $taxonomy->labels->name, (int) $count );
-		$num  = number_format_i18n( (int) $count );
+		$num = number_format_i18n( (int) $count );
 
 		# This is absolutely not localisable. WordPress 3.8 didn't add a new taxonomy label.
-		$url  = add_query_arg(
+		$url = add_query_arg(
 			[
 				'taxonomy'  => $this->taxo->taxonomy,
 				'post_type' => reset( $taxonomy->object_type ),

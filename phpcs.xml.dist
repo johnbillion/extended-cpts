@@ -15,11 +15,14 @@
 		<exclude name="NeutronStandard.Globals.DisallowGlobalFunctions.GlobalFunctions"/>
 		<exclude name="Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma"/>
 		<exclude name="NeutronStandard.Functions.DisallowCallUserFunc.CallUserFunc"/>
+		<exclude name="NeutronStandard.AssignAlign.DisallowAssignAlign.Aligned"/>
 	</rule>
 
 	<!-- Include the WordPress-Extra standard. -->
 	<rule ref="WordPress-Extra">
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
+		<exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned"/>
 		<exclude name="WordPress.DateTime.RestrictedFunctions.date_date"/>
 		<exclude name="WordPress.Files.FileName"/>
 		<exclude name="WordPress.PHP.DisallowShortTernary.Found"/>

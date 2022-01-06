@@ -169,7 +169,7 @@ class PostTypeAdmin {
 		foreach ( $this->args['admin_cols'] as $id => $col ) {
 			if ( is_array( $col ) && isset( $col['default'] ) ) {
 				$_GET['orderby'] = $id;
-				$_GET['order']   = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
+				$_GET['order'] = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
 				break;
 			}
 		}
@@ -431,7 +431,7 @@ class PostTypeAdmin {
 				}
 
 				$selected = wp_unslash( get_query_var( $filter_key ) );
-				$fields   = $filter['meta_exists'] ?? $filter['meta_key_exists'];
+				$fields = $filter['meta_exists'] ?? $filter['meta_key_exists'];
 
 				if ( 1 === count( $fields ) ) {
 					# Output a checkbox:
@@ -629,19 +629,19 @@ class PostTypeAdmin {
 		# Get the labels and format the counts:
 		/** @var \stdClass */
 		$count = wp_count_posts( $this->cpt->post_type );
-		$text  = self::n( $pto->labels->singular_name, $pto->labels->name, (int) $count->publish );
-		$num   = number_format_i18n( $count->publish );
+		$text = self::n( $pto->labels->singular_name, $pto->labels->name, (int) $count->publish );
+		$num = number_format_i18n( $count->publish );
 
 		# This is absolutely not localisable. WordPress 3.8 didn't add a new post type label.
-		$url   = add_query_arg(
+		$url = add_query_arg(
 			[
 				'post_type' => $this->cpt->post_type,
 			],
 			admin_url( 'edit.php' )
 		);
 		$class = 'cpt-' . $this->cpt->post_type . '-count';
-		$text  = '<a href="' . esc_url( $url ) . '" class="' . esc_attr( $class ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
-		$css   = <<<'ICONCSS'
+		$text = '<a href="' . esc_url( $url ) . '" class="' . esc_attr( $class ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
+		$css = <<<'ICONCSS'
 <style>
 #dashboard_right_now li a.%1$s:before {
 	content: '\%2$s';
@@ -653,7 +653,7 @@ ICONCSS;
 		// https://core.trac.wordpress.org/ticket/33714
 		// https://github.com/WordPress/dashicons/blob/master/codepoints.json
 		if ( is_string( $pto->menu_icon ) && 0 === strpos( $pto->menu_icon, 'dashicons-' ) ) {
-			$contents   = file_get_contents( __DIR__ . '/dashicons-codepoints.json' );
+			$contents = file_get_contents( __DIR__ . '/dashicons-codepoints.json' );
 			$codepoints = json_decode( $contents ?: '', true );
 			$unprefixed = str_replace( 'dashicons-', '', $pto->menu_icon );
 
@@ -712,40 +712,40 @@ ICONCSS;
 		$pto = get_post_type_object( $this->cpt->post_type );
 
 		$messages[ $this->cpt->post_type ] = [
-			1  => sprintf(
+			1 => sprintf(
 				( $pto->publicly_queryable ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ),
 				esc_html( $this->cpt->post_singular ),
 				esc_url( get_permalink( $post ) ),
 				esc_html( $this->cpt->post_singular_low )
 			),
-			2  => 'Custom field updated.',
-			3  => 'Custom field deleted.',
-			4  => sprintf(
+			2 => 'Custom field updated.',
+			3 => 'Custom field deleted.',
+			4 => sprintf(
 				'%s updated.',
 				esc_html( $this->cpt->post_singular )
 			),
-			5  => isset( $_GET['revision'] ) ? sprintf(
+			5 => isset( $_GET['revision'] ) ? sprintf(
 				'%1$s restored to revision from %2$s',
 				esc_html( $this->cpt->post_singular ),
 				wp_post_revision_title( intval( $_GET['revision'] ), false )
 			) : false,
-			6  => sprintf(
+			6 => sprintf(
 				( $pto->publicly_queryable ? '%1$s published. <a href="%2$s">View %3$s</a>' : '%1$s published.' ),
 				esc_html( $this->cpt->post_singular ),
 				esc_url( get_permalink( $post ) ),
 				esc_html( $this->cpt->post_singular_low )
 			),
-			7  => sprintf(
+			7 => sprintf(
 				'%s saved.',
 				esc_html( $this->cpt->post_singular )
 			),
-			8  => sprintf(
+			8 => sprintf(
 				( $pto->publicly_queryable ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ),
 				esc_html( $this->cpt->post_singular ),
 				esc_url( get_preview_post_link( $post ) ),
 				esc_html( $this->cpt->post_singular_low )
 			),
-			9  => sprintf(
+			9 => sprintf(
 				( $pto->publicly_queryable ? '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview %4$s</a>' : '%1$s scheduled for: <strong>%2$s</strong>.' ),
 				esc_html( $this->cpt->post_singular ),
 				esc_html( date_i18n( 'M j, Y @ G:i', strtotime( $post->post_date ) ) ),
@@ -780,25 +780,25 @@ ICONCSS;
 	 */
 	public function bulk_post_updated_messages( array $messages, array $counts ): array {
 		$messages[ $this->cpt->post_type ] = [
-			'updated'   => sprintf(
+			'updated' => sprintf(
 				self::n( '%2$s updated.', '%1$s %3$s updated.', $counts['updated'] ),
 				esc_html( number_format_i18n( $counts['updated'] ) ),
 				esc_html( $this->cpt->post_singular ),
 				esc_html( $this->cpt->post_plural_low )
 			),
-			'locked'    => sprintf(
+			'locked' => sprintf(
 				self::n( '%2$s not updated, somebody is editing it.', '%1$s %3$s not updated, somebody is editing them.', $counts['locked'] ),
 				esc_html( number_format_i18n( $counts['locked'] ) ),
 				esc_html( $this->cpt->post_singular ),
 				esc_html( $this->cpt->post_plural_low )
 			),
-			'deleted'   => sprintf(
+			'deleted' => sprintf(
 				self::n( '%2$s permanently deleted.', '%1$s %3$s permanently deleted.', $counts['deleted'] ),
 				esc_html( number_format_i18n( $counts['deleted'] ) ),
 				esc_html( $this->cpt->post_singular ),
 				esc_html( $this->cpt->post_plural_low )
 			),
-			'trashed'   => sprintf(
+			'trashed' => sprintf(
 				self::n( '%2$s moved to the trash.', '%1$s %3$s moved to the trash.', $counts['trashed'] ),
 				esc_html( number_format_i18n( $counts['trashed'] ) ),
 				esc_html( $this->cpt->post_singular ),
@@ -855,7 +855,7 @@ ICONCSS;
 		}
 
 		$new_cols = [];
-		$keep     = [
+		$keep = [
 			'cb',
 			'title',
 		];
@@ -914,7 +914,7 @@ ICONCSS;
 		}
 
 		# Re-add any custom columns:
-		$custom   = array_diff_key( $cols, $this->_cols );
+		$custom = array_diff_key( $cols, $this->_cols );
 		$new_cols = array_merge( $new_cols, $custom );
 
 		$this->the_cols = $new_cols;
@@ -1023,7 +1023,7 @@ ICONCSS;
 	 */
 	public function col_taxonomy( WP_Post $post, string $taxonomy, array $args ): void {
 		$terms = get_the_terms( $post, $taxonomy );
-		$tax   = get_taxonomy( $taxonomy );
+		$tax = get_taxonomy( $taxonomy );
 
 		if ( is_wp_error( $terms ) ) {
 			echo esc_html( $terms->get_error_message() );
@@ -1076,10 +1076,10 @@ ICONCSS;
 						break;
 
 					case 'list':
-						$link  = add_query_arg(
+						$link = add_query_arg(
 							[
 								'post_type' => $post->post_type,
-								$taxonomy   => $term->slug,
+								$taxonomy => $term->slug,
 							],
 							admin_url( 'edit.php' )
 						);
@@ -1219,12 +1219,12 @@ ICONCSS;
 		}
 
 		$_post = $post;
-		$meta  = [];
-		$out   = [];
+		$meta = [];
+		$out = [];
 		$field = 'connected_' . $connection;
 
 		if ( isset( $args['field'] ) && isset( $args['value'] ) ) {
-			$meta   = [
+			$meta = [
 				'connected_meta' => [
 					$args['field'] => $args['value'],
 				],
@@ -1300,7 +1300,7 @@ ICONCSS;
 						break;
 
 					case 'list':
-						$link  = add_query_arg(
+						$link = add_query_arg(
 							array_merge(
 								[
 									'post_type'       => $_post->post_type,

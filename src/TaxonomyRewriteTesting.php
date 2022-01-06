@@ -27,10 +27,10 @@ class TaxonomyRewriteTesting extends ExtendedRewriteTesting {
 			return [];
 		}
 
-		$struct     = $wp_rewrite->extra_permastructs[ $this->taxo->taxonomy ];
+		$struct = $wp_rewrite->extra_permastructs[ $this->taxo->taxonomy ];
 		/** @var WP_Taxonomy */
-		$tax        = get_taxonomy( $this->taxo->taxonomy );
-		$name       = sprintf( '%s (%s)', $tax->labels->name, $this->taxo->taxonomy );
+		$tax = get_taxonomy( $this->taxo->taxonomy );
+		$name = sprintf( '%s (%s)', $tax->labels->name, $this->taxo->taxonomy );
 
 		return [
 			$name => $this->get_rewrites( $struct, [] ),

@@ -15,7 +15,7 @@ class Requests extends Site {
 		global $wp, $wp_query;
 
 		$filters = array_keys( $this->args['hello']['site_filters'] );
-		$found   = array_intersect( $filters, $wp->public_query_vars );
+		$found = array_intersect( $filters, $wp->public_query_vars );
 
 		$this->assertEquals( $filters, $found );
 
@@ -29,7 +29,7 @@ class Requests extends Site {
 		global $wp, $wp_query;
 
 		$filters = array_keys( $this->args['hello']['admin_cols'] );
-		$found   = array_intersect( $filters, $wp->public_query_vars );
+		$found = array_intersect( $filters, $wp->public_query_vars );
 
 		$this->assertSame( array(), $found );
 

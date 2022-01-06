@@ -112,8 +112,8 @@ class Taxonomy {
 		}
 
 		$this->object_type = $object_type;
-		$this->taxonomy    = strtolower( $taxonomy );
-		$this->tax_slug    = strtolower( $this->tax_slug );
+		$this->taxonomy = strtolower( $taxonomy );
+		$this->tax_slug = strtolower( $this->tax_slug );
 
 		# Build our base taxonomy names:
 		# Lower-casing is not forced if the name looks like an initialism, eg. FAQ.

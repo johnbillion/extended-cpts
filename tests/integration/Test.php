@@ -7,10 +7,10 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 
 	use \FalseyAssertEqualsDetector\Test;
 
-	public $cpts  = array();
+	public $cpts = array();
 	public $taxos = array();
 	public $posts = array();
-	public $args  = array();
+	public $args = array();
 
 	/**
 	 * @var \WpunitTester
@@ -95,7 +95,7 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 			'query_var' => 'hi',
 		);
 
-		$this->cpts['hello']  = register_extended_post_type( 'hello', $this->args['hello'] );
+		$this->cpts['hello'] = register_extended_post_type( 'hello', $this->args['hello'] );
 		$this->cpts['hello']->add_taxonomy( 'hello_category' );
 
 		$this->cpts['person'] = register_extended_post_type( 'person', array(
@@ -297,7 +297,7 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 	}
 
 	protected static function get_minimum_version( string $type, string $filename ) {
-		$file    = file_get_contents( $filename );
+		$file = file_get_contents( $filename );
 		$pattern = '/^\* \*\*' . preg_quote( $type ) . ':\*\* (?P<version>[0-9]\.[0-9])/m';
 
 		if ( ! preg_match( $pattern, $file, $matches ) ) {

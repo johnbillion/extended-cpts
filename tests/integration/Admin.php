@@ -27,7 +27,7 @@ abstract class Admin extends Test {
 		wp_set_current_user( 1 ); // @TODO change
 
 		$GLOBALS['wp_the_query'] = new \WP_Query( $args );
-		$GLOBALS['wp_query']     = $GLOBALS['wp_the_query'];
+		$GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 
 		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 
@@ -52,9 +52,9 @@ abstract class Admin extends Test {
 
 		// https://core.trac.wordpress.org/changeset/44338
 		if ( version_compare( $GLOBALS['wp_version'], '5.0.2', '>=' ) ) {
-			$vars['order']       = '';
-			$vars['orderby']     = '';
-			$vars['perm']        = '';
+			$vars['order'] = '';
+			$vars['orderby'] = '';
+			$vars['perm'] = '';
 			$vars['post_status'] = '';
 		}
 

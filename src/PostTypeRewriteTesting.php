@@ -30,10 +30,10 @@ class PostTypeRewriteTesting extends ExtendedRewriteTesting {
 			return [];
 		}
 
-		$struct     = $wp_rewrite->extra_permastructs[ $this->cpt->post_type ];
+		$struct = $wp_rewrite->extra_permastructs[ $this->cpt->post_type ];
 		/** @var \WP_Post_Type */
-		$pto        = get_post_type_object( $this->cpt->post_type );
-		$name       = sprintf( '%s (%s)', $pto->labels->name, $this->cpt->post_type );
+		$pto = get_post_type_object( $this->cpt->post_type );
+		$name = sprintf( '%s (%s)', $pto->labels->name, $this->cpt->post_type );
 		$additional = [];
 
 		// Post type archive rewrites are generated separately. See the `has_archive` handling in `register_post_type()`.

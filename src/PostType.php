@@ -186,10 +186,10 @@ class PostType {
 		# Build the featured image labels:
 		if ( isset( $args['featured_image'] ) ) {
 			$featured_image_low = strtolower( $args['featured_image'] );
-			$this->defaults['labels']['featured_image']        = $args['featured_image'];
-			$this->defaults['labels']['set_featured_image']    = sprintf( 'Set %s', $featured_image_low );
+			$this->defaults['labels']['featured_image'] = $args['featured_image'];
+			$this->defaults['labels']['set_featured_image'] = sprintf( 'Set %s', $featured_image_low );
 			$this->defaults['labels']['remove_featured_image'] = sprintf( 'Remove %s', $featured_image_low );
-			$this->defaults['labels']['use_featured_image']    = sprintf( 'Use as %s', $featured_image_low );
+			$this->defaults['labels']['use_featured_image'] = sprintf( 'Use as %s', $featured_image_low );
 		}
 
 		# Only set default rewrites if we need them
@@ -313,7 +313,7 @@ class PostType {
 				if ( is_array( $col ) && isset( $col['default'] ) ) {
 					// @TODO Don't set 'order' if 'orderby' is an array (WP 4.0+)
 					$wp_query->query['orderby'] = $id;
-					$wp_query->query['order']   = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
+					$wp_query->query['order'] = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
 					break;
 				}
 			}
@@ -750,7 +750,7 @@ class PostType {
 			$query_var = $this->args['query_var'];
 		}
 
-		$existing   = get_post_type_object( $this->post_type );
+		$existing = get_post_type_object( $this->post_type );
 		$taxonomies = get_taxonomies(
 			[
 				'query_var' => $query_var,
@@ -808,7 +808,7 @@ class PostType {
 	 *
 	 * Example usage:
 	 *
-	 *     $events   = register_extended_post_type( 'event' );
+	 *     $events = register_extended_post_type( 'event' );
 	 *     $location = $events->add_taxonomy( 'location' );
 	 *
 	 * @param string               $taxonomy The taxonomy name.

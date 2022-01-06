@@ -25,7 +25,7 @@ abstract class ExtendedRewriteTesting {
 			return [];
 		}
 
-		$new   = [];
+		$new = [];
 		$rules = $wp_rewrite->generate_rewrite_rules(
 			$struct['struct'],
 			$struct['ep_mask'],
@@ -37,7 +37,7 @@ abstract class ExtendedRewriteTesting {
 		);
 		$rules = array_merge( $rules, $additional );
 		$feedregex = implode( '|', $wp_rewrite->feeds );
-		$replace   = [
+		$replace = [
 			'(.+?)'          => 'hello',
 			'.+?'            => 'hello',
 			'([^/]+)'        => 'world',
@@ -57,7 +57,7 @@ abstract class ExtendedRewriteTesting {
 		];
 
 		foreach ( $rules as $regex => $result ) {
-			$regex  = str_replace( array_keys( $replace ), $replace, $regex );
+			$regex = str_replace( array_keys( $replace ), $replace, $regex );
 			// Change '$2' to '$matches[2]'
 			$result = preg_replace( '/\$([0-9]+)/', '\$matches[$1]', $result );
 			$new[ "/{$regex}" ] = $result;

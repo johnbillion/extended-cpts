@@ -6,7 +6,7 @@
 mysqli_report( MYSQLI_REPORT_OFF );
 
 $_root_dir = dirname( __DIR__ );
-$_env_dir  = __DIR__;
+$_env_dir = __DIR__;
 
 require_once $_root_dir . '/vendor/autoload.php';
 
