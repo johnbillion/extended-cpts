@@ -11,3 +11,4 @@
 /codeception.dist.yml export-ignore
 /CONTRIBUTING.md export-ignore
 /phpcs.xml.dist export-ignore
+/phpstan.neon.dist export-ignore
