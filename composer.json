@@ -64,10 +64,11 @@
 	},
 	"autoload": {
 		"psr-4": {
+			"ExtCPTs\\": "src",
 			"ExtCPTs\\Tests\\": "tests/integration"
 		},
 		"files": [
-			"extended-cpts.php"
+			"functions.php"
 		]
 	},
 	"suggest": {
