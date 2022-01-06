@@ -728,8 +728,8 @@ class PostType {
 	 * @return array<string,array<string,string>> Updated rewrite rule tests.
 	 */
 	public function rewrite_testing_tests( array $tests ): array {
-		require_once __DIR__ . '/class-extended-rewrite-testing.php';
-		require_once __DIR__ . '/class-extended-cpt-rewrite-testing.php';
+		require_once __DIR__ . '/ExtendedRewriteTesting.php';
+		require_once __DIR__ . '/PostTypeRewriteTesting.php';
 
 		$extended = new PostTypeRewriteTesting( $this );
 

@@ -284,7 +284,7 @@ class PostTypeAdmin {
 					continue;
 				}
 
-				require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
+				require_once __DIR__ . '/WalkerDropdown.php';
 
 				$walker = new Walker\Dropdown(
 					[

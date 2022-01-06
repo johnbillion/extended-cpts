@@ -380,7 +380,7 @@ class TaxonomyAdmin {
 	 * @param array<string,mixed> $meta_box The meta box arguments.
 	 */
 	public function meta_box_radio( WP_Post $post, array $meta_box ): void {
-		require_once __DIR__ . '/class-walker-extendedtaxonomyradios.php';
+		require_once __DIR__ . '/Walker/Radios.php';
 
 		$walker = new Walker\Radios();
 		$this->do_meta_box( $post, $walker, true, 'checklist' );
@@ -395,7 +395,7 @@ class TaxonomyAdmin {
 	 * @param array<string,mixed> $meta_box The meta box arguments.
 	 */
 	public function meta_box_dropdown( WP_Post $post, array $meta_box ): void {
-		require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
+		require_once __DIR__ . '/Walker/Dropdown.php';
 
 		$walker = new Walker\Dropdown();
 		$this->do_meta_box( $post, $walker, true, 'dropdown' );
@@ -503,7 +503,7 @@ class TaxonomyAdmin {
 
 						# Standard WP Walker_Category_Checklist does not cut it
 						if ( ! $walker ) {
-							require_once __DIR__ . '/class-walker-extendedtaxonomycheckboxes.php';
+							require_once __DIR__ . '/Walker/Checkboxes.php';
 							$walker = new Walker\Checkboxes();
 						}
 

@@ -213,8 +213,8 @@ class Taxonomy {
 	 * @return array<string,array<string,string>> Updated rewrite rule tests.
 	 */
 	public function rewrite_testing_tests( array $tests ): array {
-		require_once __DIR__ . '/class-extended-rewrite-testing.php';
-		require_once __DIR__ . '/class-extended-taxonomy-rewrite-testing.php';
+		require_once __DIR__ . '/ExtendedRewriteTesting.php';
+		require_once __DIR__ . '/TaxonomyRewriteTesting.php';
 
 		$extended = new TaxonomyRewriteTesting( $this );
 

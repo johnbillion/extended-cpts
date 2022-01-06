@@ -23,7 +23,7 @@ declare( strict_types=1 );
  */
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/src/class-extended-cpt.php';
-require_once __DIR__ . '/src/class-extended-cpt-admin.php';
-require_once __DIR__ . '/src/class-extended-taxonomy.php';
-require_once __DIR__ . '/src/class-extended-taxonomy-admin.php';
+require_once __DIR__ . '/src/PostType.php';
+require_once __DIR__ . '/src/PostTypeAdmin.php';
+require_once __DIR__ . '/src/Taxonomy.php';
+require_once __DIR__ . '/src/TaxonomyAdmin.php';
