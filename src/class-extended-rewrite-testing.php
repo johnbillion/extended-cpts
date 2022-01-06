@@ -6,7 +6,7 @@ namespace ExtCPTs;
 /**
  * @codeCoverageIgnore
  */
-abstract class Extended_Rewrite_Testing {
+abstract class ExtendedRewriteTesting {
 
 	/**
 	 * @return array<string,array<string,string>>

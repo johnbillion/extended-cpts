@@ -6,11 +6,11 @@ namespace ExtCPTs;
 /**
  * @codeCoverageIgnore
  */
-class Post_Type_Rewrite_Testing extends Extended_Rewrite_Testing {
+class PostTypeRewriteTesting extends ExtendedRewriteTesting {
 
-	public Post_Type $cpt;
+	public PostType $cpt;
 
-	public function __construct( Post_Type $cpt ) {
+	public function __construct( PostType $cpt ) {
 		$this->cpt = $cpt;
 	}
 

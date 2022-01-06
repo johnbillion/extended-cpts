@@ -216,7 +216,7 @@ class Taxonomy {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
 		require_once __DIR__ . '/class-extended-taxonomy-rewrite-testing.php';
 
-		$extended = new Taxonomy_Rewrite_Testing( $this );
+		$extended = new TaxonomyRewriteTesting( $this );
 
 		return array_merge( $tests, $extended->get_tests() );
 	}

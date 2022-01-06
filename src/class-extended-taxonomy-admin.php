@@ -6,7 +6,7 @@ namespace ExtCPTs;
 use WP_Post;
 use WP_Taxonomy;
 
-class Taxonomy_Admin {
+class TaxonomyAdmin {
 
 	/**
 	 * Default arguments for custom taxonomies.
@@ -85,7 +85,7 @@ class Taxonomy_Admin {
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param Taxonomy_Admin $instance The extended taxonomy admin instance.
+		 * @param TaxonomyAdmin $instance The extended taxonomy admin instance.
 		 */
 		do_action( "ext-taxos/{$this->taxo->taxonomy}/admin-instance", $this );
 	}

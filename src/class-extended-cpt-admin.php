@@ -9,7 +9,7 @@ use WP_Query;
 use function p2p_connection_exists;
 use function p2p_type;
 
-class Post_Type_Admin {
+class PostTypeAdmin {
 
 	/**
 	 * Default arguments for custom post types.
@@ -26,7 +26,7 @@ class Post_Type_Admin {
 		'block_editor'       => null, # Custom arg
 	];
 
-	public Post_Type $cpt;
+	public PostType $cpt;
 
 	/**
 	 * @var array<string,mixed>
@@ -51,10 +51,10 @@ class Post_Type_Admin {
 	/**
 	 * Class constructor.
 	 *
-	 * @param Post_Type $cpt  An extended post type object.
+	 * @param PostType $cpt  An extended post type object.
 	 * @param array<string,mixed>   $args Optional. The post type arguments.
 	 */
-	public function __construct( Post_Type $cpt, array $args = [] ) {
+	public function __construct( PostType $cpt, array $args = [] ) {
 		$this->cpt = $cpt;
 		# Merge our args with the defaults:
 		$this->args = array_merge( $this->defaults, $args );
@@ -132,7 +132,7 @@ class Post_Type_Admin {
 		 *
 		 * @since 5.0.0
 		 *
-		 * @param Post_Type_Admin $instance The extended post type admin instance.
+		 * @param PostTypeAdmin $instance The extended post type admin instance.
 		 */
 		do_action( "ext-cpts/{$this->cpt->post_type}/admin-instance", $this );
 	}
@@ -269,9 +269,9 @@ class Post_Type_Admin {
 				 *
 				 * @since 4.3.0
 				 *
-				 * @param Post_Type_Admin $controller The post type admin controller instance.
-				 * @param array           $filter     The filter arguments.
-				 * @param string          $id         The filter's `id` attribute value.
+				 * @param PostTypeAdmin $controller The post type admin controller instance.
+				 * @param array         $filter     The filter arguments.
+				 * @param string        $id         The filter's `id` attribute value.
 				 */
 				do_action( $hook, $this, $filter, $id );
 				continue;
@@ -549,7 +549,7 @@ class Post_Type_Admin {
 			return;
 		}
 
-		$vars = Post_Type::get_filter_vars( $wp_query->query, $this->cpt->args['admin_filters'], $this->cpt->post_type );
+		$vars = PostType::get_filter_vars( $wp_query->query, $this->cpt->args['admin_filters'], $this->cpt->post_type );
 
 		if ( empty( $vars ) ) {
 			return;
@@ -577,7 +577,7 @@ class Post_Type_Admin {
 			return;
 		}
 
-		$sort = Post_Type::get_sort_field_vars( $wp_query->query, $this->cpt->args['admin_cols'] );
+		$sort = PostType::get_sort_field_vars( $wp_query->query, $this->cpt->args['admin_cols'] );
 
 		if ( empty( $sort ) ) {
 			return;
@@ -600,7 +600,7 @@ class Post_Type_Admin {
 			return $clauses;
 		}
 
-		$sort = Post_Type::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->cpt->args['admin_cols'] );
+		$sort = PostType::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->cpt->args['admin_cols'] );
 
 		if ( empty( $sort ) ) {
 			return $clauses;

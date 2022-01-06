@@ -10,7 +10,7 @@ use WP_Taxonomy;
 use WP_Term;
 use WP;
 
-class Post_Type {
+class PostType {
 
 	/**
 	 * Default arguments for custom post types.
@@ -263,7 +263,7 @@ class Post_Type {
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param Post_Type $instance The extended post type instance.
+		 * @param PostType $instance The extended post type instance.
 		 */
 		do_action( "ext-cpts/{$this->post_type}/instance", $this );
 	}
@@ -613,7 +613,7 @@ class Post_Type {
 	}
 
 	/**
-	 * Action fired after a Post_Type is registered in order to set up the custom permalink structure for the post type.
+	 * Action fired after a PostType is registered in order to set up the custom permalink structure for the post type.
 	 *
 	 * @param string       $post_type        Post type name.
 	 * @param WP_Post_Type $post_type_object Post type object.
@@ -731,7 +731,7 @@ class Post_Type {
 		require_once __DIR__ . '/class-extended-rewrite-testing.php';
 		require_once __DIR__ . '/class-extended-cpt-rewrite-testing.php';
 
-		$extended = new Post_Type_Rewrite_Testing( $this );
+		$extended = new PostTypeRewriteTesting( $this );
 
 		return array_merge( $tests, $extended->get_tests() );
 	}

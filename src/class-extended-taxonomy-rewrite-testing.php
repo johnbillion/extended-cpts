@@ -5,7 +5,7 @@ namespace ExtCPTs;
 
 use WP_Taxonomy;
 
-class Taxonomy_Rewrite_Testing extends Extended_Rewrite_Testing {
+class TaxonomyRewriteTesting extends ExtendedRewriteTesting {
 
 	public Taxonomy $taxo;
 

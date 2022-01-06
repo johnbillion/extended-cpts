@@ -1,10 +1,10 @@
 <?php
 declare( strict_types=1 );
 
-use ExtCPTs\Post_Type;
-use ExtCPTs\Post_Type_Admin;
+use ExtCPTs\PostType;
+use ExtCPTs\PostTypeAdmin;
 use ExtCPTs\Taxonomy;
-use ExtCPTs\Taxonomy_Admin;
+use ExtCPTs\TaxonomyAdmin;
 
 /**
  * Registers a custom post type.
@@ -45,18 +45,18 @@ use ExtCPTs\Taxonomy_Admin;
  *     @type string $singular The singular form of the post type name.
  *     @type string $slug     The slug used in the permalinks for this post type.
  * }
- * @return Post_Type
+ * @return PostType
  */
-function register_extended_post_type( string $post_type, array $args = [], array $names = [] ): Post_Type {
+function register_extended_post_type( string $post_type, array $args = [], array $names = [] ): PostType {
 	if ( ! did_action( 'init' ) ) {
 		trigger_error( esc_html__( 'Post types must be registered on the "init" hook.', 'extended-cpts' ), E_USER_WARNING );
 	}
 
-	$cpt = new Post_Type( $post_type, $args, $names );
+	$cpt = new PostType( $post_type, $args, $names );
 	$cpt->init();
 
 	if ( is_admin() ) {
-		$admin = new Post_Type_Admin( $cpt, $cpt->args );
+		$admin = new PostTypeAdmin( $cpt, $cpt->args );
 		$admin->init();
 	}
 
@@ -90,7 +90,7 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *     @type bool   $dashboard_glance Whether to show this taxonomy on the 'At a Glance' section of the admin dashboard.
  *                                    Default false.
  *     @type array  $admin_cols       Associative array of admin screen columns to show for this taxonomy. See the
- *                                    `Taxonomy_Admin::cols()` method for more information.
+ *                                    `TaxonomyAdmin::cols()` method for more information.
  *     @type bool   $exclusive        This parameter isn't feature complete. All it does currently is set the meta box
  *                                    to the 'radio' meta box, thus meaning any given post can only have one term
  *                                    associated with it for that taxonomy. 'exclusive' isn't really the right name for
@@ -118,7 +118,7 @@ function register_extended_taxonomy( string $taxonomy, $object_type, array $args
 	$taxo->init();
 
 	if ( is_admin() ) {
-		$admin = new Taxonomy_Admin( $taxo, $taxo->args );
+		$admin = new TaxonomyAdmin( $taxo, $taxo->args );
 		$admin->init();
 	}
 
