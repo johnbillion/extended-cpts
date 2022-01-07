@@ -55,19 +55,13 @@ abstract class Admin extends Test {
 	 * @return array<string, mixed>
 	 */
 	protected function default_listing_vars(): array {
-		$vars = array(
+		return array(
 			'posts_per_page' => 20,
+			'order' => '',
+			'orderby' => '',
+			'perm' => '',
+			'post_status' => '',
 		);
-
-		// https://core.trac.wordpress.org/changeset/44338
-		if ( version_compare( $GLOBALS['wp_version'], '5.0.2', '>=' ) ) {
-			$vars['order'] = '';
-			$vars['orderby'] = '';
-			$vars['perm'] = '';
-			$vars['post_status'] = '';
-		}
-
-		return $vars;
 	}
 
 	public function tearDown(): void {
