@@ -34,15 +34,18 @@ abstract class Admin extends Test {
 
 		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 
-		$this->assertSame( 'edit', get_current_screen()->base );
-		$this->assertSame( $args['post_type'], get_current_screen()->post_type );
+		$screen = get_current_screen();
+
+		$this->assertNotNull( $screen );
+		$this->assertSame( 'edit', $screen->base );
+		$this->assertSame( $args['post_type'], $screen->post_type );
 		$this->assertInstanceOf( 'WP_List_Table', $wp_list_table );
 
 		ob_start();
 		$wp_list_table->prepare_items();
 		$wp_list_table->views();
 		$wp_list_table->display();
-		$output = ob_get_clean();
+		$output = (string) ob_get_clean();
 
 		return $output;
 

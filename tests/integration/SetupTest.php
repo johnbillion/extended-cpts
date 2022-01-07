@@ -277,36 +277,44 @@ class Setup extends Test {
 	public function testPermalinksAreCorrect(): void {
 
 		$post = get_post( $this->posts['hello'][0] );
+		$this->assertNotNull( $post );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'hellos/%s', $post->post_name ) ) ), $link );
 
 		$post = get_post( $this->posts['person'][0] );
+		$this->assertNotNull( $post );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'people/%s', $post->post_name ) ) ), $link );
 
 		$post = get_post( $this->posts['nice-thing'][0] );
+		$this->assertNotNull( $post );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'things/%s', $post->post_name ) ) ), $link );
 
 		$post = get_post( $this->posts['foo'][0] );
+		$this->assertNotNull( $post );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'foo/admin/delta/%s', $post->post_name ) ) ), $link );
 
 		$post = get_post( $this->posts['foo'][1] );
+		$this->assertNotNull( $post );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'foo/-/gamma/%s', $post->post_name ) ) ), $link );
 
 		add_filter( 'default_foo_category', fn() => get_term_by( 'slug', 'delta', 'foo_category' )->term_id );
 
 		$post = get_post( $this->posts['foo'][2] );
+		$this->assertNotNull( $post );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'foo/admin/delta/%s', $post->post_name ) ) ), $link );
 
 		$post = get_post( $this->posts['bar'][0] );
+		$this->assertNotNull( $post );
 		$link = get_permalink( $post );
 		$this->assertEquals( add_query_arg( 'bar', $post->post_name, user_trailingslashit( home_url() ) ), $link );
 
 		$post = get_post( $this->posts['baz'][0] );
+		$this->assertNotNull( $post );
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'baz/%s', $post->post_name ) ) ), $link );
 
