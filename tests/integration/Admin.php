@@ -10,7 +10,7 @@ abstract class Admin extends Test {
 
 		// lie about being in the admin area so is_admin() returns true
 		set_current_screen( 'edit.php' );
-		$this->assertTrue( is_admin() );
+		self::assertTrue( is_admin() );
 
 		$this->register_post_types();
 	}
@@ -36,10 +36,10 @@ abstract class Admin extends Test {
 
 		$screen = get_current_screen();
 
-		$this->assertNotNull( $screen );
-		$this->assertSame( 'edit', $screen->base );
-		$this->assertSame( $args['post_type'], $screen->post_type );
-		$this->assertInstanceOf( 'WP_List_Table', $wp_list_table );
+		self::assertNotNull( $screen );
+		self::assertSame( 'edit', $screen->base );
+		self::assertSame( $args['post_type'], $screen->post_type );
+		self::assertInstanceOf( 'WP_List_Table', $wp_list_table );
 
 		ob_start();
 		$wp_list_table->prepare_items();

@@ -14,112 +14,112 @@ class Setup extends Test {
 		global $wp_version;
 
 		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/README.md';
-		$this->assertFileExists( $filename );
+		self::assertFileExists( $filename );
 
 		$min = self::get_minimum_version( 'WordPress', $filename );
 
-		$this->assertNotNull( $min );
-		$this->assertTrue( is_numeric( $min ), "Min is not numeric: {$min}" );
-		$this->assertTrue( version_compare( $wp_version, $min, '>=' ), "{$wp_version} is not >= {$min}" );
+		self::assertNotNull( $min );
+		self::assertTrue( is_numeric( $min ), "Min is not numeric: {$min}" );
+		self::assertTrue( version_compare( $wp_version, $min, '>=' ), "{$wp_version} is not >= {$min}" );
 	}
 
 	public function testMinimumPHPVersion(): void {
 		$php_version = PHP_VERSION;
 		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/README.md';
-		$this->assertFileExists( $filename );
+		self::assertFileExists( $filename );
 
 		$min = self::get_minimum_version( 'PHP', $filename );
 
-		$this->assertNotNull( $min );
-		$this->assertTrue( is_numeric( $min ), "Min is not numeric: {$min}" );
-		$this->assertTrue( version_compare( $php_version, $min, '>=' ), "{$php_version} is not >= {$min}" );
+		self::assertNotNull( $min );
+		self::assertTrue( is_numeric( $min ), "Min is not numeric: {$min}" );
+		self::assertTrue( version_compare( $php_version, $min, '>=' ), "{$php_version} is not >= {$min}" );
 	}
 
 	public function testCodeSnifferMinimumWordPressVersionIsCorrect(): void {
 		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/phpcs.xml.dist';
-		$this->assertFileExists( $filename );
+		self::assertFileExists( $filename );
 
 		$phpcs = (string) file_get_contents( $filename );
 		$pattern = '/minimum_supported_version" value="(?P<version>[0-9]\.[0-9])"/';
 		$result = preg_match( $pattern, $phpcs, $matches );
-		$this->assertNotEmpty( $result );
+		self::assertNotEmpty( $result );
 
 		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/README.md';
-		$this->assertFileExists( $filename );
+		self::assertFileExists( $filename );
 
 		$min = self::get_minimum_version( 'WordPress', $filename );
 
-		$this->assertSame( $min, $matches['version'] );
+		self::assertSame( $min, $matches['version'] );
 	}
 
 	public function testPostTypeArgsAreCorrect(): void {
 
-		$this->assertEquals( 'hello',  $this->cpts['hello']->post_type );
-		$this->assertEquals( 'hellos', $this->cpts['hello']->post_slug );
-		$this->assertEquals( 'Hello',  $this->cpts['hello']->post_singular );
-		$this->assertEquals( 'Hellos', $this->cpts['hello']->post_plural );
-		$this->assertEquals( 'hello',  $this->cpts['hello']->post_singular_low );
-		$this->assertEquals( 'hellos', $this->cpts['hello']->post_plural_low );
+		self::assertEquals( 'hello',  $this->cpts['hello']->post_type );
+		self::assertEquals( 'hellos', $this->cpts['hello']->post_slug );
+		self::assertEquals( 'Hello',  $this->cpts['hello']->post_singular );
+		self::assertEquals( 'Hellos', $this->cpts['hello']->post_plural );
+		self::assertEquals( 'hello',  $this->cpts['hello']->post_singular_low );
+		self::assertEquals( 'hellos', $this->cpts['hello']->post_plural_low );
 
-		$this->assertEquals( 'person', $this->cpts['person']->post_type );
-		$this->assertEquals( 'people', $this->cpts['person']->post_slug );
-		$this->assertEquals( 'Person', $this->cpts['person']->post_singular );
-		$this->assertEquals( 'People', $this->cpts['person']->post_plural );
-		$this->assertEquals( 'person', $this->cpts['person']->post_singular_low );
-		$this->assertEquals( 'people', $this->cpts['person']->post_plural_low );
+		self::assertEquals( 'person', $this->cpts['person']->post_type );
+		self::assertEquals( 'people', $this->cpts['person']->post_slug );
+		self::assertEquals( 'Person', $this->cpts['person']->post_singular );
+		self::assertEquals( 'People', $this->cpts['person']->post_plural );
+		self::assertEquals( 'person', $this->cpts['person']->post_singular_low );
+		self::assertEquals( 'people', $this->cpts['person']->post_plural_low );
 
-		$this->assertEquals( 'nice-thing',  $this->cpts['nice-thing']->post_type );
-		$this->assertEquals( 'things',      $this->cpts['nice-thing']->post_slug );
-		$this->assertEquals( 'Nice Thing',  $this->cpts['nice-thing']->post_singular );
-		$this->assertEquals( 'Nice Things', $this->cpts['nice-thing']->post_plural );
-		$this->assertEquals( 'nice thing',  $this->cpts['nice-thing']->post_singular_low );
-		$this->assertEquals( 'nice things', $this->cpts['nice-thing']->post_plural_low );
+		self::assertEquals( 'nice-thing',  $this->cpts['nice-thing']->post_type );
+		self::assertEquals( 'things',      $this->cpts['nice-thing']->post_slug );
+		self::assertEquals( 'Nice Thing',  $this->cpts['nice-thing']->post_singular );
+		self::assertEquals( 'Nice Things', $this->cpts['nice-thing']->post_plural );
+		self::assertEquals( 'nice thing',  $this->cpts['nice-thing']->post_singular_low );
+		self::assertEquals( 'nice things', $this->cpts['nice-thing']->post_plural_low );
 
-		$this->assertEquals( 'foo',  $this->cpts['foo']->post_type );
-		$this->assertEquals( 'foos', $this->cpts['foo']->post_slug );
-		$this->assertEquals( 'Bar',  $this->cpts['foo']->post_singular );
-		$this->assertEquals( 'Bars', $this->cpts['foo']->post_plural );
-		$this->assertEquals( 'bar',  $this->cpts['foo']->post_singular_low );
-		$this->assertEquals( 'bars', $this->cpts['foo']->post_plural_low );
+		self::assertEquals( 'foo',  $this->cpts['foo']->post_type );
+		self::assertEquals( 'foos', $this->cpts['foo']->post_slug );
+		self::assertEquals( 'Bar',  $this->cpts['foo']->post_singular );
+		self::assertEquals( 'Bars', $this->cpts['foo']->post_plural );
+		self::assertEquals( 'bar',  $this->cpts['foo']->post_singular_low );
+		self::assertEquals( 'bars', $this->cpts['foo']->post_plural_low );
 
-		$this->assertEquals( 'bar',      $this->cpts['bar']->post_type );
-		$this->assertEquals( 'slug',     $this->cpts['bar']->post_slug );
-		$this->assertEquals( 'Singular', $this->cpts['bar']->post_singular );
-		$this->assertEquals( 'Plural',   $this->cpts['bar']->post_plural );
-		$this->assertEquals( 'singular', $this->cpts['bar']->post_singular_low );
-		$this->assertEquals( 'plural',   $this->cpts['bar']->post_plural_low );
+		self::assertEquals( 'bar',      $this->cpts['bar']->post_type );
+		self::assertEquals( 'slug',     $this->cpts['bar']->post_slug );
+		self::assertEquals( 'Singular', $this->cpts['bar']->post_singular );
+		self::assertEquals( 'Plural',   $this->cpts['bar']->post_plural );
+		self::assertEquals( 'singular', $this->cpts['bar']->post_singular_low );
+		self::assertEquals( 'plural',   $this->cpts['bar']->post_plural_low );
 
 	}
 
 	public function testPostTypePropertiesAreCorrect(): void {
 		$hello = get_post_type_object( 'hello' );
 
-		$this->assertNotNull( $hello );
-		$this->assertTrue( $hello->public );
-		$this->assertTrue( $hello->hierarchical );
-		$this->assertTrue( $hello->has_archive );
-		$this->assertEquals( 'hi',   $hello->query_var );
-		$this->assertEquals( 'page', $hello->capability_type );
+		self::assertNotNull( $hello );
+		self::assertTrue( $hello->public );
+		self::assertTrue( $hello->hierarchical );
+		self::assertTrue( $hello->has_archive );
+		self::assertEquals( 'hi',   $hello->query_var );
+		self::assertEquals( 'page', $hello->capability_type );
 
 		$bar = get_post_type_object( 'bar' );
 
-		$this->assertNotNull( $bar );
-		$this->assertFalse( $bar->public );
-		$this->assertTrue( $bar->hierarchical );
-		$this->assertFalse( $bar->has_archive );
-		$this->assertFalse( $bar->rewrite );
+		self::assertNotNull( $bar );
+		self::assertFalse( $bar->public );
+		self::assertTrue( $bar->hierarchical );
+		self::assertFalse( $bar->has_archive );
+		self::assertFalse( $bar->rewrite );
 		// This should be boolean false, but it's not:
-		$this->assertEquals( 'bar',  $bar->query_var );
-		$this->assertEquals( 'page', $bar->capability_type );
+		self::assertEquals( 'bar',  $bar->query_var );
+		self::assertEquals( 'page', $bar->capability_type );
 
 		$baz = get_post_type_object( 'baz' );
 
-		$this->assertNotNull( $baz );
-		$this->assertTrue( $baz->public );
-		$this->assertTrue( $baz->hierarchical );
-		$this->assertFalse( $baz->has_archive );
-		$this->assertEquals( 'page', $baz->capability_type );
-		$this->assertEquals( 'baz',  $baz->query_var );
+		self::assertNotNull( $baz );
+		self::assertTrue( $baz->public );
+		self::assertTrue( $baz->hierarchical );
+		self::assertFalse( $baz->has_archive );
+		self::assertEquals( 'page', $baz->capability_type );
+		self::assertEquals( 'baz',  $baz->query_var );
 
 	}
 
@@ -129,8 +129,8 @@ class Setup extends Test {
 		$bar = get_post_type_object( 'bar' );
 		$faq = get_post_type_object( 'faq' );
 
-		$this->assertNotNull( $bar );
-		$this->assertEquals( (object) array(
+		self::assertNotNull( $bar );
+		self::assertEquals( (object) array(
 			'name'                     => 'Plural',
 			'singular_name'            => 'Singular',
 			'menu_name'                => 'Plural',
@@ -169,8 +169,8 @@ class Setup extends Test {
 
 		$featured_image = version_compare( $wp_version, '5.4', '>=' ) ? 'Featured image' : 'Featured Image';
 
-		$this->assertNotNull( $faq );
-		$this->assertEquals( (object) array(
+		self::assertNotNull( $faq );
+		self::assertEquals( (object) array(
 			'name'                     => 'FAQs',
 			'singular_name'            => 'FAQ',
 			'menu_name'                => 'FAQs',
@@ -209,17 +209,17 @@ class Setup extends Test {
 
 		$post = get_post_type_object( 'post' );
 
-		$this->assertNotNull( $post );
-		$this->assertEquals( $featured_image, $post->labels->featured_image );
-		$this->assertEquals( 'Remove!', $post->labels->remove_featured_image );
+		self::assertNotNull( $post );
+		self::assertEquals( $featured_image, $post->labels->featured_image );
+		self::assertEquals( 'Remove!', $post->labels->remove_featured_image );
 
 	}
 
 	public function testTaxonomyLabelsAreCorrect(): void {
 		$foo = get_taxonomy( 'foo_category' );
 
-		$this->assertNotFalse( $foo );
-		$this->assertEquals( (object) array(
+		self::assertNotFalse( $foo );
+		self::assertEquals( (object) array(
 			'menu_name'                  => 'Foo Categorys',
 			'name'                       => 'Foo Categorys',
 			'singular_name'              => 'Foo Category',
@@ -255,51 +255,51 @@ class Setup extends Test {
 	public function testArchiveLinksAreCorrect(): void {
 
 		$link = get_post_type_archive_link( $this->cpts['hello']->post_type );
-		$this->assertEquals( user_trailingslashit( home_url( 'hellos' ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( 'hellos' ) ), $link );
 
 		$link = get_post_type_archive_link( $this->cpts['person']->post_type );
-		$this->assertEquals( user_trailingslashit( home_url( 'team' ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( 'team' ) ), $link );
 
 		$link = get_post_type_archive_link( $this->cpts['nice-thing']->post_type );
-		$this->assertEquals( user_trailingslashit( home_url( 'things' ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( 'things' ) ), $link );
 
 		$link = get_post_type_archive_link( $this->cpts['foo']->post_type );
-		$this->assertEquals( user_trailingslashit( home_url( 'foos' ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( 'foos' ) ), $link );
 
 		$link = get_post_type_archive_link( $this->cpts['bar']->post_type );
-		$this->assertFalse( $link );
+		self::assertFalse( $link );
 
 		$link = get_post_type_archive_link( $this->cpts['baz']->post_type );
-		$this->assertFalse( $link );
+		self::assertFalse( $link );
 
 	}
 
 	public function testPermalinksAreCorrect(): void {
 
 		$post = get_post( $this->posts['hello'][0] );
-		$this->assertNotNull( $post );
+		self::assertNotNull( $post );
 		$link = get_permalink( $post );
-		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'hellos/%s', $post->post_name ) ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( sprintf( 'hellos/%s', $post->post_name ) ) ), $link );
 
 		$post = get_post( $this->posts['person'][0] );
-		$this->assertNotNull( $post );
+		self::assertNotNull( $post );
 		$link = get_permalink( $post );
-		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'people/%s', $post->post_name ) ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( sprintf( 'people/%s', $post->post_name ) ) ), $link );
 
 		$post = get_post( $this->posts['nice-thing'][0] );
-		$this->assertNotNull( $post );
+		self::assertNotNull( $post );
 		$link = get_permalink( $post );
-		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'things/%s', $post->post_name ) ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( sprintf( 'things/%s', $post->post_name ) ) ), $link );
 
 		$post = get_post( $this->posts['foo'][0] );
-		$this->assertNotNull( $post );
+		self::assertNotNull( $post );
 		$link = get_permalink( $post );
-		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'foo/admin/delta/%s', $post->post_name ) ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( sprintf( 'foo/admin/delta/%s', $post->post_name ) ) ), $link );
 
 		$post = get_post( $this->posts['foo'][1] );
-		$this->assertNotNull( $post );
+		self::assertNotNull( $post );
 		$link = get_permalink( $post );
-		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'foo/-/gamma/%s', $post->post_name ) ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( sprintf( 'foo/-/gamma/%s', $post->post_name ) ) ), $link );
 
 		add_filter( 'default_foo_category', function(): int {
 			$term = get_term_by( 'slug', 'delta', 'foo_category' );
@@ -307,19 +307,19 @@ class Setup extends Test {
 		} );
 
 		$post = get_post( $this->posts['foo'][2] );
-		$this->assertNotNull( $post );
+		self::assertNotNull( $post );
 		$link = get_permalink( $post );
-		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'foo/admin/delta/%s', $post->post_name ) ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( sprintf( 'foo/admin/delta/%s', $post->post_name ) ) ), $link );
 
 		$post = get_post( $this->posts['bar'][0] );
-		$this->assertNotNull( $post );
+		self::assertNotNull( $post );
 		$link = get_permalink( $post );
-		$this->assertEquals( add_query_arg( 'bar', $post->post_name, user_trailingslashit( home_url() ) ), $link );
+		self::assertEquals( add_query_arg( 'bar', $post->post_name, user_trailingslashit( home_url() ) ), $link );
 
 		$post = get_post( $this->posts['baz'][0] );
-		$this->assertNotNull( $post );
+		self::assertNotNull( $post );
 		$link = get_permalink( $post );
-		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'baz/%s', $post->post_name ) ) ), $link );
+		self::assertEquals( user_trailingslashit( home_url( sprintf( 'baz/%s', $post->post_name ) ) ), $link );
 
 	}
 
@@ -331,10 +331,10 @@ class Setup extends Test {
 
 		try {
 			register_extended_post_type( 'public_taxonomy' );
-			$this->fail( 'register_extended_post_type() should trigger an error when registering a post type which clashes with a taxonomy' );
+			self::fail( 'register_extended_post_type() should trigger an error when registering a post type which clashes with a taxonomy' );
 		} catch ( \PHPUnit\Framework\Exception $e ) {
-			$this->assertStringContainsString( 'public_taxonomy', $e->getMessage() );
-			$this->assertFalse( post_type_exists( 'public_taxonomy' ) );
+			self::assertStringContainsString( 'public_taxonomy', $e->getMessage() );
+			self::assertFalse( post_type_exists( 'public_taxonomy' ) );
 		}
 	}
 
@@ -345,7 +345,7 @@ class Setup extends Test {
 		) );
 
 		register_extended_post_type( 'private_taxonomy' );
-		$this->assertTrue( post_type_exists( 'private_taxonomy' ) );
+		self::assertTrue( post_type_exists( 'private_taxonomy' ) );
 	}
 
 	/**
@@ -358,13 +358,13 @@ class Setup extends Test {
 
 		$result = register_post_type( $name );
 
-		$this->assertWPError( $result );
+		self::assertWPError( $result );
 
 		try {
 			register_extended_post_type( $name );
-			$this->fail( 'register_extended_post_type() should trigger an error when registering a post type which causes an error' );
+			self::fail( 'register_extended_post_type() should trigger an error when registering a post type which causes an error' );
 		} catch ( \PHPUnit\Framework\Exception $e ) {
-			$this->assertStringContainsString( "$max_length", $e->getMessage() );
+			self::assertStringContainsString( "$max_length", $e->getMessage() );
 		}
 	}
 

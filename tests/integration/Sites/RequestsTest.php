@@ -17,7 +17,7 @@ class Requests extends Site {
 		$filters = array_keys( $this->args['hello']->site_filters );
 		$found = array_intersect( $filters, $wp->public_query_vars );
 
-		$this->assertEquals( $filters, $found );
+		self::assertEquals( $filters, $found );
 
 	}
 
@@ -31,7 +31,7 @@ class Requests extends Site {
 		$filters = array_keys( $this->args['hello']->admin_cols );
 		$found = array_intersect( $filters, $wp->public_query_vars );
 
-		$this->assertSame( array(), $found );
+		self::assertSame( array(), $found );
 
 	}
 
@@ -41,7 +41,7 @@ class Requests extends Site {
 
 		global $wp, $wp_query;
 
-		$this->assertSame( array(), $wp->query_vars );
+		self::assertSame( array(), $wp->query_vars );
 
 	}
 
@@ -51,7 +51,7 @@ class Requests extends Site {
 
 		global $wp, $wp_query;
 
-		$this->assertEquals( array(
+		self::assertEquals( array(
 			'post_type' => array(
 				'post',
 				'person',
@@ -65,13 +65,13 @@ class Requests extends Site {
 	public function testPostTypeArchiveRequestIsCorrect(): void {
 		$link = get_post_type_archive_link( 'hello' );
 
-		$this->assertIsString( $link );
+		self::assertIsString( $link );
 
 		$this->go_to( $link );
 
 		global $wp, $wp_query;
 
-		$this->assertEquals( array_merge( array(
+		self::assertEquals( array_merge( array(
 			'post_type' => 'hello',
 		), $this->args['hello']->archive ), $wp->query_vars );
 
@@ -85,7 +85,7 @@ class Requests extends Site {
 
 		global $wp, $wp_query;
 
-		$this->assertEquals( array_merge( array(
+		self::assertEquals( array_merge( array(
 			'post_type'                       => 'hello',
 			'test_site_filters_post_meta_key' => 'Alpha',
 		), $this->args['hello']->archive ), $wp->query_vars );
@@ -100,7 +100,7 @@ class Requests extends Site {
 
 		global $wp, $wp_query;
 
-		$this->assertEquals( array_merge( array(
+		self::assertEquals( array_merge( array(
 			'post_type' => 'hello',
 			'orderby'   => 'test_site_sortables_post_meta',
 		), $this->args['hello']->archive ), $wp->query_vars );
@@ -110,13 +110,13 @@ class Requests extends Site {
 	public function testPostTypePermalinkRequestIsCorrect(): void {
 		$link = get_permalink( $this->posts['hello'][0] );
 
-		$this->assertIsString( $link );
+		self::assertIsString( $link );
 
 		$this->go_to( $link );
 
 		global $wp, $wp_query;
 
-		$this->assertEquals( array(
+		self::assertEquals( array(
 			'post_type' => 'hello',
 			'name'      => 'alpha',
 			'page'      => '',

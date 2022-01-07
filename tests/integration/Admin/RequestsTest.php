@@ -18,7 +18,7 @@ class Requests extends Admin {
 		$expected = array_merge( $this->default_listing_vars(), array(
 			'post_type' => 'post',
 		) );
-		$this->assertEquals( $expected, $wp->query_vars );
+		self::assertEquals( $expected, $wp->query_vars );
 
 	}
 
@@ -35,7 +35,7 @@ class Requests extends Admin {
 			'orderby'   => 'test_admin_cols_post_name',
 			'order'     => 'asc',
 		) );
-		$this->assertEquals( $expected, $wp->query_vars );
+		self::assertEquals( $expected, $wp->query_vars );
 
 	}
 
@@ -54,7 +54,7 @@ class Requests extends Admin {
 			'orderby'   => 'hello',
 			'order'     => 'desc',
 		) );
-		$this->assertEquals( $expected, $wp->query_vars );
+		self::assertEquals( $expected, $wp->query_vars );
 
 	}
 
@@ -73,7 +73,7 @@ class Requests extends Admin {
 			'orderby'   => 'test_admin_cols_post_name',
 			'order'     => 'desc',
 		) );
-		$this->assertEquals( $expected, $wp->query_vars );
+		self::assertEquals( $expected, $wp->query_vars );
 
 	}
 
@@ -90,7 +90,7 @@ class Requests extends Admin {
 			'post_type' => 'person',
 			'orderby'   => 'test_admin_cols_test_meta_key',
 		) );
-		$this->assertEquals( $expected, $wp->query_vars );
+		self::assertEquals( $expected, $wp->query_vars );
 
 	}
 
@@ -107,7 +107,7 @@ class Requests extends Admin {
 			'post_type' => 'person',
 			'orderby'   => 'test_admin_cols_person_category',
 		) );
-		$this->assertEquals( $expected, $wp->query_vars );
+		self::assertEquals( $expected, $wp->query_vars );
 
 	}
 
@@ -127,7 +127,7 @@ class Requests extends Admin {
 			'post_type' => 'person',
 			'orderby'   => 'test_admin_cols_unsortable',
 		) );
-		$this->assertEquals( $expected, $wp->query_vars );
+		self::assertEquals( $expected, $wp->query_vars );
 
 	}
 

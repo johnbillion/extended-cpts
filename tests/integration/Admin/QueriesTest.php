@@ -14,15 +14,15 @@ class Queries extends Admin {
 			'post_type' => 'post',
 		) );
 
-		$this->assertEquals( 1, $query->found_posts );
+		self::assertEquals( 1, $query->found_posts );
 
-		$this->assertSame( '',     $query->get( 'orderby' ) ); // date
-		$this->assertSame( 'DESC', $query->get( 'order' ) );
-		$this->assertSame( '',     $query->get( 'meta_key' ) );
-		$this->assertSame( '',     $query->get( 'meta_value' ) );
-		$this->assertSame( '',     $query->get( 'meta_query' ) );
+		self::assertSame( '',     $query->get( 'orderby' ) ); // date
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
 
-		$this->assertEquals( $this->posts['post'], wp_list_pluck( $query->posts, 'ID' ) );
+		self::assertEquals( $this->posts['post'], wp_list_pluck( $query->posts, 'ID' ) );
 
 	}
 
@@ -32,15 +32,15 @@ class Queries extends Admin {
 			'post_type' => 'hello',
 		) );
 
-		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
+		self::assertEquals( count( $this->posts['hello'] ), $query->found_posts );
 
-		$this->assertSame( 'menu_order title', $query->get( 'orderby' ) );
-		$this->assertSame( 'ASC',              $query->get( 'order' ) );
-		$this->assertSame( '',                 $query->get( 'meta_key' ) );
-		$this->assertSame( '',                 $query->get( 'meta_value' ) );
-		$this->assertSame( '',                 $query->get( 'meta_query' ) );
+		self::assertSame( 'menu_order title', $query->get( 'orderby' ) );
+		self::assertSame( 'ASC',              $query->get( 'order' ) );
+		self::assertSame( '',                 $query->get( 'meta_key' ) );
+		self::assertSame( '',                 $query->get( 'meta_value' ) );
+		self::assertSame( '',                 $query->get( 'meta_query' ) );
 
-		$this->assertEquals( $this->posts['hello'], wp_list_pluck( $query->posts, 'ID' ) );
+		self::assertEquals( $this->posts['hello'], wp_list_pluck( $query->posts, 'ID' ) );
 
 	}
 
@@ -52,15 +52,15 @@ class Queries extends Admin {
 			'order'     => 'ASC',
 		) );
 
-		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
+		self::assertEquals( count( $this->posts['hello'] ), $query->found_posts );
 
-		$this->assertSame( 'post_name', $query->get( 'orderby' ) );
-		$this->assertSame( 'ASC',       $query->get( 'order' ) );
-		$this->assertSame( '',          $query->get( 'meta_key' ) );
-		$this->assertSame( '',          $query->get( 'meta_value' ) );
-		$this->assertSame( '',          $query->get( 'meta_query' ) );
+		self::assertSame( 'post_name', $query->get( 'orderby' ) );
+		self::assertSame( 'ASC',       $query->get( 'order' ) );
+		self::assertSame( '',          $query->get( 'meta_key' ) );
+		self::assertSame( '',          $query->get( 'meta_value' ) );
+		self::assertSame( '',          $query->get( 'meta_query' ) );
 
-		$this->assertEquals( array(
+		self::assertEquals( array(
 			$this->posts['hello'][0],
 			$this->posts['hello'][2],
 			$this->posts['hello'][1],
@@ -77,15 +77,15 @@ class Queries extends Admin {
 			'order'     => 'ASC',
 		) );
 
-		$this->assertEquals( 3, $query->found_posts );
+		self::assertEquals( 3, $query->found_posts );
 
-		$this->assertSame( 'meta_value',    $query->get( 'orderby' ) );
-		$this->assertSame( 'ASC',           $query->get( 'order' ) );
-		$this->assertSame( 'test_meta_key', $query->get( 'meta_key' ) );
-		$this->assertSame( '',              $query->get( 'meta_value' ) );
-		$this->assertSame( '',              $query->get( 'meta_query' ) );
+		self::assertSame( 'meta_value',    $query->get( 'orderby' ) );
+		self::assertSame( 'ASC',           $query->get( 'order' ) );
+		self::assertSame( 'test_meta_key', $query->get( 'meta_key' ) );
+		self::assertSame( '',              $query->get( 'meta_value' ) );
+		self::assertSame( '',              $query->get( 'meta_query' ) );
 
-		$this->assertEquals( array(
+		self::assertEquals( array(
 			$this->posts['hello'][1],
 			$this->posts['hello'][2],
 			$this->posts['hello'][0],
@@ -101,15 +101,15 @@ class Queries extends Admin {
 			'order'     => 'ASC',
 		) );
 
-		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
+		self::assertEquals( count( $this->posts['hello'] ), $query->found_posts );
 
-		$this->assertSame( 'name', $query->get( 'orderby' ) );
-		$this->assertSame( 'ASC',  $query->get( 'order' ) );
-		$this->assertSame( '',     $query->get( 'meta_key' ) );
-		$this->assertSame( '',     $query->get( 'meta_value' ) );
-		$this->assertSame( '',     $query->get( 'meta_query' ) );
+		self::assertSame( 'name', $query->get( 'orderby' ) );
+		self::assertSame( 'ASC',  $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
 
-		$this->assertEquals( array(
+		self::assertEquals( array(
 			$this->posts['hello'][0],
 			$this->posts['hello'][2],
 			$this->posts['hello'][1],
@@ -126,15 +126,15 @@ class Queries extends Admin {
 			'order'     => 'DESC',
 		) );
 
-		$this->assertEquals( count( $this->posts['hello'] ), $query->found_posts );
+		self::assertEquals( count( $this->posts['hello'] ), $query->found_posts );
 
-		$this->assertSame( 'test_admin_cols_taxonomy', $query->get( 'orderby' ) );
-		$this->assertSame( 'DESC',                     $query->get( 'order' ) );
-		$this->assertSame( '',                         $query->get( 'meta_key' ) );
-		$this->assertSame( '',                         $query->get( 'meta_value' ) );
-		$this->assertSame( '',                         $query->get( 'meta_query' ) );
+		self::assertSame( 'test_admin_cols_taxonomy', $query->get( 'orderby' ) );
+		self::assertSame( 'DESC',                     $query->get( 'order' ) );
+		self::assertSame( '',                         $query->get( 'meta_key' ) );
+		self::assertSame( '',                         $query->get( 'meta_value' ) );
+		self::assertSame( '',                         $query->get( 'meta_query' ) );
 
-		$this->assertEquals( array(
+		self::assertEquals( array(
 			$this->posts['hello'][3],
 			$this->posts['hello'][0],
 			$this->posts['hello'][2],
@@ -149,15 +149,15 @@ class Queries extends Admin {
 			'post_type' => 'person',
 		) );
 
-		$this->assertEquals( count( $this->posts['person'] ), $query->found_posts );
+		self::assertEquals( count( $this->posts['person'] ), $query->found_posts );
 
-		$this->assertSame( 'menu_order title', $query->get( 'orderby' ) );
-		$this->assertSame( 'ASC',  $query->get( 'order' ) );
-		$this->assertSame( '',     $query->get( 'meta_key' ) );
-		$this->assertSame( '',     $query->get( 'meta_value' ) );
-		$this->assertSame( '',     $query->get( 'meta_query' ) );
+		self::assertSame( 'menu_order title', $query->get( 'orderby' ) );
+		self::assertSame( 'ASC',  $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
 
-		$this->assertEquals( $this->posts['person'], wp_list_pluck( $query->posts, 'ID' ) );
+		self::assertEquals( $this->posts['person'], wp_list_pluck( $query->posts, 'ID' ) );
 
 	}
 
