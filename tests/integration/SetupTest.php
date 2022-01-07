@@ -301,7 +301,10 @@ class Setup extends Test {
 		$link = get_permalink( $post );
 		$this->assertEquals( user_trailingslashit( home_url( sprintf( 'foo/-/gamma/%s', $post->post_name ) ) ), $link );
 
-		add_filter( 'default_foo_category', fn() => get_term_by( 'slug', 'delta', 'foo_category' )->term_id );
+		add_filter( 'default_foo_category', function(): int {
+			$term = get_term_by( 'slug', 'delta', 'foo_category' );
+			return ( $term instanceof \WP_Term ) ? $term->term_id : 0;
+		} );
 
 		$post = get_post( $this->posts['foo'][2] );
 		$this->assertNotNull( $post );
