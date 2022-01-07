@@ -363,9 +363,6 @@ class Setup extends Test {
 		} catch ( \PHPUnit\Framework\Exception $e ) {
 			$this->assertStringContainsString( "$max_length", $e->getMessage() );
 		}
-
-		_unregister_post_type( $name );
-
 	}
 
 }
