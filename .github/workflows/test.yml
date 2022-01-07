@@ -34,9 +34,9 @@ jobs:
         path: ~/.composer/cache
         key: ${{ matrix.php }}-${{ env.cache-name }}-${{ hashFiles('composer.json') }}
 
-    - name: PHPCS cache
+    - name: PHPCS and PHPStan cache
       if: matrix.php == '7.4'
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       env:
         cache-name: phpcs
       with:
