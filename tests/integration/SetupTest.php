@@ -10,7 +10,7 @@ class Setup extends Test {
 		$this->register_post_types();
 	}
 
-	public function testMinimumWordPressVersion() {
+	public function testMinimumWordPressVersion(): void {
 		global $wp_version;
 
 		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/README.md';
@@ -23,7 +23,7 @@ class Setup extends Test {
 		$this->assertTrue( version_compare( $wp_version, $min, '>=' ), "{$wp_version} is not >= {$min}" );
 	}
 
-	public function testMinimumPHPVersion() {
+	public function testMinimumPHPVersion(): void {
 		$php_version = PHP_VERSION;
 		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/README.md';
 		$this->assertFileExists( $filename );
@@ -35,7 +35,7 @@ class Setup extends Test {
 		$this->assertTrue( version_compare( $php_version, $min, '>=' ), "{$php_version} is not >= {$min}" );
 	}
 
-	public function testCodeSnifferMinimumWordPressVersionIsCorrect() {
+	public function testCodeSnifferMinimumWordPressVersionIsCorrect(): void {
 		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/phpcs.xml.dist';
 		$this->assertFileExists( $filename );
 
@@ -52,7 +52,7 @@ class Setup extends Test {
 		$this->assertSame( $min, $matches['version'] );
 	}
 
-	public function testPostTypeArgsAreCorrect() {
+	public function testPostTypeArgsAreCorrect(): void {
 
 		$this->assertEquals( 'hello',  $this->cpts['hello']->post_type );
 		$this->assertEquals( 'hellos', $this->cpts['hello']->post_slug );
@@ -91,7 +91,7 @@ class Setup extends Test {
 
 	}
 
-	public function testPostTypePropertiesAreCorrect() {
+	public function testPostTypePropertiesAreCorrect(): void {
 
 		$hello = get_post_type_object( 'hello' );
 
@@ -121,7 +121,7 @@ class Setup extends Test {
 
 	}
 
-	public function testPostTypeLabelsAreCorrect() {
+	public function testPostTypeLabelsAreCorrect(): void {
 		global $wp_version;
 
 		$bar = get_post_type_object( 'bar' );
@@ -210,7 +210,7 @@ class Setup extends Test {
 
 	}
 
-	public function testTaxonomyLabelsAreCorrect() {
+	public function testTaxonomyLabelsAreCorrect(): void {
 		$foo = get_taxonomy( 'foo_category' );
 
 		$this->assertEquals( (object) array(
@@ -246,7 +246,7 @@ class Setup extends Test {
 		), $foo->labels );
 	}
 
-	public function testArchiveLinksAreCorrect() {
+	public function testArchiveLinksAreCorrect(): void {
 
 		$link = get_post_type_archive_link( $this->cpts['hello']->post_type );
 		$this->assertEquals( user_trailingslashit( home_url( 'hellos' ) ), $link );
@@ -268,7 +268,7 @@ class Setup extends Test {
 
 	}
 
-	public function testPermalinksAreCorrect() {
+	public function testPermalinksAreCorrect(): void {
 
 		$post = get_post( $this->posts['hello'][0] );
 		$link = get_permalink( $post );
@@ -306,7 +306,7 @@ class Setup extends Test {
 
 	}
 
-	public function testTaxonomyQueryVarClashTriggersError() {
+	public function testTaxonomyQueryVarClashTriggersError(): void {
 		register_taxonomy( 'public_taxonomy', 'post', array(
 			'public'    => true,
 			'query_var' => 'public_taxonomy',
@@ -321,7 +321,7 @@ class Setup extends Test {
 		}
 	}
 
-	public function testPrivateTaxonomyWithNoQueryVarDoesNotTriggerError() {
+	public function testPrivateTaxonomyWithNoQueryVarDoesNotTriggerError(): void {
 		register_taxonomy( 'private_taxonomy', 'post', array(
 			'public'    => false,
 			'query_var' => true,
@@ -334,7 +334,7 @@ class Setup extends Test {
 	/**
 	 * @expectedIncorrectUsage register_post_type
 	 */
-	public function testInvalidPostTypeTriggersError() {
+	public function testInvalidPostTypeTriggersError(): void {
 		$max_length = 20;
 
 		$name = str_repeat( 'a', $max_length + 1 );

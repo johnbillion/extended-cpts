@@ -32,7 +32,7 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	protected $tester;
 
-	protected function register_post_types() {
+	protected function register_post_types(): void {
 
 		global $wp_rewrite;
 

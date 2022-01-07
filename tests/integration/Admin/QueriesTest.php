@@ -8,7 +8,7 @@ use WP_Query;
 
 class Queries extends Admin {
 
-	public function testDefaultPostTypeQueryNotAffected() {
+	public function testDefaultPostTypeQueryNotAffected(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'post',
@@ -26,7 +26,7 @@ class Queries extends Admin {
 
 	}
 
-	public function testQueryWithNoArgsNotAffected() {
+	public function testQueryWithNoArgsNotAffected(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'hello',
@@ -44,7 +44,7 @@ class Queries extends Admin {
 
 	}
 
-	public function testQueryWithNoCustomValuesNotAffected() {
+	public function testQueryWithNoCustomValuesNotAffected(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'hello',
@@ -69,7 +69,7 @@ class Queries extends Admin {
 
 	}
 
-	public function testQuerySortedByPostMeta() {
+	public function testQuerySortedByPostMeta(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'hello',
@@ -93,7 +93,7 @@ class Queries extends Admin {
 
 	}
 
-	public function testQuerySortedByPostField() {
+	public function testQuerySortedByPostField(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'hello',
@@ -118,7 +118,7 @@ class Queries extends Admin {
 
 	}
 
-	public function testQuerySortedByTaxonomyTerms() {
+	public function testQuerySortedByTaxonomyTerms(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'hello',
@@ -143,7 +143,7 @@ class Queries extends Admin {
 
 	}
 
-	public function testQueryWithDefaultSortOrder() {
+	public function testQueryWithDefaultSortOrder(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'person',

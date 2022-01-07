@@ -8,7 +8,7 @@ use WP_Query;
 
 class Queries extends Site {
 
-	public function testDefaultPostTypeQueryNotAffected() {
+	public function testDefaultPostTypeQueryNotAffected(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'post',
@@ -26,7 +26,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQueryWithNoArgsNotAffected() {
+	public function testQueryWithNoArgsNotAffected(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'hello',
@@ -44,7 +44,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQueryWithNoCustomValuesNotAffected() {
+	public function testQueryWithNoCustomValuesNotAffected(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'hello',
@@ -69,7 +69,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQuerySortedByPostMeta() {
+	public function testQuerySortedByPostMeta(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'hello',
@@ -93,7 +93,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQuerySortedByPostField() {
+	public function testQuerySortedByPostField(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'hello',
@@ -118,7 +118,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQuerySortedByTaxonomyTerms() {
+	public function testQuerySortedByTaxonomyTerms(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'hello',
@@ -143,7 +143,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQueryFilteredByPostMetaKey() {
+	public function testQueryFilteredByPostMetaKey(): void {
 
 		$query = $this->get_query( array(
 			'post_type'                       => 'hello',
@@ -165,7 +165,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQueryFilteredByPostMetaQuery() {
+	public function testQueryFilteredByPostMetaQuery(): void {
 
 		$query = $this->get_query( array(
 			'post_type'                         => 'hello',
@@ -192,7 +192,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQueryFilteredByInvalidFilter() {
+	public function testQueryFilteredByInvalidFilter(): void {
 
 		$query = $this->get_query( array(
 			'post_type'                 => 'hello',
@@ -209,7 +209,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQueryFilteredByPostMetaSearch() {
+	public function testQueryFilteredByPostMetaSearch(): void {
 
 		$query = $this->get_query( array(
 			'post_type'                          => 'hello',
@@ -233,7 +233,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQueryFilteredByPostMetaExists() {
+	public function testQueryFilteredByPostMetaExists(): void {
 
 		$query = $this->get_query( array(
 			'post_type'                          => 'hello',
@@ -258,7 +258,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQueryFilteredByPostMetaKeyExists() {
+	public function testQueryFilteredByPostMetaKeyExists(): void {
 
 		$query = $this->get_query( array(
 			'post_type'                              => 'hello',
@@ -282,7 +282,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQueryFilteredByPostDate() {
+	public function testQueryFilteredByPostDate(): void {
 		$query = $this->get_query( array(
 			'post_type'                   => 'hello',
 			'test_site_filters_date_from' => '2019-08-05',
@@ -295,7 +295,7 @@ class Queries extends Site {
 		$this->assertEquals( '2019-08-08', $date_query[1]['before'] );
 	}
 
-	public function testQueryNotFilteredWithoutRequiredCap() {
+	public function testQueryNotFilteredWithoutRequiredCap(): void {
 
 		$query = $this->get_query( array(
 			'post_type'                  => 'hello',
@@ -314,7 +314,7 @@ class Queries extends Site {
 
 	}
 
-	public function testQueryWithDefaultSortOrder() {
+	public function testQueryWithDefaultSortOrder(): void {
 
 		$query = $this->get_query( array(
 			'post_type' => 'person',
@@ -335,7 +335,7 @@ class Queries extends Site {
 
 	}
 
-	protected function get_query( array $args ) {
+	protected function get_query( array $args ): \WP_Query {
 		$args = array_merge( array(
 			'nopaging' => true,
 		), $args );

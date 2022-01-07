@@ -7,7 +7,7 @@ use ExtCPTs\Tests\Admin;
 
 class Requests extends Admin {
 
-	public function testDefaultPostTypeListingRequestIsCorrect() {
+	public function testDefaultPostTypeListingRequestIsCorrect(): void {
 
 		$this->go_to_listing( array(
 			'post_type' => 'post',
@@ -22,7 +22,7 @@ class Requests extends Admin {
 
 	}
 
-	public function testPostTypeListingRequestWithDefaultOrderIsCorrect() {
+	public function testPostTypeListingRequestWithDefaultOrderIsCorrect(): void {
 
 		$this->go_to_listing( array(
 			'post_type' => 'person',
@@ -39,7 +39,7 @@ class Requests extends Admin {
 
 	}
 
-	public function testPostTypeListingRequestWithStandardOrderIsCorrect() {
+	public function testPostTypeListingRequestWithStandardOrderIsCorrect(): void {
 
 		$this->go_to_listing( array(
 			'post_type' => 'person',
@@ -58,7 +58,7 @@ class Requests extends Admin {
 
 	}
 
-	public function testPostTypeListingRequestWithPostFieldOrderIsCorrect() {
+	public function testPostTypeListingRequestWithPostFieldOrderIsCorrect(): void {
 
 		$this->go_to_listing( array(
 			'post_type' => 'person',
@@ -77,7 +77,7 @@ class Requests extends Admin {
 
 	}
 
-	public function testPostTypeListingRequestWithPostMetaOrderIsCorrect() {
+	public function testPostTypeListingRequestWithPostMetaOrderIsCorrect(): void {
 
 		$this->go_to_listing( array(
 			'post_type' => 'person',
@@ -94,7 +94,7 @@ class Requests extends Admin {
 
 	}
 
-	public function testPostTypeListingRequestWithTaxonomyOrderIsCorrect() {
+	public function testPostTypeListingRequestWithTaxonomyOrderIsCorrect(): void {
 
 		$this->go_to_listing( array(
 			'post_type' => 'person',
@@ -111,7 +111,7 @@ class Requests extends Admin {
 
 	}
 
-	public function testPostTypeListingRequestWithUnsortableOrderIsCorrect() {
+	public function testPostTypeListingRequestWithUnsortableOrderIsCorrect(): void {
 
 		// Even though the `test_admin_cols_unsortable` column is unsortable, the request should still reflect
 		// the orderby value as requested. The actual sort order is handled at the query level.

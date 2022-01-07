@@ -7,7 +7,7 @@ use ExtCPTs\Tests\Site;
 
 class Requests extends Site {
 
-	public function testSiteFilterQueryVarsRegistered() {
+	public function testSiteFilterQueryVarsRegistered(): void {
 
 		// Need to trigger a new request
 		$this->go_to( home_url() );
@@ -21,7 +21,7 @@ class Requests extends Site {
 
 	}
 
-	public function testAdminColQueryVarsNotRegistered() {
+	public function testAdminColQueryVarsNotRegistered(): void {
 
 		// Need to trigger a new request
 		$this->go_to( home_url() );
@@ -35,7 +35,7 @@ class Requests extends Site {
 
 	}
 
-	public function testHomeRequestIsCorrect() {
+	public function testHomeRequestIsCorrect(): void {
 
 		$this->go_to( home_url() );
 
@@ -45,7 +45,7 @@ class Requests extends Site {
 
 	}
 
-	public function testFeedRequestIsCorrect() {
+	public function testFeedRequestIsCorrect(): void {
 
 		$this->go_to( get_feed_link() );
 
@@ -62,7 +62,7 @@ class Requests extends Site {
 
 	}
 
-	public function testPostTypeArchiveRequestIsCorrect() {
+	public function testPostTypeArchiveRequestIsCorrect(): void {
 
 		$this->go_to( get_post_type_archive_link( 'hello' ) );
 
@@ -74,7 +74,7 @@ class Requests extends Site {
 
 	}
 
-	public function testPostTypeArchiveRequestWithFilterIsCorrect() {
+	public function testPostTypeArchiveRequestWithFilterIsCorrect(): void {
 
 		$this->go_to( add_query_arg( array(
 			'test_site_filters_post_meta_key' => 'Alpha',
@@ -89,7 +89,7 @@ class Requests extends Site {
 
 	}
 
-	public function testPostTypeArchiveRequestWithOrderbyIsCorrect() {
+	public function testPostTypeArchiveRequestWithOrderbyIsCorrect(): void {
 
 		$this->go_to( add_query_arg( array(
 			'orderby' => 'test_site_sortables_post_meta',
@@ -104,7 +104,7 @@ class Requests extends Site {
 
 	}
 
-	public function testPostTypePermalinkRequestIsCorrect() {
+	public function testPostTypePermalinkRequestIsCorrect(): void {
 
 		$this->go_to( get_permalink( $this->posts['hello'][0] ) );
 
