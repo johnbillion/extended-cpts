@@ -18,7 +18,7 @@ class Setup extends Test {
 
 		$min = self::get_minimum_version( 'WordPress', $filename );
 
-		$this->assertNotFalse( $min );
+		$this->assertNotNull( $min );
 		$this->assertTrue( is_numeric( $min ), "Min is not numeric: {$min}" );
 		$this->assertTrue( version_compare( $wp_version, $min, '>=' ), "{$wp_version} is not >= {$min}" );
 	}
@@ -30,7 +30,7 @@ class Setup extends Test {
 
 		$min = self::get_minimum_version( 'PHP', $filename );
 
-		$this->assertNotFalse( $min );
+		$this->assertNotNull( $min );
 		$this->assertTrue( is_numeric( $min ), "Min is not numeric: {$min}" );
 		$this->assertTrue( version_compare( $php_version, $min, '>=' ), "{$php_version} is not >= {$min}" );
 	}

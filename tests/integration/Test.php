@@ -7,9 +7,24 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 
 	use \FalseyAssertEqualsDetector\Test;
 
+	/**
+	 * @var array<string,\ExtCPTs\PostType>
+	 */
 	public $cpts = array();
+
+	/**
+	 * @var array<string,\ExtCPTs\Taxonomy>
+	 */
 	public $taxos = array();
+
+	/**
+	 * @var array<string,\WP_Post[]>
+	 */
 	public $posts = array();
+
+	/**
+	 * @var array<string,mixed>
+	 */
 	public $args = array();
 
 	/**
@@ -198,14 +213,14 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 		}
 
 		// Post
-		$this->posts['post'][] = $this->factory->post->create( array(
+		$this->posts['post'][] = self::factory()->post->create( array(
 			'guid'      => 'guid',
 			'post_type' => 'post',
 			'post_date' => '1984-02-25 00:05:00'
 		) );
 
 		// Hello 0
-		$this->posts['hello'][0] = $this->factory->post->create( array(
+		$this->posts['hello'][0] = self::factory()->post->create( array(
 			'guid'      => 'guid',
 			'post_type' => 'hello',
 			'post_name' => 'Alpha',
@@ -215,7 +230,7 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 		wp_add_object_terms( $this->posts['hello'][0], 'Beta', 'hello_category' );
 
 		// Hello 1
-		$this->posts['hello'][1] = $this->factory->post->create( array(
+		$this->posts['hello'][1] = self::factory()->post->create( array(
 			'guid'      => 'guid',
 			'post_type' => 'hello',
 			'post_name' => 'Delta',
@@ -224,7 +239,7 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 		add_post_meta( $this->posts['hello'][1], 'test_meta_key', '0' );
 
 		// Hello 2
-		$this->posts['hello'][2] = $this->factory->post->create( array(
+		$this->posts['hello'][2] = self::factory()->post->create( array(
 			'guid'      => 'guid',
 			'post_type' => 'hello',
 			'post_name' => 'Beta',
@@ -234,7 +249,7 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 		wp_add_object_terms( $this->posts['hello'][2], 'Alpha', 'hello_category' );
 
 		// Hello 3
-		$this->posts['hello'][3] = $this->factory->post->create( array(
+		$this->posts['hello'][3] = self::factory()->post->create( array(
 			'guid'      => 'guid',
 			'post_type' => 'hello',
 			'post_name' => 'Gamma',
@@ -242,71 +257,71 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 		) );
 		wp_add_object_terms( $this->posts['hello'][3], 'Gamma', 'hello_category' );
 
-		$this->posts['person'][0] = $this->factory->post->create( array(
+		$this->posts['person'][0] = self::factory()->post->create( array(
 			'guid'      => 'guid',
 			'post_type' => 'person',
 			'post_name' => 'Beta',
 			'post_date' => '1984-02-25 00:01:00'
 		) );
-		$this->posts['person'][1] = $this->factory->post->create( array(
+		$this->posts['person'][1] = self::factory()->post->create( array(
 			'guid'      => 'guid',
 			'post_type' => 'person',
 			'post_name' => 'Alpha',
 			'post_date' => '1984-02-25 00:02:00'
 		) );
-		$this->posts['nice-thing'][0] = $this->factory->post->create( array(
+		$this->posts['nice-thing'][0] = self::factory()->post->create( array(
 			'guid'      => 'guid',
 			'post_type' => 'nice-thing',
 		) );
-		$this->posts['foo'][0] = $this->factory->post->create( array(
+		$this->posts['foo'][0] = self::factory()->post->create( array(
 			'guid'        => 'guid',
 			'post_type'   => 'foo',
 			'post_author' => 1,
 		) );
 		wp_add_object_terms( $this->posts['foo'][0], array( 'Gamma', 'Delta' ), 'foo_category' );
 
-		$this->posts['foo'][1] = $this->factory->post->create( array(
+		$this->posts['foo'][1] = self::factory()->post->create( array(
 			'guid'        => 'guid',
 			'post_type'   => 'foo',
 			'post_author' => 0,
 		) );
 		wp_add_object_terms( $this->posts['foo'][1], array( 'Gamma' ), 'foo_category' );
 
-		$this->posts['foo'][2] = $this->factory->post->create( array(
+		$this->posts['foo'][2] = self::factory()->post->create( array(
 			'guid'        => 'guid',
 			'post_type'   => 'foo',
 			'post_author' => 1,
 		) );
 
-		$this->posts['bar'][0] = $this->factory->post->create( array(
+		$this->posts['bar'][0] = self::factory()->post->create( array(
 			'guid'        => 'guid',
 			'post_type'   => 'bar',
 		) );
 
-		$this->posts['baz'][0] = $this->factory->post->create( array(
+		$this->posts['baz'][0] = self::factory()->post->create( array(
 			'guid'        => 'guid',
 			'post_type'   => 'baz',
 		) );
 
-		$this->posts['filterable'][0] = $this->factory->post->create( array(
+		$this->posts['filterable'][0] = self::factory()->post->create( array(
 			'guid'        => 'guid',
 			'post_type'   => 'filterable',
 		) );
 		add_post_meta( $this->posts['filterable'][0], 'test_meta_key', 'Alpha' );
 
-		$this->posts['filterable'][1] = $this->factory->post->create( array(
+		$this->posts['filterable'][1] = self::factory()->post->create( array(
 			'guid'        => 'guid',
 			'post_type'   => 'filterable',
 		) );
 		add_post_meta( $this->posts['filterable'][1], 'test_meta_key', 'Beta' );
 	}
 
-	protected static function get_minimum_version( string $type, string $filename ) {
-		$file = file_get_contents( $filename );
+	protected static function get_minimum_version( string $type, string $filename ): ?string {
+		$file = (string) file_get_contents( $filename );
 		$pattern = '/^\* \*\*' . preg_quote( $type ) . ':\*\* (?P<version>[0-9]\.[0-9])/m';
 
 		if ( ! preg_match( $pattern, $file, $matches ) ) {
-			return false;
+			return null;
 		}
 
 		return $matches['version'];
