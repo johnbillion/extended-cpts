@@ -27,11 +27,6 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 	 */
 	public $args = array();
 
-	/**
-	 * @var \WpunitTester
-	 */
-	protected $tester;
-
 	protected function register_post_types(): void {
 
 		global $wp_rewrite;
