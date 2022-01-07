@@ -51,7 +51,10 @@ abstract class Admin extends Test {
 
 	}
 
-	protected function default_listing_vars() {
+	/**
+	 * @return array<string, mixed>
+	 */
+	protected function default_listing_vars(): array {
 		$vars = array(
 			'posts_per_page' => 20,
 		);
