@@ -39,7 +39,7 @@ class Setup extends Test {
 		$filename = dirname( dirname( dirname( __FILE__ ) ) ) . '/phpcs.xml.dist';
 		$this->assertFileExists( $filename );
 
-		$phpcs = file_get_contents( $filename );
+		$phpcs = (string) file_get_contents( $filename );
 		$pattern = '/minimum_supported_version" value="(?P<version>[0-9]\.[0-9])"/';
 		$result = preg_match( $pattern, $phpcs, $matches );
 		$this->assertNotEmpty( $result );
@@ -92,9 +92,9 @@ class Setup extends Test {
 	}
 
 	public function testPostTypePropertiesAreCorrect(): void {
-
 		$hello = get_post_type_object( 'hello' );
 
+		$this->assertNotNull( $hello );
 		$this->assertTrue( $hello->public );
 		$this->assertTrue( $hello->hierarchical );
 		$this->assertTrue( $hello->has_archive );
@@ -103,6 +103,7 @@ class Setup extends Test {
 
 		$bar = get_post_type_object( 'bar' );
 
+		$this->assertNotNull( $bar );
 		$this->assertFalse( $bar->public );
 		$this->assertTrue( $bar->hierarchical );
 		$this->assertFalse( $bar->has_archive );
@@ -113,6 +114,7 @@ class Setup extends Test {
 
 		$baz = get_post_type_object( 'baz' );
 
+		$this->assertNotNull( $baz );
 		$this->assertTrue( $baz->public );
 		$this->assertTrue( $baz->hierarchical );
 		$this->assertFalse( $baz->has_archive );
@@ -127,6 +129,7 @@ class Setup extends Test {
 		$bar = get_post_type_object( 'bar' );
 		$faq = get_post_type_object( 'faq' );
 
+		$this->assertNotNull( $bar );
 		$this->assertEquals( (object) array(
 			'name'                     => 'Plural',
 			'singular_name'            => 'Singular',
@@ -166,6 +169,7 @@ class Setup extends Test {
 
 		$featured_image = version_compare( $wp_version, '5.4', '>=' ) ? 'Featured image' : 'Featured Image';
 
+		$this->assertNotNull( $faq );
 		$this->assertEquals( (object) array(
 			'name'                     => 'FAQs',
 			'singular_name'            => 'FAQ',
@@ -205,6 +209,7 @@ class Setup extends Test {
 
 		$post = get_post_type_object( 'post' );
 
+		$this->assertNotNull( $post );
 		$this->assertEquals( $featured_image, $post->labels->featured_image );
 		$this->assertEquals( 'Remove!', $post->labels->remove_featured_image );
 
@@ -213,6 +218,7 @@ class Setup extends Test {
 	public function testTaxonomyLabelsAreCorrect(): void {
 		$foo = get_taxonomy( 'foo_category' );
 
+		$this->assertNotFalse( $foo );
 		$this->assertEquals( (object) array(
 			'menu_name'                  => 'Foo Categorys',
 			'name'                       => 'Foo Categorys',

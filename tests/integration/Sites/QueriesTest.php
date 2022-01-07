@@ -335,6 +335,9 @@ class Queries extends Site {
 
 	}
 
+	/**
+	 * @param array<string,mixed> $args
+	 */
 	protected function get_query( array $args ): \WP_Query {
 		$args = array_merge( array(
 			'nopaging' => true,

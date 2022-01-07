@@ -161,7 +161,10 @@ class Queries extends Admin {
 
 	}
 
-	protected function get_query( array $args ) {
+	/**
+	 * @param array<string,mixed> $args
+	 */
+	protected function get_query( array $args ): \WP_Query {
 		global $wp_query, $wp_the_query;
 
 		$wp_the_query = $wp_query = new WP_Query;

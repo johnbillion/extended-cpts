@@ -63,8 +63,11 @@ class Requests extends Site {
 	}
 
 	public function testPostTypeArchiveRequestIsCorrect(): void {
+		$link = get_post_type_archive_link( 'hello' );
 
-		$this->go_to( get_post_type_archive_link( 'hello' ) );
+		$this->assertIsString( $link );
+
+		$this->go_to( $link );
 
 		global $wp, $wp_query;
 
@@ -105,8 +108,11 @@ class Requests extends Site {
 	}
 
 	public function testPostTypePermalinkRequestIsCorrect(): void {
+		$link = get_permalink( $this->posts['hello'][0] );
 
-		$this->go_to( get_permalink( $this->posts['hello'][0] ) );
+		$this->assertIsString( $link );
+
+		$this->go_to( $link );
 
 		global $wp, $wp_query;
 

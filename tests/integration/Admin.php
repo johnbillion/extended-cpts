@@ -15,7 +15,10 @@ abstract class Admin extends Test {
 		$this->register_post_types();
 	}
 
-	protected function go_to_listing( array $args ) {
+	/**
+	 * @param array<string,mixed> $args
+	 */
+	protected function go_to_listing( array $args ): string {
 
 		$_GET = $_REQUEST = $args;
 
