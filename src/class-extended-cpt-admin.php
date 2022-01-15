@@ -917,6 +917,13 @@ ICONCSS;
 			foreach ( $vals as $val ) {
 				$val_time = strtotime( $val );
 
+				try {
+					new DateTime ( '@' . $val );
+					$val_time = strtotime( '@' . $val );
+				} catch ( Exception $e ) {
+					$val_time = strtotime( $val );
+				}
+
 				if ( $val_time ) {
 					$val = $val_time;
 				}
