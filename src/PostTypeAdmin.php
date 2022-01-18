@@ -284,8 +284,6 @@ class PostTypeAdmin {
 					continue;
 				}
 
-				require_once __DIR__ . '/Walker/Dropdown.php';
-
 				$walker = new Walker\Dropdown(
 					[
 						'field' => 'slug',

@@ -27,3 +27,6 @@ require_once __DIR__ . '/src/PostType.php';
 require_once __DIR__ . '/src/PostTypeAdmin.php';
 require_once __DIR__ . '/src/Taxonomy.php';
 require_once __DIR__ . '/src/TaxonomyAdmin.php';
+require_once __DIR__ . '/src/Walker/Checkboxes.php';
+require_once __DIR__ . '/src/Walker/Dropdown.php';
+require_once __DIR__ . '/src/Walker/Radios.php';
