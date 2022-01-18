@@ -5,6 +5,8 @@ namespace ExtCPTs;
 
 use WP_Post;
 use WP_Query;
+use DateTime;
+use Exception;
 
 use function p2p_connection_exists;
 use function p2p_type;
@@ -987,6 +989,13 @@ ICONCSS;
 
 			foreach ( $vals as $val ) {
 				$val_time = strtotime( $val );
+
+				try {
+					new DateTime ( '@' . $val );
+					$val_time = strtotime( '@' . $val );
+				} catch ( Exception $e ) {
+					$val_time = strtotime( $val );
+				}
 
 				if ( false !== $val_time ) {
 					$val = $val_time;
