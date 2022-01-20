@@ -60,7 +60,7 @@ Not your first time here? See [Recent Changes for Developers](https://github.com
 ## Minimum Requirements ##
 
 * **PHP:** 7.4  
-  - PHP 8 is supported
+  - PHP 8.0 and 8.1 are supported
 * **WordPress:** 5.6  
   - Tested up to WP 5.8
 
