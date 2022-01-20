@@ -988,11 +988,8 @@ ICONCSS;
 			}
 
 			foreach ( $vals as $val ) {
-				$val_time = strtotime( $val );
-
 				try {
-					new DateTime ( '@' . $val );
-					$val_time = strtotime( '@' . $val );
+					$val_time = ( new DateTime( '@' . $val ) )->format( 'U' );
 				} catch ( Exception $e ) {
 					$val_time = strtotime( $val );
 				}
