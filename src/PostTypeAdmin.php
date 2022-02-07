@@ -1396,7 +1396,9 @@ ICONCSS;
 	 * @return string The item title.
 	 */
 	protected function get_item_title( array $item, string $fallback = '' ): string {
-		if ( isset( $item['taxonomy'] ) ) {
+        if ( isset( $item['title'] ) ) {
+			return $item['title'];
+        } elseif ( isset( $item['taxonomy'] ) ) {
 			$tax = get_taxonomy( $item['taxonomy'] );
 			if ( $tax ) {
 				if ( ! empty( $tax->exclusive ) ) {
