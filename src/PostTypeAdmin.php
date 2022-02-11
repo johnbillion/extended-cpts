@@ -314,7 +314,7 @@ class PostTypeAdmin {
 						'orderby'         => 'name',
 						'selected_cats'   => $tax->query_var ? get_query_var( $tax->query_var ) : [],
 						'id'              => $id,
-						'name'            => $tax->query_var,
+						'name'            => (string) $tax->query_var,
 						'taxonomy'        => $filter['taxonomy'],
 						'walker'          => $walker,
 					]
@@ -518,7 +518,7 @@ class PostTypeAdmin {
 						'include'           => $filter['options'],
 						'name'              => 'author',
 						'option_none_value' => '0',
-						'selected'          => $value,
+						'selected'          => (int) $value,
 						'show_option_none'  => $filter['title'],
 					]
 				);

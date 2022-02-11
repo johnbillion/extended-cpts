@@ -419,6 +419,7 @@ class TaxonomyAdmin {
 		$taxonomy = $this->taxo->taxonomy;
 		/** @var WP_Taxonomy */
 		$tax = get_taxonomy( $taxonomy );
+		/** @var array<int,int> */
 		$selected = wp_get_object_terms(
 			$post->ID,
 			$taxonomy,
@@ -469,7 +470,7 @@ class TaxonomyAdmin {
 							'hierarchical'      => true,
 							'show_count'        => false,
 							'orderby'           => 'name',
-							'selected'          => reset( $selected ),
+							'selected'          => reset( $selected ) ?: 0,
 							'id'                => "{$taxonomy}dropdown",
 							'name'              => is_taxonomy_hierarchical( $taxonomy ) ? "tax_input[{$taxonomy}][]" : "tax_input[{$taxonomy}]",
 							'taxonomy'          => $taxonomy,
