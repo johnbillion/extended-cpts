@@ -11,49 +11,71 @@
 	],
 	"config": {
 		"sort-packages": true,
-		"preferred-install": "dist"
+		"preferred-install": "dist",
+		"allow-plugins": {
+			"cweagans/composer-patches": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true,
+			"roots/wordpress-core-installer": true
+		}
 	},
 	"extra": {
+		"branch-alias": {
+			"dev-develop": "5.0-dev"
+		},
+		"patches": {
+			"lucatume/wp-browser": {
+				"https://github.com/lucatume/wp-browser/issues/554": "tests/patches/wp-browser-554.patch"
+			}
+		},
 		"wordpress-install-dir": "tests/wordpress"
 	},
 	"require": {
-		"php": "^7 | ^8"
+		"php": ">= 7.4.0",
+		"johnbillion/args": "^0.9.0"
 	},
 	"require-dev": {
-		"automattic/phpcs-neutron-standard": "1.6.0",
+		"automattic/phpcs-neutron-standard": "1.7.0",
+		"cweagans/composer-patches": "^1.7",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
-		"johnbillion/falsey-assertequals-detector": "^2",
+		"johnbillion/falsey-assertequals-detector": "*",
+		"lucatume/wp-browser": "^3.0",
 		"phpcompatibility/phpcompatibility-wp": "^2",
-		"phpunit/phpunit": "^6",
-		"roots/wordpress": "*",
+		"phpstan/phpstan": "^1.0",
+		"phpstan/phpstan-phpunit": "^1.0",
+		"phpunit/phpunit": "^9",
+		"roots/wordpress": "^5.8.0",
+		"szepeviktor/phpstan-wordpress": "^1.0",
 		"vlucas/phpdotenv": "^3",
-		"wp-cli/db-command": "^2.0",
-		"wp-coding-standards/wpcs": "2.3.0",
-		"wp-phpunit/wp-phpunit": "*"
+		"wp-cli/core-command": "^2",
+		"wp-cli/db-command": "^2",
+		"wp-coding-standards/wpcs": "2.3.0"
 	},
 	"scripts": {
 		"post-update-cmd": [
 			"@php -r \"! file_exists( 'tests/.env' ) && copy( 'tests/.env.dist', 'tests/.env' );\""
 		],
 		"test:cs": [
-			"vendor/bin/phpcs -nps --colors --report-code --report-summary --report-width=80 --cache=tests/cache/phpcs ."
+			"phpcs -nps --colors --report-code --report-summary --report-width=80 --cache=tests/cache/phpcs --basepath='./' ."
 		],
-		"test:ut": [
-			"vendor/bin/wp db reset --yes --path=tests/wordpress #",
-			"export WP_MULTISITE=0 && vendor/bin/phpunit --verbose --colors=always --exclude-group=ms-required",
-			"export WP_MULTISITE=1 && vendor/bin/phpunit --verbose --colors=always --exclude-group=ms-excluded"
+		"test:analyze": [
+			"phpstan analyze"
+		],
+		"test:integration": [
+			"codecept run integration"
 		],
 		"test": [
 			"@test:cs",
-			"@test:ut"
+			"@test:analyze",
+			"@test:integration"
 		]
 	},
 	"autoload": {
 		"psr-4": {
-			"ExtCPTs\\Tests\\": "tests/phpunit"
+			"ExtCPTs\\": "src",
+			"ExtCPTs\\Tests\\": "tests/integration"
 		},
 		"files": [
-			"extended-cpts.php"
+			"functions.php"
 		]
 	},
 	"suggest": {

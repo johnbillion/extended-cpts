@@ -1,20 +1,22 @@
 <?php
 declare( strict_types=1 );
 
+namespace ExtCPTs;
+
 /**
  * @codeCoverageIgnore
  */
-class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
+class PostTypeRewriteTesting extends ExtendedRewriteTesting {
 
-	/**
-	 * @var Extended_CPT
-	 */
-	public $cpt;
+	public PostType $cpt;
 
-	public function __construct( Extended_CPT $cpt ) {
+	public function __construct( PostType $cpt ) {
 		$this->cpt = $cpt;
 	}
 
+	/**
+	 * @return array<string,array<string,string>>
+	 */
 	public function get_tests(): array {
 		global $wp_rewrite;
 
@@ -28,13 +30,14 @@ class Extended_CPT_Rewrite_Testing extends Extended_Rewrite_Testing {
 			return [];
 		}
 
-		$struct     = $wp_rewrite->extra_permastructs[ $this->cpt->post_type ];
-		$pto        = get_post_type_object( $this->cpt->post_type );
-		$name       = sprintf( '%s (%s)', $pto->labels->name, $this->cpt->post_type );
+		$struct = $wp_rewrite->extra_permastructs[ $this->cpt->post_type ];
+		/** @var \WP_Post_Type */
+		$pto = get_post_type_object( $this->cpt->post_type );
+		$name = sprintf( '%s (%s)', $pto->labels->name, $this->cpt->post_type );
 		$additional = [];
 
 		// Post type archive rewrites are generated separately. See the `has_archive` handling in `register_post_type()`.
-		if ( $pto->has_archive ) {
+		if ( $pto->has_archive && $pto->rewrite ) {
 			$archive_slug = ( true === $pto->has_archive ) ? $pto->rewrite['slug'] : $pto->has_archive;
 
 			if ( $pto->rewrite['with_front'] ) {

@@ -2,14 +2,14 @@
 declare( strict_types=1 );
 
 /**
- * Extended custom post types for WordPress.
+ * Extended custom post types and taxonomies for WordPress.
  *
  * @package   ExtendedCPTs
  * @author    John Blackbourn <https://johnblackbourn.com>
  * @link      https://github.com/johnbillion/extended-cpts
- * @copyright 2012-2021 John Blackbourn
+ * @copyright 2012-2022 John Blackbourn
  * @license   GPL v2 or later
- * @version   4.5.1
+ * @version   5.0.1
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,10 @@ declare( strict_types=1 );
  */
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/src/class-extended-cpt.php';
-require_once __DIR__ . '/src/class-extended-cpt-admin.php';
-require_once __DIR__ . '/src/class-extended-taxonomy.php';
-require_once __DIR__ . '/src/class-extended-taxonomy-admin.php';
+require_once __DIR__ . '/src/PostType.php';
+require_once __DIR__ . '/src/PostTypeAdmin.php';
+require_once __DIR__ . '/src/Taxonomy.php';
+require_once __DIR__ . '/src/TaxonomyAdmin.php';
+require_once __DIR__ . '/src/Walker/Checkboxes.php';
+require_once __DIR__ . '/src/Walker/Dropdown.php';
+require_once __DIR__ . '/src/Walker/Radios.php';

@@ -1,22 +1,24 @@
 <?php
+declare( strict_types=1 );
 
 namespace ExtCPTs\Tests;
 
-use ExtCPTs\Test;
-
 abstract class Admin extends Test {
 
-	public function setUp() {
+	public function setUp(): void {
 		parent::setUp();
 
 		// lie about being in the admin area so is_admin() returns true
 		set_current_screen( 'edit.php' );
-		$this->assertTrue( is_admin() );
+		self::assertTrue( is_admin() );
 
 		$this->register_post_types();
 	}
 
-	protected function go_to_listing( array $args ) {
+	/**
+	 * @param array<string,mixed> $args
+	 */
+	protected function go_to_listing( array $args ): string {
 
 		$_GET = $_REQUEST = $args;
 
@@ -28,41 +30,41 @@ abstract class Admin extends Test {
 		wp_set_current_user( 1 ); // @TODO change
 
 		$GLOBALS['wp_the_query'] = new \WP_Query( $args );
-		$GLOBALS['wp_query']     = $GLOBALS['wp_the_query'];
+		$GLOBALS['wp_query'] = $GLOBALS['wp_the_query'];
 
 		$wp_list_table = _get_list_table( 'WP_Posts_List_Table' );
 
-		$this->assertSame( 'edit', get_current_screen()->base );
-		$this->assertSame( $args['post_type'], get_current_screen()->post_type );
-		$this->assertInstanceOf( 'WP_List_Table', $wp_list_table );
+		$screen = get_current_screen();
+
+		self::assertNotNull( $screen );
+		self::assertSame( 'edit', $screen->base );
+		self::assertSame( $args['post_type'], $screen->post_type );
+		self::assertInstanceOf( 'WP_List_Table', $wp_list_table );
 
 		ob_start();
 		$wp_list_table->prepare_items();
 		$wp_list_table->views();
 		$wp_list_table->display();
-		$output = ob_get_clean();
+		$output = (string) ob_get_clean();
 
 		return $output;
 
 	}
 
-	protected function default_listing_vars() {
-		$vars = array(
+	/**
+	 * @return array<string, mixed>
+	 */
+	protected function default_listing_vars(): array {
+		return array(
 			'posts_per_page' => 20,
+			'order' => '',
+			'orderby' => '',
+			'perm' => '',
+			'post_status' => '',
 		);
-
-		// https://core.trac.wordpress.org/changeset/44338
-		if ( version_compare( $GLOBALS['wp_version'], '5.0.2', '>=' ) ) {
-			$vars['order']       = '';
-			$vars['orderby']     = '';
-			$vars['perm']        = '';
-			$vars['post_status'] = '';
-		}
-
-		return $vars;
 	}
 
-	public function tearDown() {
+	public function tearDown(): void {
 		parent::tearDown();
 
 		// reset

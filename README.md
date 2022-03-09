@@ -1,8 +1,8 @@
 [![Build Status](https://img.shields.io/github/workflow/status/johnbillion/extended-cpts/Test/develop?style=flat-square)](https://github.com/johnbillion/extended-cpts/actions)
-[![Stable Release](https://img.shields.io/packagist/v/johnbillion/extended-cpts.svg)](https://packagist.org/packages/johnbillion/extended-cpts)
-[![License](https://img.shields.io/badge/license-GPL_v2%2B-blue.svg)](https://github.com/johnbillion/extended-cpts/blob/master/LICENSE)
-[![PHP 7](https://img.shields.io/badge/php-7%20/%208-blue.svg)](https://wordpress.org/support/update-php/)
-[![Documentation](https://img.shields.io/badge/documentation-wiki-blue.svg)](https://github.com/johnbillion/extended-cpts/wiki)
+[![Stable Release](https://img.shields.io/packagist/v/johnbillion/extended-cpts.svg?style=flat-square)](https://packagist.org/packages/johnbillion/extended-cpts)
+[![License](https://img.shields.io/badge/license-GPL_v2%2B-blue.svg?style=flat-square)](https://github.com/johnbillion/extended-cpts/blob/trunk/LICENSE)
+[![PHP 7 and 8](https://img.shields.io/badge/php-7%20/%208-blue.svg?style=flat-square)](https://wordpress.org/support/update-php/)
+[![Documentation](https://img.shields.io/badge/documentation-wiki-blue.svg?style=flat-square)](https://github.com/johnbillion/extended-cpts/wiki)
 
 # Extended CPTs #
 
@@ -59,11 +59,12 @@ Not your first time here? See [Recent Changes for Developers](https://github.com
 
 ## Minimum Requirements ##
 
-* **PHP:** 7.0  
-  - PHP 7.4+ is recommended
-  - PHP 8 is supported
-* **WordPress:** 4.8  
-  - Tested up to WP 5.6
+* **PHP:** 7.4  
+  - PHP 8.0 and 8.1 are supported
+* **WordPress:** 5.6  
+  - Tested up to WP 5.8
+
+Extended CPTs should work with versions of WordPress back to 4.9 but these versions are not tested and not officially supported.
 
 ## Installation ##
 
@@ -74,8 +75,6 @@ composer require johnbillion/extended-cpts
 ```
 
 Other means of installation or usage, particularly bundling within a plugin, is not officially supported and done at your own risk.
-
-Note that *Extended Taxonomies* is part of this library since version 4.0, so there's no need to require that too.
 
 ## Usage ##
 
@@ -110,9 +109,6 @@ add_action( 'init', function() {
 		'archive' => [
 			'nopaging' => true,
 		],
-
-		# Add the post type to the 'Recently Published' section of the dashboard:
-		'dashboard_activity' => true,
 
 		# Add some custom columns to the admin screen:
 		'admin_cols' => [

@@ -1,66 +1,85 @@
 <?php
 declare( strict_types=1 );
 
-class Extended_CPT_Admin {
+namespace ExtCPTs;
+
+use WP_Post;
+use WP_Query;
+use DateTime;
+use Exception;
+
+use function p2p_connection_exists;
+use function p2p_type;
+
+class PostTypeAdmin {
 
 	/**
 	 * Default arguments for custom post types.
 	 *
-	 * @var array
+	 * @var array<string,mixed>
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'quick_edit'         => true, # Custom arg
 		'dashboard_glance'   => true, # Custom arg
-		'dashboard_activity' => false, # Custom arg
+		'dashboard_activity' => true, # Custom arg
 		'admin_cols'         => null, # Custom arg
 		'admin_filters'      => null, # Custom arg
 		'enter_title_here'   => null, # Custom arg
 		'block_editor'       => null, # Custom arg
 	];
 
-	/**
-	 * @var Extended_CPT
-	 */
-	public $cpt;
+	public PostType $cpt;
 
 	/**
-	 * @var array
+	 * @var array<string,mixed>
 	 */
-	public $args;
+	public array $args;
 
 	/**
-	 * @var array
+	 * @var array<string,string>
 	 */
-	protected $_cols;
+	protected array $_cols;
 
 	/**
-	 * @var array
+	 * @var array<string,string>
 	 */
-	protected $the_cols = null;
+	protected ?array $the_cols = null;
 
 	/**
-	 * @var array
+	 * @var array<string,bool>
 	 */
-	protected $connection_exists = [];
+	protected array $connection_exists = [];
 
 	/**
 	 * Class constructor.
 	 *
-	 * @param Extended_CPT $cpt  An extended post type object.
-	 * @param array        $args Optional. The post type arguments.
+	 * @param PostType $cpt  An extended post type object.
+	 * @param array<string,mixed>   $args Optional. The post type arguments.
 	 */
-	public function __construct( Extended_CPT $cpt, array $args = [] ) {
+	public function __construct( PostType $cpt, array $args = [] ) {
 		$this->cpt = $cpt;
 		# Merge our args with the defaults:
 		$this->args = array_merge( $this->defaults, $args );
+	}
 
+	/**
+	 * Initialise the admin features of the post type by adding the necessary actions and filters.
+	 */
+	public function init(): void {
 		# Admin columns:
 		if ( $this->args['admin_cols'] ) {
 			add_filter( 'manage_posts_columns',                                 [ $this, '_log_default_cols' ], 0 );
 			add_filter( 'manage_pages_columns',                                 [ $this, '_log_default_cols' ], 0 );
-			add_filter( "manage_edit-{$this->cpt->post_type}_sortable_columns", [ $this, 'sortables' ] );
-			add_filter( "manage_{$this->cpt->post_type}_posts_columns",         [ $this, 'cols' ] );
-			add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   [ $this, 'col' ] );
+			add_filter( 'manage_media_columns',                                 [ $this, '_log_default_cols' ], 0 );
+			if ( 'attachment' === $this->cpt->post_type ) {
+				add_filter( 'manage_upload_sortable_columns', [ $this, 'sortables' ] );
+				add_filter( 'manage_media_columns',         [ $this, 'cols' ] );
+				add_action( 'manage_media_custom_column',   [ $this, 'col' ], 10, 2 );
+			} else {
+				add_filter( "manage_edit-{$this->cpt->post_type}_sortable_columns", [ $this, 'sortables' ] );
+				add_filter( "manage_{$this->cpt->post_type}_posts_columns",         [ $this, 'cols' ] );
+				add_action( "manage_{$this->cpt->post_type}_posts_custom_column",   [ $this, 'col' ], 10, 2 );
+			}
 			add_action( 'load-edit.php',                                        [ $this, 'default_sort' ] );
 			add_action( 'pre_get_posts',                                        [ $this, 'maybe_sort_by_fields' ] );
 			add_filter( 'posts_clauses',                                        [ $this, 'maybe_sort_by_taxonomy' ], 10, 2 );
@@ -109,6 +128,15 @@ class Extended_CPT_Admin {
 		# Post updated messages:
 		add_filter( 'post_updated_messages',      [ $this, 'post_updated_messages' ], 1 );
 		add_filter( 'bulk_post_updated_messages', [ $this, 'bulk_post_updated_messages' ], 1, 2 );
+
+		/**
+		 * Fired when the extended post type admin instance is set up.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param \ExtCPTs\PostTypeAdmin $instance The extended post type admin instance.
+		 */
+		do_action( "ext-cpts/{$this->cpt->post_type}/admin-instance", $this );
 	}
 
 	/**
@@ -129,7 +157,7 @@ class Extended_CPT_Admin {
 	/**
 	 * Sets the default sort field and sort order on our post type admin screen.
 	 */
-	public function default_sort() {
+	public function default_sort(): void {
 		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
 			return;
 		}
@@ -143,7 +171,7 @@ class Extended_CPT_Admin {
 		foreach ( $this->args['admin_cols'] as $id => $col ) {
 			if ( is_array( $col ) && isset( $col['default'] ) ) {
 				$_GET['orderby'] = $id;
-				$_GET['order']   = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
+				$_GET['order'] = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
 				break;
 			}
 		}
@@ -152,7 +180,7 @@ class Extended_CPT_Admin {
 	/**
 	 * Sets the default sort field and sort order on our post type admin screen.
 	 */
-	public function default_filter() {
+	public function default_filter(): void {
 		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
 			return;
 		}
@@ -206,7 +234,7 @@ class Extended_CPT_Admin {
 	 * @return string The post type name.
 	 */
 	protected static function get_current_post_type(): string {
-		if ( function_exists( 'get_current_screen' ) && is_object( get_current_screen() ) && 'edit' === get_current_screen()->base ) {
+		if ( function_exists( 'get_current_screen' ) && is_object( get_current_screen() ) && in_array( get_current_screen()->base, [ 'edit', 'upload' ], true ) ) {
 			return get_current_screen()->post_type;
 		} else {
 			return '';
@@ -218,13 +246,14 @@ class Extended_CPT_Admin {
 	 *
 	 * @link https://github.com/johnbillion/extended-cpts/wiki/Admin-filters
 	 */
-	public function filters() {
+	public function filters(): void {
 		global $wpdb;
 
 		if ( self::get_current_post_type() !== $this->cpt->post_type ) {
 			return;
 		}
 
+		/** @var \WP_Post_Type */
 		$pto = get_post_type_object( $this->cpt->post_type );
 
 		foreach ( $this->args['admin_filters'] as $filter_key => $filter ) {
@@ -242,9 +271,9 @@ class Extended_CPT_Admin {
 				 *
 				 * @since 4.3.0
 				 *
-				 * @param Extended_CPT_Admin $this   The post type admin controller instance.
-				 * @param array              $filter The filter arguments.
-				 * @param string             $id     The filter's `id` attribute value.
+				 * @param \ExtCPTs\PostTypeAdmin $controller The post type admin controller instance.
+				 * @param array         $filter     The filter arguments.
+				 * @param string        $id         The filter's `id` attribute value.
 				 */
 				do_action( $hook, $this, $filter, $id );
 				continue;
@@ -257,11 +286,11 @@ class Extended_CPT_Admin {
 					continue;
 				}
 
-				require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
-
-				$walker = new Walker_ExtendedTaxonomyDropdown( [
-					'field' => 'slug',
-				] );
+				$walker = new Walker\Dropdown(
+					[
+						'field' => 'slug',
+					]
+				);
 
 				# If we haven't specified a title, use the all_items label from the taxonomy:
 				if ( ! isset( $filter['title'] ) ) {
@@ -275,51 +304,67 @@ class Extended_CPT_Admin {
 				);
 
 				# Output the dropdown:
-				wp_dropdown_categories( [
-					'show_option_all' => $filter['title'],
-					'hide_empty'      => false,
-					'hide_if_empty'   => true,
-					'hierarchical'    => true,
-					'show_count'      => false,
-					'orderby'         => 'name',
-					'selected_cats'   => get_query_var( $tax->query_var ),
-					'id'              => $id,
-					'name'            => $tax->query_var,
-					'taxonomy'        => $filter['taxonomy'],
-					'walker'          => $walker,
-				] );
+				wp_dropdown_categories(
+					[
+						'show_option_all' => $filter['title'],
+						'hide_empty'      => false,
+						'hide_if_empty'   => true,
+						'hierarchical'    => true,
+						'show_count'      => false,
+						'orderby'         => 'name',
+						'selected_cats'   => $tax->query_var ? get_query_var( $tax->query_var ) : [],
+						'id'              => $id,
+						'name'            => (string) $tax->query_var,
+						'taxonomy'        => $filter['taxonomy'],
+						'walker'          => $walker,
+					]
+				);
 			} elseif ( isset( $filter['meta_key'] ) ) {
 				# If we haven't specified a title, generate one from the meta key:
 				if ( ! isset( $filter['title'] ) ) {
-					$filter['title'] = str_replace( [
-						'-',
-						'_',
-					], ' ', $filter['meta_key'] );
+					$filter['title'] = str_replace(
+						[
+							'-',
+							'_',
+						],
+						' ',
+						$filter['meta_key']
+					);
 					$filter['title'] = ucwords( $filter['title'] ) . 's';
 					$filter['title'] = sprintf( 'All %s', $filter['title'] );
 				}
 
 				# If we haven't specified a label, generate one from the meta key:
 				if ( ! isset( $filter['label'] ) ) {
-					$filter['label'] = str_replace( [
-						'-',
-						'_',
-					], ' ', $filter['meta_key'] );
+					$filter['label'] = str_replace(
+						[
+							'-',
+							'_',
+						],
+						' ',
+						$filter['meta_key']
+					);
 					$filter['label'] = ucwords( $filter['label'] );
 					$filter['label'] = sprintf( 'Filter by %s', $filter['label'] );
 				}
 
 				if ( ! isset( $filter['options'] ) ) {
 					# Fetch all the values for our meta key:
-					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
-						SELECT DISTINCT meta_value
-						FROM {$wpdb->postmeta} as m
-						JOIN {$wpdb->posts} as p ON ( p.ID = m.post_id )
-						WHERE m.meta_key = %s
-						AND m.meta_value != ''
-						AND p.post_type = %s
-						ORDER BY m.meta_value ASC
-					", $filter['meta_key'], $this->cpt->post_type ) );
+					$filter['options'] = $wpdb->get_col(
+						$wpdb->prepare(
+							"
+								SELECT DISTINCT meta_value
+								FROM {$wpdb->postmeta} as m
+								JOIN {$wpdb->posts} as p ON ( p.ID = m.post_id )
+								WHERE m.meta_key = %s
+								AND m.meta_value != ''
+								AND p.post_type = %s
+								ORDER BY m.meta_value ASC
+							",
+							$filter['meta_key'],
+							$this->cpt->post_type
+						)
+					);
 				} elseif ( is_callable( $filter['options'] ) ) {
 					$filter['options'] = call_user_func( $filter['options'] );
 				}
@@ -362,10 +407,14 @@ class Extended_CPT_Admin {
 			} elseif ( isset( $filter['meta_search_key'] ) ) {
 				# If we haven't specified a title, generate one from the meta key:
 				if ( ! isset( $filter['title'] ) ) {
-					$filter['title'] = str_replace( [
-						'-',
-						'_',
-					], ' ', $filter['meta_search_key'] );
+					$filter['title'] = str_replace(
+						[
+							'-',
+							'_',
+						],
+						' ',
+						$filter['meta_search_key']
+					);
 					$filter['title'] = ucwords( $filter['title'] );
 				}
 
@@ -382,7 +431,7 @@ class Extended_CPT_Admin {
 				}
 
 				$selected = wp_unslash( get_query_var( $filter_key ) );
-				$fields   = $filter['meta_exists'] ?? $filter['meta_key_exists'];
+				$fields = $filter['meta_exists'] ?? $filter['meta_key_exists'];
 
 				if ( 1 === count( $fields ) ) {
 					# Output a checkbox:
@@ -444,11 +493,16 @@ class Extended_CPT_Admin {
 
 				if ( ! isset( $filter['options'] ) ) {
 					# Fetch all the values for our field:
-					$filter['options'] = $wpdb->get_col( $wpdb->prepare( "
-						SELECT DISTINCT post_author
-						FROM {$wpdb->posts}
-						WHERE post_type = %s
-					", $this->cpt->post_type ) );
+					$filter['options'] = $wpdb->get_col(
+						$wpdb->prepare(
+							"
+								SELECT DISTINCT post_author
+								FROM {$wpdb->posts}
+								WHERE post_type = %s
+							",
+							$this->cpt->post_type
+						)
+					);
 				} elseif ( is_callable( $filter['options'] ) ) {
 					$filter['options'] = call_user_func( $filter['options'] );
 				}
@@ -458,14 +512,16 @@ class Extended_CPT_Admin {
 				}
 
 				# Output a dropdown:
-				wp_dropdown_users( [
-					'id'                => $id,
-					'include'           => $filter['options'],
-					'name'              => 'author',
-					'option_none_value' => '0',
-					'selected'          => $value,
-					'show_option_none'  => $filter['title'],
-				] );
+				wp_dropdown_users(
+					[
+						'id'                => $id,
+						'include'           => $filter['options'],
+						'name'              => 'author',
+						'option_none_value' => '0',
+						'selected'          => (int) $value,
+						'show_option_none'  => $filter['title'],
+					]
+				);
 			}
 		}
 	}
@@ -473,10 +529,11 @@ class Extended_CPT_Admin {
 	/**
 	 * Adds our filter names to the public query vars.
 	 *
-	 * @param array $vars Public query variables
-	 * @return array Updated public query variables
+	 * @param array<int,string> $vars Public query variables
+	 * @return array<int,string> Updated public query variables
 	 */
 	public function add_query_vars( array $vars ): array {
+		/** @var array<int,string> */
 		$filters = array_keys( $this->args['admin_filters'] );
 
 		return array_merge( $vars, $filters );
@@ -487,12 +544,12 @@ class Extended_CPT_Admin {
 	 *
 	 * @param WP_Query $wp_query A `WP_Query` object
 	 */
-	public function maybe_filter( WP_Query $wp_query ) {
+	public function maybe_filter( WP_Query $wp_query ): void {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
 
-		$vars = Extended_CPT::get_filter_vars( $wp_query->query, $this->cpt->args['admin_filters'], $this->cpt->post_type );
+		$vars = PostType::get_filter_vars( $wp_query->query, $this->cpt->args['admin_filters'], $this->cpt->post_type );
 
 		if ( empty( $vars ) ) {
 			return;
@@ -515,12 +572,12 @@ class Extended_CPT_Admin {
 	 *
 	 * @param WP_Query $wp_query The current `WP_Query` object.
 	 */
-	public function maybe_sort_by_fields( WP_Query $wp_query ) {
+	public function maybe_sort_by_fields( WP_Query $wp_query ): void {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
 
-		$sort = Extended_CPT::get_sort_field_vars( $wp_query->query, $this->cpt->args['admin_cols'] );
+		$sort = PostType::get_sort_field_vars( $wp_query->query, $this->cpt->args['admin_cols'] );
 
 		if ( empty( $sort ) ) {
 			return;
@@ -534,16 +591,16 @@ class Extended_CPT_Admin {
 	/**
 	 * Filters the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
-	 * @param array    $clauses  The current query's SQL clauses.
-	 * @param WP_Query $wp_query The current `WP_Query` object.
-	 * @return array The updated SQL clauses.
+	 * @param array<string,string> $clauses  The current query's SQL clauses.
+	 * @param WP_Query             $wp_query The current `WP_Query` object.
+	 * @return array<string,string> The updated SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->cpt->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return $clauses;
 		}
 
-		$sort = Extended_CPT::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->cpt->args['admin_cols'] );
+		$sort = PostType::get_sort_taxonomy_clauses( $clauses, $wp_query->query, $this->cpt->args['admin_cols'] );
 
 		if ( empty( $sort ) ) {
 			return $clauses;
@@ -555,10 +612,11 @@ class Extended_CPT_Admin {
 	/**
 	 * Adds our post type to the 'At a Glance' widget on the dashboard.
 	 *
-	 * @param array $items Array of items to display on the widget.
-	 * @return array Updated array of items.
+	 * @param array<int,string> $items Array of items to display on the widget.
+	 * @return array<int,string> Updated array of items.
 	 */
 	public function glance_items( array $items ): array {
+		/** @var \WP_Post_Type */
 		$pto = get_post_type_object( $this->cpt->post_type );
 
 		if ( ! current_user_can( $pto->cap->edit_posts ) ) {
@@ -569,17 +627,21 @@ class Extended_CPT_Admin {
 		}
 
 		# Get the labels and format the counts:
+		/** @var \stdClass */
 		$count = wp_count_posts( $this->cpt->post_type );
-		$text  = self::n( $pto->labels->singular_name, $pto->labels->name, (int) $count->publish );
-		$num   = number_format_i18n( $count->publish );
+		$text = self::n( $pto->labels->singular_name, $pto->labels->name, (int) $count->publish );
+		$num = number_format_i18n( $count->publish );
 
 		# This is absolutely not localisable. WordPress 3.8 didn't add a new post type label.
-		$url   = add_query_arg( [
-			'post_type' => $this->cpt->post_type,
-		], admin_url( 'edit.php' ) );
+		$url = add_query_arg(
+			[
+				'post_type' => $this->cpt->post_type,
+			],
+			admin_url( 'edit.php' )
+		);
 		$class = 'cpt-' . $this->cpt->post_type . '-count';
-		$text  = '<a href="' . esc_url( $url ) . '" class="' . esc_attr( $class ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
-		$css   = <<<'ICONCSS'
+		$text = '<a href="' . esc_url( $url ) . '" class="' . esc_attr( $class ) . '">' . esc_html( $num . ' ' . $text ) . '</a>';
+		$css = <<<'ICONCSS'
 <style>
 #dashboard_right_now li a.%1$s:before {
 	content: '\%2$s';
@@ -591,7 +653,8 @@ ICONCSS;
 		// https://core.trac.wordpress.org/ticket/33714
 		// https://github.com/WordPress/dashicons/blob/master/codepoints.json
 		if ( is_string( $pto->menu_icon ) && 0 === strpos( $pto->menu_icon, 'dashicons-' ) ) {
-			$codepoints = json_decode( file_get_contents( __DIR__ . '/dashicons-codepoints.json' ), true );
+			$contents = file_get_contents( __DIR__ . '/dashicons-codepoints.json' );
+			$codepoints = json_decode( $contents ?: '', true );
 			$unprefixed = str_replace( 'dashicons-', '', $pto->menu_icon );
 
 			if ( isset( $codepoints[ $unprefixed ] ) ) {
@@ -612,8 +675,8 @@ ICONCSS;
 	/**
 	 * Adds our post type to the 'Recently Published' section on the dashboard.
 	 *
-	 * @param array $query_args Array of query args for the widget.
-	 * @return array Updated array of query args.
+	 * @param array<string,mixed> $query_args Array of query args for the widget.
+	 * @return array<string,mixed> Updated array of query args.
 	 */
 	public function dashboard_activity( array $query_args ): array {
 		$query_args['post_type'] = (array) $query_args['post_type'];
@@ -639,49 +702,50 @@ ICONCSS;
 	 *   9 => "Post scheduled for: [date]. {Preview post}"
 	 *  10 => "Post draft updated. {Preview post}"
 	 *
-	 * @param array[] $messages An array of post updated message arrays keyed by post type.
-	 * @return array[] Updated array of post updated messages.
+	 * @param array<string, array<int, string|false>> $messages An array of post updated message arrays keyed by post type.
+	 * @return array<string, array<int, string|false>> Updated array of post updated messages.
 	 */
 	public function post_updated_messages( array $messages ): array {
 		global $post;
 
+		/** @var \WP_Post_Type */
 		$pto = get_post_type_object( $this->cpt->post_type );
 
 		$messages[ $this->cpt->post_type ] = [
-			1  => sprintf(
+			1 => sprintf(
 				( $pto->publicly_queryable ? '%1$s updated. <a href="%2$s">View %3$s</a>' : '%1$s updated.' ),
 				esc_html( $this->cpt->post_singular ),
 				esc_url( get_permalink( $post ) ),
 				esc_html( $this->cpt->post_singular_low )
 			),
-			2  => 'Custom field updated.',
-			3  => 'Custom field deleted.',
-			4  => sprintf(
+			2 => 'Custom field updated.',
+			3 => 'Custom field deleted.',
+			4 => sprintf(
 				'%s updated.',
 				esc_html( $this->cpt->post_singular )
 			),
-			5  => isset( $_GET['revision'] ) ? sprintf(
+			5 => isset( $_GET['revision'] ) ? sprintf(
 				'%1$s restored to revision from %2$s',
 				esc_html( $this->cpt->post_singular ),
 				wp_post_revision_title( intval( $_GET['revision'] ), false )
 			) : false,
-			6  => sprintf(
+			6 => sprintf(
 				( $pto->publicly_queryable ? '%1$s published. <a href="%2$s">View %3$s</a>' : '%1$s published.' ),
 				esc_html( $this->cpt->post_singular ),
 				esc_url( get_permalink( $post ) ),
 				esc_html( $this->cpt->post_singular_low )
 			),
-			7  => sprintf(
+			7 => sprintf(
 				'%s saved.',
 				esc_html( $this->cpt->post_singular )
 			),
-			8  => sprintf(
+			8 => sprintf(
 				( $pto->publicly_queryable ? '%1$s submitted. <a target="_blank" href="%2$s">Preview %3$s</a>' : '%1$s submitted.' ),
 				esc_html( $this->cpt->post_singular ),
 				esc_url( get_preview_post_link( $post ) ),
 				esc_html( $this->cpt->post_singular_low )
 			),
-			9  => sprintf(
+			9 => sprintf(
 				( $pto->publicly_queryable ? '%1$s scheduled for: <strong>%2$s</strong>. <a target="_blank" href="%3$s">Preview %4$s</a>' : '%1$s scheduled for: <strong>%2$s</strong>.' ),
 				esc_html( $this->cpt->post_singular ),
 				esc_html( date_i18n( 'M j, Y @ G:i', strtotime( $post->post_date ) ) ),
@@ -710,31 +774,31 @@ ICONCSS;
 	 *  - trashed   => "Post moved to the trash." | "[n] posts moved to the trash."
 	 *  - untrashed => "Post restored from the trash." | "[n] posts restored from the trash."
 	 *
-	 * @param array[] $messages An array of bulk post updated message arrays keyed by post type.
-	 * @param int[]   $counts   An array of counts for each key in `$messages`.
-	 * @return array Updated array of bulk post updated messages.
+	 * @param array<string, array<string, string>> $messages An array of bulk post updated message arrays keyed by post type.
+	 * @param array<string,int>                    $counts   An array of counts for each key in `$messages`.
+	 * @return array<string, array<string, string>> Updated array of bulk post updated messages.
 	 */
 	public function bulk_post_updated_messages( array $messages, array $counts ): array {
 		$messages[ $this->cpt->post_type ] = [
-			'updated'   => sprintf(
+			'updated' => sprintf(
 				self::n( '%2$s updated.', '%1$s %3$s updated.', $counts['updated'] ),
 				esc_html( number_format_i18n( $counts['updated'] ) ),
 				esc_html( $this->cpt->post_singular ),
 				esc_html( $this->cpt->post_plural_low )
 			),
-			'locked'    => sprintf(
+			'locked' => sprintf(
 				self::n( '%2$s not updated, somebody is editing it.', '%1$s %3$s not updated, somebody is editing them.', $counts['locked'] ),
 				esc_html( number_format_i18n( $counts['locked'] ) ),
 				esc_html( $this->cpt->post_singular ),
 				esc_html( $this->cpt->post_plural_low )
 			),
-			'deleted'   => sprintf(
+			'deleted' => sprintf(
 				self::n( '%2$s permanently deleted.', '%1$s %3$s permanently deleted.', $counts['deleted'] ),
 				esc_html( number_format_i18n( $counts['deleted'] ) ),
 				esc_html( $this->cpt->post_singular ),
 				esc_html( $this->cpt->post_plural_low )
 			),
-			'trashed'   => sprintf(
+			'trashed' => sprintf(
 				self::n( '%2$s moved to the trash.', '%1$s %3$s moved to the trash.', $counts['trashed'] ),
 				esc_html( number_format_i18n( $counts['trashed'] ) ),
 				esc_html( $this->cpt->post_singular ),
@@ -754,11 +818,14 @@ ICONCSS;
 	/**
 	 * Adds our custom columns to the list of sortable columns.
 	 *
-	 * @param array $cols Array of sortable columns keyed by the column ID.
-	 * @return array Updated array of sortable columns.
+	 * @param array<string,string> $cols Array of sortable columns keyed by the column ID.
+	 * @return array<string,string> Updated array of sortable columns.
 	 */
 	public function sortables( array $cols ): array {
-		foreach ( $this->args['admin_cols'] as $id => $col ) {
+		$admin_cols = $this->args['admin_cols'];
+
+		/** @var array<string,mixed> $admin_cols */
+		foreach ( $admin_cols as $id => $col ) {
 			if ( ! is_array( $col ) ) {
 				continue;
 			}
@@ -778,8 +845,8 @@ ICONCSS;
 	 *
 	 * @link https://github.com/johnbillion/extended-cpts/wiki/Admin-columns
 	 *
-	 * @param array $cols Associative array of columns
-	 * @return array Updated array of columns
+	 * @param array<string,string> $cols Associative array of columns
+	 * @return array<string,string> Updated array of columns
 	 */
 	public function cols( array $cols ): array {
 		// This function gets called multiple times, so let's cache it for efficiency:
@@ -800,8 +867,11 @@ ICONCSS;
 			}
 		}
 
+		/** @var array<string,(string|mixed[])> */
+		$admin_cols = array_filter( $this->args['admin_cols'] );
+
 		# Add our custom columns:
-		foreach ( array_filter( $this->args['admin_cols'] ) as $id => $col ) {
+		foreach ( $admin_cols as $id => $col ) {
 			if ( is_string( $col ) && isset( $cols[ $col ] ) ) {
 				# Existing (ie. built-in) column with id as the value
 				$new_cols[ $col ] = $cols[ $col ];
@@ -828,7 +898,7 @@ ICONCSS;
 				if ( isset( $col['title_cb'] ) ) {
 					$new_cols[ $id ] = call_user_func( $col['title_cb'], $col );
 				} else {
-					$title = esc_html( $col['title'] ?? $this->get_item_title( $col ) ?? $id );
+					$title = esc_html( $this->get_item_title( $col, $id ) );
 
 					if ( isset( $col['title_icon'] ) ) {
 						$title = sprintf(
@@ -844,7 +914,7 @@ ICONCSS;
 		}
 
 		# Re-add any custom columns:
-		$custom   = array_diff_key( $cols, $this->_cols );
+		$custom = array_diff_key( $cols, $this->_cols );
 		$new_cols = array_merge( $new_cols, $custom );
 
 		$this->the_cols = $new_cols;
@@ -854,9 +924,10 @@ ICONCSS;
 	/**
 	 * Output the column data for our custom columns.
 	 *
-	 * @param string $col The column name
+	 * @param string $col     The column name.
+	 * @param int    $post_id The post ID.
 	 */
-	public function col( string $col ) {
+	public function col( string $col, int $post_id ): void {
 		# Shorthand:
 		$c = $this->args['admin_cols'];
 
@@ -871,33 +942,40 @@ ICONCSS;
 			return;
 		}
 
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			return;
+		}
+
 		if ( ! isset( $c[ $col ]['link'] ) ) {
 			$c[ $col ]['link'] = 'list';
 		}
 
 		if ( isset( $c[ $col ]['function'] ) ) {
-			call_user_func( $c[ $col ]['function'] );
+			call_user_func( $c[ $col ]['function'], $post );
 		} elseif ( isset( $c[ $col ]['meta_key'] ) ) {
-			$this->col_post_meta( $c[ $col ]['meta_key'], $c[ $col ] );
+			$this->col_post_meta( $post, $c[ $col ]['meta_key'], $c[ $col ] );
 		} elseif ( isset( $c[ $col ]['taxonomy'] ) ) {
-			$this->col_taxonomy( $c[ $col ]['taxonomy'], $c[ $col ] );
+			$this->col_taxonomy( $post, $c[ $col ]['taxonomy'], $c[ $col ] );
 		} elseif ( isset( $c[ $col ]['post_field'] ) ) {
-			$this->col_post_field( $c[ $col ]['post_field'], $c[ $col ] );
+			$this->col_post_field( $post, $c[ $col ]['post_field'], $c[ $col ] );
 		} elseif ( isset( $c[ $col ]['featured_image'] ) ) {
-			$this->col_featured_image( $c[ $col ]['featured_image'], $c[ $col ] );
+			$this->col_featured_image( $post, $c[ $col ]['featured_image'], $c[ $col ] );
 		} elseif ( isset( $c[ $col ]['connection'] ) ) {
-			$this->col_connection( $c[ $col ]['connection'], $c[ $col ] );
+			$this->col_connection( $post, $c[ $col ]['connection'], $c[ $col ] );
 		}
 	}
 
 	/**
 	 * Outputs column data for a post meta field.
 	 *
-	 * @param string $meta_key The post meta key
-	 * @param array  $args     Array of arguments for this field
+	 * @param WP_Post             $post     The post object.
+	 * @param string              $meta_key The post meta key.
+	 * @param array<string,mixed> $args     Array of arguments for this field.
 	 */
-	public function col_post_meta( string $meta_key, array $args ) {
-		$vals = get_post_meta( get_the_ID(), $meta_key, false );
+	public function col_post_meta( WP_Post $post, string $meta_key, array $args ): void {
+		$vals = get_post_meta( $post->ID, $meta_key, false );
 		$echo = [];
 
 		sort( $vals );
@@ -908,14 +986,18 @@ ICONCSS;
 			}
 
 			foreach ( $vals as $val ) {
-				$val_time = strtotime( $val );
+				try {
+					$val_time = ( new DateTime( '@' . $val ) )->format( 'U' );
+				} catch ( Exception $e ) {
+					$val_time = strtotime( $val );
+				}
 
-				if ( $val_time ) {
+				if ( false !== $val_time ) {
 					$val = $val_time;
 				}
 
 				if ( is_numeric( $val ) ) {
-					$echo[] = date_i18n( $args['date_format'], $val );
+					$echo[] = date_i18n( $args['date_format'], (int) $val );
 				} elseif ( ! empty( $val ) ) {
 					$echo[] = mysql2date( $args['date_format'], $val );
 				}
@@ -939,17 +1021,20 @@ ICONCSS;
 	/**
 	 * Outputs column data for a taxonomy's term names.
 	 *
-	 * @param string $taxonomy The taxonomy name
-	 * @param array  $args     Array of arguments for this field
+	 * @param WP_Post             $post     The post object.
+	 * @param string              $taxonomy The taxonomy name.
+	 * @param array<string,mixed> $args     Array of arguments for this field.
 	 */
-	public function col_taxonomy( string $taxonomy, array $args ) {
-		global $post;
-
+	public function col_taxonomy( WP_Post $post, string $taxonomy, array $args ): void {
 		$terms = get_the_terms( $post, $taxonomy );
-		$tax   = get_taxonomy( $taxonomy );
+		$tax = get_taxonomy( $taxonomy );
 
 		if ( is_wp_error( $terms ) ) {
 			echo esc_html( $terms->get_error_message() );
+			return;
+		}
+
+		if ( ! $tax ) {
 			return;
 		}
 
@@ -995,10 +1080,13 @@ ICONCSS;
 						break;
 
 					case 'list':
-						$link = add_query_arg( [
-							'post_type' => $post->post_type,
-							$taxonomy   => $term->slug,
-						], admin_url( 'edit.php' ) );
+						$link = add_query_arg(
+							[
+								'post_type' => $post->post_type,
+								$taxonomy => $term->slug,
+							],
+							admin_url( 'edit.php' )
+						);
 						$out[] = sprintf(
 							'<a href="%1$s">%2$s</a>',
 							esc_url( $link ),
@@ -1019,12 +1107,11 @@ ICONCSS;
 	/**
 	 * Outputs column data for a post field.
 	 *
-	 * @param string $field The post field
-	 * @param array  $args  Array of arguments for this field
+	 * @param WP_Post             $post  The post object.
+	 * @param string              $field The post field.
+	 * @param array<string,mixed> $args  Array of arguments for this field.
 	 */
-	public function col_post_field( string $field, array $args ) {
-		global $post;
-
+	public function col_post_field( WP_Post $post, string $field, array $args ): void {
 		switch ( $field ) {
 
 			case 'post_date':
@@ -1040,14 +1127,19 @@ ICONCSS;
 				break;
 
 			case 'post_status':
-				$status = get_post_status_object( get_post_status( $post ) );
+				/** @var \stdClass|null */
+				$status = get_post_status_object( $post->post_status );
 				if ( $status ) {
 					echo esc_html( $status->label );
 				}
 				break;
 
 			case 'post_author':
-				echo esc_html( get_the_author() );
+				$author = get_the_author();
+
+				if ( $author ) {
+					echo esc_html( $author );
+				}
 				break;
 
 			case 'post_title':
@@ -1068,10 +1160,11 @@ ICONCSS;
 	/**
 	 * Outputs column data for a post's featured image.
 	 *
-	 * @param string $image_size The image size
-	 * @param array  $args       Array of `width` and `height` attributes for the image
+	 * @param WP_Post                  $post       The post object.
+	 * @param string                   $image_size The image size.
+	 * @param array<string,string|int> $args       Array of `width` and `height` attributes for the image.
 	 */
-	public function col_featured_image( string $image_size, array $args ) {
+	public function col_featured_image( WP_Post $post, string $image_size, array $args ): void {
 		if ( ! function_exists( 'has_post_thumbnail' ) ) {
 			return;
 		}
@@ -1089,11 +1182,13 @@ ICONCSS;
 		}
 
 		$image_atts = [
-			'style' => esc_attr( sprintf(
-				'width:%1$s;height:%2$s',
-				$width,
-				$height
-			) ),
+			'style' => esc_attr(
+				sprintf(
+					'width:%1$s;height:%2$s',
+					$width,
+					$height
+				)
+			),
 			'title' => '',
 		];
 
@@ -1105,28 +1200,31 @@ ICONCSS;
 	/**
 	 * Outputs column data for a Posts 2 Posts connection.
 	 *
-	 * @param string $connection The ID of the connection type
-	 * @param array  $args       Array of arguments for a given connection type
+	 * @param WP_Post             $post_object The post object.
+	 * @param string              $connection  The ID of the connection type.
+	 * @param array<string,mixed> $args        Array of arguments for a given connection type.
 	 */
-	public function col_connection( string $connection, array $args ) {
-		global $post, $wp_query;
+	public function col_connection( WP_Post $post_object, string $connection, array $args ): void {
+		global $post;
 
 		if ( ! function_exists( 'p2p_type' ) ) {
 			return;
 		}
 
 		if ( ! $this->p2p_connection_exists( $connection ) ) {
-			echo esc_html( sprintf(
-				/* translators: %s: The ID of the Posts 2 Posts connection type */
-				__( 'Invalid connection type: %s', 'extended-cpts' ),
-				$connection
-			) );
+			echo esc_html(
+				sprintf(
+					/* translators: %s: The ID of the Posts 2 Posts connection type */
+					__( 'Invalid connection type: %s', 'extended-cpts' ),
+					$connection
+				)
+			);
 			return;
 		}
 
 		$_post = $post;
-		$meta  = [];
-		$out   = [];
+		$meta = [];
+		$out = [];
 		$field = 'connected_' . $connection;
 
 		if ( isset( $args['field'] ) && isset( $args['value'] ) ) {
@@ -1138,25 +1236,29 @@ ICONCSS;
 			$field .= sanitize_title( '_' . $args['field'] . '_' . $args['value'] );
 		}
 
-		if ( ! isset( $_post->$field ) ) {
+		if ( ! isset( $post_object->$field ) ) {
 			$type = p2p_type( $connection );
 			if ( $type ) {
-				$type->each_connected( [ $_post ], $meta, $field );
+				$type->each_connected( [ $post_object ], $meta, $field );
 			} else {
-				echo esc_html( sprintf(
-					/* translators: %s: The ID of the Posts 2 Posts connection type */
-					__( 'Invalid connection type: %s', 'extended-cpts' ),
-					$connection
-				) );
+				echo esc_html(
+					sprintf(
+						/* translators: %s: The ID of the Posts 2 Posts connection type */
+						__( 'Invalid connection type: %s', 'extended-cpts' ),
+						$connection
+					)
+				);
 				return;
 			}
 		}
 
 		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		foreach ( $_post->$field as $post ) {
+		foreach ( $post_object->$field as $post ) {
 			setup_postdata( $post );
 
+			/** @var \WP_Post_Type */
 			$pto = get_post_type_object( $post->post_type );
+			/** @var \stdClass */
 			$pso = get_post_status_object( $post->post_status );
 
 			if ( $pso->protected && ! current_user_can( 'edit_post', $post->ID ) ) {
@@ -1202,11 +1304,17 @@ ICONCSS;
 						break;
 
 					case 'list':
-						$link = add_query_arg( array_merge( [
-							'post_type'       => $_post->post_type,
-							'connected_type'  => $connection,
-							'connected_items' => $post->ID,
-						], $meta ), admin_url( 'edit.php' ) );
+						$link = add_query_arg(
+							array_merge(
+								[
+									'post_type'       => $_post->post_type,
+									'connected_type'  => $connection,
+									'connected_items' => $post->ID,
+								],
+								$meta
+							),
+							admin_url( 'edit.php' )
+						);
 						$out[] = sprintf(
 							'<a href="%1$s">%2$s</a>',
 							esc_url( $link ),
@@ -1230,9 +1338,9 @@ ICONCSS;
 	/**
 	 * Removes the Quick Edit link from the post row actions.
 	 *
-	 * @param string[] $actions Array of post actions
-	 * @param WP_Post  $post    The current post object
-	 * @return string[] Array of updated post actions
+	 * @param array<string,string> $actions Array of post actions.
+	 * @param WP_Post              $post    The current post object.
+	 * @return array<string,string> Array of updated post actions.
 	 */
 	public function remove_quick_edit_action( array $actions, WP_Post $post ): array {
 		if ( $this->cpt->post_type !== $post->post_type ) {
@@ -1247,8 +1355,8 @@ ICONCSS;
 	/**
 	 * Removes the Quick Edit link from the bulk actions menu.
 	 *
-	 * @param string[] $actions Array of bulk actions
-	 * @return string[] Array of updated bulk actions
+	 * @param array<string,string> $actions Array of bulk actions.
+	 * @return array<string,string> Array of updated bulk actions.
 	 */
 	public function remove_quick_edit_menu( array $actions ): array {
 		unset( $actions['edit'] );
@@ -1259,8 +1367,8 @@ ICONCSS;
 	/**
 	 * Logs the default columns so we don't remove any custom columns added by other plugins.
 	 *
-	 * @param array $cols The default columns for this post type screen
-	 * @return array The default columns for this post type screen
+	 * @param array<string,string> $cols The default columns for this post type screen.
+	 * @return array<string,string> The default columns for this post type screen.
 	 */
 	public function _log_default_cols( array $cols ): array {
 		$this->_cols = $cols;
@@ -1271,10 +1379,10 @@ ICONCSS;
 	/**
 	 * A non-localised version of _n()
 	 *
-	 * @param string $single The text that will be used if $number is 1
-	 * @param string $plural The text that will be used if $number is not 1
-	 * @param int    $number The number to compare against to use either `$single` or `$plural`
-	 * @return string Either `$single` or `$plural` text
+	 * @param string $single The text that will be used if $number is 1.
+	 * @param string $plural The text that will be used if $number is not 1.
+	 * @param int    $number The number to compare against to use either `$single` or `$plural`.
+	 * @return string Either `$single` or `$plural` text.
 	 */
 	protected static function n( string $single, string $plural, int $number ): string {
 		return ( 1 === intval( $number ) ) ? $single : $plural;
@@ -1283,11 +1391,14 @@ ICONCSS;
 	/**
 	 * Returns a sensible title for the current item (usually the arguments array for a column)
 	 *
-	 * @param array $item An array of arguments
-	 * @return string|null The item title
+	 * @param array<string,mixed> $item     An array of arguments.
+	 * @param string              $fallback Fallback item title.
+	 * @return string The item title.
 	 */
-	protected function get_item_title( array $item ) {
-		if ( isset( $item['taxonomy'] ) ) {
+	protected function get_item_title( array $item, string $fallback = '' ): string {
+		if ( isset( $item['title'] ) ) {
+			return $item['title'];
+		} elseif ( isset( $item['taxonomy'] ) ) {
 			$tax = get_taxonomy( $item['taxonomy'] );
 			if ( $tax ) {
 				if ( ! empty( $tax->exclusive ) ) {
@@ -1299,20 +1410,44 @@ ICONCSS;
 				return $item['taxonomy'];
 			}
 		} elseif ( isset( $item['post_field'] ) ) {
-			return ucwords( trim( str_replace( [
-				'post_',
-				'_',
-			], ' ', $item['post_field'] ) ) );
+			return ucwords(
+				trim(
+					str_replace(
+						[
+							'post_',
+							'_',
+						],
+						' ',
+						$item['post_field']
+					)
+				)
+			);
 		} elseif ( isset( $item['meta_key'] ) ) {
-			return ucwords( trim( str_replace( [
-				'_',
-				'-',
-			], ' ', $item['meta_key'] ) ) );
+			return ucwords(
+				trim(
+					str_replace(
+						[
+							'_',
+							'-',
+						],
+						' ',
+						$item['meta_key']
+					)
+				)
+			);
 		} elseif ( isset( $item['connection'] ) && isset( $item['field'] ) && isset( $item['value'] ) ) {
-			$fallback = ucwords( trim( str_replace( [
-				'_',
-				'-',
-			], ' ', $item['value'] ) ) );
+			$fallback = ucwords(
+				trim(
+					str_replace(
+						[
+							'_',
+							'-',
+						],
+						' ',
+						$item['value']
+					)
+				)
+			);
 
 			if ( ! function_exists( 'p2p_type' ) || ! $this->p2p_connection_exists( $item['connection'] ) ) {
 				return $fallback;
@@ -1342,7 +1477,8 @@ ICONCSS;
 			}
 			return $item['connection'];
 		}
-		return null;
+
+		return $fallback;
 	}
 
 	/**

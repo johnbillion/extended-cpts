@@ -1,16 +1,25 @@
 <?php
 declare( strict_types=1 );
 
-class Extended_CPT {
+namespace ExtCPTs;
+
+use WP_Post_Type;
+use WP_Post;
+use WP_Query;
+use WP_Taxonomy;
+use WP_Term;
+use WP;
+
+class PostType {
 
 	/**
 	 * Default arguments for custom post types.
 	 *
 	 * The arguments listed are the ones which differ from the defaults in `register_post_type()`.
 	 *
-	 * @var array
+	 * @var array<string,mixed>
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'public'          => true,
 		'menu_position'   => 6,
 		'capability_type' => 'page',
@@ -27,49 +36,31 @@ class Extended_CPT {
 		'featured_image'  => null,  # Custom arg
 	];
 
-	/**
-	 * @var string
-	 */
-	public $post_type;
+	public string $post_type;
+
+	public string $post_slug;
+
+	public string $post_singular;
+
+	public string $post_plural;
+
+	public string $post_singular_low;
+
+	public string $post_plural_low;
 
 	/**
-	 * @var string
+	 * @var array<string,mixed>
 	 */
-	public $post_slug;
-
-	/**
-	 * @var string
-	 */
-	public $post_singular;
-
-	/**
-	 * @var string
-	 */
-	public $post_plural;
-
-	/**
-	 * @var string
-	 */
-	public $post_singular_low;
-
-	/**
-	 * @var string
-	 */
-	public $post_plural_low;
-
-	/**
-	 * @var array
-	 */
-	public $args;
+	public array $args;
 
 	/**
 	 * Class constructor.
 	 *
 	 * @see register_extended_post_type()
 	 *
-	 * @param string   $post_type The post type name.
-	 * @param array    $args      Optional. The post type arguments.
-	 * @param string[] $names     Optional. The plural, singular, and slug names.
+	 * @param string               $post_type The post type name.
+	 * @param array<string,mixed>  $args      Optional. The post type arguments.
+	 * @param array<string,string> $names     Optional. The plural, singular, and slug names.
 	 */
 	public function __construct( string $post_type, array $args = [], array $names = [] ) {
 		/**
@@ -77,8 +68,8 @@ class Extended_CPT {
 		 *
 		 * @since 4.4.1
 		 *
-		 * @param array  $args      The post type arguments.
-		 * @param string $post_type The post type name.
+		 * @param array<string,mixed> $args      The post type arguments.
+		 * @param string              $post_type The post type name.
 		 */
 		$args = apply_filters( 'ext-cpts/args', $args, $post_type );
 
@@ -87,7 +78,7 @@ class Extended_CPT {
 		 *
 		 * @since 2.4.0
 		 *
-		 * @param array $args The post type arguments.
+		 * @param array<string,mixed> $args The post type arguments.
 		 */
 		$args = apply_filters( "ext-cpts/{$post_type}/args", $args );
 
@@ -96,8 +87,8 @@ class Extended_CPT {
 		 *
 		 * @since 4.4.1
 		 *
-		 * @param string[] $names     The plural, singular, and slug names (if any were specified).
-		 * @param string   $post_type The post type name.
+		 * @param array<string,string> $names     The plural, singular, and slug names (if any were specified).
+		 * @param string               $post_type The post type name.
 		 */
 		$names = apply_filters( 'ext-cpts/names', $names, $post_type );
 
@@ -106,17 +97,23 @@ class Extended_CPT {
 		 *
 		 * @since 2.4.0
 		 *
-		 * @param string[] $names The plural, singular, and slug names (if any were specified).
+		 * @param array<string,string> $names The plural, singular, and slug names (if any were specified).
 		 */
 		$names = apply_filters( "ext-cpts/{$post_type}/names", $names );
 
 		if ( isset( $names['singular'] ) ) {
 			$this->post_singular = $names['singular'];
 		} else {
-			$this->post_singular = ucwords( str_replace( [
-				'-',
-				'_',
-			], ' ', $post_type ) );
+			$this->post_singular = ucwords(
+				str_replace(
+					[
+						'-',
+						'_',
+					],
+					' ',
+					$post_type
+				)
+			);
 		}
 
 		if ( isset( $names['slug'] ) ) {
@@ -174,6 +171,7 @@ class Extended_CPT {
 			'insert_into_item'         => sprintf( 'Insert into %s', $this->post_singular_low ),
 			'uploaded_to_this_item'    => sprintf( 'Uploaded to this %s', $this->post_singular_low ),
 			'filter_items_list'        => sprintf( 'Filter %s list', $this->post_plural_low ),
+			'filter_by_date'           => 'Filter by date',
 			'items_list_navigation'    => sprintf( '%s list navigation', $this->post_plural ),
 			'items_list'               => sprintf( '%s list', $this->post_plural ),
 			'item_published'           => sprintf( '%s published.', $this->post_singular ),
@@ -181,15 +179,17 @@ class Extended_CPT {
 			'item_reverted_to_draft'   => sprintf( '%s reverted to draft.', $this->post_singular ),
 			'item_scheduled'           => sprintf( '%s scheduled.', $this->post_singular ),
 			'item_updated'             => sprintf( '%s updated.', $this->post_singular ),
+			'item_link'                => sprintf( '%s Link', $this->post_singular ),
+			'item_link_description'    => sprintf( 'A link to a %s.', $this->post_singular_low ),
 		];
 
 		# Build the featured image labels:
 		if ( isset( $args['featured_image'] ) ) {
 			$featured_image_low = strtolower( $args['featured_image'] );
-			$this->defaults['labels']['featured_image']        = $args['featured_image'];
-			$this->defaults['labels']['set_featured_image']    = sprintf( 'Set %s', $featured_image_low );
+			$this->defaults['labels']['featured_image'] = $args['featured_image'];
+			$this->defaults['labels']['set_featured_image'] = sprintf( 'Set %s', $featured_image_low );
 			$this->defaults['labels']['remove_featured_image'] = sprintf( 'Remove %s', $featured_image_low );
-			$this->defaults['labels']['use_featured_image']    = sprintf( 'Use as %s', $featured_image_low );
+			$this->defaults['labels']['use_featured_image'] = sprintf( 'Use as %s', $featured_image_low );
 		}
 
 		# Only set default rewrites if we need them
@@ -216,7 +216,12 @@ class Extended_CPT {
 		if ( ! isset( $this->args['has_archive'] ) ) {
 			$this->args['has_archive'] = $this->args['public'];
 		}
+	}
 
+	/**
+	 * Initialise the post type by adding the necessary actions and filters.
+	 */
+	public function init(): void {
 		# Front-end sortables:
 		if ( $this->args['site_sortables'] && ! is_admin() ) {
 			add_filter( 'pre_get_posts', [ $this, 'maybe_sort_by_fields' ] );
@@ -258,9 +263,9 @@ class Extended_CPT {
 		 *
 		 * @since 3.1.0
 		 *
-		 * @param Extended_CPT $instance The extended post type instance.
+		 * @param \ExtCPTs\PostType $instance The extended post type instance.
 		 */
-		do_action( "ext-cpts/{$post_type}/instance", $this );
+		do_action( "ext-cpts/{$this->post_type}/instance", $this );
 	}
 
 	/**
@@ -268,7 +273,7 @@ class Extended_CPT {
 	 *
 	 * @param WP_Query $wp_query The current WP_Query object.
 	 */
-	public function maybe_filter( WP_Query $wp_query ) {
+	public function maybe_filter( WP_Query $wp_query ): void {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
@@ -296,7 +301,7 @@ class Extended_CPT {
 	 *
 	 * @param WP_Query $wp_query The current WP_Query object.
 	 */
-	public function maybe_sort_by_fields( WP_Query $wp_query ) {
+	public function maybe_sort_by_fields( WP_Query $wp_query ): void {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
 			return;
 		}
@@ -308,7 +313,7 @@ class Extended_CPT {
 				if ( is_array( $col ) && isset( $col['default'] ) ) {
 					// @TODO Don't set 'order' if 'orderby' is an array (WP 4.0+)
 					$wp_query->query['orderby'] = $id;
-					$wp_query->query['order']   = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
+					$wp_query->query['order'] = ( 'desc' === strtolower( $col['default'] ) ? 'desc' : 'asc' );
 					break;
 				}
 			}
@@ -328,9 +333,9 @@ class Extended_CPT {
 	/**
 	 * Filter the query's SQL clauses so we can sort posts by taxonomy terms.
 	 *
-	 * @param string[] $clauses  Array of the current query's SQL clauses.
-	 * @param WP_Query $wp_query The current `WP_Query` object.
-	 * @return string[] Array of SQL clauses.
+	 * @param array<string,string> $clauses  Array of the current query's SQL clauses.
+	 * @param WP_Query             $wp_query The current `WP_Query` object.
+	 * @return array<string,string> Array of SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
 		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
@@ -350,11 +355,11 @@ class Extended_CPT {
 	 * Get the array of private query vars for the given filters, to apply to the current query in order to filter it by the
 	 * given public query vars.
 	 *
-	 * @param array  $query     The public query vars, usually from `$wp_query->query`.
-	 * @param array  $filters   The filters valid for this query (usually the value of the `admin_filters` or
-	 *                          `site_filters` argument when registering an extended post type).
-	 * @param string $post_type The post type name.
-	 * @return array The list of private query vars to apply to the query.
+	 * @param array<string,mixed> $query     The public query vars, usually from `$wp_query->query`.
+	 * @param array<string,mixed> $filters   The filters valid for this query (usually the value of the `admin_filters` or
+	 *                                       `site_filters` argument when registering an extended post type).
+	 * @param string              $post_type The post type name.
+	 * @return array<string,mixed> The list of private query vars to apply to the query.
 	 */
 	public static function get_filter_vars( array $query, array $filters, string $post_type ): array {
 		$return = [];
@@ -379,9 +384,9 @@ class Extended_CPT {
 				 *
 				 * @since 4.3.0
 				 *
-				 * @param array $return The private query vars.
-				 * @param array $query  The public query vars.
-				 * @param array $filter The filter arguments.
+				 * @param array<string,mixed> $return The private query vars.
+				 * @param array<string,mixed> $query  The public query vars.
+				 * @param array<string,mixed> $filter The filter arguments.
 				 */
 				$return = apply_filters( $hook, $return, $query, $filter );
 				continue;
@@ -442,10 +447,10 @@ class Extended_CPT {
 	 * Get the array of private and public query vars for the given sortables, to apply to the current query in order to
 	 * sort it by the requested orderby field.
 	 *
-	 * @param array $vars      The public query vars, usually from `$wp_query->query`.
-	 * @param array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
-	 *                         `site_sortables` argument when registering an extended post type.
-	 * @return array The list of private and public query vars to apply to the query.
+	 * @param array<string,mixed> $vars      The public query vars, usually from `$wp_query->query`.
+	 * @param array<string,mixed> $sortables The sortables valid for this query (usually the value of the `admin_cols` or
+	 *                                       `site_sortables` argument when registering an extended post type.
+	 * @return array<string,mixed> The list of private and public query vars to apply to the query.
 	 */
 	public static function get_sort_field_vars( array $vars, array $sortables ): array {
 		if ( ! isset( $vars['orderby'] ) ) {
@@ -492,11 +497,11 @@ class Extended_CPT {
 	 * Get the array of SQL clauses for the given sortables, to apply to the current query in order to
 	 * sort it by the requested orderby field.
 	 *
-	 * @param array $clauses   The query's SQL clauses.
-	 * @param array $vars      The public query vars, usually from `$wp_query->query`.
-	 * @param array $sortables The sortables valid for this query (usually the value of the `admin_cols` or
-	 *                         `site_sortables` argument when registering an extended post type).
-	 * @return array The list of SQL clauses to apply to the query.
+	 * @param array<string,string> $clauses   The query's SQL clauses.
+	 * @param array<string,mixed>  $vars      The public query vars, usually from `$wp_query->query`.
+	 * @param array<string,mixed>  $sortables The sortables valid for this query (usually the value of the `admin_cols` or
+	 *                                        `site_sortables` argument when registering an extended post type).
+	 * @return array<string,string> The list of SQL clauses to apply to the query.
 	 */
 	public static function get_sort_taxonomy_clauses( array $clauses, array $vars, array $sortables ): array {
 		global $wpdb;
@@ -547,11 +552,13 @@ class Extended_CPT {
 	/**
 	 * Add our filter names to the public query vars.
 	 *
-	 * @param string[] $vars Public query variables.
-	 * @return string[] Updated public query variables.
+	 * @param array<int,string> $vars Public query variables.
+	 * @return array<int,string> Updated public query variables.
 	 */
 	public function add_query_vars( array $vars ): array {
-		$filters = array_keys( $this->args['site_filters'] );
+		/** @var array<string,mixed[]> */
+		$site_filters = $this->args['site_filters'];
+		$filters = array_keys( $site_filters );
 
 		return array_merge( $vars, $filters );
 	}
@@ -559,8 +566,8 @@ class Extended_CPT {
 	/**
 	 * Add our post type to the feed.
 	 *
-	 * @param array $vars Request parameters.
-	 * @return array Updated request parameters.
+	 * @param array<string,mixed> $vars Request parameters.
+	 * @return array<string,mixed> Updated request parameters.
 	 */
 	public function add_to_feed( array $vars ): array {
 		# If it's not a feed, we're not interested:
@@ -606,13 +613,19 @@ class Extended_CPT {
 	}
 
 	/**
-	 * Action fired after a CPT is registered in order to set up the custom permalink structure for the post type.
+	 * Action fired after a PostType is registered in order to set up the custom permalink structure for the post type.
 	 *
 	 * @param string       $post_type        Post type name.
 	 * @param WP_Post_Type $post_type_object Post type object.
 	 */
-	public function registered_post_type( string $post_type, WP_Post_Type $post_type_object ) {
+	public function registered_post_type( string $post_type, WP_Post_Type $post_type_object ): void {
 		if ( $post_type !== $this->post_type ) {
+			return;
+		}
+		if ( ! $post_type_object->rewrite ) {
+			return;
+		}
+		if ( ! is_string( $post_type_object->rewrite['permastruct'] ) ) {
 			return;
 		}
 
@@ -637,7 +650,9 @@ class Extended_CPT {
 			return $post_link;
 		}
 
-		$date = explode( ' ', mysql2date( 'Y m d H i s', $post->post_date ) );
+		/** @var string */
+		$date = mysql2date( 'Y m d H i s', $post->post_date );
+		$date = explode( ' ', $date );
 		$replacements = [
 			'%year%'     => $date[0],
 			'%monthnum%' => $date[1],
@@ -649,9 +664,15 @@ class Extended_CPT {
 		];
 
 		if ( false !== strpos( $post_link, '%author%' ) ) {
-			$replacements['%author%'] = get_userdata( (int) $post->post_author )->user_nicename;
+			$author = get_userdata( (int) $post->post_author );
+			if ( $author ) {
+				$replacements['%author%'] = $author->user_nicename;
+			} else {
+				$replacements['%author%'] = '-';
+			}
 		}
 
+		/** @var string $tax */
 		foreach ( get_object_taxonomies( $post ) as $tax ) {
 			if ( false === strpos( $post_link, "%{$tax}%" ) ) {
 				continue;
@@ -659,10 +680,9 @@ class Extended_CPT {
 
 			$terms = get_the_terms( $post, $tax );
 
-			if ( $terms ) {
+			if ( $terms && ! is_wp_error( $terms ) ) {
 				/**
 				 * Filter the term that gets used in the `$tax` permalink token.
-				 * @TODO make this more betterer ^
 				 *
 				 * @param WP_Term   $term  The `$tax` term to use in the permalink.
 				 * @param WP_Term[] $terms Array of all `$tax` terms associated with the post.
@@ -670,23 +690,22 @@ class Extended_CPT {
 				 */
 				$term_object = apply_filters( "post_link_{$tax}", reset( $terms ), $terms, $post );
 
-				$term = get_term( $term_object, $tax )->slug;
+				$term = $term_object->slug;
 
 			} else {
 				$term = $post->post_type;
 
 				/**
-				 * Filter the default term name that gets used in the `$tax` permalink token.
-				 * @TODO make this more betterer ^
+				 * Filter the default term that gets used in the `$tax` permalink token.
 				 *
-				 * @param string  $term The `$tax` term name to use in the permalink.
+				 * @param int     $term The ID of the term to use in the permalink.
 				 * @param WP_Post $post The post in question.
 				 */
-				$default_term_name = apply_filters( "default_{$tax}", get_option( "default_{$tax}", '' ), $post );
+				$default_term_id = (int) apply_filters( "default_{$tax}", get_option( "default_{$tax}", 0 ), $post );
 
-				if ( $default_term_name ) {
-					$default_term = get_term( $default_term_name, $tax );
-					if ( ! is_wp_error( $default_term ) ) {
+				if ( $default_term_id ) {
+					$default_term = get_term( $default_term_id, $tax );
+					if ( $default_term instanceof WP_Term ) {
 						$term = $default_term->slug;
 					}
 				}
@@ -705,14 +724,14 @@ class Extended_CPT {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param array $tests The existing rewrite rule tests.
-	 * @return array Updated rewrite rule tests.
+	 * @param array<string,array<string,string>> $tests The existing rewrite rule tests.
+	 * @return array<string,array<string,string>> Updated rewrite rule tests.
 	 */
 	public function rewrite_testing_tests( array $tests ): array {
-		require_once __DIR__ . '/class-extended-rewrite-testing.php';
-		require_once __DIR__ . '/class-extended-cpt-rewrite-testing.php';
+		require_once __DIR__ . '/ExtendedRewriteTesting.php';
+		require_once __DIR__ . '/PostTypeRewriteTesting.php';
 
-		$extended = new Extended_CPT_Rewrite_Testing( $this );
+		$extended = new PostTypeRewriteTesting( $this );
 
 		return array_merge( $tests, $extended->get_tests() );
 	}
@@ -724,27 +743,35 @@ class Extended_CPT {
 	 * `E_USER_ERROR` level if a `WP_Error` is returned.
 	 *
 	 */
-	public function register_post_type() {
+	public function register_post_type(): void {
 		if ( ! isset( $this->args['query_var'] ) || ( true === $this->args['query_var'] ) ) {
 			$query_var = $this->post_type;
 		} else {
 			$query_var = $this->args['query_var'];
 		}
 
-		$existing   = get_post_type_object( $this->post_type );
-		$taxonomies = get_taxonomies( [
-			'query_var' => $query_var,
-		], 'objects' );
+		$existing = get_post_type_object( $this->post_type );
+		$taxonomies = get_taxonomies(
+			[
+				'query_var' => $query_var,
+			],
+			'objects'
+		);
 
 		if ( $query_var && count( $taxonomies ) ) {
 			// https://core.trac.wordpress.org/ticket/35089
 			foreach ( $taxonomies as $tax ) {
 				if ( $tax->query_var === $query_var ) {
-					trigger_error( esc_html( sprintf(
-						/* translators: %s: Post type query variable name */
-						__( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'extended-cpts' ),
-						$query_var
-					) ), E_USER_ERROR );
+					trigger_error(
+						esc_html(
+							sprintf(
+								/* translators: %s: Post type query variable name */
+								__( 'Post type query var "%s" clashes with a taxonomy query var of the same name', 'extended-cpts' ),
+								$query_var
+							)
+						),
+						E_USER_ERROR
+					);
 				}
 			}
 		}
@@ -767,7 +794,7 @@ class Extended_CPT {
 	 *
 	 * @param WP_Post_Type $pto A post type object.
 	 */
-	public function extend( WP_Post_Type $pto ) {
+	public function extend( WP_Post_Type $pto ): void {
 		# Merge core with overridden labels
 		$this->args['labels'] = array_merge( (array) get_post_type_labels( $pto ), $this->args['labels'] );
 
@@ -781,12 +808,12 @@ class Extended_CPT {
 	 *
 	 * Example usage:
 	 *
-	 *     $events   = register_extended_post_type( 'event' );
+	 *     $events = register_extended_post_type( 'event' );
 	 *     $location = $events->add_taxonomy( 'location' );
 	 *
-	 * @param string $taxonomy The taxonomy name.
-	 * @param array  $args     Optional. The taxonomy arguments.
-	 * @param array  $names    Optional. An associative array of the plural, singular, and slug names.
+	 * @param string               $taxonomy The taxonomy name.
+	 * @param array<string,mixed>  $args     Optional. The taxonomy arguments.
+	 * @param array<string,string> $names    Optional. An associative array of the plural, singular, and slug names.
 	 * @return WP_Taxonomy Taxonomy object.
 	 */
 	public function add_taxonomy( string $taxonomy, array $args = [], array $names = [] ): WP_Taxonomy {
@@ -796,7 +823,10 @@ class Extended_CPT {
 			register_extended_taxonomy( $taxonomy, $this->post_type, $args, $names );
 		}
 
-		return get_taxonomy( $taxonomy );
+		/** @var WP_Taxonomy */
+		$tax = get_taxonomy( $taxonomy );
+
+		return $tax;
 	}
 
 }

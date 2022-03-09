@@ -1,12 +1,14 @@
 <?php
 declare( strict_types=1 );
 
+namespace ExtCPTs\Walker;
+
+use WP_Term;
+
 /**
  * Walker to output an unordered list of category checkbox <input> elements properly.
- *
- * @uses Walker
  */
-class Walker_ExtendedTaxonomyCheckboxes extends Walker {
+class Checkboxes extends \Walker {
 
 	/**
 	 * @var string
@@ -14,7 +16,7 @@ class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 	public $tree_type = 'category';
 
 	/**
-	 * @var array
+	 * @var array<string,string>
 	 */
 	public $db_fields = [
 		'parent' => 'parent',
@@ -29,7 +31,7 @@ class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 	/**
 	 * Class constructor.
 	 *
-	 * @param array $args Optional arguments.
+	 * @param array<string,mixed> $args Optional arguments.
 	 */
 	public function __construct( $args = null ) {
 		if ( $args && isset( $args['field'] ) ) {
@@ -40,9 +42,10 @@ class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 	/**
 	 * Starts the list before the elements are added.
 	 *
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param int    $depth  Depth of term in reference to parents.
-	 * @param array  $args   Optional arguments.
+	 * @param string              $output Passed by reference. Used to append additional content.
+	 * @param int                 $depth  Depth of term in reference to parents.
+	 * @param array<string,mixed> $args   Optional arguments.
+	 * @return void
 	 */
 	public function start_lvl( &$output, $depth = 0, $args = [] ) {
 		$indent = str_repeat( "\t", $depth );
@@ -52,9 +55,10 @@ class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 	/**
 	 * Ends the list of after the elements are added.
 	 *
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param int    $depth  Depth of term in reference to parents.
-	 * @param array  $args   Optional arguments.
+	 * @param string              $output Passed by reference. Used to append additional content.
+	 * @param int                 $depth  Depth of term in reference to parents.
+	 * @param array<string,mixed> $args   Optional arguments.
+	 * @return void
 	 */
 	public function end_lvl( &$output, $depth = 0, $args = [] ) {
 		$indent = str_repeat( "\t", $depth );
@@ -64,14 +68,19 @@ class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 	/**
 	 * Start the element output.
 	 *
-	 * @param string $output            Passed by reference. Used to append additional content.
-	 * @param object $object            Term data object.
-	 * @param int    $depth             Depth of term in reference to parents.
-	 * @param array  $args              Optional arguments.
-	 * @param int    $current_object_id Current object ID.
+	 * @param string              $output            Passed by reference. Used to append additional content.
+	 * @param WP_Term             $object            Term data object.
+	 * @param int                 $depth             Depth of term in reference to parents.
+	 * @param array<string,mixed> $args              Optional arguments.
+	 * @param int                 $current_object_id Current object ID.
+	 * @return void
 	 */
 	public function start_el( &$output, $object, $depth = 0, $args = [], $current_object_id = 0 ) {
 		$tax = get_taxonomy( $args['taxonomy'] );
+
+		if ( ! $tax ) {
+			return;
+		}
 
 		if ( $this->field ) {
 			$value = $object->{$this->field};
@@ -97,10 +106,11 @@ class Walker_ExtendedTaxonomyCheckboxes extends Walker {
 	/**
 	 * Ends the element output, if needed.
 	 *
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param object $object Term data object.
-	 * @param int    $depth  Depth of term in reference to parents.
-	 * @param array $args Optional arguments.
+	 * @param string              $output Passed by reference. Used to append additional content.
+	 * @param WP_Term             $object Term data object.
+	 * @param int                 $depth  Depth of term in reference to parents.
+	 * @param array<string,mixed> $args   Optional arguments.
+	 * @return void
 	 */
 	public function end_el( &$output, $object, $depth = 0, $args = [] ) {
 		$output .= "</li>\n";

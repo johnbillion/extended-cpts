@@ -1,15 +1,17 @@
 <?php
 declare( strict_types=1 );
 
-class Extended_Taxonomy {
+namespace ExtCPTs;
+
+class Taxonomy {
 
 	/**
 	 * Default arguments for custom taxonomies.
 	 * Several of these differ from the defaults in WordPress' register_taxonomy() function.
 	 *
-	 * @var array
+	 * @var array<string,mixed>
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'public'          => true,
 		'show_ui'         => true,
 		'hierarchical'    => true,
@@ -18,64 +20,46 @@ class Extended_Taxonomy {
 		'allow_hierarchy' => false, # Custom arg
 	];
 
-	/**
-	 * @var string
-	 */
-	public $taxonomy;
+	public string $taxonomy;
 
 	/**
-	 * @var array
+	 * @var array<int,string>
 	 */
-	public $object_type;
+	public array $object_type;
+
+	public string $tax_slug;
+
+	public string $tax_singular;
+
+	public string $tax_plural;
+
+	public string $tax_singular_low;
+
+	public string $tax_plural_low;
 
 	/**
-	 * @var string
+	 * @var array<string,mixed>
 	 */
-	public $tax_slug;
-
-	/**
-	 * @var string
-	 */
-	public $tax_singular;
-
-	/**
-	 * @var string
-	 */
-	public $tax_plural;
-
-	/**
-	 * @var string
-	 */
-	public $tax_singular_low;
-
-	/**
-	 * @var string
-	 */
-	public $tax_plural_low;
-
-	/**
-	 * @var array
-	 */
-	public $args;
+	public array $args;
 
 	/**
 	 * Class constructor.
 	 *
 	 * @see register_extended_taxonomy()
 	 *
-	 * @param string       $taxonomy    The taxonomy name.
-	 * @param array|string $object_type Name(s) of the object type(s) for the taxonomy.
-	 * @param array        $args        Optional. The taxonomy arguments.
-	 * @param string[]     $names       Optional. An associative array of the plural, singular, and slug names.
+	 * @param string               $taxonomy    The taxonomy name.
+	 * @param array<int,string>    $object_type Names of the object types for the taxonomy.
+	 * @param array<string,mixed>  $args        Optional. The taxonomy arguments.
+	 * @param array<string,string> $names       Optional. An associative array of the plural, singular, and slug names.
 	 */
-	public function __construct( string $taxonomy, $object_type, array $args = [], array $names = [] ) {
+	public function __construct( string $taxonomy, array $object_type, array $args = [], array $names = [] ) {
 		/**
 		 * Filter the arguments for a taxonomy.
 		 *
 		 * @since 4.4.1
 		 *
-		 * @param array  $args     The taxonomy arguments.
-		 * @param string $taxonomy The taxonomy name.
+		 * @param array<string,mixed> $args     The taxonomy arguments.
+		 * @param string              $taxonomy The taxonomy name.
 		 */
 		$args = apply_filters( 'ext-taxos/args', $args, $taxonomy );
 
@@ -84,7 +68,7 @@ class Extended_Taxonomy {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param array $args The taxonomy arguments.
+		 * @param array<string,mixed> $args The taxonomy arguments.
 		 */
 		$args = apply_filters( "ext-taxos/{$taxonomy}/args", $args );
 
@@ -93,8 +77,8 @@ class Extended_Taxonomy {
 		 *
 		 * @since 4.4.1
 		 *
-		 * @param string[] $names    The plural, singular, and slug names (if any were specified).
-		 * @param string   $taxonomy The taxonomy name.
+		 * @param array<string,string> $names    The plural, singular, and slug names (if any were specified).
+		 * @param string               $taxonomy The taxonomy name.
 		 */
 		$names = apply_filters( 'ext-taxos/names', $names, $taxonomy );
 
@@ -103,7 +87,7 @@ class Extended_Taxonomy {
 		 *
 		 * @since 2.0.0
 		 *
-		 * @param string[] $names The plural, singular, and slug names (if any were specified).
+		 * @param array<string,string> $names The plural, singular, and slug names (if any were specified).
 		 */
 		$names = apply_filters( "ext-taxos/{$taxonomy}/names", $names );
 
@@ -127,9 +111,9 @@ class Extended_Taxonomy {
 			$this->tax_plural = ucwords( str_replace( [ '-', '_' ], ' ', $this->tax_slug ) );
 		}
 
-		$this->object_type = (array) $object_type;
-		$this->taxonomy    = strtolower( $taxonomy );
-		$this->tax_slug    = strtolower( $this->tax_slug );
+		$this->object_type = $object_type;
+		$this->taxonomy = strtolower( $taxonomy );
+		$this->tax_slug = strtolower( $this->tax_slug );
 
 		# Build our base taxonomy names:
 		# Lower-casing is not forced if the name looks like an initialism, eg. FAQ.
@@ -167,10 +151,13 @@ class Extended_Taxonomy {
 			'choose_from_most_used'      => sprintf( 'Choose from most used %s', $this->tax_plural_low ),
 			'not_found'                  => sprintf( 'No %s found', $this->tax_plural_low ),
 			'no_terms'                   => sprintf( 'No %s', $this->tax_plural_low ),
+			'filter_by_item'             => sprintf( 'Filter by %s', $this->tax_singular_low ),
 			'items_list_navigation'      => sprintf( '%s list navigation', $this->tax_plural ),
 			'items_list'                 => sprintf( '%s list', $this->tax_plural ),
 			'most_used'                  => 'Most Used',
 			'back_to_items'              => sprintf( '&larr; Back to %s', $this->tax_plural ),
+			'item_link'                  => sprintf( '%s Link', $this->tax_singular ),
+			'item_link_description'      => sprintf( 'A link to a %s.', $this->tax_singular_low ),
 			'no_item'                    => sprintf( 'No %s', $this->tax_singular_low ), # Custom label
 			'filter_by'                  => sprintf( 'Filter by %s', $this->tax_singular_low ), # Custom label
 		];
@@ -193,7 +180,12 @@ class Extended_Taxonomy {
 		if ( isset( $args['labels'] ) ) {
 			$this->args['labels'] = array_merge( $this->defaults['labels'], $args['labels'] );
 		}
+	}
 
+	/**
+	 * Initialise the taxonomy by adding the necessary actions and filters.
+	 */
+	public function init(): void {
 		# Rewrite testing:
 		if ( $this->args['rewrite'] ) {
 			add_filter( 'rewrite_testing_tests', [ $this, 'rewrite_testing_tests' ], 1 );
@@ -213,9 +205,9 @@ class Extended_Taxonomy {
 		 *
 		 * @since 4.0.0
 		 *
-		 * @param Extended_Taxonomy $instance The extended taxonomy instance.
+		 * @param \ExtCPTs\Taxonomy $instance The extended taxonomy instance.
 		 */
-		do_action( "ext-taxos/{$taxonomy}/instance", $this );
+		do_action( "ext-taxos/{$this->taxonomy}/instance", $this );
 	}
 
 	/**
@@ -235,14 +227,14 @@ class Extended_Taxonomy {
 	 *
 	 * @codeCoverageIgnore
 	 *
-	 * @param array $tests The existing rewrite rule tests.
-	 * @return array Updated rewrite rule tests.
+	 * @param array<string,array<string,string>> $tests The existing rewrite rule tests.
+	 * @return array<string,array<string,string>> Updated rewrite rule tests.
 	 */
 	public function rewrite_testing_tests( array $tests ): array {
-		require_once __DIR__ . '/class-extended-rewrite-testing.php';
-		require_once __DIR__ . '/class-extended-taxonomy-rewrite-testing.php';
+		require_once __DIR__ . '/ExtendedRewriteTesting.php';
+		require_once __DIR__ . '/TaxonomyRewriteTesting.php';
 
-		$extended = new Extended_Taxonomy_Rewrite_Testing( $this );
+		$extended = new TaxonomyRewriteTesting( $this );
 
 		return array_merge( $tests, $extended->get_tests() );
 	}
@@ -250,29 +242,41 @@ class Extended_Taxonomy {
 	/**
 	 * Registers our taxonomy.
 	 */
-	public function register_taxonomy() {
+	public function register_taxonomy(): void {
 		if ( true === $this->args['query_var'] ) {
 			$query_var = $this->taxonomy;
 		} else {
 			$query_var = $this->args['query_var'];
 		}
 
-		$post_types = get_post_types( [
-			'query_var' => $query_var,
-		] );
+		$post_types = get_post_types(
+			[
+				'query_var' => $query_var,
+			]
+		);
 
 		if ( $query_var && count( $post_types ) ) {
-			trigger_error( esc_html( sprintf(
-				/* translators: %s: Taxonomy query variable name */
-				__( 'Taxonomy query var "%s" clashes with a post type query var of the same name', 'extended-cpts' ),
-				$query_var
-			) ), E_USER_ERROR );
+			trigger_error(
+				esc_html(
+					sprintf(
+						/* translators: %s: Taxonomy query variable name */
+						__( 'Taxonomy query var "%s" clashes with a post type query var of the same name', 'extended-cpts' ),
+						$query_var
+					)
+				),
+				E_USER_ERROR
+			);
 		} elseif ( in_array( $query_var, [ 'type', 'tab' ], true ) ) {
-			trigger_error( esc_html( sprintf(
-				/* translators: %s: Taxonomy query variable name */
-				__( 'Taxonomy query var "%s" is not allowed', 'extended-cpts' ),
-				$query_var
-			) ), E_USER_ERROR );
+			trigger_error(
+				esc_html(
+					sprintf(
+						/* translators: %s: Taxonomy query variable name */
+						__( 'Taxonomy query var "%s" is not allowed', 'extended-cpts' ),
+						$query_var
+					)
+				),
+				E_USER_ERROR
+			);
 		} else {
 			register_taxonomy( $this->taxonomy, $this->object_type, $this->args );
 		}

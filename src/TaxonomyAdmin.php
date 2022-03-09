@@ -1,14 +1,19 @@
 <?php
 declare( strict_types=1 );
 
-class Extended_Taxonomy_Admin {
+namespace ExtCPTs;
+
+use WP_Post;
+use WP_Taxonomy;
+
+class TaxonomyAdmin {
 
 	/**
 	 * Default arguments for custom taxonomies.
 	 *
-	 * @var array
+	 * @var array<string,mixed>
 	 */
-	protected $defaults = [
+	protected array $defaults = [
 		'meta_box'         => null,  # Custom arg
 		'dashboard_glance' => false, # Custom arg
 		'checked_ontop'    => null,  # Custom arg
@@ -16,33 +21,30 @@ class Extended_Taxonomy_Admin {
 		'required'         => false, # Custom arg
 	];
 
-	/**
-	 * @var Extended_Taxonomy
-	 */
-	public $taxo;
+	public Taxonomy $taxo;
 
 	/**
-	 * @var array
+	 * @var array<string,mixed>
 	 */
-	public $args;
+	public array $args;
 
 	/**
-	 * @var array
+	 * @var array<string,string>
 	 */
-	protected $_cols;
+	protected array $_cols;
 
 	/**
-	 * @var array
+	 * @var array<string,string>
 	 */
-	protected $the_cols = null;
+	protected ?array $the_cols = null;
 
 	/**
 	* Class constructor.
 	*
-	* @param Extended_Taxonomy $taxo An extended taxonomy object.
-	* @param array             $args Optional. The admin arguments.
+	* @param Taxonomy            $taxo An extended taxonomy object.
+	* @param array<string,mixed> $args Optional. The admin arguments.
 	*/
-	public function __construct( Extended_Taxonomy $taxo, array $args = [] ) {
+	public function __construct( Taxonomy $taxo, array $args = [] ) {
 		$this->taxo = $taxo;
 
 		# Merge our args with the defaults:
@@ -52,7 +54,12 @@ class Extended_Taxonomy_Admin {
 		if ( null === $this->args['checked_ontop'] ) {
 			$this->args['checked_ontop'] = empty( $this->args['meta_box'] );
 		}
+	}
 
+	/**
+	 * Initialise the admin features of the taxonomy by adding the necessary actions and filters.
+	 */
+	public function init(): void {
 		# Meta boxes:
 		if ( $this->taxo->args['exclusive'] || isset( $this->args['meta_box'] ) ) {
 			add_action( 'add_meta_boxes', [ $this, 'meta_boxes' ], 10, 2 );
@@ -72,15 +79,24 @@ class Extended_Taxonomy_Admin {
 			add_filter( "manage_edit-{$this->taxo->taxonomy}_columns",  [ $this, 'cols' ] );
 			add_filter( "manage_{$this->taxo->taxonomy}_custom_column", [ $this, 'col' ], 10, 3 );
 		}
+
+		/**
+		 * Fired when the extended taxonomy admin instance is set up.
+		 *
+		 * @since 5.0.0
+		 *
+		 * @param \ExtCPTs\TaxonomyAdmin $instance The extended taxonomy admin instance.
+		 */
+		do_action( "ext-taxos/{$this->taxo->taxonomy}/admin-instance", $this );
 	}
 
 	/**
 	 * Logs the default columns so we don't remove any custom columns added by other plugins.
 	 *
-	 * @param  array $cols The default columns for this taxonomy screen
-	 * @return array       The default columns for this taxonomy screen
+	 * @param  array<string,string> $cols The default columns for this taxonomy screen.
+	 * @return array<string,string> The default columns for this taxonomy screen.
 	 */
-	public function _log_default_cols( array $cols ) {
+	public function _log_default_cols( array $cols ): array {
 		$this->_cols = $cols;
 		return $this->_cols;
 	}
@@ -136,8 +152,8 @@ class Extended_Taxonomy_Admin {
 	 *
 	 * Note that sortable admin columns are not yet supported.
 	 *
-	 * @param  array $cols Associative array of columns
-	 * @return array       Updated array of columns
+	 * @param  array<string,string> $cols Associative array of columns.
+	 * @return array<string,string> Updated array of columns.
 	 */
 	public function cols( array $cols ): array {
 		// This function gets called multiple times, so let's cache it for efficiency:
@@ -160,8 +176,11 @@ class Extended_Taxonomy_Admin {
 			}
 		}
 
+		/** @var array<string,(string|mixed[])> */
+		$admin_cols = array_filter( $this->args['admin_cols'] );
+
 		# Add our custom columns:
-		foreach ( array_filter( $this->args['admin_cols'] ) as $id => $col ) {
+		foreach ( $admin_cols as $id => $col ) {
 			if ( is_string( $col ) && isset( $cols[ $col ] ) ) {
 				# Existing (ie. built-in) column with id as the value
 				$new_cols[ $col ] = $cols[ $col ];
@@ -176,7 +195,7 @@ class Extended_Taxonomy_Admin {
 				if ( isset( $col['title_cb'] ) ) {
 					$new_cols[ $id ] = call_user_func( $col['title_cb'], $col );
 				} else {
-					$title = esc_html( $col['title'] ?? $this->get_item_title( $col ) ?? $id );
+					$title = esc_html( $this->get_item_title( $col, $id ) );
 
 					if ( isset( $col['title_icon'] ) ) {
 						$title = sprintf(
@@ -192,7 +211,7 @@ class Extended_Taxonomy_Admin {
 		}
 
 		# Re-add any custom columns:
-		$custom   = array_diff_key( $cols, $this->_cols );
+		$custom = array_diff_key( $cols, $this->_cols );
 		$new_cols = array_merge( $new_cols, $custom );
 
 		$this->the_cols = $new_cols;
@@ -230,11 +249,11 @@ class Extended_Taxonomy_Admin {
 	/**
 	 * Output column data for a term meta field.
 	 *
-	 * @param string $meta_key The term meta key
-	 * @param array  $args     Array of arguments for this field
-	 * @param int    $term_id  Term ID.
+	 * @param string              $meta_key The term meta key.
+	 * @param array<string,mixed> $args     Array of arguments for this field.
+	 * @param int                 $term_id  Term ID.
 	 */
-	public function col_term_meta( string $meta_key, array $args, int $term_id ) {
+	public function col_term_meta( string $meta_key, array $args, int $term_id ): void {
 		$vals = get_term_meta( $term_id, $meta_key, false );
 		$echo = [];
 
@@ -247,7 +266,7 @@ class Extended_Taxonomy_Admin {
 
 			foreach ( $vals as $val ) {
 				if ( is_numeric( $val ) ) {
-					$echo[] = date( $args['date_format'], $val );
+					$echo[] = date( $args['date_format'], (int) $val );
 				} elseif ( ! empty( $val ) ) {
 					$echo[] = mysql2date( $args['date_format'], $val );
 				}
@@ -268,35 +287,39 @@ class Extended_Taxonomy_Admin {
 	}
 
 	/**
-	 * Returns a sensible title for the current item (usually the arguments array for a column)
+	 * Returns a sensible title for the current item (usually the arguments array for a column).
 	 *
-	 * @param array $item An array of arguments
-	 * @return string The item title
+	 * @param array<string,mixed> $item An array of arguments.
+	 * @param string              $fallback Fallback item title.
+	 * @return string The item title.
 	 */
-	protected function get_item_title( array $item ): string {
-		if ( isset( $item['meta_key'] ) ) {
+	protected function get_item_title( array $item, string $fallback = '' ): string {
+		if ( isset( $item['title'] ) ) {
+			return $item['title'];
+		} elseif ( isset( $item['meta_key'] ) ) {
 			return ucwords( trim( str_replace( [ '_', '-' ], ' ', $item['meta_key'] ) ) );
-		} else {
-			return '';
 		}
+
+		return $fallback;
 	}
 
 	/**
 	 * Removes the default meta box from the post editing screen and adds our custom meta box.
 	 *
-	 * @param string $object_type The object type (eg. the post type)
-	 * @param mixed  $object      The object (eg. a WP_Post object)
+	 * @param string $object_type The object type (eg. the post type).
+	 * @param mixed  $object      The object (eg. a WP_Post object).
 	 */
-	public function meta_boxes( string $object_type, $object ) {
+	public function meta_boxes( string $object_type, $object ): void {
 		if ( ! is_a( $object, 'WP_Post' ) ) {
 			return;
 		}
 
 		$post_type = $object_type;
-		$post      = $object;
-		$taxos     = get_post_taxonomies( $post );
+		$post = $object;
+		$taxos = get_post_taxonomies( $post );
 
 		if ( in_array( $this->taxo->taxonomy, $taxos, true ) ) {
+			/** @var WP_Taxonomy */
 			$tax = get_taxonomy( $this->taxo->taxonomy );
 
 			# Remove default meta box from classic editor:
@@ -351,40 +374,36 @@ class Extended_Taxonomy_Admin {
 	/**
 	 * Displays the 'radio' meta box on the post editing screen.
 	 *
-	 * Uses the Walker_ExtendedTaxonomyRadios class for the walker.
+	 * Uses the Walker\Radios class for the walker.
 	 *
-	 * @param WP_Post $post     The post object.
-	 * @param array   $meta_box The meta box arguments.
+	 * @param WP_Post             $post     The post object.
+	 * @param array<string,mixed> $meta_box The meta box arguments.
 	 */
-	public function meta_box_radio( WP_Post $post, array $meta_box ) {
-		require_once __DIR__ . '/class-walker-extendedtaxonomyradios.php';
-
-		$walker = new Walker_ExtendedTaxonomyRadios();
+	public function meta_box_radio( WP_Post $post, array $meta_box ): void {
+		$walker = new Walker\Radios();
 		$this->do_meta_box( $post, $walker, true, 'checklist' );
 	}
 
 	/**
 	 * Displays the 'dropdown' meta box on the post editing screen.
 	 *
-	 * Uses the Walker_ExtendedTaxonomyDropdown class for the walker.
+	 * Uses the Walker\Dropdown class for the walker.
 	 *
-	 * @param WP_Post $post     The post object.
-	 * @param array   $meta_box The meta box arguments.
+	 * @param WP_Post             $post     The post object.
+	 * @param array<string,mixed> $meta_box The meta box arguments.
 	 */
-	public function meta_box_dropdown( WP_Post $post, array $meta_box ) {
-		require_once __DIR__ . '/class-walker-extendedtaxonomydropdown.php';
-
-		$walker = new Walker_ExtendedTaxonomyDropdown();
+	public function meta_box_dropdown( WP_Post $post, array $meta_box ): void {
+		$walker = new Walker\Dropdown();
 		$this->do_meta_box( $post, $walker, true, 'dropdown' );
 	}
 
 	/**
 	 * Displays the 'simple' meta box on the post editing screen.
 	 *
-	 * @param WP_Post $post     The post object.
-	 * @param array   $meta_box The meta box arguments.
+	 * @param WP_Post             $post     The post object.
+	 * @param array<string,mixed> $meta_box The meta box arguments.
 	 */
-	public function meta_box_simple( WP_Post $post, array $meta_box ) {
+	public function meta_box_simple( WP_Post $post, array $meta_box ): void {
 		$this->do_meta_box( $post );
 	}
 
@@ -392,16 +411,22 @@ class Extended_Taxonomy_Admin {
 	 * Displays a meta box on the post editing screen.
 	 *
 	 * @param WP_Post $post      The post object.
-	 * @param Walker  $walker    Optional. A term walker.
+	 * @param \Walker $walker    Optional. A term walker.
 	 * @param bool    $show_none Optional. Whether to include a 'none' item in the term list. Default false.
 	 * @param string  $type      Optional. The taxonomy list type (checklist or dropdown). Default 'checklist'.
 	 */
-	protected function do_meta_box( WP_Post $post, Walker $walker = null, bool $show_none = false, string $type = 'checklist' ) {
+	protected function do_meta_box( WP_Post $post, \Walker $walker = null, bool $show_none = false, string $type = 'checklist' ): void {
 		$taxonomy = $this->taxo->taxonomy;
-		$tax      = get_taxonomy( $taxonomy );
-		$selected = wp_get_object_terms( $post->ID, $taxonomy, [
-			'fields' => 'ids',
-		] );
+		/** @var WP_Taxonomy */
+		$tax = get_taxonomy( $taxonomy );
+		/** @var array<int,int> */
+		$selected = wp_get_object_terms(
+			$post->ID,
+			$taxonomy,
+			[
+				'fields' => 'ids',
+			]
+		);
 
 		if ( $show_none ) {
 			if ( isset( $tax->labels->no_item ) ) {
@@ -437,20 +462,22 @@ class Extended_Taxonomy_Admin {
 						esc_attr( "{$taxonomy}dropdown" ),
 						esc_html( $tax->labels->singular_name )
 					);
-					wp_dropdown_categories( [
-						'option_none_value' => ( is_taxonomy_hierarchical( $taxonomy ) ? '-1' : '' ),
-						'show_option_none'  => $none,
-						'hide_empty'        => false,
-						'hierarchical'      => true,
-						'show_count'        => false,
-						'orderby'           => 'name',
-						'selected'          => reset( $selected ),
-						'id'                => "{$taxonomy}dropdown",
-						'name'              => is_taxonomy_hierarchical( $taxonomy ) ? "tax_input[{$taxonomy}][]" : "tax_input[{$taxonomy}]",
-						'taxonomy'          => $taxonomy,
-						'walker'            => $walker,
-						'required'          => $this->args['required'],
-					] );
+					wp_dropdown_categories(
+						[
+							'option_none_value' => ( is_taxonomy_hierarchical( $taxonomy ) ? '-1' : '' ),
+							'show_option_none'  => $none,
+							'hide_empty'        => false,
+							'hierarchical'      => true,
+							'show_count'        => false,
+							'orderby'           => 'name',
+							'selected'          => reset( $selected ) ?: 0,
+							'id'                => "{$taxonomy}dropdown",
+							'name'              => is_taxonomy_hierarchical( $taxonomy ) ? "tax_input[{$taxonomy}][]" : "tax_input[{$taxonomy}]",
+							'taxonomy'          => $taxonomy,
+							'walker'            => $walker,
+							'required'          => $this->args['required'],
+						]
+					);
 					break;
 
 				case 'checklist':
@@ -473,17 +500,19 @@ class Extended_Taxonomy_Admin {
 
 						# Standard WP Walker_Category_Checklist does not cut it
 						if ( ! $walker ) {
-							require_once __DIR__ . '/class-walker-extendedtaxonomycheckboxes.php';
-							$walker = new Walker_ExtendedTaxonomyCheckboxes();
+							$walker = new Walker\Checkboxes();
 						}
 
 						# Output the terms:
-						wp_terms_checklist( $post->ID, [
-							'taxonomy'      => $taxonomy,
-							'walker'        => $walker,
-							'selected_cats' => $selected,
-							'checked_ontop' => $this->args['checked_ontop'],
-						] );
+						wp_terms_checklist(
+							$post->ID,
+							[
+								'taxonomy'      => $taxonomy,
+								'walker'        => $walker,
+								'selected_cats' => $selected,
+								'checked_ontop' => $this->args['checked_ontop'],
+							]
+						);
 
 						# Output the 'none' item:
 						if ( $show_none ) {
@@ -539,10 +568,11 @@ class Extended_Taxonomy_Admin {
 	/**
 	 * Adds our taxonomy to the 'At a Glance' widget on the dashboard.
 	 *
-	 * @param string[] $items Array of items to display on the widget.
-	 * @return string[] Updated array of items.
+	 * @param array<int,string> $items Array of items to display on the widget.
+	 * @return array<int,string> Updated array of items.
 	 */
 	public function glance_items( array $items ): array {
+		/** @var WP_Taxonomy */
 		$taxonomy = get_taxonomy( $this->taxo->taxonomy );
 
 		if ( ! current_user_can( $taxonomy->cap->manage_terms ) ) {
@@ -554,14 +584,22 @@ class Extended_Taxonomy_Admin {
 
 		# Get the labels and format the counts:
 		$count = wp_count_terms( $this->taxo->taxonomy );
-		$text  = self::n( $taxonomy->labels->singular_name, $taxonomy->labels->name, $count );
-		$num   = number_format_i18n( $count );
+
+		if ( is_wp_error( $count ) ) {
+			return $items;
+		}
+
+		$text = self::n( $taxonomy->labels->singular_name, $taxonomy->labels->name, (int) $count );
+		$num = number_format_i18n( (int) $count );
 
 		# This is absolutely not localisable. WordPress 3.8 didn't add a new taxonomy label.
-		$url  = add_query_arg( [
-			'taxonomy'  => $this->taxo->taxonomy,
-			'post_type' => reset( $taxonomy->object_type ),
-		], admin_url( 'edit-tags.php' ) );
+		$url = add_query_arg(
+			[
+				'taxonomy'  => $this->taxo->taxonomy,
+				'post_type' => reset( $taxonomy->object_type ),
+			],
+			admin_url( 'edit-tags.php' )
+		);
 		$text = '<a href="' . esc_url( $url ) . '" class="taxo-' . esc_attr( $this->taxo->taxonomy ) . '-count">' . esc_html( $num . ' ' . $text ) . '</a>';
 
 		# Go!
@@ -582,8 +620,8 @@ class Extended_Taxonomy_Admin {
 	 *   5 => "Term not updated."
 	 *   6 => "Terms deleted."
 	 *
-	 * @param array[] $messages An array of term updated message arrays keyed by taxonomy name.
-	 * @return array[] Updated array of term updated messages.
+	 * @param array<string, array<int, string>> $messages An array of term updated message arrays keyed by taxonomy name.
+	 * @return array<string, array<int, string>> Updated array of term updated messages.
 	 */
 	public function term_updated_messages( array $messages ): array {
 		$messages[ $this->taxo->taxonomy ] = [
@@ -601,12 +639,12 @@ class Extended_Taxonomy_Admin {
 	/**
 	 * A non-localised version of _n()
 	 *
-	 * @param string $single The text that will be used if $number is 1
-	 * @param string $plural The text that will be used if $number is not 1
-	 * @param int    $number The number to compare against to use either $single or $plural
-	 * @return string Either $single or $plural text
+	 * @param string $single The text that will be used if $number is 1.
+	 * @param string $plural The text that will be used if $number is not 1.
+	 * @param int    $number The number to compare against to use either $single or $plural.
+	 * @return string Either $single or $plural text.
 	 */
-	public static function n( $single, $plural, $number ) {
+	public static function n( string $single, string $plural, int $number ): string {
 		return ( 1 === intval( $number ) ) ? $single : $plural;
 	}
 

@@ -1,6 +1,11 @@
 <?php
 declare( strict_types=1 );
 
+use ExtCPTs\PostType;
+use ExtCPTs\PostTypeAdmin;
+use ExtCPTs\Taxonomy;
+use ExtCPTs\TaxonomyAdmin;
+
 /**
  * Registers a custom post type.
  *
@@ -12,7 +17,7 @@ declare( strict_types=1 );
  * @see register_post_type() for default arguments.
  *
  * @param string   $post_type The post type name.
- * @param array    $args {
+ * @param mixed[]  $args {
  *     Optional. The post type arguments.
  *
  *     @type array  $admin_cols         Associative array of admin screen columns to show for this post type.
@@ -25,7 +30,7 @@ declare( strict_types=1 );
  *     @type bool   $dashboard_glance   Whether to show this post type on the 'At a Glance' section of the admin
  *                                      dashboard. Default true.
  *     @type bool   $dashboard_activity Whether to show this post type on the 'Recently Published' section of the
- *                                      admin dashboard. Default false.
+ *                                      admin dashboard. Default true.
  *     @type string $enter_title_here   Placeholder text which appears in the title field for this post type.
  *     @type string $featured_image     Text which replaces the 'Featured Image' phrase for this post type.
  *     @type bool   $quick_edit         Whether to show Quick Edit links for this post type. Default true.
@@ -40,17 +45,19 @@ declare( strict_types=1 );
  *     @type string $singular The singular form of the post type name.
  *     @type string $slug     The slug used in the permalinks for this post type.
  * }
- * @return Extended_CPT
+ * @return PostType
  */
-function register_extended_post_type( string $post_type, array $args = [], array $names = [] ): Extended_CPT {
+function register_extended_post_type( string $post_type, array $args = [], array $names = [] ): PostType {
 	if ( ! did_action( 'init' ) ) {
 		trigger_error( esc_html__( 'Post types must be registered on the "init" hook.', 'extended-cpts' ), E_USER_WARNING );
 	}
 
-	$cpt = new Extended_CPT( $post_type, $args, $names );
+	$cpt = new PostType( $post_type, $args, $names );
+	$cpt->init();
 
 	if ( is_admin() ) {
-		new Extended_CPT_Admin( $cpt, $cpt->args );
+		$admin = new PostTypeAdmin( $cpt, $cpt->args );
+		$admin->init();
 	}
 
 	return $cpt;
@@ -68,7 +75,7 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *
  * @param string          $taxonomy    The taxonomy name.
  * @param string|string[] $object_type Name(s) of the object type(s) for the taxonomy.
- * @param array           $args {
+ * @param mixed[]         $args {
  *     Optional. The taxonomy arguments.
  *
  *     @type string $meta_box         The name of the custom meta box to use on the post editing screen for this
@@ -83,7 +90,7 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *     @type bool   $dashboard_glance Whether to show this taxonomy on the 'At a Glance' section of the admin dashboard.
  *                                    Default false.
  *     @type array  $admin_cols       Associative array of admin screen columns to show for this taxonomy. See the
- *                                    `Extended_Taxonomy_Admin::cols()` method for more information.
+ *                                    `TaxonomyAdmin::cols()` method for more information.
  *     @type bool   $exclusive        This parameter isn't feature complete. All it does currently is set the meta box
  *                                    to the 'radio' meta box, thus meaning any given post can only have one term
  *                                    associated with it for that taxonomy. 'exclusive' isn't really the right name for
@@ -100,17 +107,19 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *     @type string $singular The singular form of the taxonomy name.
  *     @type string $slug     The slug used in the term permalinks for this taxonomy.
  * }
- * @return Extended_Taxonomy
+ * @return Taxonomy
  */
-function register_extended_taxonomy( string $taxonomy, $object_type, array $args = [], array $names = [] ): Extended_Taxonomy {
+function register_extended_taxonomy( string $taxonomy, $object_type, array $args = [], array $names = [] ): Taxonomy {
 	if ( ! did_action( 'init' ) ) {
 		trigger_error( esc_html__( 'Taxonomies must be registered on the "init" hook.', 'extended-cpts' ), E_USER_WARNING );
 	}
 
-	$taxo = new Extended_Taxonomy( $taxonomy, $object_type, $args, $names );
+	$taxo = new Taxonomy( $taxonomy, (array) $object_type, $args, $names );
+	$taxo->init();
 
 	if ( is_admin() ) {
-		new Extended_Taxonomy_Admin( $taxo, $taxo->args );
+		$admin = new TaxonomyAdmin( $taxo, $taxo->args );
+		$admin->init();
 	}
 
 	return $taxo;

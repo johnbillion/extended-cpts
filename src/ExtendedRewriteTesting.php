@@ -1,13 +1,23 @@
 <?php
 declare( strict_types=1 );
 
+namespace ExtCPTs;
+
 /**
  * @codeCoverageIgnore
  */
-abstract class Extended_Rewrite_Testing {
+abstract class ExtendedRewriteTesting {
 
+	/**
+	 * @return array<string,array<string,string>>
+	 */
 	abstract public function get_tests(): array;
 
+	/**
+	 * @param array<string,mixed> $struct
+	 * @param array<string,mixed> $additional
+	 * @return array<string,string>
+	 */
 	public function get_rewrites( array $struct, array $additional ): array {
 		global $wp_rewrite;
 
@@ -15,7 +25,7 @@ abstract class Extended_Rewrite_Testing {
 			return [];
 		}
 
-		$new   = [];
+		$new = [];
 		$rules = $wp_rewrite->generate_rewrite_rules(
 			$struct['struct'],
 			$struct['ep_mask'],
@@ -27,7 +37,7 @@ abstract class Extended_Rewrite_Testing {
 		);
 		$rules = array_merge( $rules, $additional );
 		$feedregex = implode( '|', $wp_rewrite->feeds );
-		$replace   = [
+		$replace = [
 			'(.+?)'          => 'hello',
 			'.+?'            => 'hello',
 			'([^/]+)'        => 'world',
@@ -47,7 +57,7 @@ abstract class Extended_Rewrite_Testing {
 		];
 
 		foreach ( $rules as $regex => $result ) {
-			$regex  = str_replace( array_keys( $replace ), $replace, $regex );
+			$regex = str_replace( array_keys( $replace ), $replace, $regex );
 			// Change '$2' to '$matches[2]'
 			$result = preg_replace( '/\$([0-9]+)/', '\$matches[$1]', $result );
 			$new[ "/{$regex}" ] = $result;
