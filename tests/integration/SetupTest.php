@@ -216,10 +216,11 @@ class Setup extends Test {
 	}
 
 	public function testTaxonomyLabelsAreCorrect(): void {
+		global $wp_version;
+
 		$foo = get_taxonomy( 'foo_category' );
 
-		self::assertNotFalse( $foo );
-		self::assertEquals( (object) array(
+		$taxonomy = array(
 			'menu_name'                  => 'Foo Categorys',
 			'name'                       => 'Foo Categorys',
 			'singular_name'              => 'Foo Category',
@@ -249,7 +250,19 @@ class Setup extends Test {
 			'archives'                   => 'Foo Categorys Archives',
 			'item_link'                  => 'Foo Category Link',
 			'item_link_description'      => 'A link to a foo category.',
-		), $foo->labels );
+		);
+
+		if ( version_compare( $wp_version, '5.9.0', '>=' ) ) {
+			$taxonomy = array_merge( $taxonomy, array(
+				'name_field_description'   => 'The name is how it appears on your site.',
+				'slug_field_description'   => 'The &#8220;slug&#8221; is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.',
+				'parent_field_description' => 'Assign a parent term to create a hierarchy. The term Jazz, for example, would be the parent of Bebop and Big Band.',
+				'desc_field_description'   => 'The description is not prominent by default; however, some themes may show it.',
+			) );
+		}
+
+		self::assertNotFalse( $foo );
+		self::assertEquals( (object) $taxonomy, $foo->labels );
 	}
 
 	public function testArchiveLinksAreCorrect(): void {
