@@ -13,7 +13,6 @@
 		"sort-packages": true,
 		"preferred-install": "dist",
 		"allow-plugins": {
-			"cweagans/composer-patches": true,
 			"dealerdirect/phpcodesniffer-composer-installer": true,
 			"roots/wordpress-core-installer": true
 		}
@@ -21,11 +20,6 @@
 	"extra": {
 		"branch-alias": {
 			"dev-develop": "5.0-dev"
-		},
-		"patches": {
-			"lucatume/wp-browser": {
-				"https://github.com/lucatume/wp-browser/issues/554": "tests/patches/wp-browser-554.patch"
-			}
 		},
 		"wordpress-install-dir": "tests/wordpress"
 	},
@@ -35,7 +29,6 @@
 	},
 	"require-dev": {
 		"automattic/phpcs-neutron-standard": "1.7.0",
-		"cweagans/composer-patches": "^1.7",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
 		"johnbillion/falsey-assertequals-detector": "*",
 		"lucatume/wp-browser": "^3.0",
