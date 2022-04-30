@@ -14,6 +14,3 @@ parameters:
 		# We'll come back to these
 		- '#^Parameter \#1 \$text of function esc_html expects string#'
 		- '#^Parameter \#1 \$url of function esc_url expects string#'
-		# p2p plugin
-		- '#^Used function (p2p_type|p2p_connection_exists) not found\.$#'
-		- '#^Function (p2p_type|p2p_connection_exists) not found\.$#'
