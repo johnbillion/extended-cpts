@@ -45,6 +45,11 @@ use ExtCPTs\TaxonomyAdmin;
  *     @type string $singular The singular form of the post type name.
  *     @type string $slug     The slug used in the permalinks for this post type.
  * }
+ * @phpstan-param array{
+ *   plural?: string,
+ *   singular?: string,
+ *   slug?: string,
+ * } $names
  * @return PostType
  */
 function register_extended_post_type( string $post_type, array $args = [], array $names = [] ): PostType {
@@ -107,6 +112,11 @@ function register_extended_post_type( string $post_type, array $args = [], array
  *     @type string $singular The singular form of the taxonomy name.
  *     @type string $slug     The slug used in the term permalinks for this taxonomy.
  * }
+ * @phpstan-param array{
+ *   plural?: string,
+ *   singular?: string,
+ *   slug?: string,
+ * } $names
  * @return Taxonomy
  */
 function register_extended_taxonomy( string $taxonomy, $object_type, array $args = [], array $names = [] ): Taxonomy {

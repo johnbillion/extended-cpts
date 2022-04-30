@@ -61,6 +61,11 @@ class PostType {
 	 * @param string               $post_type The post type name.
 	 * @param array<string,mixed>  $args      Optional. The post type arguments.
 	 * @param array<string,string> $names     Optional. The plural, singular, and slug names.
+	 * @phpstan-param array{
+	 *   plural?: string,
+	 *   singular?: string,
+	 *   slug?: string,
+	 * } $names
 	 */
 	public function __construct( string $post_type, array $args = [], array $names = [] ) {
 		/**
