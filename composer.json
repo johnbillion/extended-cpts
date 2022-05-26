@@ -48,7 +48,7 @@
 			"phpcs -nps --colors --report-code --report-summary --report-width=80 --cache=tests/cache/phpcs --basepath='./' ."
 		],
 		"test:analyze": [
-			"phpstan analyze"
+			"phpstan analyze --memory-limit=1024M"
 		],
 		"test:integration": [
 			"codecept run integration"
