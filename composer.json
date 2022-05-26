@@ -18,9 +18,6 @@
 		}
 	},
 	"extra": {
-		"branch-alias": {
-			"dev-develop": "5.0-dev"
-		},
 		"wordpress-install-dir": "tests/wordpress"
 	},
 	"require": {
