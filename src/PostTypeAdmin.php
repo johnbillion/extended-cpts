@@ -710,6 +710,10 @@ ICONCSS;
 
 		/** @var \WP_Post_Type */
 		$pto = get_post_type_object( $this->cpt->post_type );
+		
+		if (is_null($pto)) {
+            return $messages;
+        }
 
 		$messages[ $this->cpt->post_type ] = [
 			1 => sprintf(
