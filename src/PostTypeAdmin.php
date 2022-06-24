@@ -303,22 +303,80 @@ class PostTypeAdmin {
 					esc_html( $tax->labels->filter_by ?? $tax->labels->singular_name )
 				);
 
-				# Output the dropdown:
-				wp_dropdown_categories(
-					[
-						'show_option_all' => $filter['title'],
-						'hide_empty'      => false,
-						'hide_if_empty'   => true,
-						'hierarchical'    => true,
-						'show_count'      => false,
-						'orderby'         => 'name',
-						'selected_cats'   => $tax->query_var ? get_query_var( $tax->query_var ) : [],
-						'id'              => $id,
-						'name'            => (string) $tax->query_var,
-						'taxonomy'        => $filter['taxonomy'],
-						'walker'          => $walker,
-					]
-				);
+				if ( isset( $filter['type'] ) ) {
+					if ( $filter['type'] == 'checkboxes' ) {
+						?>
+						<fieldset class="fieldset fieldset-<?= $filter['taxonomy'] ?>" style="margin-left:10px;max-height:200px;min-width:200px;overflow-y:auto;background-color:white;border-radius:3px;padding:0 10px;border:1px solid #8c8f94;">
+							<label><strong><?= $tax->labels->singular_name ?></strong></label>	
+							<ul>
+								<?php
+								$terms = get_terms( [
+									'taxonomy' => $filter['taxonomy'],
+									'hide_empty' => true,
+								] );
+								$selected_items = $tax->query_var ? get_query_var( $tax->query_var ) : [];
+								foreach ($terms as $term) {
+									?>
+									<li><label for="<?= $id . '-' . $term->slug ?>">
+										<input type="checkbox" name="<?= $tax->query_var ?>[]" id="<?= $tax->query_var . '-' . $term->slug ?>" value="<?= $term->slug ?>"<?= in_array( $term->slug, (array) $selected_items ) ? ' checked' : '' ?>>
+										<?= $term->name ?>
+									</label></li>
+									<?php
+								}
+								?>
+							</ul>
+						</fieldset>
+					<?php
+					}
+					else {
+						$walker = new Walker\Dropdown(
+							[
+								'field' => 'slug',
+							]
+						);
+
+						# Output the dropdown:
+						wp_dropdown_categories(
+							[
+								'show_option_all' => $filter['title'],
+								'hide_empty'      => true,
+								'hide_if_empty'   => true,
+								'hierarchical'    => true,
+								'show_count'      => false,
+								'orderby'         => 'name',
+								'selected_cats'   => $tax->query_var ? get_query_var( $tax->query_var ) : [],
+								'id'              => $id,
+								'name'            => (string) $tax->query_var,
+								'taxonomy'        => $filter['taxonomy'],
+								'walker'          => $walker,
+							]
+						);
+					}
+				}
+				else {
+					$walker = new Walker\Dropdown(
+						[
+							'field' => 'slug',
+						]
+					);
+
+					# Output the dropdown:
+					wp_dropdown_categories(
+						[
+							'show_option_all' => $filter['title'],
+							'hide_empty'      => true,
+							'hide_if_empty'   => true,
+							'hierarchical'    => true,
+							'show_count'      => false,
+							'orderby'         => 'name',
+							'selected_cats'   => $tax->query_var ? get_query_var( $tax->query_var ) : [],
+							'id'              => $id,
+							'name'            => (string) $tax->query_var,
+							'taxonomy'        => $filter['taxonomy'],
+							'walker'          => $walker,
+						]
+					);
+				}
 			} elseif ( isset( $filter['meta_key'] ) ) {
 				# If we haven't specified a title, generate one from the meta key:
 				if ( ! isset( $filter['title'] ) ) {
