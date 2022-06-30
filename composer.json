@@ -22,7 +22,7 @@
 	},
 	"require": {
 		"php": ">= 7.4.0",
-		"johnbillion/args": "^0.9.0"
+		"johnbillion/args": "^1.4.1"
 	},
 	"require-dev": {
 		"automattic/phpcs-neutron-standard": "1.7.0",
