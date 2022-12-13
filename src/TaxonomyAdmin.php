@@ -430,6 +430,7 @@ class TaxonomyAdmin {
 
 		if ( $show_none ) {
 			if ( isset( $tax->labels->no_item ) ) {
+				/** @var string $none */
 				$none = $tax->labels->no_item;
 			} else {
 				$none = esc_html__( 'Not specified', 'extended-cpts' );
@@ -462,22 +463,26 @@ class TaxonomyAdmin {
 						esc_attr( "{$taxonomy}dropdown" ),
 						esc_html( $tax->labels->singular_name )
 					);
-					wp_dropdown_categories(
-						[
-							'option_none_value' => ( is_taxonomy_hierarchical( $taxonomy ) ? '-1' : '' ),
-							'show_option_none'  => $none,
-							'hide_empty'        => false,
-							'hierarchical'      => true,
-							'show_count'        => false,
-							'orderby'           => 'name',
-							'selected'          => reset( $selected ) ?: 0,
-							'id'                => "{$taxonomy}dropdown",
-							'name'              => is_taxonomy_hierarchical( $taxonomy ) ? "tax_input[{$taxonomy}][]" : "tax_input[{$taxonomy}]",
-							'taxonomy'          => $taxonomy,
-							'walker'            => $walker,
-							'required'          => $this->args['required'],
-						]
-					);
+
+					$dropdown_args = [
+						'option_none_value' => ( is_taxonomy_hierarchical( $taxonomy ) ? '-1' : '' ),
+						'show_option_none'  => $none,
+						'hide_empty'        => false,
+						'hierarchical'      => true,
+						'show_count'        => false,
+						'orderby'           => 'name',
+						'selected'          => reset( $selected ) ?: 0,
+						'id'                => "{$taxonomy}dropdown",
+						'name'              => is_taxonomy_hierarchical( $taxonomy ) ? "tax_input[{$taxonomy}][]" : "tax_input[{$taxonomy}]",
+						'taxonomy'          => $taxonomy,
+						'required'          => $this->args['required'],
+					];
+
+					if ( $walker instanceof \Walker ) {
+						$dropdown_args['walker'] = $walker;
+					}
+
+					wp_dropdown_categories( $dropdown_args );
 					break;
 
 				case 'checklist':
@@ -583,7 +588,11 @@ class TaxonomyAdmin {
 		}
 
 		# Get the labels and format the counts:
-		$count = wp_count_terms( $this->taxo->taxonomy );
+		$count = wp_count_terms(
+			[
+				'taxonomy' => $this->taxo->taxonomy,
+			]
+		);
 
 		if ( is_wp_error( $count ) ) {
 			return $items;
