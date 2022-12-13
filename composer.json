@@ -35,7 +35,7 @@
 		"phpunit/phpunit": "^9",
 		"roots/wordpress-core-installer": "^1.0.0",
 		"roots/wordpress-full": "^6.0.0",
-		"szepeviktor/phpstan-wordpress": "^1.0",
+		"szepeviktor/phpstan-wordpress": "1.1.6",
 		"vlucas/phpdotenv": "^3",
 		"wp-cli/core-command": "^2",
 		"wp-cli/db-command": "^2",

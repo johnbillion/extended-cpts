@@ -229,7 +229,7 @@ class PostType {
 	public function init(): void {
 		# Front-end sortables:
 		if ( $this->args['site_sortables'] && ! is_admin() ) {
-			add_filter( 'pre_get_posts', [ $this, 'maybe_sort_by_fields' ] );
+			add_action( 'pre_get_posts', [ $this, 'maybe_sort_by_fields' ] );
 			add_filter( 'posts_clauses', [ $this, 'maybe_sort_by_taxonomy' ], 10, 2 );
 		}
 

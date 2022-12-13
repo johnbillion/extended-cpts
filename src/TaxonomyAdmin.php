@@ -71,7 +71,7 @@ class TaxonomyAdmin {
 		}
 
 		# Term updated messages:
-		add_filter( 'term_updated_messages', [ $this, 'term_updated_messages' ], 1, 2 );
+		add_filter( 'term_updated_messages', [ $this, 'term_updated_messages' ], 1 );
 
 		# Admin columns:
 		if ( $this->args['admin_cols'] ) {
