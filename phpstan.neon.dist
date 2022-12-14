@@ -16,3 +16,4 @@ parameters:
 		# p2p plugin
 		- '#^Used function (p2p_type|p2p_connection_exists) not found\.$#'
 		- '#^Function (p2p_type|p2p_connection_exists) not found\.$#'
+	reportUnmatchedIgnoredErrors: false
