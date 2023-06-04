@@ -75,4 +75,4 @@ jobs:
       if: matrix.php == '7.4'
       run: |
         composer test:cs
-        composer test:analyze -- --error-format=github
+        composer test:analyze
