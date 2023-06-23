@@ -55,15 +55,9 @@ jobs:
         extensions: mysqli, xmlwriter
         coverage: none
 
-    - name: Debugging
-      run: |
-        php --version
-        php -m
-        composer --version
-        mysql --version
-
     - name: Install dependencies
       run: |
+        mysql --version
         sudo systemctl start mysql.service
         composer require --dev --update-with-dependencies --prefer-dist roots/wordpress-full="~${{ matrix.wp }}.0"
         mysqladmin -uroot -proot create wordpress_test
