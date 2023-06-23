@@ -708,12 +708,11 @@ ICONCSS;
 	public function post_updated_messages( array $messages ): array {
 		global $post;
 
-		/** @var \WP_Post_Type */
 		$pto = get_post_type_object( $this->cpt->post_type );
-		
-		if (is_null($pto)) {
-            return $messages;
-        }
+
+		if ( ! ( $pto instanceof \WP_Post_Type ) ) {
+			return $messages;
+		}
 
 		$messages[ $this->cpt->post_type ] = [
 			1 => sprintf(
