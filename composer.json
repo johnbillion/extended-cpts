@@ -2,7 +2,7 @@
 	"name": "johnbillion/extended-cpts",
 	"description": "A library which provides extended functionality to WordPress custom post types and taxonomies.",
 	"homepage": "https://github.com/johnbillion/extended-cpts/",
-	"license": "GPL-2.0+",
+	"license": "GPL-2.0-or-later",
 	"authors": [
 		{
 			"name": "John Blackbourn",
