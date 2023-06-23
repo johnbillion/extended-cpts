@@ -11,7 +11,7 @@ jobs:
   build:
     strategy:
       matrix:
-        php: ['8.1','8.0','7.4']
+        php: ['8.2','8.1','8.0','7.4']
       fail-fast: false
     name: WP nightly / PHP ${{ matrix.php }}
     runs-on: ubuntu-latest
@@ -20,7 +20,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Install PHP
-      uses: shivammathur/setup-php@2.7.0
+      uses: shivammathur/setup-php@2.25.2
       with:
         php-version: ${{ matrix.php }}
         extensions: mysqli, xmlwriter

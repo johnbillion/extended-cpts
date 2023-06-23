@@ -14,8 +14,8 @@ jobs:
   build:
     strategy:
       matrix:
-        php: ['8.1','8.0','7.4']
-        wp: ['6.1','6.0','5.6']
+        php: ['8.2','8.1','8.0','7.4']
+        wp: ['6.2','6.1','6.0','5.6']
         exclude:
           - php: '8.0'
             wp: '5.6'
@@ -26,10 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Composer cache
-      uses: actions/cache@v1
+      uses: actions/cache@v3
       env:
         cache-name: composer
       with:
@@ -38,7 +38,7 @@ jobs:
 
     - name: PHPCS and PHPStan cache
       if: matrix.php == '7.4'
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       env:
         cache-name: phpcs
       with:
@@ -49,7 +49,7 @@ jobs:
         key: ${{ matrix.php }}-${{ env.cache-name }}-${{ hashFiles('extended-cpts.php') }}
 
     - name: Install PHP
-      uses: shivammathur/setup-php@2.7.0
+      uses: shivammathur/setup-php@2.25.2
       with:
         php-version: ${{ matrix.php }}
         extensions: mysqli, xmlwriter
