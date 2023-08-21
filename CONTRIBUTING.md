@@ -1,11 +1,10 @@
-[![Build Status](https://img.shields.io/github/workflow/status/johnbillion/extended-cpts/Test/develop?style=flat-square)](https://github.com/johnbillion/extended-cpts/actions)
-
 # Contributing to Extended CPTs
 
-Code contributions and bug reports are very welcome. These should be submitted through [the GitHub repository](https://github.com/johnbillion/extended-cpts). Development happens in the `develop` branch, and any pull requests should be made against that branch please.
+Bug reports, code contributions, and general feedback are very welcome. These should be submitted through [the GitHub repository](https://github.com/johnbillion/extended-cpts). Development happens in the `develop` branch, and any pull requests should be made against that branch please.
 
-* [Setting up Locally](#setting-up-locally)
-* [Running the Tests](#running-the-tests)
+## Reporting Security Issues
+
+If you discover a security issue in Extended CPTs, please report it to [the security program on HackerOne](https://hackerone.com/johnblackbourn). Do not report security issues on GitHub. Thank you.
 
 ## Setting up Locally
 
@@ -14,25 +13,30 @@ If you want to contribute to Extended CPTs, you should install the developer dep
 ### Prerequisites
 
 * [Composer](https://getcomposer.org/)
+* [Docker Desktop](https://www.docker.com/desktop) to run the tests
 
 ### Setup
 
-1. Install the PHP dependencies:
+Install the PHP dependencies:
 
-       composer install
-
-2. Check the MySQL database credentials in the `tests/.env` file and amend them if necessary.
+	composer install
 
 ## Running the Tests
 
-To run the whole test suite which includes PHPUnit and linting:
+The test suite includes integration tests which run in a Docker container. Ensure Docker Desktop is running, then start the containers with:
+
+	composer test:start
+
+To run the whole test suite which includes integration tests, linting, and static analysis:
 
 	composer test
 
-To run just the PHPUnit tests:
+To run tests individually, run one of:
 
-	composer test:ut
+	composer test:integration
+	composer test:phpcs
+	composer test:phpstan
 
-To run just the code sniffer:
+To stop the Docker containers:
 
-	composer test:cs
+	composer test:stop
