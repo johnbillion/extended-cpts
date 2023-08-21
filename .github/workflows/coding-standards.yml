@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+
+name: Coding Standards
+on:
+  push:
+    branches:
+      - 'develop'
+      - 'trunk'
+      - 'master'
+  pull_request:
+    branches:
+      - '**'
+  schedule:
+    # Once weekly on Mondays at 06:00 UTC.
+    #
+    #        ┌───────────── minute           (0 - 59)
+    #        │  ┌────────── hour             (0 - 23)
+    #        │  │  ┌─────── day of the month (1 - 31)
+    #        │  │  │  ┌──── month            (1 - 12 or JAN-DEC)
+    #        │  │  │  │  ┌─ day of the week  (0 - 6 or SUN-SAT)
+    #        │  │  │  │  │
+    #        │  │  │  │  │
+    #        │  │  │  │  │
+    - cron: '0  6  *  *  1'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: PHP / PHP ${{ matrix.php }}
+    uses: johnbillion/plugin-infrastructure/.github/workflows/reusable-coding-standards.yml@trunk
+    strategy:
+      matrix:
+        php:
+          - '8.2'
+          - '7.4'
+      fail-fast: false
+    with:
+      php: ${{ matrix.php }}
