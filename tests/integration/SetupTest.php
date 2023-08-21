@@ -165,6 +165,7 @@ class Setup extends Test {
 			'item_updated'             => 'Singular updated.',
 			'item_link'                => 'Singular Link',
 			'item_link_description'    => 'A link to a singular.',
+			'item_trashed'             => 'Singular trashed.',
 		), $bar->labels );
 
 		$featured_image = version_compare( $wp_version, '5.4', '>=' ) ? 'Featured image' : 'Featured Image';
@@ -205,6 +206,7 @@ class Setup extends Test {
 			'item_updated'             => 'FAQ updated.',
 			'item_link'                => 'FAQ Link',
 			'item_link_description'    => 'A link to a FAQ.',
+			'item_trashed'             => 'FAQ trashed.',
 		), $faq->labels );
 
 		$post = get_post_type_object( 'post' );
