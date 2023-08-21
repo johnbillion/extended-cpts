@@ -14,12 +14,17 @@ jobs:
   build:
     strategy:
       matrix:
-        php: ['8.2','8.1','8.0','7.4']
-        wp: ['6.2','6.1','6.0','5.6']
-        exclude:
-          - php: '8.0'
-            wp: '5.6'
-          - php: '8.1'
+        php:
+          - '8.2'
+          - '8.1'
+          - '8.0'
+          - '7.4'
+        wp:
+          - '6.3'
+          - '6.2'
+          - '6.1'
+        include:
+          - php: '7.4'
             wp: '5.6'
       fail-fast: false
     name: WP ${{ matrix.wp }} / PHP ${{ matrix.php }}
