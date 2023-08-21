@@ -8,8 +8,20 @@ modules:
     - WPLoader
   config:
     WPLoader:
-      wpRootFolder: "tests/wordpress"
-      dbName: "%WP_TESTS_DB_NAME%"
-      dbHost: "%WP_TESTS_DB_HOST%"
-      dbUser: "%WP_TESTS_DB_USER%"
-      dbPassword: "%WP_TESTS_DB_PASS%"
+      wpRootFolder: /var/www/html
+      dbName: plugindb
+      dbHost: database
+      dbUser: pluginuser
+      dbPassword: pluginpass
+      tablePrefix: wp_integration_
+env:
+  singlesite:
+    modules:
+      config:
+        WPLoader:
+          multisite: false
+  multisite:
+    modules:
+      config:
+        WPLoader:
+          multisite: true

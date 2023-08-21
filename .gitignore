@@ -1,10 +1,5 @@
-/codeception.yml
 /composer.lock
-/phpcs.xml
-/phpstan.neon
+/vendor
 /tests/_output/
 /tests/_support/_generated
-/tests/.env
 /tests/cache
-/tests/wordpress
-/vendor

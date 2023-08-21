@@ -1,9 +1,9 @@
 includes:
 	- vendor/szepeviktor/phpstan-wordpress/extension.neon
 	- vendor/phpstan/phpstan-phpunit/extension.neon
+	- vendor/johnbillion/plugin-infrastructure/phpstan/extension.neon
 parameters:
 	level: 8
-	tmpDir: tests/cache
 	paths:
 		- functions.php
 		- src/
