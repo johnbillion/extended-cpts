@@ -16,7 +16,6 @@
 	"require-dev": {
 		"automattic/phpcs-neutron-standard": "1.7.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
-		"ergebnis/composer-normalize": "^2",
 		"johnbillion/falsey-assertequals-detector": "*",
 		"johnbillion/plugin-infrastructure": "dev-trunk",
 		"lucatume/wp-browser": "^3.0.21",
@@ -40,7 +39,6 @@
 	"config": {
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true,
-			"ergebnis/composer-normalize": true,
 			"roots/wordpress-core-installer": true
 		},
 		"preferred-install": "dist",
@@ -52,7 +50,6 @@
 	"scripts": {
 		"test": [
 			"@composer validate --strict --no-check-lock",
-			"@composer normalize --dry-run",
 			"@test:phpstan",
 			"@test:phpcs",
 			"@test:integration"
