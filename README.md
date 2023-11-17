@@ -62,7 +62,7 @@ Not your first time here? See [Recent Changes for Developers](https://github.com
 * **PHP:** 7.4  
   - Tested up to PHP 8.2
 * **WordPress:** 5.6  
-  - Tested up to WP 6.3
+  - Tested up to WP 6.4
 
 ## Installation ##
 
