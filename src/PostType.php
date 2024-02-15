@@ -253,7 +253,7 @@ class PostType {
 		# Custom post type permastruct:
 		if ( $this->args['rewrite'] && ! empty( $this->args['rewrite']['permastruct'] ) ) {
 			add_action( 'registered_post_type', [ $this, 'registered_post_type' ], 1, 2 );
-			add_filter( 'post_type_link',       [ $this, 'post_type_link' ], 1, 4 );
+			add_filter( 'post_type_link',       [ $this, 'post_type_link' ], 1, 2 );
 		}
 
 		# Rewrite testing:
@@ -646,11 +646,9 @@ class PostType {
 	 *
 	 * @param string  $post_link The post's permalink.
 	 * @param WP_Post $post      The post in question.
-	 * @param bool    $leavename Whether to keep the post name.
-	 * @param bool    $sample    Is it a sample permalink.
 	 * @return string The post's permalink.
 	 */
-	public function post_type_link( string $post_link, WP_Post $post, bool $leavename, bool $sample ): string {
+	public function post_type_link( string $post_link, WP_Post $post ): string {
 		# If it's not our post type, bail out:
 		if ( $this->post_type !== $post->post_type ) {
 			return $post_link;
