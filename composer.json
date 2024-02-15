@@ -52,10 +52,12 @@
 			"@composer validate --strict --no-check-lock",
 			"@test:phpstan",
 			"@test:phpcs",
-			"@test:integration"
+			"@test:start",
+			"@test:integration",
+			"@test:stop"
 		],
 		"test:destroy": [
-			"COMPOSE_PROJECT_NAME=extended-cpts docker compose down --volumes --remove-orphans"
+			"tests-destroy"
 		],
 		"test:integration": [
 			"integration-tests"
@@ -68,10 +70,10 @@
 			"phpstan analyze --memory-limit=1024M"
 		],
 		"test:start": [
-			"COMPOSE_PROJECT_NAME=extended-cpts docker compose up -d"
+			"tests-start"
 		],
 		"test:stop": [
-			"COMPOSE_PROJECT_NAME=extended-cpts docker compose down"
+			"tests-stop"
 		]
 	}
 }
