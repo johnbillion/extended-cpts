@@ -15,7 +15,7 @@ on:
 jobs:
   test:
     name: WP ${{ matrix.wp }} / PHP ${{ matrix.php }}
-    uses: johnbillion/plugin-infrastructure/.github/workflows/reusable-integration-tests.yml@trunk
+    uses: johnbillion/plugin-infrastructure/.github/workflows/reusable-integration-tests.yml@85b8cd6ad28e519412612f011f7e747210b0710b
     strategy:
       matrix:
         wp:
