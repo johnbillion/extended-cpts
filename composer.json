@@ -17,7 +17,7 @@
 		"automattic/phpcs-neutron-standard": "1.7.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
 		"johnbillion/falsey-assertequals-detector": "*",
-		"johnbillion/plugin-infrastructure": "dev-trunk",
+		"johnbillion/plugin-infrastructure": "dev-dependabot/github_actions/github-actions-6d4c5de385",
 		"johnbillion/wp-compat": "0.3.1",
 		"lucatume/wp-browser": "3.2.3",
 		"phpcompatibility/phpcompatibility-wp": "2.1.5",
