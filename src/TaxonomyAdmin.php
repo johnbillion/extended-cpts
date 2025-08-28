@@ -5,6 +5,9 @@ namespace ExtCPTs;
 
 use WP_Post;
 use WP_Taxonomy;
+use WP_Term;
+use DateTime;
+use Exception;
 
 class TaxonomyAdmin {
 
@@ -224,9 +227,8 @@ class TaxonomyAdmin {
 	 * @param string $string  Blank string.
 	 * @param string $col     Name of the column.
 	 * @param int    $term_id Term ID.
-	 * @return string Blank string.
 	 */
-	public function col( string $string, string $col, int $term_id ): string {
+	public function col( string $string, string $col, int $term_id ): void {
 		# Shorthand:
 		$c = $this->args['admin_cols'];
 
@@ -234,27 +236,35 @@ class TaxonomyAdmin {
 		$custom_cols = array_filter( array_keys( $c ) );
 
 		if ( ! in_array( $col, $custom_cols, true ) ) {
-			return $string;
+			return;
+		}
+
+		if ( isset( $c[ $col ]['term_cap'] ) && ! current_user_can( $c[ $col ]['term_cap'], get_the_ID() ) ) {
+			return;
+		}
+
+		$term = get_term( $term_id );
+
+		if ( ! $term ) {
+			return;
 		}
 
 		if ( isset( $c[ $col ]['function'] ) ) {
-			call_user_func( $c[ $col ]['function'], $term_id );
+			call_user_func( $c[ $col ]['function'], $term );
 		} elseif ( isset( $c[ $col ]['meta_key'] ) ) {
-			$this->col_term_meta( $c[ $col ]['meta_key'], $c[ $col ], $term_id );
+			$this->col_term_meta( $term, $c[ $col ]['meta_key'], $c[ $col ] );
 		}
-
-		return $string;
 	}
 
 	/**
 	 * Output column data for a term meta field.
 	 *
+	 * @param WP_Term             $term The term object.
 	 * @param string              $meta_key The term meta key.
 	 * @param array<string,mixed> $args     Array of arguments for this field.
-	 * @param int                 $term_id  Term ID.
 	 */
-	public function col_term_meta( string $meta_key, array $args, int $term_id ): void {
-		$vals = get_term_meta( $term_id, $meta_key, false );
+	public function col_term_meta( WP_Term $term, string $meta_key, array $args ): void {
+		$vals = get_term_meta( $term->term_id, $meta_key, false );
 		$echo = [];
 
 		sort( $vals );
@@ -265,14 +275,25 @@ class TaxonomyAdmin {
 			}
 
 			foreach ( $vals as $val ) {
+				try {
+					$val_time = ( new DateTime( '@' . $val ) )->format( 'U' );
+				} catch ( Exception $e ) {
+					$val_time = strtotime( $val );
+				}
+
+				if ( false !== $val_time ) {
+					$val = $val_time;
+				}
+
 				if ( is_numeric( $val ) ) {
-					$echo[] = date( $args['date_format'], (int) $val );
+					$echo[] = date_i18n( $args['date_format'], (int) $val );
 				} elseif ( ! empty( $val ) ) {
 					$echo[] = mysql2date( $args['date_format'], $val );
 				}
 			}
 		} else {
 			foreach ( $vals as $val ) {
+
 				if ( ! empty( $val ) || ( '0' === $val ) ) {
 					$echo[] = $val;
 				}
