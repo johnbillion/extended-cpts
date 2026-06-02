@@ -1121,11 +1121,12 @@ ICONCSS;
 			case 'post_date_gmt':
 			case 'post_modified':
 			case 'post_modified_gmt':
-				if ( '0000-00-00 00:00:00' !== get_post_field( $field, $post ) ) {
-					if ( ! isset( $args['date_format'] ) ) {
+				$date = get_post_field( $field, $post );
+				if ( is_string( $date ) && '0000-00-00 00:00:00' !== $date ) {
+					if ( ! isset( $args['date_format'] ) || ! is_string( $args['date_format'] ) ) {
 						$args['date_format'] = get_option( 'date_format' );
 					}
-					echo esc_html( mysql2date( $args['date_format'], get_post_field( $field, $post ) ) );
+					echo esc_html( mysql2date( $args['date_format'], $date ) );
 				}
 				break;
 

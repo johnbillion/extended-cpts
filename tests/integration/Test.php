@@ -104,10 +104,13 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 		);
 		$hello->query_var = 'hi';
 
-		$this->args['hello'] = $hello;
+			$this->args['hello'] = $hello;
 
-		$this->cpts['hello'] = register_extended_post_type( 'hello', $hello->toArray() );
-		$this->cpts['hello']->add_taxonomy( 'hello_category' );
+			$this->cpts['hello'] = register_extended_post_type( 'hello', $hello->toArray() );
+			$this->cpts['hello']->add_taxonomy( 'hello_category' );
+			$this->cpts['hello']->add_taxonomy( 'hello_role', array(
+				'query_var' => 'hello_role_filter',
+			) );
 
 		$person = new \ExtCPTs\Args\PostType;
 
@@ -140,11 +143,14 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 
 		$this->cpts['person'] = register_extended_post_type( 'person', $person->toArray(), array(
 			'plural' => 'People',
-		) );
-		$this->cpts['person']->add_taxonomy( 'person_category' );
-		$this->cpts['nice-thing'] = register_extended_post_type( 'nice-thing', array(), array(
-			'slug' => 'Things',
-		) );
+			) );
+			$this->cpts['person']->add_taxonomy( 'person_category' );
+			$this->cpts['person']->add_taxonomy( 'person_role', array(
+				'query_var' => 'person_role_filter',
+			) );
+			$this->cpts['nice-thing'] = register_extended_post_type( 'nice-thing', array(), array(
+				'slug' => 'Things',
+			) );
 		$this->cpts['foo'] = register_extended_post_type( 'foo', array(
 			'rewrite' => array(
 				'permastruct' => 'foo/%author%/%foo_category%/%foo%',
@@ -202,10 +208,15 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 
 		$wp_rewrite->flush_rules();
 
-		foreach ( array( '0', 'Alpha', 'Beta', 'Gamma', 'Delta' ) as $slug ) {
-			wp_insert_term( $slug, 'hello_category' );
-			wp_insert_term( $slug, 'foo_category' );
-		}
+			foreach ( array( '0', 'Alpha', 'Beta', 'Gamma', 'Delta' ) as $slug ) {
+				wp_insert_term( $slug, 'hello_category' );
+				wp_insert_term( $slug, 'foo_category' );
+				}
+				wp_insert_term( 'Crew', 'hello_role' );
+				wp_insert_term( '0', 'person_category' );
+				wp_insert_term( 'Team', 'person_category' );
+				wp_insert_term( 'Crew', 'person_role' );
+				wp_insert_term( 'Manager', 'person_role' );
 
 		// Post
 		$this->posts['post'][] = self::factory()->post->create( array(
@@ -230,18 +241,20 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 			'post_type' => 'hello',
 			'post_name' => 'Delta',
 			'post_date' => '1984-02-25 00:03:00'
-		) );
-		add_post_meta( $this->posts['hello'][1], 'test_meta_key', '0' );
+			) );
+			add_post_meta( $this->posts['hello'][1], 'test_meta_key', '0' );
+			wp_add_object_terms( $this->posts['hello'][1], 'Crew', 'hello_role' );
 
-		// Hello 2
-		$this->posts['hello'][2] = self::factory()->post->create( array(
+			// Hello 2
+			$this->posts['hello'][2] = self::factory()->post->create( array(
 			'guid'      => 'guid',
 			'post_type' => 'hello',
 			'post_name' => 'Beta',
 			'post_date' => '1984-02-25 00:02:00'
-		) );
-		add_post_meta( $this->posts['hello'][2], 'test_meta_key', 'Beta' );
-		wp_add_object_terms( $this->posts['hello'][2], 'Alpha', 'hello_category' );
+			) );
+			add_post_meta( $this->posts['hello'][2], 'test_meta_key', 'Beta' );
+			wp_add_object_terms( $this->posts['hello'][2], 'Alpha', 'hello_category' );
+			wp_add_object_terms( $this->posts['hello'][2], 'Crew', 'hello_role' );
 
 		// Hello 3
 		$this->posts['hello'][3] = self::factory()->post->create( array(
@@ -256,15 +269,21 @@ abstract class Test extends \Codeception\TestCase\WPTestCase {
 			'guid'      => 'guid',
 			'post_type' => 'person',
 			'post_name' => 'Beta',
-			'post_date' => '1984-02-25 00:01:00'
-		) );
-		$this->posts['person'][1] = self::factory()->post->create( array(
-			'guid'      => 'guid',
+			'post_date' => '1984-02-25 00:02:00'
+				) );
+				wp_add_object_terms( $this->posts['person'][0], 'Team', 'person_category' );
+				wp_add_object_terms( $this->posts['person'][0], '0', 'person_category' );
+				wp_add_object_terms( $this->posts['person'][0], 'Crew', 'person_role' );
+
+			$this->posts['person'][1] = self::factory()->post->create( array(
+				'guid'      => 'guid',
 			'post_type' => 'person',
 			'post_name' => 'Alpha',
-			'post_date' => '1984-02-25 00:02:00'
-		) );
-		$this->posts['nice-thing'][0] = self::factory()->post->create( array(
+			'post_date' => '1984-02-25 00:01:00'
+			) );
+			wp_add_object_terms( $this->posts['person'][1], 'Team', 'person_category' );
+			wp_add_object_terms( $this->posts['person'][1], 'Crew', 'person_role' );
+			$this->posts['nice-thing'][0] = self::factory()->post->create( array(
 			'guid'      => 'guid',
 			'post_type' => 'nice-thing',
 		) );

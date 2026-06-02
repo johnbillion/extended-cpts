@@ -143,6 +143,35 @@ class Queries extends Site {
 
 	}
 
+	public function testTaxonomyArchiveSortedByDifferentTaxonomyDoesNotDropPosts(): void {
+
+		$query = $this->get_query( array(
+			'hello_role_filter' => 'crew',
+			'orderby'           => 'test_site_sortables_taxonomy',
+			'order'             => 'ASC',
+		) );
+
+		self::assertEquals( 2, $query->found_posts );
+
+		self::assertSame( 'test_site_sortables_taxonomy', $query->get( 'orderby' ) );
+		self::assertSame( 'ASC',                          $query->get( 'order' ) );
+		self::assertSame( '',                             $query->get( 'meta_key' ) );
+		self::assertSame( '',                             $query->get( 'meta_value' ) );
+		self::assertSame( '',                             $query->get( 'meta_query' ) );
+
+		$post_ids = wp_list_pluck( $query->posts, 'ID' );
+		$expected = array(
+			$this->posts['hello'][1],
+			$this->posts['hello'][2],
+		);
+
+		sort( $post_ids );
+		sort( $expected );
+
+		self::assertEquals( $expected, $post_ids );
+
+	}
+
 	public function testQueryFilteredByPostMetaKey(): void {
 
 		$query = $this->get_query( array(
@@ -332,6 +361,333 @@ class Queries extends Site {
 			$this->posts['person'][1],
 			$this->posts['person'][0],
 		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testTaxonomyQueryWithDefaultSortOrder(): void {
+
+		$query = $this->get_query( array(
+			'person_category' => 'team',
+		) );
+
+		self::assertEquals( count( $this->posts['person'] ), $query->found_posts );
+
+		self::assertSame( 'name', $query->get( 'orderby' ) );
+		self::assertSame( 'ASC',  $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( array(
+			$this->posts['person'][1],
+			$this->posts['person'][0],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testTaxonomyQueryWithNegativeTaxQueryUsesDefaultSortOrder(): void {
+
+		$query = $this->get_query( array(
+			'person_category' => 'team',
+			'tax_query'       => array(
+				array(
+					'taxonomy' => 'person_role',
+					'field'    => 'slug',
+					'terms'    => array( 'manager' ),
+					'operator' => 'NOT IN',
+				),
+			),
+		) );
+
+		self::assertEquals( count( $this->posts['person'] ), $query->found_posts );
+
+		self::assertSame( 'name', $query->get( 'orderby' ) );
+		self::assertSame( 'ASC',  $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( array(
+			$this->posts['person'][1],
+			$this->posts['person'][0],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testTaxonomyQueryWithCustomQueryVarUsesDefaultSortOrder(): void {
+
+		$query = $this->get_query( array(
+			'person_role_filter' => 'crew',
+		) );
+
+		self::assertEquals( count( $this->posts['person'] ), $query->found_posts );
+
+		self::assertSame( 'name', $query->get( 'orderby' ) );
+		self::assertSame( 'ASC',  $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( array(
+			$this->posts['person'][1],
+			$this->posts['person'][0],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testTaxonomyNameQueryWithCustomQueryVarNotAffected(): void {
+
+		$query = $this->get_query( array(
+			'person_role' => 'crew',
+		) );
+
+		self::assertEquals( 1, $query->found_posts );
+
+		self::assertSame( '',     $query->get( 'orderby' ) );
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( $this->posts['post'], wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testTaxonomyQueryWithoutTermNotAffected(): void {
+
+		$query = $this->get_query( array(
+			'taxonomy' => 'person_category',
+		) );
+
+		self::assertEquals( 1, $query->found_posts );
+
+		self::assertSame( '',     $query->get( 'orderby' ) );
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( $this->posts['post'], wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testZeroTaxonomyQueryVarNotAffected(): void {
+
+		$query = $this->get_query( array(
+			'person_category' => '0',
+		) );
+
+		self::assertEquals( 1, $query->found_posts );
+
+		self::assertSame( '',     $query->get( 'orderby' ) );
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( $this->posts['post'], wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testSharedTaxonomyQueryWithDefaultSortOrderNotAffected(): void {
+
+		register_taxonomy_for_object_type( 'person_category', 'hello' );
+		wp_add_object_terms( $this->posts['hello'][0], 'Team', 'person_category' );
+
+		$query = $this->get_query( array(
+			'person_category' => 'team',
+		) );
+
+		self::assertEquals( 3, $query->found_posts );
+
+		self::assertSame( '',     $query->get( 'orderby' ) );
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( array(
+			$this->posts['hello'][0],
+			$this->posts['person'][0],
+			$this->posts['person'][1],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testMixedTaxonomyQueryWithDefaultSortOrderNotAffected(): void {
+
+		$query = $this->get_query( array(
+			'tax_query' => array(
+				'relation' => 'OR',
+				array(
+					'taxonomy' => 'person_category',
+					'field'    => 'slug',
+					'terms'    => array( 'team' ),
+				),
+				array(
+					'taxonomy' => 'hello_category',
+					'field'    => 'slug',
+					'terms'    => array( 'beta' ),
+				),
+			),
+		) );
+
+		self::assertEquals( 3, $query->found_posts );
+
+		self::assertSame( '',     $query->get( 'orderby' ) );
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( array(
+			$this->posts['hello'][0],
+			$this->posts['person'][0],
+			$this->posts['person'][1],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testTaxonomyQueryVarWithMixedTaxQueryNotAffected(): void {
+
+		$query = $this->get_query( array(
+			'person_category' => 'team',
+			'tax_query'       => array(
+				'relation' => 'OR',
+				array(
+					'taxonomy' => 'hello_category',
+					'field'    => 'slug',
+					'terms'    => array( 'beta' ),
+				),
+			),
+		) );
+
+		self::assertEquals( 3, $query->found_posts );
+
+		self::assertSame( '',     $query->get( 'orderby' ) );
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( array(
+			$this->posts['hello'][0],
+			$this->posts['person'][0],
+			$this->posts['person'][1],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testNegativeTaxonomyQueryWithDefaultSortOrderNotAffected(): void {
+
+		$query = $this->get_query( array(
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'person_category',
+					'field'    => 'slug',
+					'terms'    => array( 'team' ),
+					'operator' => 'NOT IN',
+				),
+			),
+		) );
+
+		self::assertEquals( 1, $query->found_posts );
+
+		self::assertSame( '',     $query->get( 'orderby' ) );
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( $this->posts['post'], wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testEmptyAndTaxonomyQueryWithDefaultSortOrderNotAffected(): void {
+
+		$query = $this->get_query( array(
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'person_category',
+					'field'    => 'slug',
+					'terms'    => array(),
+					'operator' => 'AND',
+				),
+			),
+		) );
+
+		self::assertGreaterThan( count( $this->posts['person'] ), $query->found_posts );
+
+		self::assertSame( '',     $query->get( 'orderby' ) );
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+	}
+
+	public function testOrNegativeTaxonomyQueryWithDefaultSortOrderNotAffected(): void {
+
+		$query = $this->get_query( array(
+			'tax_query' => array(
+				'relation' => 'OR',
+				array(
+					'taxonomy' => 'person_role',
+					'field'    => 'slug',
+					'terms'    => array( 'crew' ),
+				),
+				array(
+					'taxonomy' => 'person_role',
+					'field'    => 'slug',
+					'terms'    => array( 'crew' ),
+					'operator' => 'NOT IN',
+				),
+			),
+		) );
+
+		self::assertEquals( count( $this->posts['person'] ), $query->found_posts );
+
+		self::assertSame( '',     $query->get( 'orderby' ) );
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
+
+		self::assertEquals( array(
+			$this->posts['person'][0],
+			$this->posts['person'][1],
+		), wp_list_pluck( $query->posts, 'ID' ) );
+
+	}
+
+	public function testNestedOrNegativeTaxonomyQueryWithDefaultSortOrderNotAffected(): void {
+
+		$query = $this->get_query( array(
+			'tax_query' => array(
+				'relation' => 'OR',
+				array(
+					array(
+						'taxonomy' => 'person_role',
+						'field'    => 'slug',
+						'terms'    => array( 'crew' ),
+						'operator' => 'NOT IN',
+					),
+				),
+				array(
+					'taxonomy' => 'person_category',
+					'field'    => 'slug',
+					'terms'    => array( 'team' ),
+				),
+			),
+		) );
+
+		self::assertGreaterThan( count( $this->posts['person'] ), $query->found_posts );
+
+		self::assertSame( '',     $query->get( 'orderby' ) );
+		self::assertSame( 'DESC', $query->get( 'order' ) );
+		self::assertSame( '',     $query->get( 'meta_key' ) );
+		self::assertSame( '',     $query->get( 'meta_value' ) );
+		self::assertSame( '',     $query->get( 'meta_query' ) );
 
 	}
 

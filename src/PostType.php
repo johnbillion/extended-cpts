@@ -309,7 +309,7 @@ class PostType {
 	 * @param WP_Query $wp_query The current WP_Query object.
 	 */
 	public function maybe_sort_by_fields( WP_Query $wp_query ): void {
-		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
+		if ( ! $this->query_applies_to_post_type( $wp_query ) ) {
 			return;
 		}
 
@@ -345,7 +345,7 @@ class PostType {
 	 * @return array<string,string> Array of SQL clauses.
 	 */
 	public function maybe_sort_by_taxonomy( array $clauses, WP_Query $wp_query ): array {
-		if ( empty( $wp_query->query['post_type'] ) || ! in_array( $this->post_type, (array) $wp_query->query['post_type'], true ) ) {
+		if ( ! $this->query_applies_to_post_type( $wp_query ) ) {
 			return $clauses;
 		}
 
@@ -356,6 +356,286 @@ class PostType {
 		}
 
 		return array_merge( $clauses, $sort );
+	}
+
+	/**
+	 * Determines whether the query targets this post type or one of its taxonomy archives.
+	 *
+	 * @param WP_Query $wp_query The current WP_Query object.
+	 */
+	private function query_applies_to_post_type( WP_Query $wp_query ): bool {
+		if ( ! empty( $wp_query->query['post_type'] ) ) {
+			return in_array( $this->post_type, (array) $wp_query->query['post_type'], true );
+		}
+
+		$tax_query = null;
+
+		if ( ! empty( $wp_query->query['tax_query'] ) && is_array( $wp_query->query['tax_query'] ) ) {
+			$tax_query = $wp_query->query['tax_query'];
+		}
+
+		$taxonomies = get_object_taxonomies( $this->post_type );
+
+		foreach ( $taxonomies as $taxonomy ) {
+			if ( $this->query_has_taxonomy_var( $wp_query->query, $taxonomy ) && $this->taxonomy_only_applies_to_post_type( $taxonomy ) ) {
+				if ( null !== $tax_query ) {
+					return $this->tax_query_only_applies_to_post_type( $this->tax_query_with_archive_clause( $tax_query, $taxonomy ) );
+				}
+
+				return true;
+			}
+		}
+
+		if (
+			isset( $wp_query->query['taxonomy'] )
+			&&
+			is_string( $wp_query->query['taxonomy'] )
+			&&
+			// Match WP_Query::parse_tax_query(), which only builds this legacy taxonomy query for non-empty terms.
+			! empty( $wp_query->query['term'] )
+			&&
+			$this->taxonomy_only_applies_to_post_type( $wp_query->query['taxonomy'] )
+		) {
+			if ( null !== $tax_query ) {
+				return $this->tax_query_only_applies_to_post_type( $this->tax_query_with_archive_clause( $tax_query, $wp_query->query['taxonomy'] ) );
+			}
+
+			return true;
+		}
+
+		if ( null === $tax_query ) {
+			return false;
+		}
+
+		return $this->tax_query_only_applies_to_post_type( $tax_query );
+	}
+
+	/**
+	 * Determines whether the query includes a taxonomy's query variable.
+	 *
+	 * @param array<string,mixed> $query    Query arguments.
+	 * @param string              $taxonomy Taxonomy name.
+	 */
+	private function query_has_taxonomy_var( array $query, string $taxonomy ): bool {
+		$taxonomy_object = get_taxonomy( $taxonomy );
+
+		if (
+			! ( $taxonomy_object instanceof WP_Taxonomy )
+			||
+			! is_string( $taxonomy_object->query_var )
+		) {
+			return false;
+		}
+
+		// Match WP_Query::parse_tax_query(), which skips empty public taxonomy query vars, including "0".
+		return ! empty( $query[ $taxonomy_object->query_var ] );
+	}
+
+	/**
+	 * Adds a taxonomy archive clause to an explicit tax_query.
+	 *
+	 * @param array<int|string,mixed> $tax_query Tax query arguments.
+	 * @param string                  $taxonomy  Taxonomy name.
+	 * @return array<int|string,mixed> Tax query arguments.
+	 */
+	private function tax_query_with_archive_clause( array $tax_query, string $taxonomy ): array {
+		$tax_query[] = [
+			'taxonomy' => $taxonomy,
+			'operator' => 'EXISTS',
+		];
+
+		return $tax_query;
+	}
+
+	/**
+	 * Determines whether every taxonomy clause in a tax_query belongs to this post type.
+	 *
+	 * @param array<int|string,mixed> $tax_query Tax query arguments.
+	 */
+	private function tax_query_only_applies_to_post_type( array $tax_query ): bool {
+		$tax_query_clauses = $this->get_tax_query_clauses( $tax_query );
+
+		if ( empty( $tax_query_clauses ) ) {
+			return false;
+		}
+
+		if ( $this->tax_query_has_or_negative_clause( $tax_query, false ) ) {
+			return false;
+		}
+
+		$has_positive_clause = false;
+
+		foreach ( $tax_query_clauses as $tax_query_clause ) {
+			if ( ! $this->taxonomy_only_applies_to_post_type( $tax_query_clause['taxonomy'] ) ) {
+				return false;
+			}
+
+			if ( ! $this->tax_query_operator_is_negative( $tax_query_clause['operator'] ) ) {
+				$has_positive_clause = true;
+			}
+		}
+
+		return $has_positive_clause;
+	}
+
+	/**
+	 * Gets the taxonomy clauses from a tax_query.
+	 *
+	 * @param array<int|string,mixed> $tax_query Tax query arguments.
+	 * @return array<int,array{taxonomy:string,operator:?string}>|null Taxonomy clauses, or null when an invalid clause is found.
+	 */
+	private function get_tax_query_clauses( array $tax_query ): ?array {
+		$tax_query_clauses = [];
+
+		foreach ( $tax_query as $key => $tax_query_item ) {
+			if ( 'relation' === $key ) {
+				continue;
+			}
+
+			if ( ! is_array( $tax_query_item ) ) {
+				return null;
+			}
+
+			if ( array_key_exists( 'taxonomy', $tax_query_item ) ) {
+				if ( ! is_string( $tax_query_item['taxonomy'] ) ) {
+					return null;
+				}
+
+				$operator = null;
+
+				if ( array_key_exists( 'operator', $tax_query_item ) ) {
+					if ( ! is_string( $tax_query_item['operator'] ) ) {
+						return null;
+					}
+
+					$operator = $tax_query_item['operator'];
+				}
+
+				if ( ! $this->tax_query_clause_constrains_query( $tax_query_item, $operator ) ) {
+					continue;
+				}
+
+				$tax_query_clauses[] = [
+					'taxonomy' => $tax_query_item['taxonomy'],
+					'operator' => $operator,
+				];
+				continue;
+			}
+
+			$nested_tax_query_clauses = $this->get_tax_query_clauses( $tax_query_item );
+
+			if ( null === $nested_tax_query_clauses ) {
+				return null;
+			}
+
+			$tax_query_clauses = array_merge( $tax_query_clauses, $nested_tax_query_clauses );
+		}
+
+		return $tax_query_clauses;
+	}
+
+	/**
+	 * Determines whether a tax_query clause can emit SQL that constrains results.
+	 *
+	 * @param array<string,mixed> $tax_query_clause Tax query clause.
+	 * @param ?string             $operator         Tax query operator.
+	 */
+	private function tax_query_clause_constrains_query( array $tax_query_clause, ?string $operator ): bool {
+		$operator = strtoupper( $operator ?? 'IN' );
+
+		if ( in_array( $operator, [ 'EXISTS', 'NOT EXISTS' ], true ) ) {
+			return true;
+		}
+
+		if ( ! array_key_exists( 'terms', $tax_query_clause ) ) {
+			return false;
+		}
+
+		$terms = $tax_query_clause['terms'];
+
+		if ( is_array( $terms ) ) {
+			return [] !== $terms;
+		}
+
+		if ( is_string( $terms ) ) {
+			return '' !== $terms;
+		}
+
+		return null !== $terms && false !== $terms;
+	}
+
+	/**
+	 * Determines whether a tax_query operator excludes matching taxonomy terms.
+	 *
+	 * @param ?string $operator Tax query operator.
+	 */
+	private function tax_query_operator_is_negative( ?string $operator ): bool {
+		if ( null === $operator ) {
+			return false;
+		}
+
+		return in_array( strtoupper( $operator ), [ 'NOT IN', 'NOT EXISTS' ], true );
+	}
+
+	/**
+	 * Determines whether an OR tax_query branch contains a negative clause.
+	 *
+	 * @param array<int|string,mixed> $tax_query         Tax query arguments.
+	 * @param bool                    $is_inside_or_group Whether this query is nested inside an OR relation.
+	 */
+	private function tax_query_has_or_negative_clause( array $tax_query, bool $is_inside_or_group ): bool {
+		$relation = 'AND';
+
+		if ( isset( $tax_query['relation'] ) && is_string( $tax_query['relation'] ) ) {
+			$relation = strtoupper( $tax_query['relation'] );
+		}
+
+		$is_inside_or_group = $is_inside_or_group || ( 'OR' === $relation );
+
+		foreach ( $tax_query as $key => $tax_query_item ) {
+			if ( 'relation' === $key || ! is_array( $tax_query_item ) ) {
+				continue;
+			}
+
+			if ( array_key_exists( 'taxonomy', $tax_query_item ) ) {
+				$operator = null;
+
+				if ( isset( $tax_query_item['operator'] ) && is_string( $tax_query_item['operator'] ) ) {
+					$operator = $tax_query_item['operator'];
+				}
+
+				if ( $is_inside_or_group && $this->tax_query_operator_is_negative( $operator ) ) {
+					return true;
+				}
+
+				continue;
+			}
+
+			if ( $this->tax_query_has_or_negative_clause( $tax_query_item, $is_inside_or_group ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determines whether the taxonomy archive can be treated as belonging to this post type.
+	 *
+	 * @param string $taxonomy Taxonomy name.
+	 */
+	private function taxonomy_only_applies_to_post_type( string $taxonomy ): bool {
+		$taxonomy_object = get_taxonomy( $taxonomy );
+
+		if ( ! ( $taxonomy_object instanceof WP_Taxonomy ) ) {
+			return false;
+		}
+
+		return (
+			in_array( $this->post_type, $taxonomy_object->object_type, true )
+			&&
+			1 === count( $taxonomy_object->object_type )
+		);
 	}
 
 	/**
@@ -539,16 +819,25 @@ class PostType {
 			return [];
 		}
 
+		if ( ! is_string( $orderby['taxonomy'] ) ) {
+			return [];
+		}
+
 		# Taxonomy term ordering courtesy of http://scribu.net/wordpress/sortable-taxonomy-columns.html
-		$clauses['join'] .= "
+		$clauses['join'] .= $wpdb->prepare(
+			"
 			LEFT OUTER JOIN {$wpdb->term_relationships} as ext_cpts_tr
 			ON ( {$wpdb->posts}.ID = ext_cpts_tr.object_id )
 			LEFT OUTER JOIN {$wpdb->term_taxonomy} as ext_cpts_tt
-			ON ( ext_cpts_tr.term_taxonomy_id = ext_cpts_tt.term_taxonomy_id )
+			ON (
+				ext_cpts_tr.term_taxonomy_id = ext_cpts_tt.term_taxonomy_id
+				AND ext_cpts_tt.taxonomy = %s
+			)
 			LEFT OUTER JOIN {$wpdb->terms} as ext_cpts_t
 			ON ( ext_cpts_tt.term_id = ext_cpts_t.term_id )
-		";
-		$clauses['where'] .= $wpdb->prepare( ' AND ( taxonomy = %s OR taxonomy IS NULL )', $orderby['taxonomy'] );
+		",
+			$orderby['taxonomy']
+		);
 		$clauses['groupby'] = 'ext_cpts_tr.object_id';
 		$clauses['orderby'] = 'GROUP_CONCAT( ext_cpts_t.name ORDER BY name ASC ) ';
 		$clauses['orderby'] .= ( isset( $vars['order'] ) && ( 'ASC' === strtoupper( $vars['order'] ) ) ) ? 'ASC' : 'DESC';
@@ -782,7 +1071,9 @@ class PostType {
 		}
 
 		if ( empty( $existing ) ) {
-			$cpt = register_post_type( $this->post_type, $this->args );
+			/** @var lowercase-string&non-empty-string $post_type */
+			$post_type = $this->post_type;
+			$cpt = register_post_type( $post_type, $this->args );
 
 			if ( is_wp_error( $cpt ) ) {
 				trigger_error( esc_html( $cpt->get_error_message() ), E_USER_ERROR );
