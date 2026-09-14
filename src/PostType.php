@@ -36,6 +36,9 @@ class PostType {
 		'featured_image'  => null,  # Custom arg
 	];
 
+	/**
+	 * @var lowercase-string&non-empty-string
+	 */
 	public string $post_type;
 
 	public string $post_slug;
@@ -61,6 +64,7 @@ class PostType {
 	 * @param string               $post_type The post type name.
 	 * @param array<string,mixed>  $args      Optional. The post type arguments.
 	 * @param array<string,string> $names     Optional. The plural, singular, and slug names.
+	 * @phpstan-param non-empty-string $post_type
 	 * @phpstan-param array{
 	 *   plural?: string,
 	 *   singular?: string,

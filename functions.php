@@ -45,6 +45,7 @@ use ExtCPTs\TaxonomyAdmin;
  *     @type string $singular The singular form of the post type name.
  *     @type string $slug     The slug used in the permalinks for this post type.
  * }
+ * @phpstan-param non-empty-string $post_type
  * @phpstan-param array{
  *   plural?: string,
  *   singular?: string,
