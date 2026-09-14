@@ -40,7 +40,7 @@ class Setup extends Test {
 		self::assertFileExists( $filename );
 
 		$phpcs = (string) file_get_contents( $filename );
-		$pattern = '/minimum_supported_version" value="(?P<version>[0-9]\.[0-9])"/';
+		$pattern = '/minimum_wp_version" value="(?P<version>[0-9]\.[0-9])"/';
 		$result = preg_match( $pattern, $phpcs, $matches );
 		self::assertNotEmpty( $result );
 

@@ -1,6 +1,4 @@
 <?php
-declare( strict_types=1 );
-
 /**
  * Extended custom post types and taxonomies for WordPress.
  *
@@ -21,6 +19,8 @@ declare( strict_types=1 );
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
+declare( strict_types=1 );
 
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/src/PostType.php';

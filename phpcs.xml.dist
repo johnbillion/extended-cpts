@@ -1,12 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="Extended CPTs">
-	<!--
-	Prevent deprecated errors caused by WordPress Coding Standards not supporting PHP 8.0+.
-	See https://github.com/WordPress/WordPress-Coding-Standards/issues/2035
-	-->
-	<ini name="error_reporting" value="E_ALL &#38; ~E_DEPRECATED" />
-
 	<config name="testVersion" value="7.4-"/>
+	<config name="minimum_wp_version" value="6.0"/>
 	<arg name="extensions" value="php"/>
 
 	<exclude-pattern>*/tests/*</exclude-pattern>
@@ -25,23 +20,19 @@
 
 	<!-- Include the WordPress-Extra standard. -->
 	<rule ref="WordPress-Extra">
-		<exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
 		<exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
 		<exclude name="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned"/>
 		<exclude name="WordPress.DateTime.RestrictedFunctions.date_date"/>
 		<exclude name="WordPress.Files.FileName"/>
-		<exclude name="WordPress.PHP.DisallowShortTernary.Found"/>
+		<exclude name="Universal.Operators.DisallowShortTernary.Found"/>
 	</rule>
 
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<property name="text_domain" type="array" value="extended-cpts"/>
-		</properties>
-	</rule>
-
-	<rule ref="WordPress.WP.DeprecatedFunctions">
-		<properties>
-			<property name="minimum_supported_version" value="6.0"/>
+			<property name="text_domain" type="array">
+				<element value="extended-cpts"/>
+			</property>
 		</properties>
 	</rule>
 

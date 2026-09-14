@@ -70,5 +70,4 @@ abstract class ExtendedRewriteTesting {
 
 		return $new;
 	}
-
 }

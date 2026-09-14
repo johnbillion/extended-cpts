@@ -294,5 +294,4 @@ class Taxonomy {
 			register_taxonomy( $this->taxonomy, $this->object_type, $this->args );
 		}
 	}
-
 }

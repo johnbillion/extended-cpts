@@ -36,5 +36,4 @@ class TaxonomyRewriteTesting extends ExtendedRewriteTesting {
 			$name => $this->get_rewrites( $struct, [] ),
 		];
 	}
-
 }

@@ -833,5 +833,4 @@ class PostType {
 
 		return $tax;
 	}
-
 }

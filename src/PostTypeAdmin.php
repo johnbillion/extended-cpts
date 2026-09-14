@@ -1500,5 +1500,4 @@ ICONCSS;
 
 		return $this->connection_exists[ $connection ];
 	}
-
 }

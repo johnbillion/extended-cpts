@@ -115,5 +115,4 @@ class Checkboxes extends \Walker {
 	public function end_el( &$output, $object, $depth = 0, $args = [] ) {
 		$output .= "</li>\n";
 	}
-
 }

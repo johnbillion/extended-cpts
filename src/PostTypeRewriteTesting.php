@@ -62,5 +62,4 @@ class PostTypeRewriteTesting extends ExtendedRewriteTesting {
 			$name => $this->get_rewrites( $struct, $additional ),
 		];
 	}
-
 }

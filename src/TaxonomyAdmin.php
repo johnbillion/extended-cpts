@@ -659,5 +659,4 @@ class TaxonomyAdmin {
 	public static function n( string $single, string $plural, int $number ): string {
 		return ( 1 === intval( $number ) ) ? $single : $plural;
 	}
-
 }

@@ -16,18 +16,18 @@
 	"require-dev": {
 		"behat/gherkin": "< 4.13.0",
 		"automattic/phpcs-neutron-standard": "1.7.0",
-		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.2.1",
 		"johnbillion/falsey-assertequals-detector": "*",
 		"johnbillion/plugin-infrastructure": "1.2.1",
 		"johnbillion/wp-compat": "0.3.1",
 		"lucatume/wp-browser": "3.2.3",
-		"phpcompatibility/phpcompatibility-wp": "2.1.5",
+		"phpcompatibility/phpcompatibility-wp": "2.1.8",
 		"phpstan/phpstan": "1.12.12",
 		"phpstan/phpstan-phpunit": "1.4.1",
 		"roots/wordpress-core-installer": "1.100.0",
 		"roots/wordpress-full": "*",
 		"szepeviktor/phpstan-wordpress": "1.3.5",
-		"wp-coding-standards/wpcs": "2.3.0"
+		"wp-coding-standards/wpcs": "3.4.1"
 	},
 	"autoload": {
 		"psr-4": {

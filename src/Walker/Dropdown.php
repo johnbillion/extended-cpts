@@ -85,5 +85,4 @@ class Dropdown extends \Walker {
 
 		$output .= "</option>\n";
 	}
-
 }
