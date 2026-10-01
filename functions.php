@@ -35,6 +35,7 @@ use ExtCPTs\TaxonomyAdmin;
  *     @type string $featured_image     Text which replaces the 'Featured Image' phrase for this post type.
  *     @type bool   $quick_edit         Whether to show Quick Edit links for this post type. Default true.
  *     @type bool   $show_in_feed       Whether to include this post type in the site's main feed. Default false.
+ *     @type bool   $show_in_rest       Whether to include the post type in the REST API and enable he block editor. Default false.
  *     @type array  $site_filters       Associative array of query vars and their parameters for front end filtering.
  *     @type array  $site_sortables     Associative array of query vars and their parameters for front end sorting.
  * }
